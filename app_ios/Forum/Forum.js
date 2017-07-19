@@ -16,6 +16,7 @@ import {
   InteractionManager,
 }from 'react-native';
 import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
+import ForumList from './ForumList';
 var {height, width} = Dimensions.get('window');
 var token='28d2479302bf86369bcec62939099f40b96a62ee';
 export default class Forum extends Component{
@@ -210,29 +211,18 @@ class OrderCell extends Component {
         }
     }
     componentWillMount() {
-        this._handleData();
+        
     }
 
     componentWillReceiveProps(nextProps) {
         
     }
-    _changeData(data) {
-        this.setState({
-            data: data
-        })
-    }
-
-    deteleOrder(){
-        this.props.detele();
-    }
-
      _clickGoodsDetail(){
         if (this.props.navigator) {
             this.props.navigator.push({
-                component: Goods_Order_Detail,
+                component: ForumList,
                 params: {
                     data:this.state.data,
-                    _receive: this._changeData.bind(this),
                 }
             })
         }
@@ -240,9 +230,20 @@ class OrderCell extends Component {
     render() {
         return(
             <TouchableOpacity onPress={this._clickGoodsDetail.bind(this)}
-                style={{width: width, backgroundColor: 'white', marginTop: 10, alignItems: 'center'}}>
-                <View>
-                  <Image></Image>
+                style={{width: width, backgroundColor: 'white',alignItems: 'center',paddingLeft:20,paddingRight:20,}}>
+                <View style={{flexDirection:'row',}}>
+                  <View style={{paddingTop:20,}}>
+                    <Image source={require('./assets/Forum/back.png')}></Image>
+                    <Text>黄金5</Text>
+                  </View>
+                  <View>
+                    <Text>HTML5TOALUN</Text>
+                    <Text>关于什么事</Text>
+                    <Text>荒野求生 2017-02-02</Text>
+                  </View>
+                  <View>
+                    <Text>发帖数：55555</Text>
+                  </View>
                 </View>
             </TouchableOpacity>
         )
