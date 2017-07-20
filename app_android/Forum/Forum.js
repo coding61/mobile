@@ -16,6 +16,8 @@ import {
   InteractionManager,
 }from 'react-native';
 import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
+import ForumList from './ForumList';
+
 var {height, width} = Dimensions.get('window');
 var token='28d2479302bf86369bcec62939099f40b96a62ee';
 export default class Forum extends Component{
@@ -33,6 +35,9 @@ export default class Forum extends Component{
             token:null,
         }
     }
+    static navigationOptions = {
+      title: '论坛',
+    }
 
     componentDidMount() {
        this._loadData()
@@ -41,11 +46,7 @@ export default class Forum extends Component{
         this.setState({
             isLoading: true
         },()=> {
-            fetch(this.state.url, {
-                headers: {
-                    Authorization: 'Token '+ token 
-                }
-            })
+            fetch(this.state.url)
             .then(response => {
                 if (response.status === 200) {
                     return response.json();
@@ -93,8 +94,47 @@ export default class Forum extends Component{
             })
         })  
     }
+    _clickForumList(data){
+        this.props.navigation.navigate('ForumList', { data: data })
+    }
     _renderRow(rowData, SectionID, rowID, highlightRow) {
-        return <OrderCell data={rowData}  _loadData={this._loadData.bind(this)} navigator={this.props.navigator} _refeshView={this._onRefresh.bind(this)} />
+        /*var timeArray = rowData.newposts.create_time.split('.')[0].split('T');
+        var year = timeArray[0].split('-')[0];
+        var month = timeArray[0].split('-')[1];
+        var day = timeArray[0].split('-')[2];
+        var hour = timeArray[1].split(':')[0];
+        var minute = timeArray[1].split(':')[1];
+        var second = timeArray[1].split(':')[2];
+        var create = new Date(year, month-1, day, hour, minute, second);
+        var current = new Date();
+        var s1 = current.getTime() - create.getTime(); //相差的毫秒
+        var time = null;
+        if (s1 / (60 * 1000) < 1) {
+            time = "刚刚";
+        }else if (s1 / (60 * 1000) < 60){
+            time = parseInt(s1 / (60 * 1000)) + "分钟前";
+        }else if(s1 / (60 * 1000) < 24 * 60){
+            time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
+        }else if(s1 / (60 * 1000) < 24 * 60 * 2){
+            time = "昨天 " + rowData.newposts.create_time.slice(11, 16);
+        }else{
+            time = rowData.newposts.create_time.slice(0, 10).replace('T', ' ');
+        }*/
+        return (
+            <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
+                style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
+                <View style={{flexDirection:'row',}}>
+                    <Image style={{width:50,height:50,marginTop:20,}} source={{uri:rowData.icon}}/>
+                    <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.6,}}>
+                        <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.name}</Text>
+                        <Text style={{paddingBottom:10}}>{rowData.newposts.title}</Text>
+                        <Text style={{paddingBottom:10}}>{rowData.newposts.author}  {rowData.newposts.create_time}</Text>
+                    </View>
+                    <Text style={{paddingLeft:10,flex:1,paddingTop:20,}}>帖数:{rowData.total}</Text>
+                </View>
+            </TouchableOpacity>
+
+        )
     }
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
@@ -165,20 +205,17 @@ export default class Forum extends Component{
         })
     }
     _goBack(){
-        if (this.props.navigator) {
-            this.props.navigator.pop()
+        if (this.props.navigation) {
+            this.props.navigation.pop()
         }   
     }
+
     render() {
-        return(
+        if(!this.state.dataSource){
+            return(<View></View>)
+        }else{
+             return(
             <View style={{flex: 1, backgroundColor: 'rgb(242,243,244)'}}>
-                <View style={{width:width,height:44,borderBottomWidth:1,borderBottomColor:'#e4e4e4',justifyContent:'flex-start',backgroundColor:'#F7F8F9',alignItems:'center',flexDirection:'row',}}>
-                    <TouchableOpacity style={{height:44,width:50,marginLeft:16,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',}} 
-                    onPress={this._goBack.bind(this)}>
-                       <Image  source={require('./assets/Forum/back.png')}/>
-                    </TouchableOpacity>
-                    <Text style={{color:'#3e3e3e',fontSize:18,fontWeight:'bold',marginLeft:width*0.25,}}>论坛</Text>
-                </View>
                 <ListView
                     dataSource={this.state.dataSource}  
                     renderRow={this._renderRow.bind(this)}
@@ -198,59 +235,6 @@ export default class Forum extends Component{
                 />
             </View>
         )
-    }
-}
-class OrderCell extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: this.props.data,
         }
     }
-    componentWillMount() {
-        this._handleData();
-    }
-
-    componentWillReceiveProps(nextProps) {
-        
-    }
-    _changeData(data) {
-        this.setState({
-            data: data
-        })
-    }
-
-    deteleOrder(){
-        this.props.detele();
-    }
-
-     _clickGoodsDetail(){
-        if (this.props.navigator) {
-            this.props.navigator.push({
-                component: Goods_Order_Detail,
-                params: {
-                    data:this.state.data,
-                    _receive: this._changeData.bind(this),
-                }
-            })
-        }
-    }
-    render() {
-        return(
-            <TouchableOpacity onPress={this._clickGoodsDetail.bind(this)}
-                style={{width: width, backgroundColor: 'white', marginTop: 10, alignItems: 'center'}}>
-                <View>
-                  <Image></Image>
-                </View>
-            </TouchableOpacity>
-        )
-    }
 }
-OrderCell.propTypes = {
-    data: React.PropTypes.object.isRequired,
-    navigator: React.PropTypes.any.isRequired
-}
-SlideView.propTypes = {
-    _change: React.PropTypes.func.isRequired
-}
-

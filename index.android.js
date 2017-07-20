@@ -11,12 +11,12 @@ import {
   Text,
   View
 } from 'react-native';
-import rootApp from './app_android/root.js'
+import RootApp from './app_android/root'
 export default class ProgramGirl extends Component {
   render() {
     return (
-      <rootApp/>
-    );
+        <RootApp/>
+        );
   }
 }
 
