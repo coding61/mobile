@@ -1,0 +1,151 @@
+#body{
+	background-color: #eee;
+    position: relative;
+}
+#page_center{
+    /*position: fixed;*/
+    /*top: 0;*/
+    position: relative;
+    top:-44px;
+    width: 100%;
+    /*left: -100%;*/
+}
+/*#page_center{
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+#page_right{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    left: 100%;
+}*/
+.top-part-day{
+	width: 100%;
+	height: 100px;
+    margin-top: 44px;
+	background-color: #fff;
+}
+.week{
+	width: 14%;
+	float: left;
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+	margin-top:30px;
+	color: #aaa;
+}
+.weekday{
+	height: 20px;
+	line-height: 15px;
+	color: #000;
+}
+.spot{
+	display: none;
+    width: 14%;
+    height: 10px;
+    margin-top: -3%;
+    /*background-color: #FD6700;*/
+    position: absolute;
+    border-radius: 24px;
+    font-size: 50px;
+    line-height: 10px;
+    text-align: center;
+}
+.change-week{
+    width: 100%;
+    height: 40px;
+}
+.next{
+    width: 15%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 7.5px;
+    color: #fff;
+    background: #FD6700;
+    float:right;
+    margin-right: 5%;
+}
+.last{
+    width: 15%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 7.5px;
+    color: #fff;
+    background: #FD6700;
+    float:left;
+    margin-left: 5%;
+}
+.list{
+    width: 90%;
+    margin-left: 5%;
+    /*margin-top: 25px;*/
+}
+.list li{
+	 height: 150px; 
+	 margin-top: 1px;
+     background-color: #fff;
+}
+.time-part{
+    width: 25%;
+    height: 150px;
+    float: left
+}
+.start{
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    margin-top: 45%;
+    color:#fff;
+}
+.end{
+    width: 75%;
+    height: 30px;
+    line-height: 30px;
+    /*text-align: center;*/
+    margin-top: 5%;
+    margin-left:25%;
+    color:#fff;
+}
+.detail-part{
+    width: 75%;
+    height: 150px;
+    float: right;
+    background-color: #fff !important;
+}
+.name{
+    width: 80%;
+    height: 40px;
+    line-height: 40px;
+    /* text-align: center; */
+    margin-left: 10%;
+    margin-top: 13%;
+    font-size: 18px;
+    font-weight: bold;
+}
+.phone{
+    width: 80%;
+    height: 40px;
+    line-height: 40px;
+    /* text-align: center; */
+    margin-left: 10%;
+    color: #aaa;
+}
+.no-orders {
+	display: none; 
+    background-image: url(../images/logo.png);
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:100%;
+	padding-top: 180px;
+	font-size: 18px;
+	color: #b9b9b9;
+	width: 200px;
+	margin: 20px auto 150px;
+	text-align: center;
+}
+

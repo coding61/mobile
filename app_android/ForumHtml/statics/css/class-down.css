@@ -1,0 +1,73 @@
+body{
+    background: #e3e3e3;
+}
+.yishang-wapper{
+    width: 100%;
+    position: relative;
+}
+.kecheng-list{
+    background: #ffffff;
+    width: 100%;
+    padding: 10px 3%;
+    height: 140px;
+    margin-bottom: 10px;
+}
+.kecheng-list img{
+    float: left;
+    width: 40%;
+    height: 90%;
+    margin-right:3%; 
+}
+.class-detail{
+    word-wrap: break-word; 
+    word-break: normal; 
+    display: block;
+    width: 160px;
+    height: 36px;
+    overflow-y: scroll;  
+    color: #929191;
+    font-size: 14px;
+}
+.conten-right{
+    height: 140px;
+    width: 57%;
+    float: left;
+}
+.class-name{
+    font-size: 16px;
+    font-weight: bold;
+}
+.class-keshi{
+    padding-top: 5px;
+    color: #929191;
+}
+.load{
+    width: 160px;
+    height: 16px;
+    border: 1px solid red;
+}
+.loading{
+    width: 50%;
+    height: 14px;
+    background: url('../images/loadaa.png') repeat-x left center;
+}
+.no-img{
+    width: 90%;
+    height: 200px;
+    text-align: center;
+    position: absolute;
+    top: 30%;  
+    left: 5%;
+}
+.no-img img{
+    width: 60%;
+    height: 80%;
+
+}
+.no-img p{
+    color: #BDBDBD;
+    font-size: 18px;
+    position: absolute;
+    top: 70%;
+    left: 10%;
+} 

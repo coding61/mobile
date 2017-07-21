@@ -1,0 +1,125 @@
+/* 试听 */
+.body{
+	margin-bottom: 0 !important;
+}
+
+.banner-title p:last-child{
+	padding-left: 40px;
+}
+.teacher{
+	width: 100%;
+	float: left;
+	padding:20px 5%;
+	
+}
+.teacher img{
+	float: left;
+	width: 20%;
+	height: 20%;
+
+}
+.list{
+	width: 80%;
+	height: 70px;
+	padding-left: 5%;
+	float: left;
+}
+.name{
+	font-size: 16px;
+	margin-right: 10px;
+}
+.miaoshu{
+	font-size: 14px;
+}
+.stu{
+	width: 100%;
+	padding:10px 5%;
+}
+.stu_1{
+	float: left;
+	width: 100%;
+	margin-bottom: 10px;
+}
+.stu_1 img{
+	float: left;
+	width: 20%;
+	height: 20%;
+	margin:7px;
+}
+/* 小标题复用 */
+.standard-title{
+	float: left;
+	width: 100%;
+	height: 30px;
+	font-size: 16px;
+	line-height: 30px;
+	margin-bottom: 10px;
+}
+.standard-title span:first-child{
+	display: inline-block;
+	float: left;
+	height: 30px;
+	width: 2%;
+	background-color: #1E90FF;
+}
+.standard-title span:last-child{
+	display: inline-block;
+	float: left;
+	padding-left: 5%;
+	height: 30px;
+	width: 98%;
+	background-color: #f0efef;
+}
+.standard-content{
+	width: 100%;
+	padding:20px 5%;
+	margin-bottom: 30px;
+}
+.standard-back{
+	width: 50%;
+	text-align: center;
+	float: left;
+}
+.standard-back img{
+	width: 72px;
+	height: 72px;
+}
+.standard-c{
+	padding-top: 15px;
+	line-height: 20px;
+	font-size: 18px ! important;
+	
+}
+.standard-back p:last-child{
+	font-size: 14px ! important;
+	color: #797979;
+}
+/* 考核培训 */
+#train{
+	float: left;
+	margin-top: 20px;
+}
+.standard-list{
+	width: 96%;
+	padding: 56px 7%;
+}
+table{
+    border-collapse: collapse;
+}
+tr td:first-child{
+	text-align: center;
+	width: 25%;
+}
+tr td:last-child{
+	text-align: left;
+	font-size: 14px;
+	width: 75%;
+	padding: 10px;
+}
+td>img{
+	width: 20px;
+	height: 14px;
+}
+td{
+    border: 1px solid #d4d3d3;
+}

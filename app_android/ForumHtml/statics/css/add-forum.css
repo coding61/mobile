@@ -1,0 +1,43 @@
+body,div,nav,ul,li,dl,dd,dt,p,span,img{
+	margin:0;padding:0;
+}
+header{
+	background:#333;
+	height:45px;
+	position:fixed;
+	top:0px;
+	width:100%;
+	text-align: center;
+    line-height: 45px;
+    color: #fff;
+    font-size: 16px;
+}
+header .return{
+	float:left;
+	margin-left:17px;
+	margin-top:13px;
+}
+header .return img{
+	height:20px;
+}
+header .submit{
+	height:16px;
+	float:right;
+	margin-right:22px;
+	color:#fff;
+	font-size:16px;
+}
+.forum-title{
+	margin-top: 45px;
+    width: 100%;
+    height:50px;
+    line-height:50px;
+    border: none;
+    border-bottom: 1px solid #e6e6e6;
+    text-indent: 20px;
+} 
+.fly-editor{
+	border:none;
+	text-indent:10px;
+	padding-top: 20px;
+}

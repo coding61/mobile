@@ -19,6 +19,7 @@ import {
 import ForumDetail from './ForumDetail';
 
 var {height, width} = Dimensions.get('window');
+import WebHtml from './WebHtml';
 export default class ForumList extends Component{
     constructor(props) {
         super(props);
@@ -34,7 +35,6 @@ export default class ForumList extends Component{
             types:new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
             isRefreshing: false,
         };
-        console.log(this.state.url)
     }
     static navigationOptions = {
         title: '论坛列表',
@@ -101,16 +101,20 @@ export default class ForumList extends Component{
                 }); 
         })
     }
+    detail(){
+        this.props.navigation.navigate('WebHtml',)
+    }
     renderKind(rowdata){
         return(
-            <TouchableOpacity style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,alignItems:'center',padding:10,justifyContent:'center',borderRadius:10,}}>
+            <TouchableOpacity onPress={this.detail.bind(this)}
+            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,alignItems:'center',padding:10,justifyContent:'center',borderRadius:10,}}>
                 <Text>{rowdata.name}</Text>
             </TouchableOpacity>
             )
-    }_renderNext() {
-
+    }
+    _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
-                this.setState({
+            this.setState({
                 isLoading: true
             },()=> {
                 fetch(this.state.nextPage, {
@@ -167,7 +171,7 @@ export default class ForumList extends Component{
     _renderFooter(){
         return <View style={{alignItems:'center', justifyContent: 'center', width: width, height: 30}}><Text style={{fontSize: 12, color: '#cccccc'}}>{this.state.loadText}</Text></View>
     }
-        _onRefresh() {
+    _onRefresh() {
         this.setState({
             isRefreshing: true
         },()=> {
@@ -201,9 +205,8 @@ export default class ForumList extends Component{
             time = rowData.create_time.slice(0, 10).replace('T', ' ');
         }
         return (
-            <TouchableOpacity 
-            onPress={this.forumdetail.bind(this,rowData)}
-            style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
+            <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
+                style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
                 <View style={{flexDirection:'row',}}>
                     <View style={{alignItems:'center'}}>
                         <Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>
@@ -277,7 +280,7 @@ export default class ForumList extends Component{
                     </View>
               </View>
             )
-    }
+        }
     }
 }
 
