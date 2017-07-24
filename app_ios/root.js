@@ -16,6 +16,7 @@ import {
 import {StackNavigator} from 'react-navigation';
 
 import MessagePage from './pages/MessagePage.js';
+import MessagePage1 from './pages/MessagePage1.js';
 
 class rootApp extends Component{
     constructor(props) {
@@ -25,6 +26,10 @@ class rootApp extends Component{
     render(){
         return (
             <View style={styles.container}>
+                <Button 
+                    title="消息1"
+                    onPress={()=>{this.props.navigation.navigate('MessagePage1')}}
+                />
                 <Button 
                     title="消息"
                     onPress={()=>{this.props.navigation.navigate('MessagePage')}}
@@ -41,6 +46,7 @@ const styles = StyleSheet.create({
 const app = StackNavigator({
     Root:{screen: rootApp},
     MessagePage:{screen: MessagePage},
+    MessagePage1:{screen:MessagePage1},
 });
 
 export default app;
