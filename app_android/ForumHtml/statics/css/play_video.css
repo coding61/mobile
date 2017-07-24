@@ -1,0 +1,18 @@
+.body{
+	margin-bottom: 0 !important;
+}
+.content{
+	width: 100%;
+	margin-top: 10px;
+	height: 260px;
+	border-bottom: 1px solid #cccccc;
+}
+.class_name{
+	width: 92%;
+	height: 200px;
+	margin:10px 3%;
+}
+.video_time{
+	float: right;
+	color: #FFA500;
+}

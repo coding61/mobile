@@ -1,0 +1,60 @@
+.body{
+	margin-bottom: 0 !important;
+}
+.total{
+	
+	background: #f60;
+	color: #fff;
+	line-height: 110px;
+	text-align: center;
+	font-size: 20px;
+	font-weight: bold;
+	margin-top: 0;
+}
+.money{
+	margin: 0 5px;
+}
+.play{
+	padding:10px 5%;
+	background: #fff;
+	font-size: 14px;
+	line-height: 16px;
+	color:#545454;
+}
+.cord{
+	padding-left: 5%;
+	background:#EDEDED;
+	font-size: 16px;
+	line-height: 40px;
+	color:#545454;
+}
+.jiang_cont{
+	background: #fff;
+}
+.content{
+	width: 88%;
+    height: 61px;
+    padding: 5px 7% 5px 5%;
+	border-bottom: 1px solid #ccc;
+
+}
+.content:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+
+}
+.class_name{
+	display: inline-block;
+  	vertical-align: middle;
+  	color: #8B8989;
+}
+p{
+	margin:0 !important;
+}
+.class_total{
+	float: right;
+	padding-top: 7%;
+	color:#545454;
+}

@@ -1,0 +1,536 @@
+ul li{
+	list-style: none;
+}
+
+.body-banner{
+	width: 100%;
+	min-height: 170px;
+	background-color: #ffffff;
+	margin-bottom: 10px;	
+}
+.banner_img{
+	width: 100%;
+	height: auto;
+}
+#slides img{
+	display: none;
+	cursor: pointer;
+}
+.freeCourse{
+	width: 100%;
+	height: 40px;
+	text-align: center;
+	margin-bottom: 15px;
+}
+#getFreeCourse{
+	display: inline-block;
+	line-height:40px;
+	width: 100%;
+	font-size: 18px; 
+	color: #ffffff;
+	letter-spacing: 2px;
+}
+.free-course-modal{
+	display: none;
+}
+.get-free-ok{
+	display: none;
+}
+.shuru{
+	width: 90%;
+	height: 42px;
+	margin-left: 5%;
+	border: 1px solid #FF7F00;
+}
+.free-tel-number{
+	float: left;
+	width: 65%;
+	height: 40px;
+	line-height: 40px;	
+}
+.shuru input{
+	border: none;
+	/*text-indent: 20px;*/
+	font-size: 16px;
+	letter-spacing: 2;
+	text-align: center;
+	font-size: 14px;
+}
+.shuru button{
+	float: right;
+	width: 34%;
+	height: 40px;
+	color: #ffffff;
+	text-align: center;
+	border: none;
+	background: #FF7F00;
+	font-size: 16px;
+	letter-spacing: 2;
+}
+.get-free-ok{
+	width: 90%;
+	background-color: #fff;
+	overflow: hidden;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	position: fixed;
+	top: 38%;
+	left: -webkit-calc(50%);
+	left: -moz-calc(50%);
+	left: calc(5%);
+	z-index: 1002;
+	display: none;
+	height: 200px;
+}
+
+.icon-remove:before , .icon-1x:before{
+    content: "\f00d";
+    display: inline-block;
+    speak: none;
+}
+
+.free-top, .get-free-ok .free-top{
+	height: 34px;
+	background-color: #f60;
+	margin-bottom: 30px;
+}
+
+.free-top i, .get-free-ok .free-top i{
+	display: block;
+	color: #fff;
+	float: right;
+	line-height: 34px;
+	margin-right: 5px;
+}
+
+.get-free-ok p{
+	font-size: 16px;
+	padding-left: 47px;
+	margin-bottom: 40px;
+	letter-spacing: 1px;
+	line-height: 1.6;
+}
+
+.duigou-success{
+	display: block;
+	margin: 20px auto;
+} 
+.free-mask{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 1001;
+	background-color: rgba(0,0,0,0.4);
+	display: none;
+}
+.logo{
+	width: 100%;
+	height: 320px;
+	margin: 0 auto;
+
+}
+.logo h4{
+	padding:10px 0 10px 1%;
+	font-size: 18px;
+	font-weight: normal;
+	color: #5e5e5e;
+}
+#vi{
+	float: right;
+	line-height: 20px;
+	height: 20px;
+	font-size: 14px;
+	padding-top: 8px;
+}
+.logo-video{
+	width: 92%;
+	margin: 0px 4%;
+	height: 240px;
+	border: 1px solid #fe8917;
+	border-radius: 5px;
+	padding: 5px; 
+
+}
+.logo-video video{
+	width: 100%;
+	height: 230px;
+}
+
+ul{
+	-webkit-margin-before: 0 ! important;
+    -webkit-margin-after: 0 ! important;
+    -webkit-padding-start: 0 ! important;
+}
+
+/* 老师-理念-团队 */
+#teacher-team{
+	width: 100%;
+	height: 80px;
+	padding: 10px 2%;
+	
+}
+.teacher-ul{
+	display: inline-block;
+	margin: 0 auto;
+	width: 100%;
+	height: 85px;
+	-webkit-padding-start:0 ! important;
+}
+.teacher-ul li{
+	float: left;
+	width: 33%;
+	text-align: center;
+	margin-bottom: 10px;
+}
+.teacher-ul li img{
+	width: 36px;
+	height: 36px;
+}
+.teacher-ul li span{
+	display: block;
+	font-size: 16px;
+	font-weight: bold;
+	
+}
+.teacher-li, .concept-li{
+	display: block;
+	
+}
+
+#youhui{	
+	width: 100%;
+	height: 60px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+.youhui_cont{
+	width: 100%;
+	height: 60px; 
+	background: url('../images/index/ping.png') no-repeat;
+	background-size:100% 100%;
+	text-align: center;
+}
+.youhui_cont p{
+	font-size: 16px;
+	line-height: 60px;
+	color: #ffffff;
+	display: inline-block;
+}
+.youhui_cont button{
+	height: 32px;
+	color:#FF7F00;
+	text-align: center;
+	border: none;
+	background:#ffffff;
+	font-size: 14px;
+	padding: 0 5px;
+    margin-left: 5px;
+    display: inline-block;
+}
+/* 学员评价 */
+#da-shen-say{
+	width: 100%;
+	height: 380px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+}
+#da-shen-say h4{	
+	padding:15px 0 10px 5%;
+	font-size: 18px;
+	font-weight: normal;
+	color: #5e5e5e;
+}
+.comment_list{
+	width: 90%;
+	margin: 5px 5%;
+	height: 308px;
+	overflow: scroll;
+}
+.comment_scroll{
+	height: 312px;
+	padding: 2px 0 2px 2px;
+	overflow-x: scroll;
+	overflow-y: hidden;
+} 
+.students_list1{
+	float: left;
+	margin-right: 30px;
+	width: 195px;
+	height: 294px;
+	background: #f9f9f9;
+	overflow: hidden;
+	box-shadow: 3px 3px 10px 2px #D3D3D3;
+}
+
+.student_head{
+	width: 195px;
+	height: 50px;
+}
+.student_head img{
+	float: left;
+	width: 50px;
+	height: 50px;
+	margin-right: 10px;
+	
+}
+.student_name{
+	float: left;
+	padding-top: 20px;
+}
+.student_cont{
+	clear: both;
+}
+h4{
+	-webkit-margin-before: 0  ! important;
+    -webkit-margin-after: 0  ! important;
+}
+.videos{
+	width: 98%;
+	margin:0 1%;
+}
+
+/* 课程 */
+#good-courses{
+	width: 100%;
+	padding-top: 10px;
+	border-bottom: 1px solid #cccccc;
+}
+.tabtle_list{
+	height: 50px;
+	margin-bottom:20px;
+}
+.tabtle_list span{
+	border-top:#ebebeb 1px solid;
+	float: left;
+	box-sizing: border-box;
+	display:inline-block;
+	width:33.3%;
+	overflow: hidden;
+}
+.tab{
+	display:block;
+	line-height:46px;
+	text-align: center;
+}
+
+.tab:hover{
+	color: red;
+}
+.clitrue{
+	border-bottom:4px solid #f5521f;
+	color:rgb(245, 82, 31); 
+}
+.courses-title{
+	color: #5e5e5e;
+	height: 30px;
+}
+.courses-title h4{
+	padding: 20px 0 20px 5%;
+	font-size: 18px;
+	font-weight: normal;
+	float: left;
+}
+.more{
+	line-height: 25px;
+	height: 25px;
+	float: right;
+	padding-bottom: 5px;
+	font-size: 14px;
+} 
+
+.courses-list{
+	width: 90%;
+	height: auto;
+	margin: 10px 5%;
+	overflow: hidden;
+}
+.courses-list_video, .courses-list_product, .courses-list_other{
+	width: 90%;
+	height: auto;
+	margin: 10px 5%;
+	overflow: hidden;
+}
+.courses-list2{
+	padding-top: 10px;
+	width: 100%;
+	height: 130px;	
+	border-bottom: 1px solid #cccccc;
+}
+.courses-list2:last-child{
+	padding-top: 10px;
+	width: 100%;
+	height: 130px;
+	border: none;
+}
+.courses-list2 img{
+	float: left;
+	width: 130px;
+	height: 100px;
+}
+.course-cont{
+	width: 54%;
+	height: 53%;
+	float: left;
+}
+p{
+	-webkit-margin-before: 0  ! important;
+    -webkit-margin-after: 0 ! important;
+}
+
+.course-cont p:first-child{
+	float: left;
+	width: 100%;
+	height: 100%;
+	padding-left: 10px;
+	font-size: 14px;
+	color: #3a3a3a;
+	white-space: normal ! important;	 
+}
+.maimai{
+	float: left;
+	width: 100%;
+	height: 10%;
+	padding-top: 10%;
+	padding-left: 3%;
+}
+.course-cont p span:first-child{
+	display: inline-block;
+	float: left;
+	font-size: 14px;
+	color: #ff6600;
+}
+.goumai{
+	cursor: pointer;
+	display: inline-block;
+	width: 70px;
+	height: 22px;
+	line-height: 22px;
+	background: #ff6600;
+	border-radius: 30px;
+	font-size: 12px;
+	text-align: center;
+	color: #ffffff;
+	float: right;
+}
+.no_goumai{
+	display: inline-block;
+	width: 70px;
+	height: 22px;
+	line-height: 22px;
+	background: #C4C4C4;
+	border-radius: 30px;
+	font-size: 12px;
+	text-align: center;
+	color: #f1f1f1;
+	float: right;
+}
+.maimai a:active{
+	text-decoration:none;
+	color: #ffffff;
+}
+.maimai a:link{
+	text-decoration:none;
+	color: #ffffff;
+}
+.maimai a:visited{
+	text-decoration:none;
+	color: #ffffff;
+}
+.maimai a:hover{
+	text-decoration:none;
+	color: #ffffff;
+}
+.maimai .goumai-zu, .maimai .zulin-zu{
+    width: auto;
+    padding: 0 12px;
+}
+.maimai .zulin-zu{
+	background-color: #12b7f7;
+}
+.course-cont .maimai .meikucun{
+	background-color: #C4C4C4;
+}
+
+/*媒体文章*/
+#index_media{
+	width: 100%;
+	height: 500px;
+	margin: 0 auto;
+	border-bottom: 1px solid #C9C9C9;
+}
+
+#index_media h2{
+	font-size: 18px;
+	color: #606060;
+	height: 40px;
+	width: 95%;
+	padding-left: 5%;
+	line-height: 40px;
+}
+.media_list{
+	width: 92%;
+	height:410px;
+	margin: 5px 4%;
+	overflow: scroll;
+}
+.media_scroll{
+	height: 415px;
+	padding: 2px 0 2px 2px;
+	overflow-x: scroll;
+	overflow-y: hidden;
+
+}
+.media_scroll a{
+	width: 220px;
+	height: 390px;
+	padding:10px 10px 0 10px;
+	float: left;
+	margin-right: 30px;
+	display: inline-block;
+	text-decoration: none;
+	box-shadow: 3px 3px 10px 2px #D3D3D3;
+}
+.media_logo{
+	height: 43px;
+	width: 120px;
+	margin-bottom: 15px;
+}
+
+.media_p{
+	font-size: 16px;
+	color: #3a3a3a;
+	font-weight: bold;
+	padding-bottom: 10px;
+	
+}
+.media_span{
+	color: #666666;
+	font-size: 14px;
+	line-height: 24px;
+}
+#customers{
+  	width:90%;
+  	margin: 10px 5%;
+  	border-collapse:collapse;
+  	background: #f9f9f9;
+}
+#customers td, #customers th{
+	text-align:center;
+	font-size:16px;
+	border:1px solid #c9c9c9;
+	padding:10px 7px 5px 13px;
+}
+
+#customers th{
+	font-weight: normal;
+	font-size:16px;
+	
+}
+.off{
+	color: #959595;
+}
+.online{
+	color: #fe8917;
+}

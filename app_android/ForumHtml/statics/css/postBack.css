@@ -1,0 +1,45 @@
+body{
+	background-color: #f3f3f3;
+}
+.body{
+	width: 100%;
+	text-align: center;
+}
+.body img{
+	width: 30%;
+	margin: 30px 35%;
+}
+.body input{
+	border: 1px solid #ccc;
+	background-color: #fff;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+.body .tips{
+	font-size: 14px;
+	color: #666;
+}
+.submit-view{
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+.submit-view p{
+	color: #f60;
+	font-size: 14px;
+}
+.submit-view p .big-word{
+	font-size: 16px;
+}
+.submit-view button{
+	background-color: #f60;
+	color: #fff;
+	border: none;
+	width: -webkit-calc(100% - 60px);
+	width: -moz-calc(100% - 60px);
+	width: calc(100% - 60px);
+	padding: 10px 0;
+	margin: 0 0 15px 0;
+	border-radius: 5px;
+}

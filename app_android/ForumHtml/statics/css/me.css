@@ -1,0 +1,180 @@
+body{
+	background-color: #efefef !important;
+}
+a{
+	color: #999999 !important;
+}
+.me-user-info{
+	background: #333;
+	color: #fff;
+}
+
+.me-user-info .me-share {
+    padding: 10px 10px 0 10px;
+    display: block;
+}
+
+.me-user-info .me-share:after{
+	content: '\20';
+	display: block;
+	clear: both;
+}
+
+.me-user-info .me-share img{
+	width: 24px;
+	float: right;
+}
+
+.me-user-info .me-info{
+	padding: 10px;
+    vertical-align: middle;
+}
+
+.me-user-info .me-thumb{
+	/*float: left;*/
+	display: inline-block;
+}
+
+.me-user-info .me-thumb img{
+    border-radius: 50%;
+    width: 100px;
+    margin: 10px;
+}
+
+.me-info .me-schedule{
+	/*float: left;*/
+    margin-left: 10px;
+    height: 100%;
+    line-height: 100%;
+    display: inline-block;
+}
+
+.me-user-info .me-info .me-schedule .me-user-name{
+	font-size: 20px;
+}
+
+.me-class-reserve{
+    background: #f60;
+    color: #fff !important;
+    line-height: 44px;
+    text-align: center;
+    font-size: 15px;
+    display: block;
+}
+
+.me-class-reserve img{
+    width: 22px;
+    vertical-align: middle;
+    margin-right: 5px;
+    margin-bottom: 2px;
+}
+.navbar-nav{
+    margin:5px -50px !important;
+}
+.me-schedule div{
+	display: inline-block;
+}
+
+.me-schedule div .sy-title{
+	font-size: 13px;
+    color: #7c7c7c;
+    margin: 5px 0;
+}
+
+.me-schedule div .sy-content{
+	color: #bbb;
+	font-size: 14px;
+	text-align: center;
+}
+
+.me-schedule .border-line{
+	width: 30px;
+
+}
+
+.me-schedule .border-line p{
+	text-align: center;
+}
+
+.me-schedule .border-line p i{
+	width: 1px;
+	border-right: 1px solid #efefef;
+}
+
+ul.me-list{
+	margin: 0;
+    padding: 0;
+}
+
+ul.me-list li{
+	background-color: #fff;
+	padding-left: 20px;
+}
+
+ul.me-list .list-3{
+	margin: 10px 0;
+}
+
+ul.me-list .list-style{
+	line-height: 44px;
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 18px;
+    padding-left: 30px;
+    display: block;
+    font-size: 14px;
+}
+
+ul.me-list .list-my-schedule{
+    background-image: url(../../statics/images/schedule.png);
+}
+
+ul.me-list .list-gone{
+    background-image: url(../../statics/images/complete.png);
+}
+ul.me-list .list-video{
+	background-image: url(../../statics/images/video1.png);
+}
+ul.me-list .list-jiang{
+	
+	background-image: url(../../statics/images/jxj.png);
+}
+ul.me-list .list-my-order{
+	border-bottom:1px solid #efefef;
+    background-image: url(../../statics/images/my-order.png);
+}
+ul.me-list .list-rent{
+	background-image: url(../../statics/images/me-others.png);
+}
+
+ul.me-list .list-settings{
+    background-image: url(../../statics/images/settings.png);
+}
+.list-my-address{
+	background-image: url(../../statics/images/address.png);
+}
+ul.me-list li:first-child a{
+	border-bottom: 1px solid #efefef;
+}
+.list-gone{
+	border-bottom: 1px solid #efefef;
+}
+.list-video{
+	border-bottom: 1px solid #efefef;
+}
+.list-rent{
+	border-bottom: 1px solid #efefef;
+}
+.tui{
+	margin-top:10px;
+}
+.chu{
+	font-size: 14px;
+	padding-left:30px;
+	display: block;
+	height: 44px;
+	line-height: 44px;
+	background:url(../images/asf.png) no-repeat;
+	background-size: 18px;
+	background-position: left center;
+}

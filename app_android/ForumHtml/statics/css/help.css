@@ -1,0 +1,21 @@
+.body{
+	background: #F7F7F7;
+}
+.list{
+	width: 100%;
+	display: inline-block;
+}
+.title{
+	padding-left: 10px;
+	padding-right: 10px;
+	line-height: 30px;
+}
+.content{
+	display: inline-block;
+	background: #ffffff;
+	padding: 10px 25px 0 25px;
+	width: 100%;
+}
+.content p{
+	line-height: 24px;
+}

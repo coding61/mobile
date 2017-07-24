@@ -1,0 +1,147 @@
+body .body{
+    margin-bottom: 0;
+}
+.body .top-banner img{
+	width: 100%;
+	vertical-align: top;
+}
+.body .add-question{
+	margin-top: -1px;
+	padding: 15px;
+    padding-bottom: 30px;
+	background-image: -webkit-linear-gradient(top, #ff8c67, #ff8667);
+	background-image: -moz-linear-gradient(top, #ff8c67, #ff8667);
+	background-image: -o-linear-gradient(top, #ff8c67, #ff8667);
+}
+.body .add-question .question-content{
+    background-color: #fff;
+    border-radius: 5px;
+    font-size: 15px;
+    padding: 10px;
+    margin-top: 15px;
+}
+.body .add-question .question-content > div{
+	margin-top: 25px;
+}
+.body .add-question .question-content > div:first-child{
+	margin-top: 0;
+}
+.body .add-question .question-content > div input{
+	border: none;
+    font-size: 15px;
+    width: -webkit-calc(100% - 80px);
+    width: -moz-calc(100% - 80px);
+    width: -o-calc(100% - 80px);
+    width: calc(100% - 80px);
+}
+.body .add-question .question-content .refresh{
+    width: 20px;
+    float: right;
+}
+.body .hb-number{
+	margin-top: -1px;
+	padding: 0 15px;
+	padding-bottom: 30px;
+	background-image: -webkit-linear-gradient(top, #ff8667, #ff7764);
+	background-image: -moz-linear-gradient(top, #ff8667, #ff7764);
+	background-image: -o-linear-gradient(top, #ff8667, #ff7764);
+}
+.body .hb-btn{
+	margin-top: -1px;
+	padding: 0 15px;
+	background-image: -webkit-linear-gradient(top, #ff7764, #ff5a58);
+	background-image: -moz-linear-gradient(top, #ff7764, #ff5a58);
+	background-image: -o-linear-gradient(top, #ff7764, #ff5a58);
+}
+.body .hb-btn button{
+	width: 100%;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+    background-color: #fdef58;
+    color: #ff5a58;
+    font-size: 18px;
+    letter-spacing: 1px;
+    box-shadow: 0px 3px 5px #d1594b;
+}
+header{
+    color: #fdef58;
+    text-shadow: 0px 3px 5px #c86014;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+header.rule-title{
+    font-size: 16px;
+    text-align: center;
+    color: #fff;
+    text-shadow: none;
+}
+.body .hb-btn .active-rule{
+    margin-top: 30px;
+    padding-bottom: 60px;
+}
+.body .hb-btn .active-rule > div{
+	padding-top: 20px;
+    border-top: 1px dotted #fdef58;
+    margin-top: 20px;
+}
+.body .hb-btn .active-rule p{
+    color: #fdef58;
+    text-shadow: 0px 3px 5px #c86014;
+    font-size: 14px;
+    margin: 2px 0;
+    line-height: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+.hb-number > div{
+    background-color: #fff;
+    padding: 0 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+    font-size: 15px;
+}
+.hb-number > div:after{
+    content: '\20';
+    display: block;
+    clear: both;
+}
+.hb-number > div > span{
+    display: inline-block;
+    line-height: 40px;
+    height: 40px;
+}
+.hb-number > div > input{
+    float: right;
+    text-align: right;
+    border: none;
+    padding: 0 5px 0 0;
+    line-height: 40px;
+    height: 40px;
+    font-size: 15px;
+    display: inline-block;
+}
+.hb-number > div .danwei{
+	float: right;
+    /*line-height: 17px;*/
+}
+.waiting{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.4);
+    text-align: center;
+}
+.waiting img{
+    width: 80px;
+    margin-top: 180px;
+}
+.waiting > p{
+    text-align: center;
+    font-size: 14px;
+    color: #fdef58;
+    margin: 0;
+}
