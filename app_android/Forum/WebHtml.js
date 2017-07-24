@@ -29,7 +29,8 @@ var DISABLED_WASH = 'rgba(255,255,255,0.25)';
 
 var TEXT_INPUT_REF = 'urlInput';
 var WEBVIEW_REF = 'webview';
-var DEFAULT_URL = 'https://www.cxy61.com/girl/cxyteam_forum/detail.html?id=3433&pk=4';
+var DEFAULT_URL = 'https://www.bcjiaoyu.com/mobile/html/index.html';
+/*var DEFAULT_URL='https://192.168.1.103:8080/CXYTeam/cxyteam-html5/cxyteam_forum_moblie/detail.html';*/
 
 export default class WebHtml extends Component{
     constructor(props) {
@@ -49,13 +50,6 @@ export default class WebHtml extends Component{
 
     inputText = '';
 
-    handleTextInputChange(event) {
-        var url = event.nativeEvent.text;
-        if (!/^[a-zA-Z-_]+:/.test(url)) {
-            url = 'http://' + url;
-        }
-        this.inputText = url;
-    }
 
     componentDidMount() {
        
@@ -71,11 +65,13 @@ export default class WebHtml extends Component{
     }
     onMessage(e){
         if(this.refs.WEBVIEW_REF){
-            this.refs.WEBVIEW_REF.postMessage()
+            this.refs.WEBVIEW_REF.postMessage('msg(webweb);');
         }else{
             Alert.alert('error')
         }
     }
+
+
     render() {
         this.inputText = this.state.url;
         return(
@@ -87,7 +83,7 @@ export default class WebHtml extends Component{
                   source={{uri: this.state.url}}
                   javaScriptEnabled={true}
                   domStorageEnabled={true}
-                  onMessage ={this.onMessage.bind(this)}
+                  onMessage ={this.onMessage}
                   decelerationRate="normal"
                   injectedJavaScript="document.addEventListener('message',function(e){eval(e.data);});"
                   onNavigationStateChange={this.onNavigationStateChange}
