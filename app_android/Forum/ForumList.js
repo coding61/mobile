@@ -47,9 +47,9 @@ export default class ForumList extends Component{
 
     componentDidMount(){
        this._loadAlldata()
-       this._loadtype()
+      
     }
-    _loadtype(){
+ /*   _loadtype(){
         fetch('https://www.cxy61.com/program_girl/forum/types/', {
             method: 'GET',
         })
@@ -70,7 +70,7 @@ export default class ForumList extends Component{
             });    
         })
         .catch((error) => {console.log(error)});
-    }
+    }*/
     _loadAlldata() {
         this.setState({
             isLoading: true
@@ -101,17 +101,34 @@ export default class ForumList extends Component{
                 }); 
         })
     }
-    detail(){
-        this.props.navigation.navigate('WebHtml',)
+    detail(index){
+        if(index==0){
+            this.setState({
+                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&myposts=false&page=1'
+            },()=>{
+                this._loadAlldata()
+            })
+        }else if(index==1){
+            this.setState({
+                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=true&page=1'
+            },()=>{
+                this._loadAlldata()
+            })
+        }else if(index==2){
+            this.setState({
+                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=&page=1&status=solved'
+            },()=>{
+                this._loadAlldata()
+            })
+        }else if(index==3){
+            this.setState({
+                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=&page=1&status=unsolved'
+            },()=>{
+                this._loadAlldata()
+            })
+        }  
     }
-    renderKind(rowdata){
-        return(
-            <TouchableOpacity onPress={this.detail.bind(this)}
-            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,alignItems:'center',padding:10,justifyContent:'center',borderRadius:10,}}>
-                <Text>{rowdata.name}</Text>
-            </TouchableOpacity>
-            )
-    }
+
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
             this.setState({
@@ -179,7 +196,7 @@ export default class ForumList extends Component{
         })
     }
     forumdetail(data){
-        this.props.navigation.navigate('ForumDetail', { data: data })
+        this.props.navigation.navigate('WebHtml', { data: data })
     }
     renderForumRow(rowData){
         var timeArray = rowData.create_time.split('.')[0].split('T');
@@ -233,7 +250,7 @@ export default class ForumList extends Component{
         }else{
             return (
                 <View style={styles.container}>
-                    <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#DEDEDE',paddingLeft:20,paddingBottom:20,}}>
+                    <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#DEDEDE',paddingLeft:20,paddingBottom:10,}}>
                         <Image style={{width:50,height:50,marginTop:10,}} source={{uri:this.state.data.icon}}/>
                         <View style={{paddingLeft:20,paddingRight:10,paddingTop:10,}}>
                             <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{this.state.data.name}</Text>
@@ -241,17 +258,23 @@ export default class ForumList extends Component{
                         </View>
                     </View>
                     <ScrollView>
-                        <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center',borderBottomWidth:2,borderColor:'#cccccc',}}>
-                            <ListView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                style={{width:width,paddingLeft:10,paddingTop:15,paddingBottom:15,}}
-                                dataSource={this.state.types}
-                                enableEmptySections={true}
-                                renderRow={this.renderKind.bind(this)}
-                                contentContainerStyle={{justifyContent: 'center',alignItems:'center',}}
-                                >
-                            </ListView>
+                        <View style={{flexDirection:'row',borderBottomWidth:1,borderBottomColor:'#cccccc',alignItems:'center',paddingLeft:20,paddingLeft:10,paddingTop:15,paddingBottom:15,}}>
+                            <TouchableOpacity onPress={this.detail.bind(this,0)}
+                            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>全部</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.detail.bind(this,1)}
+                            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>精贴</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.detail.bind(this,2)}
+                            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>已解决</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.detail.bind(this,3)}
+                            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>未解决</Text>
+                            </TouchableOpacity>
                         </View>
                         
                         <ListView

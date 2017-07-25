@@ -20,9 +20,6 @@ import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
 import WebViewBridge from 'react-native-webview-bridge';
 var {height, width} = Dimensions.get('window');
 var token='28d2479302bf86369bcec62939099f40b96a62ee';
-const injectScript=function(){
-                    console.log(2222)
-                  };
 var HEADER = '#3b5998';
 var BGWASH = 'rgba(255,255,255,0.8)';
 var DISABLED_WASH = 'rgba(255,255,255,0.25)';
@@ -42,7 +39,9 @@ export default class WebHtml extends Component{
             forwardButtonEnabled: false,
             loading: true,
             scalesPageToFit: true,
+            data:this.props.navigation.state.params.data,
         }
+        console.log(this.props.navigation.state.params.data)
     }
     static navigationOptions = {
         title: '论坛详情',
@@ -50,27 +49,20 @@ export default class WebHtml extends Component{
 
     inputText = '';
 
-
     componentDidMount() {
        
     }
 
     onShouldStartLoadWithRequest(event){
-    // Implement any custom loading logic here, don't forget to return!
         return true;
     }
 
     onNavigationStateChange(navState) {
     
     }
-    onMessage(e){
-        if(this.refs.WEBVIEW_REF){
-            this.refs.WEBVIEW_REF.postMessage('msg(webweb);');
-        }else{
-            Alert.alert('error')
-        }
+    handleMessage (evt: any)  {
+        const message = evt.nativeEvent.data
     }
-
 
     render() {
         this.inputText = this.state.url;
@@ -83,12 +75,14 @@ export default class WebHtml extends Component{
                   source={{uri: this.state.url}}
                   javaScriptEnabled={true}
                   domStorageEnabled={true}
-                  onMessage ={this.onMessage}
+                  onMessage ={this.handleMessage}
                   decelerationRate="normal"
-                  injectedJavaScript="document.addEventListener('message',function(e){eval(e.data);});"
+                  //网页加载之前调用的方法
+                  injectedJavaScript="document.addEventListener('message',function(e){eval(e.data);});"//设置在网页加载之前注入的一段JS代码。
                   onNavigationStateChange={this.onNavigationStateChange}
                   onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
                   startInLoadingState={true}
+                  mixedContentMode="always"
                   scalesPageToFit={this.state.scalesPageToFit}
                 />
             </View>
