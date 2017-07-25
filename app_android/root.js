@@ -18,6 +18,7 @@ import Forum from './Forum/Forum.js';
 import ForumList from './Forum/ForumList.js';
 import ForumDetail from './Forum/ForumDetail.js';
 import WebHtml from './Forum/WebHtml.js';
+import AddForum from './Forum/AddForum.js';
 import {StackNavigator} from 'react-navigation';
 class RootApp extends Component{
     constructor(props) {
@@ -49,6 +50,7 @@ const app = StackNavigator({
     ForumList:{screen:ForumList},
     ForumDetail:{screen:ForumDetail},
     WebHtml:{screen:WebHtml},
+    AddForum:{screen:AddForum},
 });
 
 export default app;
