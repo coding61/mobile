@@ -38,7 +38,10 @@ export default class AddForum extends Component{
             forwardButtonEnabled: false,
             loading: true,
             scalesPageToFit: true,
-            data:1,
+            data:{
+                token:'7bf60add8fa1a96c75ea214afc0e6173478cece1',
+                pk:this.props.navigation.state.params.data.pk,
+            },
         }
     }
     static navigationOptions = {
@@ -56,7 +59,7 @@ export default class AddForum extends Component{
     }
 
     sendMessage() {
-        this.webview.postMessage(this.state.data);
+        this.webview.postMessage(JSON.stringify(this.state.data));
     }
     handleMessage (evt: any)  {
         const message = evt.nativeEvent.data

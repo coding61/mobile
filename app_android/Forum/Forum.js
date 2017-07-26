@@ -17,7 +17,6 @@ import {
 }from 'react-native';
 import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
 import ForumList from './ForumList';
-
 var {height, width} = Dimensions.get('window');
 var token='28d2479302bf86369bcec62939099f40b96a62ee';
 export default class Forum extends Component{
@@ -34,6 +33,7 @@ export default class Forum extends Component{
             isRefreshing: false,
             token:null,
         }
+        
     }
     static navigationOptions = {
       title: '论坛',
