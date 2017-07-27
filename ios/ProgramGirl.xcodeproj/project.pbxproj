@@ -467,17 +467,11 @@
 				3DAD3EAB1DF850E9000B6D8A /* libcxxreact.a */,
 				3DAD3EAD1DF850E9000B6D8A /* libjschelpers.a */,
 				3DAD3EAF1DF850E9000B6D8A /* libjschelpers.a */,
-<<<<<<< HEAD
-				456804E71F1DF23300FCF7B1 /* libthird-party.a */,
-				456804E91F1DF23300FCF7B1 /* libthird-party.a */,
-				456804EB1F1DF23300FCF7B1 /* libdouble-conversion.a */,
-				456804ED1F1DF23300FCF7B1 /* libdouble-conversion.a */,
-=======
+
 				743321F41F1DF45300DC9189 /* libthird-party.a */,
 				743321F61F1DF45300DC9189 /* libthird-party.a */,
 				743321F81F1DF45300DC9189 /* libdouble-conversion.a */,
 				743321FA1F1DF45300DC9189 /* libdouble-conversion.a */,
->>>>>>> 72f2ad867686b18e48123f60ccb5ad1be7498469
 			);
 			name = Products;
 			sourceTree = "<group>";

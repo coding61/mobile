@@ -4,7 +4,11 @@ import {
     Dimensions,
     AsyncStorage,
     Alert,
+    Platform,
+    Linking
 } from 'react-native'
+const isIOS = Platform.OS == "ios"
+const HeaderH = isIOS ? 64 : 44
 
 const deviceH = Dimensions.get('window').height
 const deviceW = Dimensions.get('window').width
@@ -65,6 +69,7 @@ function NumberToChinese(num){
 let Utils = {
 	width:Dimensions.get('window').width,
 	height:Dimensions.get('window').height,
+    headerHeight:HeaderH,
 	navBarBgColor:'rgb(253,202,24)',
 	tabBarBgColor:'rgb(255,255,255)',
 	bodyBgColor:'rgb(245,245,245)',
@@ -91,6 +96,9 @@ let Utils = {
     },
     removeValue:(key)=>{
         AsyncStorage.removeItem(key);
+    },
+    clearAllValue:()=>{
+        AsyncStorage.clear();
     },
     showMessage:(message)=>{
         Alert.alert('提示', message);
@@ -122,7 +130,72 @@ let Utils = {
         height = str.split('x')[1];  //36
 
         return imgWidth * height / width
+    },
+    isLogin:(callback)=>{
+        Utils.getValue('token', (err, result)=>{
+            if (err) {
+                console.log(err);
+                callback(null);
+            }else{
+                if (!result.match(/[0-9a-z]{40}/g)) {
+                    callback(null)
+                }else{
+                    callback(result)
+                }
+            }
+        })
+    },
+    getStorageData:(callback)=>{
+        Utils.getValue("chatData", (err, result)=>{
+            // 1.获取缓存数据
+            var chatData = JSON.parse(result);
+            // console.log(chatData);
+            Utils.getValue("data", (err, result)=>{
+                // 2.获取节数据
+                var data = JSON.parse(result);
+                // console.log(data);
+                Utils.getValue("index", (err, result)=>{
+                    // 3.获取节下标
+                    var index = JSON.parse(result);
+                    // console.log(index);
+                    Utils.getValue("optionData", (err, result)=>{
+                        // 4.获取选项数据
+                        var optionData = JSON.parse(result);
+                        // console.log(optionData);
+                        Utils.getValue("optionIndex", (err, result)=>{
+                            // 5.获取选项下标
+                            var optionIndex = JSON.parse(result);
+                            // console.log(optionIndex);
+                            // callback(chatData, data, index, optionData, optionIndex);
+                            Utils.getValue("currentCourse", (err, result)=>{
+                                var currentCourse = JSON.parse(result);
+                                Utils.getValue("currentCourseIndex", (err, result)=>{
+                                    var currentCourseIndex = JSON.parse(result);
+                                    callback(chatData, data, index, optionData, optionIndex, currentCourse, currentCourseIndex);
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    },
+    openURL:(url)=>{
+        Linking.canOpenURL(url)
+        .then((supported)=>{
+            if (!supported) {
+                console.log('无法打开: ' + url);
+                Utils.showMessage('无法打开: ' + url);
+            }else{
+                return Linking.openURL(url);
+            }
+        })
+        .catch((err)=>{
+            console.log('一个错误被发现' + err);
+            Utils.showMessage('一个错误被发现' + err);
+        })
     }
+    
 
 }
 export default Utils;
