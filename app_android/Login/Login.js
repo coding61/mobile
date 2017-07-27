@@ -15,12 +15,20 @@ import {
 
 const {width, height} = Dimensions.get('window');
 export default class Login extends Component {
+  static navigationOptions = {
+    headerStyle: {
+      backgroundColor: 'rgb(251, 110, 169)'
+    },
+  }
   constructor() {
     super();
     this.state = {
       inviteCode: '',
       passWord: ''
     }
+  }
+  componentWillUnmount() {
+    this.props.navigation.state.params.callback();
   }
   _cancelkeyboard() {
     Keyboard.dismiss();
@@ -48,7 +56,7 @@ export default class Login extends Component {
             .then(responseJson => {
               if (responseJson !== 'fail') {
                 AsyncStorage.setItem('token', responseJson.token, () => {
-                  
+                  _this.props.navigation.goBack();
                 })
               }
             })

@@ -28,6 +28,10 @@ import ForumList from './Forum/ForumList.js';
 import WebHtml from './Forum/WebHtml.js';
 import AddForum from './Forum/AddForum.js';
 import {StackNavigator} from 'react-navigation';
+
+import Login from './Login/Login.js';
+import CourseList from './CourseList/CourseList.js';
+
 class RootApp extends Component{
     constructor(props) {
       super(props);
@@ -76,6 +80,9 @@ const app = StackNavigator({
     CodeEditWebView:{screen:CodeEditWebView},
     CodeEditWebView1:{screen:CodeEditWebView1},
     ThirdSiteWebView:{screen:ThirdSiteWebView},
+
+    Login:{screen: Login},
+    CourseList:{screen: CourseList}
 });
 
 export default app;

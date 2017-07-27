@@ -17,7 +17,7 @@ import CourseList from './app_android/CourseList/CourseList.js';
 export default class ProgramGirl extends Component {
   render() {
     return (
-        <Login/>
+        <RootApp/>
         );
   }
 }

@@ -141,6 +141,7 @@ class MessagePage extends Component{
     componentWillMount() {
         var chatArray = [];
         Utils.setValue("chatData", JSON.stringify(chatArray));
+        Utils.setValue("token", null);
 
         this._fetchUserInfo();
         this._load();
@@ -742,11 +743,11 @@ class MessagePage extends Component{
             // TODO:判断是否登录，如果未登录，跳到登录页，否则，跳到选择课程页
             // 选择课程
             
-            /*
+            
             Utils.isLogin((token)=>{
                 if (token) {
                     // 已登录
-                    this.props.navigation.navigate('ChooseCourse', {user:'', callback:(course, courseIndex)=>{
+                    this.props.navigation.navigate('CourseList', {user:'', callback:(course, courseIndex)=>{
                         this.setState({
                             chooseCourse:course,
                             chooseCourseIndex:courseIndex
@@ -764,12 +765,17 @@ class MessagePage extends Component{
                     }})
                 }else{
                     // 未登录
-                    this.props.navigation.navigate('Login', {user:''})
+                    this.props.navigation.navigate('Login', {user:'', callback:()=>{
+                         this.setState({
+                            actionTag:actionChooseCourseTag,
+                            showAction:true
+                        })
+                    }})
                 }
                 
             })
-            */
             
+            /*
             this.setState({
                 chooseCourse:2,
                 chooseCourseIndex:0
@@ -784,6 +790,7 @@ class MessagePage extends Component{
 
                 }
             })
+            */
 
             // this.setState({
             //     course:1,

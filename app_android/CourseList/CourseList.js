@@ -131,7 +131,12 @@ class CourseList extends Component {
 
   }
   navigatePress = () => {
-      alert('点击headerRight');
+    if (this.state.selectData !== null) {
+      this.props.navigation.state.params.callback(this.state.selectData.pk, this.state.selectData.learn_extent.last_lesson);
+      this.props.navigation.goBack();
+    } else {
+      alert('还未选择课程');
+    }
   }
   changeAll(selected, pk) {
     var data = this.state.data;
@@ -140,6 +145,9 @@ class CourseList extends Component {
         for (let j=0;j<data[i].dataArr.length;j++) {
           if (data[i].dataArr[j].pk === pk) {
             data[i].dataArr[j].isSelected = false;
+            this.setState({
+              selectData: null
+            })
             break;
           }
         }
@@ -149,6 +157,9 @@ class CourseList extends Component {
         for (let j=0;j<data[i].dataArr.length;j++) {
           if (data[i].dataArr[j].pk === pk) {
             data[i].dataArr[j].isSelected = true;
+            this.setState({
+              selectData: data[i].dataArr[j]
+            })
           } else {
             data[i].dataArr[j].isSelected = false;
           }
@@ -161,41 +172,46 @@ class CourseList extends Component {
 
   }
   _loadData() {
-    fetch('https://app.bcjiaoyu.com/program_girl/course/courses/', {headers: {Authorization: 'Token ' + token, 'content-type': 'application/json'}})
-      .then(response => {
-        if (response.status === 200) {
-          return response.json()
-        } else {
-          return 'fail';
-        }
-      })
-      .then(responseJson => {
-        if (responseJson !== 'fail') {
-          var dataSource = new Array();
-          responseJson.forEach((item, index) => {
-            var isHas = false;
-            for (let i=0;i<dataSource.length;i++) {
-              if (item.profession === dataSource[i].profession) {
-                item.isSelected = false;
-                dataSource[i].dataArr.push(item);
-                isHas = true;
-                break;
+    var _this = this;
+    AsyncStorage.getItem("token", function(errs, results) {
+      fetch('https://app.bcjiaoyu.com/program_girl/course/courses/', {headers: {Authorization: 'Token ' + results, 'content-type': 'application/json'}})
+        .then(response => {
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            return 'fail';
+          }
+        })
+        .then(responseJson => {
+          if (responseJson !== 'fail') {
+            var dataSource = new Array();
+            responseJson.forEach((item, index) => {
+              var isHas = false;
+              for (let i=0;i<dataSource.length;i++) {
+                if (item.profession === dataSource[i].profession) {
+                  item.isSelected = false;
+                  dataSource[i].dataArr.push(item);
+                  isHas = true;
+                  break;
+                }
               }
-            }
-            if (!isHas) {
-              var dataArray = new Array();
-              dataArray.push(item);
-              item.isSelected = false;
-              dataSource.push({"profession": item.profession, "dataArr": dataArray})
-            } 
-          })
-          this.setState({
-            data: dataSource
-          })
-        } else {
-          
-        }
-      })
+              if (!isHas) {
+                var dataArray = new Array();
+                dataArray.push(item);
+                item.isSelected = false;
+                dataSource.push({"profession": item.profession, "dataArr": dataArray})
+              } 
+            })
+            _this.setState({
+              data: dataSource
+            })
+            console.log(responseJson);
+          } else {
+            
+          }
+        })
+    })
+
   }
   componentDidMount() {
     this.props.navigation.setParams({
@@ -246,7 +262,4 @@ const CourseStyle = StyleSheet.create({
     top: 0
   }
 })
-const course = StackNavigator({  
-    course: {screen: CourseList}    
-}); 
-export default course;
+export default CourseList;
