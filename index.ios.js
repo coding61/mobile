@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 
 import rootApp from './app_ios/root.js'
-
 export default class ProgramGirl extends Component {
   render() {
     return (

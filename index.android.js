@@ -12,6 +12,8 @@ import {
   View
 } from 'react-native';
 import RootApp from './app_android/root'
+import Login from './app_android/Login/Login.js';
+import CourseList from './app_android/CourseList/CourseList.js';
 export default class ProgramGirl extends Component {
   render() {
     return (
