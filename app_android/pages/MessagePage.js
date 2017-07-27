@@ -519,206 +519,227 @@ class MessagePage extends Component{
     }
     // ---------------------网络请求
     _fetchCourseInfoWithPk(course){
-        console.log(1);
-        var type = "get",
-            url = Http.courseInfo(course),
-            token = "229f00b183b4390f4d429049941c7259cdba663e",
-            data = null;
-        BCFetchRequest.fetchData(type, url, token, data, (response) => {
-            console.log(response);
-            try{
-                var array = JSON.parse(response.json);
+        Utils.isLogin((token)=>{
+            if (token) {
+                console.log(1);
+                var type = "get",
+                    url = Http.courseInfo(course),
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    console.log(response);
+                    try{
+                        var array = JSON.parse(response.json);
+                    }
+                    catch(err){
+                        Utils.showMessage("数据格式有问题");
+                        return
+                    }
+                    
+                    this.setState({
+                        courseIndex:response.learn_extent.last_lesson    //记录进度
+                    }, ()=>{
+                        // 存储课程进度下标
+                        Utils.setValue("currentCourseIndex", JSON.stringify(this.state.courseIndex));
+                        var courseIndex = this.state.courseIndex;  //进度
+                        this.setState({
+                            totalData:array
+                        }, ()=>{
+                            this._loadMessages(courseIndex+1)
+                        })
+                    })
+                }, (err) => {
+                    console.log(2);
+                    // console.log(err);
+                    Utils.showMessage('网络请求失败');
+                });
             }
-            catch(err){
-                Utils.showMessage("数据格式有问题");
-                return
-            }
-            
-            this.setState({
-                courseIndex:response.learn_extent.last_lesson    //记录进度
-            }, ()=>{
-                // 存储课程进度下标
-                Utils.setValue("currentCourseIndex", JSON.stringify(this.state.courseIndex));
-                var courseIndex = this.state.courseIndex;  //进度
-                this.setState({
-                    totalData:array
-                }, ()=>{
-                    this._loadMessages(courseIndex+1)
-                })
-            })
-            
-
-        }, (err) => {
-            console.log(2);
-            // console.log(err);
-            Utils.showMessage('网络请求失败');
-        });
+        })
     }
     _fetchCourseInfoForInit(course, way){
-        var type = "get",
-            url = Http.courseInfo(course),
-            token = "229f00b183b4390f4d429049941c7259cdba663e",
-            data = null;
-        BCFetchRequest.fetchData(type, url, token, data, (response) => {
-            console.log(response);
-            this.setState({
-                loading:true
-            })
-            // 方法1，捕获异常
-            try {
-               var array = JSON.parse(response.json);
-            }
-            catch(err){
-                Utils.showMessage("数据格式有问题!");
-                return;
-            }
-            
-            var courseIndex = this.state.courseIndex;
-            // 更改数据源
-            if(array[courseIndex+1]){
-                this.setState({
-                    data:array[courseIndex+1],
-                    optionData:[],
-                    optionIndex:0
-                }, ()=>{
-                    this._storeDataIndex();
-
-                    if (way == "way1") {
-                        // 方法1
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "get",
+                    url = Http.courseInfo(course),
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    console.log(response);
+                    this.setState({
+                        loading:true
+                    })
+                    // 方法1，捕获异常
+                    try {
+                       var array = JSON.parse(response.json);
+                    }
+                    catch(err){
+                        Utils.showMessage("数据格式有问题!");
+                        return;
+                    }
+                    
+                    var courseIndex = this.state.courseIndex;
+                    // 更改数据源
+                    if(array[courseIndex+1]){
                         this.setState({
-                            dataSource:this.state.chatData
+                            data:array[courseIndex+1],
+                            optionData:[],
+                            optionIndex:0
                         }, ()=>{
-                            if (this.state.currentItem.action) {
+                            this._storeDataIndex();
+
+                            if (way == "way1") {
+                                // 方法1
                                 this.setState({
-                                    showAction:true
+                                    dataSource:this.state.chatData
+                                }, ()=>{
+                                    if (this.state.currentItem.action) {
+                                        this.setState({
+                                            showAction:true
+                                        })
+                                    }else{
+                                        this._loadStorageLastItem();
+                                    }
                                 })
                             }else{
-                                this._loadStorageLastItem();
+                                // 方法2
+                                // 加载存储数据中所有的数据（最新10个数据）
+                                var array = [];
+                                for (var i = this.state.chatData.length - 1; i > this.state.chatData.length-1-this.state.count; i--) {
+                                    if(this.state.chatData[i]){
+                                        array.push(this.state.chatData[i]);
+                                    }
+                                }
+                                array = array.reverse();
+                                this._loadStorageMessage(array, 0, array.length);
                             }
                         })
-                    }else{
-                        // 方法2
-                        // 加载存储数据中所有的数据（最新10个数据）
-                        var array = [];
-                        for (var i = this.state.chatData.length - 1; i > this.state.chatData.length-1-this.state.count; i--) {
-                            if(this.state.chatData[i]){
-                                array.push(this.state.chatData[i]);
-                            }
-                        }
-                        array = array.reverse();
-                        this._loadStorageMessage(array, 0, array.length);
                     }
-                })
-            }
 
-        }, (err) => {
-            // console.log(err);
-            Utils.showMessage('网络请求失败');
-        });
+                }, (err) => {
+                    // console.log(err);
+                    Utils.showMessage('网络请求失败');
+                });
+            }
+        })
     }
     _fetchUserInfo(){
-        const {setParams} = this.props.navigation;
-        var type = "get",
-            url = Http.whoami,
-            token = "229f00b183b4390f4d429049941c7259cdba663e",
-            data = null;
-        BCFetchRequest.fetchData(type, url, token, data, (response) => {
-            // console.log(response);
-            // Util.updateInfo(json);
-            this.setState({
-                userInfo:response
-            })
-            setParams({userinfo:response})
+        Utils.isLogin((token)=>{
+            if (token) {
+                const {setParams} = this.props.navigation;
+                var type = "get",
+                    url = Http.whoami,
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    // console.log(response);
+                    // Util.updateInfo(json);
+                    this.setState({
+                        userInfo:response
+                    })
+                    setParams({userinfo:response})
 
-        }, (err) => {
-            // console.log(err);
-            Utils.showMessage('网络请求失败');
-        });
+                }, (err) => {
+                    // console.log(err);
+                    Utils.showMessage('网络请求失败');
+                });
+            }
+        })
+        
     }
     _fetchAddReward(course, courseIndex, chapter, growNum, zuanNum){
-        if (!chapter || chapter == "") {
-            //直接要下一条数据
-            this._loadClickBtnAction();
-            return
-        }
-        var type = "put",
-            url = Http.addReward,
-            token = "229f00b183b4390f4d429049941c7259cdba663e",
-            data = {
-                course:course,
-                lesson:courseIndex,
-                chapter:chapter,
-                experience_amount:growNum,
-                diamond_amount:zuanNum
-            };
-        BCFetchRequest.fetchData(type, url, token, data, (response) => {
-            console.log(response);
-            // this._loadGrowAni();
-            // this._loadZuanAni(GrowAniTime);
-            // this._loadGradeAni(GrowAniTime+ZuanAniTime);
-            
-            
-            var growAni = false,
-                zuanAni = false;
-            if (json.experience > this.state.userinfo.experience) {
-                // 打开经验动画
-                growAni = true
-                this._loadGrowAni();
-            }
-            if (json.diamond > this.state.userinfo.diamond) {
-                // 打开钻石动画
-                zuanAni = true
-                if (growAni){
-                    this._loadZuanAni(GrowAniTime);
-                }else{
-                    this._loadZuanAni(0);
-                } 
-            }
-            if(this.state.userinfo.grade.current_name != json.grade.current_name){
-                // 打开升级动画
-                if (growAni) {
-                    if (zuanAni) {
-                        this._loadGradeAni(GrowAniTime+ZuanAniTime);
-                    }else{
-                        this._loadGradeAni(GrowAniTime);
+        Utils.isLogin((token)=>{
+            if (token) {
+                if (!chapter || chapter == "") {
+                    //直接要下一条数据
+                    this._loadClickBtnAction();
+                    return
+                }
+                var type = "put",
+                    url = Http.addReward,
+                    token = token,
+                    data = {
+                        course:course,
+                        lesson:courseIndex,
+                        chapter:chapter,
+                        experience_amount:growNum,
+                        diamond_amount:zuanNum
+                    };
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    console.log(response);
+                    // this._loadGrowAni();
+                    // this._loadZuanAni(GrowAniTime);
+                    // this._loadGradeAni(GrowAniTime+ZuanAniTime);
+                    
+                    
+                    var growAni = false,
+                        zuanAni = false;
+                    if (json.experience > this.state.userinfo.experience) {
+                        // 打开经验动画
+                        growAni = true
+                        this._loadGrowAni();
                     }
-                }else{
-                    if (zuanAni) {
-                        this._loadGradeAni(ZuanAniTime);
-                    }else{
-                        this._loadGradeAni(0);
+                    if (json.diamond > this.state.userinfo.diamond) {
+                        // 打开钻石动画
+                        zuanAni = true
+                        if (growAni){
+                            this._loadZuanAni(GrowAniTime);
+                        }else{
+                            this._loadZuanAni(0);
+                        } 
                     }
-                } 
-            }
+                    if(this.state.userinfo.grade.current_name != json.grade.current_name){
+                        // 打开升级动画
+                        if (growAni) {
+                            if (zuanAni) {
+                                this._loadGradeAni(GrowAniTime+ZuanAniTime);
+                            }else{
+                                this._loadGradeAni(GrowAniTime);
+                            }
+                        }else{
+                            if (zuanAni) {
+                                this._loadGradeAni(ZuanAniTime);
+                            }else{
+                                this._loadGradeAni(0);
+                            }
+                        } 
+                    }
 
-            // 更新个人信息
-            this.setState({
-                userInfo:response
-            })
-            setParams({userinfo:response})
-    
-            this._loadClickBtnAction();
-        }, (err) => {
-            // console.log(err);
-            // Utils.showMessage('网络请求失败');
-            this._loadClickBtnAction();
-        });
+                    // 更新个人信息
+                    this.setState({
+                        userInfo:response
+                    })
+                    setParams({userinfo:response})
+            
+                    this._loadClickBtnAction();
+                }, (err) => {
+                    // console.log(err);
+                    // Utils.showMessage('网络请求失败');
+                    this._loadClickBtnAction();
+                });
+            }
+        })
+        
     }
     _fetchUpdateExtent(course, courseIndex){
-        var type = "post",
-            url = Http.updateExtent,
-            token = "229f00b183b4390f4d429049941c7259cdba663e",
-            data = {
-                course:course,
-                lesson:courseIndex
-            };
-        BCFetchRequest.fetchData(type, url, token, data, (response) => {
-            console.log(response);
-            this._loadClickBtnAction();
-        }, (err) => {
-            // console.log(err);
-            // Utils.showMessage('网络请求失败');
-        });
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "post",
+                    url = Http.updateExtent,
+                    token = token,
+                    data = {
+                        course:course,
+                        lesson:courseIndex
+                    };
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    console.log(response);
+                    this._loadClickBtnAction();
+                }, (err) => {
+                    // console.log(err);
+                    // Utils.showMessage('网络请求失败');
+                });
+            } 
+        })
+        
     }
     
     // ---------------------点击事件
@@ -743,37 +764,7 @@ class MessagePage extends Component{
             // TODO:判断是否登录，如果未登录，跳到登录页，否则，跳到选择课程页
             // 选择课程
             
-            
-            Utils.isLogin((token)=>{
-                if (token) {
-                    // 已登录
-                    this.props.navigation.navigate('CourseList', {user:'', callback:(course, courseIndex)=>{
-                        this.setState({
-                            chooseCourse:course,
-                            chooseCourseIndex:courseIndex
-                        }, ()=>{
-                            if (this.state.chooseCourse != this.state.course) {
-                                // 按钮由选择课程-->开始学习
-                                this.setState({
-                                    actionTag:actionBeginStudyTag,
-                                    showAction:true
-                                })
-                            }else{
-    
-                            }
-                        })
-                    }})
-                }else{
-                    // 未登录
-                    this.props.navigation.navigate('Login', {user:'', callback:()=>{
-                         this.setState({
-                            actionTag:actionChooseCourseTag,
-                            showAction:true
-                        })
-                    }})
-                }
-                
-            })
+            this._loadChooseCourse();
             
             /*
             this.setState({
@@ -836,6 +827,37 @@ class MessagePage extends Component{
                 this._loadClickBtnAction();
             }
         }
+    }
+    _loadChooseCourse(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                // 已登录
+                this.props.navigation.navigate('CourseList', {user:'', callback:(course, courseIndex)=>{
+                    this.setState({
+                        chooseCourse:course,
+                        chooseCourseIndex:courseIndex
+                    }, ()=>{
+                        if (this.state.chooseCourse != this.state.course) {
+                            // 按钮由选择课程-->开始学习
+                            this.setState({
+                                actionTag:actionBeginStudyTag,
+                                showAction:true
+                            })
+                        }else{
+
+                        }
+                    })
+                }})
+            }else{
+                // 未登录
+                this.props.navigation.navigate('Login', {user:'', callback:()=>{
+                     this.setState({
+                        actionTag:actionChooseCourseTag,
+                        showAction:true
+                    })
+                }})
+            }
+        })
     }
     // action 按钮
     _loadClickBtnAction(){
@@ -1021,7 +1043,7 @@ class MessagePage extends Component{
         return (
             
             <View style={styles.helpActionsView}>
-                <TouchableOpacity style={{borderBottomColor:'#d2d2d2', borderBottomWidth:1}} onPress={()=>{}}>
+                <TouchableOpacity style={{borderBottomColor:'#d2d2d2', borderBottomWidth:1}} onPress={this._loadChooseCourse.bind(this)}>
                     <Text style={styles.helpActionText}>{"选择课程"}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={()=>{}}>
