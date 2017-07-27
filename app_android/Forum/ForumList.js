@@ -16,10 +16,10 @@ import {
   InteractionManager,
 
 }from 'react-native';
-import ForumDetail from './ForumDetail';
 
 var {height, width} = Dimensions.get('window');
 import WebHtml from './WebHtml';
+import AddForum from './AddForum';
 export default class ForumList extends Component{
     constructor(props) {
         super(props);
@@ -35,6 +35,7 @@ export default class ForumList extends Component{
             types:new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
             isRefreshing: false,
         };
+        console.log(this.props.navigation.state.params.data)
     }
     static navigationOptions = {
         title: '论坛列表',
@@ -47,9 +48,9 @@ export default class ForumList extends Component{
 
     componentDidMount(){
        this._loadAlldata()
-       this._loadtype()
+      
     }
-    _loadtype(){
+ /*   _loadtype(){
         fetch('https://www.cxy61.com/program_girl/forum/types/', {
             method: 'GET',
         })
@@ -70,7 +71,7 @@ export default class ForumList extends Component{
             });    
         })
         .catch((error) => {console.log(error)});
-    }
+    }*/
     _loadAlldata() {
         this.setState({
             isLoading: true
@@ -101,17 +102,34 @@ export default class ForumList extends Component{
                 }); 
         })
     }
-    detail(){
-        this.props.navigation.navigate('WebHtml',)
+    detail(index){
+        if(index==0){
+            this.setState({
+                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&myposts=false&page=1'
+            },()=>{
+                this._loadAlldata()
+            })
+        }else if(index==1){
+            this.setState({
+                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=true&page=1'
+            },()=>{
+                this._loadAlldata()
+            })
+        }else if(index==2){
+            this.setState({
+                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=&page=1&status=solved'
+            },()=>{
+                this._loadAlldata()
+            })
+        }else if(index==3){
+            this.setState({
+                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=&page=1&status=unsolved'
+            },()=>{
+                this._loadAlldata()
+            })
+        }  
     }
-    renderKind(rowdata){
-        return(
-            <TouchableOpacity onPress={this.detail.bind(this)}
-            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,alignItems:'center',padding:10,justifyContent:'center',borderRadius:10,}}>
-                <Text>{rowdata.name}</Text>
-            </TouchableOpacity>
-            )
-    }
+
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
             this.setState({
@@ -179,7 +197,7 @@ export default class ForumList extends Component{
         })
     }
     forumdetail(data){
-        this.props.navigation.navigate('ForumDetail', { data: data })
+        this.props.navigation.navigate('WebHtml', { data: data })
     }
     renderForumRow(rowData){
         var timeArray = rowData.create_time.split('.')[0].split('T');
@@ -227,31 +245,48 @@ export default class ForumList extends Component{
             </TouchableOpacity>
         )
     }
+    AddForum(){
+        this.props.navigation.navigate('AddForum',{data:this.state.data})
+    }
     render(){
         if(!this.state.dataSource){
             return(<Text>SSSSS</Text>)
         }else{
             return (
                 <View style={styles.container}>
-                    <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#DEDEDE',paddingLeft:20,paddingBottom:20,}}>
-                        <Image style={{width:50,height:50,marginTop:10,}} source={{uri:this.state.data.icon}}/>
-                        <View style={{paddingLeft:20,paddingRight:10,paddingTop:10,}}>
-                            <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{this.state.data.name}</Text>
-                            <Text style={{}}>帖数:{this.state.data.total}</Text>
-                        </View>
-                    </View>
                     <ScrollView>
-                        <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center',borderBottomWidth:2,borderColor:'#cccccc',}}>
-                            <ListView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                style={{width:width,paddingLeft:10,paddingTop:15,paddingBottom:15,}}
-                                dataSource={this.state.types}
-                                enableEmptySections={true}
-                                renderRow={this.renderKind.bind(this)}
-                                contentContainerStyle={{justifyContent: 'center',alignItems:'center',}}
-                                >
-                            </ListView>
+                        <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#DEDEDE',paddingLeft:20,paddingBottom:10,}}>
+                            <Image style={{width:50,height:50,marginTop:10,}} source={{uri:this.state.data.icon}}/>
+                            <View style={{paddingLeft:20,paddingRight:10,paddingTop:10,}}>
+                                <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{this.state.data.name}</Text>
+                                <Text style={{}}>帖数:{this.state.data.total}</Text>
+                            </View>
+                        </View>
+                        <View style={{flexDirection:'row',flexWrap:'wrap',borderBottomWidth:1,borderBottomColor:'#cccccc',alignItems:'center',paddingLeft:20,paddingLeft:10,}}>
+                            <TouchableOpacity onPress={this.detail.bind(this,0)}
+                            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>全部</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.detail.bind(this,1)}
+                            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>精贴</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.detail.bind(this,2)}
+                            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>已解决</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.detail.bind(this,3)}
+                            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>未解决</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.detail.bind(this,4)}
+                            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>我的帖子</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.detail.bind(this,5)}
+                            style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>我的收藏</Text>
+                            </TouchableOpacity>
                         </View>
                         
                         <ListView
@@ -275,9 +310,9 @@ export default class ForumList extends Component{
                         >
                         </ListView>
                     </ScrollView>
-                    <View style={{position:'absolute',bottom: 50,alignItems:'center',justifyContent:'center',right: 30,height:50,backgroundColor:'#0db7f5',width: 50,borderRadius: 50,}}>
+                    <TouchableOpacity onPress={this.AddForum.bind(this)} style={{position:'absolute',bottom: 50,alignItems:'center',justifyContent:'center',right: 30,height:50,backgroundColor:'#0db7f5',width: 50,borderRadius: 50,}}>
                         <Text style={{color:'#ffffff',fontSize:40}}>+</Text>
-                    </View>
+                    </TouchableOpacity>
               </View>
             )
         }

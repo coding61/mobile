@@ -13,34 +13,31 @@ import {
   AsyncStorage,
   Alert,
   RefreshControl,
+  TouchableHighlight,
   InteractionManager,
   WebView
 }from 'react-native';
 import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
 import WebViewBridge from 'react-native-webview-bridge';
 var {height, width} = Dimensions.get('window');
-var token='28d2479302bf86369bcec62939099f40b96a62ee';
-const injectScript=function(){
-                    console.log(2222)
-                  };
-var HEADER = '#3b5998';
-var BGWASH = 'rgba(255,255,255,0.8)';
-var DISABLED_WASH = 'rgba(255,255,255,0.25)';
 
-var TEXT_INPUT_REF = 'urlInput';
-var WEBVIEW_REF = 'webview';
-var DEFAULT_URL = 'https://www.cxy61.com/girl/cxyteam_forum/detail.html?id=3433&pk=4';
+//var default_url = 'https://www.bcjiaoyu.com/mobile/html/index.html';
+var default_url='http://192.168.1.103:8080/CXYTeam/cxyteam-html5/cxyteam_forum_moblie/detail.html';
+//var default_url='https://app.bcjiaoyu.com/girl/cxyteam_forum_moblie/detail.html';
 
 export default class WebHtml extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            url: DEFAULT_URL,
-            status: 'No Page Loaded',
-            backButtonEnabled: false,
-            forwardButtonEnabled: false,
-            loading: true,
+            //token:'7bf60add8fa1a96c75ea214afc0e6173478cece1',
+            url: default_url,
             scalesPageToFit: true,
+            /*data:this.props.navigation.state.params.data,*/
+            webViewData:'',
+            data:{
+                token:'28d2479302bf86369bcec62939099f40b96a62ee',
+                ZoomId:this.props.navigation.state.params.data.pk,
+            },  
         }
     }
     static navigationOptions = {
@@ -48,52 +45,42 @@ export default class WebHtml extends Component{
     }
 
     inputText = '';
-
-    handleTextInputChange(event) {
-        var url = event.nativeEvent.text;
-        if (!/^[a-zA-Z-_]+:/.test(url)) {
-            url = 'http://' + url;
-        }
-        this.inputText = url;
-    }
-
+ 
     componentDidMount() {
        
     }
 
     onShouldStartLoadWithRequest(event){
-    // Implement any custom loading logic here, don't forget to return!
         return true;
     }
 
-    onNavigationStateChange(navState) {
-    
+    sendMessage() {
+        this.webview.postMessage(JSON.stringify(this.state.data));
     }
-    onMessage(e){
-        if(this.refs.WEBVIEW_REF){
-            this.refs.WEBVIEW_REF.postMessage()
-        }else{
-            Alert.alert('error')
-        }
+    handleMessage(e) {
+        this.setState({ webViewData: e.nativeEvent.data });
     }
     render() {
         this.inputText = this.state.url;
         return(
             <View style={{flex: 1}}>
-            <WebView
-                  ref={WEBVIEW_REF}
-                  automaticallyAdjustContentInsets={false}
-                  style={styles.webView}
-                  source={{uri: this.state.url}}
-                  javaScriptEnabled={true}
-                  domStorageEnabled={true}
-                  onMessage ={this.onMessage.bind(this)}
-                  decelerationRate="normal"
-                  injectedJavaScript="document.addEventListener('message',function(e){eval(e.data);});"
-                  onNavigationStateChange={this.onNavigationStateChange}
-                  onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
-                  startInLoadingState={true}
-                  scalesPageToFit={this.state.scalesPageToFit}
+                <WebView
+                    ref={webview => this.webview = webview}
+                    automaticallyAdjustContentInsets={false}
+                    style={styles.webView}
+                    domStorageEnabled={true}
+                    source={{uri: this.state.url}}
+                    javaScriptEnabled={true}
+                    domStorageEnabled={true}
+                    onMessage ={this.handleMessage.bind(this)}
+                    decelerationRate="normal"
+                    injectedJavaScript ={this.state.token}
+                    onLoad ={this.sendMessage.bind(this)}
+                    onNavigationStateChange={this.onNavigationStateChange}
+                    onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
+                    startInLoadingState={true}
+                    mixedContentMode="always"
+                    scalesPageToFit={this.state.scalesPageToFit}
                 />
             </View>
         )
@@ -105,8 +92,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   webView: {
-    backgroundColor: BGWASH,
+    backgroundColor: 'rgba(255,255,255,0.8)',
     height: 350,
+    width:width,
   },
 
 });
