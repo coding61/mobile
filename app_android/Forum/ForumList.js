@@ -25,6 +25,7 @@ export default class ForumList extends Component{
         super(props);
         this.state = {
             data:this.props.navigation.state.params.data,
+            token:this.props.navigation.state.params.token,
             dataArr: new Array(),
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
             tag: 0,
@@ -35,7 +36,6 @@ export default class ForumList extends Component{
             types:new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
             isRefreshing: false,
         };
-        console.log(this.props.navigation.state.params.data)
     }
     static navigationOptions = {
         title: '论坛列表',
@@ -50,33 +50,11 @@ export default class ForumList extends Component{
        this._loadAlldata()
       
     }
- /*   _loadtype(){
-        fetch('https://www.cxy61.com/program_girl/forum/types/', {
-            method: 'GET',
-        })
-        .then(response=> {
-            if (response.ok) {
-                return response.json();
-            } else {
-                return "失败";
-            }
-        })
-        .then((responseJson) => {
-            var dtatArr = [{name:'全部',},{name:'精贴',}];
-                    responseJson.results.map(result=> {
-                        dtatArr.push(result);
-                    })
-            this.setState({
-                types:new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(dtatArr),
-            });    
-        })
-        .catch((error) => {console.log(error)});
-    }*/
     _loadAlldata() {
         this.setState({
             isLoading: true
         },()=> {
-            fetch(this.state.url)
+            fetch(this.state.url,{headers: {Authorization: 'Token ' + this.state.token}})
             .then((response) =>response.json())
             .then((responseData) => {
                 var resultArr = new Array();
@@ -127,7 +105,20 @@ export default class ForumList extends Component{
             },()=>{
                 this._loadAlldata()
             })
-        }  
+        }else if(index==4){
+             this.setState({
+                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=true&page=1&status='
+            },()=>{
+                this._loadAlldata()
+            })
+        }else if(index==5){
+             this.setState({
+                url:'https://www.cxy61.com/program_girl/collect/collections/'
+            },()=>{
+                this._loadAlldata()
+            })
+        } 
+
     }
 
     _renderNext() {
@@ -136,7 +127,7 @@ export default class ForumList extends Component{
                 isLoading: true
             },()=> {
                 fetch(this.state.nextPage, {
-                    
+                    headers: {Authorization: 'Token ' + this.state.token}
                 })
                     .then(response => {
                         if (response.status === 200) {
@@ -155,6 +146,7 @@ export default class ForumList extends Component{
                               ]
                             )
                         } else {
+                            console.log(responseJson)
                             var resultArr;
                             resultArr = this.state.dataArr.concat();
                             responseJson.results.map(result=> {
@@ -197,56 +189,81 @@ export default class ForumList extends Component{
         })
     }
     forumdetail(data){
-        this.props.navigation.navigate('WebHtml', { data: data })
+        this.props.navigation.navigate('WebHtml', { data: data,token:this.state.token })
     }
     renderForumRow(rowData){
-        var timeArray = rowData.create_time.split('.')[0].split('T');
-        var year = timeArray[0].split('-')[0];
-        var month = timeArray[0].split('-')[1];
-        var day = timeArray[0].split('-')[2];
-        var hour = timeArray[1].split(':')[0];
-        var minute = timeArray[1].split(':')[1];
-        var second = timeArray[1].split(':')[2];
-        var create = new Date(year, month-1, day, hour, minute, second);
-        var current = new Date();
-        var s1 = current.getTime() - create.getTime(); //相差的毫秒
-        var time = null;
-        if (s1 / (60 * 1000) < 1) {
-            time = "刚刚";
-        }else if (s1 / (60 * 1000) < 60){
-            time = parseInt(s1 / (60 * 1000)) + "分钟前";
-        }else if(s1 / (60 * 1000) < 24 * 60){
-            time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
-        }else if(s1 / (60 * 1000) < 24 * 60 * 2){
-            time = "昨天 " + rowData.create_time.slice(11, 16);
+        if(rowData.types=='posts'){
+            return (
+                <TouchableOpacity onPress={this.forumdetail.bind(this,rowData.posts)}
+                    style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
+                    <View style={{flexDirection:'row',}}>
+                        <View style={{alignItems:'center'}}>
+                            <Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.posts.userinfo.avatar}}/>
+                            <Text style={{paddingTop:10}}>{rowData.posts.userinfo.grade.current_name}</Text>
+                        </View>
+                        <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.7,}}>
+                            <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.posts.title}</Text>
+                            <Text style={{paddingBottom:10}} numberOfLines={2}>{rowData.posts.content}</Text>
+                            <Text style={{paddingBottom:10}}>{rowData.posts.userinfo.name}  {rowData.posts.create_time}</Text>
+                        </View>
+                        <View style={{flex:1,paddingLeft:10,alignItems:'center'}}>
+                            <Image style={{width:19,height:13,marginTop:20,}} source={require('../assets/Forum/see.png')}/>
+                            <Text style={{fontSize:10,}}>{rowData.posts.browse_count}</Text>
+                            <Image style={{width:18,height:16,marginTop:20,}} source={require('../assets/Forum/reply.png')}/>
+                            <Text style={{fontSize:10,}}>{rowData.posts.reply_count}</Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            )
         }else{
-            time = rowData.create_time.slice(0, 10).replace('T', ' ');
+            var timeArray = rowData.create_time.split('.')[0].split('T');
+            var year = timeArray[0].split('-')[0];
+            var month = timeArray[0].split('-')[1];
+            var day = timeArray[0].split('-')[2];
+            var hour = timeArray[1].split(':')[0];
+            var minute = timeArray[1].split(':')[1];
+            var second = timeArray[1].split(':')[2];
+            var create = new Date(year, month-1, day, hour, minute, second);
+            var current = new Date();
+            var s1 = current.getTime() - create.getTime(); //相差的毫秒
+            var time = null;
+            if (s1 / (60 * 1000) < 1) {
+                time = "刚刚";
+            }else if (s1 / (60 * 1000) < 60){
+                time = parseInt(s1 / (60 * 1000)) + "分钟前";
+            }else if(s1 / (60 * 1000) < 24 * 60){
+                time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
+            }else if(s1 / (60 * 1000) < 24 * 60 * 2){
+                time = "昨天 " + rowData.create_time.slice(11, 16);
+            }else{
+                time = rowData.create_time.slice(0, 10).replace('T', ' ');
+            }
+            return (
+                <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
+                    style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
+                    <View style={{flexDirection:'row',}}>
+                        <View style={{alignItems:'center'}}>
+                            <Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>
+                            <Text style={{paddingTop:10}}>{rowData.userinfo.grade.current_name}</Text>
+                        </View>
+                        <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.7,}}>
+                            <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.status=='solved'?(<Text style={{color:'#cccccc'}}>[已解决]</Text>):(<Text style={{color:'red'}}>[未解决]</Text>)}{rowData.title}</Text>
+                            <Text style={{paddingBottom:10}} numberOfLines={2}>{rowData.content}</Text>
+                            <Text style={{paddingBottom:10}}>{rowData.userinfo.name}  {time}</Text>
+                        </View>
+                        <View style={{flex:1,paddingLeft:10,alignItems:'center'}}>
+                            <Image style={{width:19,height:13,marginTop:20,}} source={require('../assets/Forum/see.png')}/>
+                            <Text style={{fontSize:10,}}>{rowData.browse_count}</Text>
+                            <Image style={{width:18,height:16,marginTop:20,}} source={require('../assets/Forum/reply.png')}/>
+                            <Text style={{fontSize:10,}}>{rowData.reply_count}</Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            )
         }
-        return (
-            <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
-                style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
-                <View style={{flexDirection:'row',}}>
-                    <View style={{alignItems:'center'}}>
-                        <Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>
-                        <Text style={{paddingTop:10}}>{rowData.userinfo.grade.current_name}</Text>
-                    </View>
-                    <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.7,}}>
-                        <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.title}</Text>
-                        <Text style={{paddingBottom:10}} numberOfLines={2}>{rowData.content}</Text>
-                        <Text style={{paddingBottom:10}}>{rowData.userinfo.name}  {time}</Text>
-                    </View>
-                    <View style={{flex:1,paddingLeft:10,alignItems:'center'}}>
-                        <Image style={{width:19,height:13,marginTop:20,}} source={require('../assets/Forum/see.png')}/>
-                        <Text style={{fontSize:10,}}>{rowData.browse_count}</Text>
-                        <Image style={{width:18,height:16,marginTop:20,}} source={require('../assets/Forum/reply.png')}/>
-                        <Text style={{fontSize:10,}}>{rowData.reply_count}</Text>
-                    </View>
-                </View>
-            </TouchableOpacity>
-        )
     }
     AddForum(){
-        this.props.navigation.navigate('AddForum',{data:this.state.data})
+        this.props.navigation.navigate('AddForum',{data:this.state.data,token:this.state.token})
     }
     render(){
         if(!this.state.dataSource){
@@ -297,7 +314,7 @@ export default class ForumList extends Component{
                             automaticallyAdjustContentInsets={false}
                             enableEmptySections={true}
                             onEndReached={this._renderNext.bind(this)}
-                            onEndReachedThreshold={30}
+                            onEndReachedThreshold={1}
                             renderFooter={this._renderFooter.bind(this)}
                             refreshControl={
                                 <RefreshControl

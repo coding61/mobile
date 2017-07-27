@@ -19,27 +19,23 @@ import {
 import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
 import WebViewBridge from 'react-native-webview-bridge';
 var {height, width} = Dimensions.get('window');
-var token='28d2479302bf86369bcec62939099f40b96a62ee';
-var HEADER = '#3b5998';
-var BGWASH = 'rgba(255,255,255,0.8)';
-var DISABLED_WASH = 'rgba(255,255,255,0.25)';
 
-var TEXT_INPUT_REF = 'urlInput';
 /*var DEFAULT_URL = 'https://www.bcjiaoyu.com/mobile/html/index.html';*/
-var DEFAULT_URL='http://192.168.1.103:8080/CXYTeam/cxyteam-html5/cxyteam_forum_moblie/add.html';
+//var default_url='http://192.168.1.103:8080/CXYTeam/cxyteam-html5/cxyteam_forum_moblie/add.html';
+var default_url='https://www.cxy61.com/girl/cxyteam_forum_moblie/add.html';
 
 export default class AddForum extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            url: DEFAULT_URL,
+            url: default_url,
             status: 'No Page Loaded',
             backButtonEnabled: false,
             forwardButtonEnabled: false,
             loading: true,
             scalesPageToFit: true,
             data:{
-                token:'7bf60add8fa1a96c75ea214afc0e6173478cece1',
+                token:this.props.navigation.state.params.data.token,
                 pk:this.props.navigation.state.params.data.pk,
             },
         }
@@ -47,8 +43,6 @@ export default class AddForum extends Component{
     static navigationOptions = {
         title: '发布帖子',
     }
-
-    inputText = '';
 
     componentDidMount() {
        
@@ -95,7 +89,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   webView: {
-    backgroundColor: BGWASH,
+    backgroundColor: 'rgba(255,255,255,0.8)',
     height: 350,
   },
 

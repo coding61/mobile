@@ -21,30 +21,26 @@ import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
 import WebViewBridge from 'react-native-webview-bridge';
 var {height, width} = Dimensions.get('window');
 
-//var default_url = 'https://www.bcjiaoyu.com/mobile/html/index.html';
+//var default_url = 'https://app.bcjiaoyu.com/girl/cxyteam_forum_moblie/detail.html';
 var default_url='http://192.168.1.103:8080/CXYTeam/cxyteam-html5/cxyteam_forum_moblie/detail.html';
-//var default_url='https://app.bcjiaoyu.com/girl/cxyteam_forum_moblie/detail.html';
+//var default_url='https://www.cxy61.com/girl/cxyteam_forum_moblie/detail.html';
 
 export default class WebHtml extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            //token:'7bf60add8fa1a96c75ea214afc0e6173478cece1',
             url: default_url,
             scalesPageToFit: true,
-            /*data:this.props.navigation.state.params.data,*/
             webViewData:'',
             data:{
-                token:'28d2479302bf86369bcec62939099f40b96a62ee',
-                ZoomId:this.props.navigation.state.params.data.pk,
-            },  
+                token:this.props.navigation.state.params.token,
+                pk:this.props.navigation.state.params.data.pk,
+            }, 
         }
     }
     static navigationOptions = {
         title: '论坛详情',
     }
-
-    inputText = '';
  
     componentDidMount() {
        
@@ -58,12 +54,14 @@ export default class WebHtml extends Component{
         this.webview.postMessage(JSON.stringify(this.state.data));
     }
     handleMessage(e) {
-        this.setState({ webViewData: e.nativeEvent.data });
+        var data=JSON.parse(e.nativeEvent.data)
+        this.setState({ webViewData:data.data.A});
     }
     render() {
         this.inputText = this.state.url;
         return(
             <View style={{flex: 1}}>
+                <Text>{this.state.webViewData}</Text>
                 <WebView
                     ref={webview => this.webview = webview}
                     automaticallyAdjustContentInsets={false}
@@ -74,7 +72,6 @@ export default class WebHtml extends Component{
                     domStorageEnabled={true}
                     onMessage ={this.handleMessage.bind(this)}
                     decelerationRate="normal"
-                    injectedJavaScript ={this.state.token}
                     onLoad ={this.sendMessage.bind(this)}
                     onNavigationStateChange={this.onNavigationStateChange}
                     onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}

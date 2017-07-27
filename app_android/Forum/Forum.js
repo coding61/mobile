@@ -18,7 +18,7 @@ import {
 import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
 import ForumList from './ForumList';
 var {height, width} = Dimensions.get('window');
-var token='28d2479302bf86369bcec62939099f40b96a62ee';
+
 export default class Forum extends Component{
     constructor(props) {
         super(props);
@@ -31,7 +31,7 @@ export default class Forum extends Component{
             url: 'https://www.cxy61.com/program_girl/forum/sections/',
             loadText: '正在加载...',
             isRefreshing: false,
-            token:null,
+            token:'28d2479302bf86369bcec62939099f40b96a62ee',
         }
         
     }
@@ -95,7 +95,7 @@ export default class Forum extends Component{
         })  
     }
     _clickForumList(data){
-        this.props.navigation.navigate('ForumList', { data: data })
+        this.props.navigation.navigate('ForumList', { data: data,token:this.state.token })
     }
     _renderRow(rowData, SectionID, rowID, highlightRow) {
         var timeArray = rowData.newposts.create_time.split('.')[0].split('T');
@@ -143,7 +143,7 @@ export default class Forum extends Component{
             },()=> {
                 fetch(this.state.nextPage, {
                     headers: {
-                        Authorization: 'Token '+ token
+                        Authorization: 'Token '+ this.state.token
                     }
                 })
                 .then(response => {
