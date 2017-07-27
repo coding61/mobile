@@ -16,7 +16,6 @@ import {
   InteractionManager,
 
 }from 'react-native';
-import ForumDetail from './ForumDetail';
 
 var {height, width} = Dimensions.get('window');
 import WebHtml from './WebHtml';
@@ -36,6 +35,7 @@ export default class ForumList extends Component{
             types:new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
             isRefreshing: false,
         };
+        console.log(this.props.navigation.state.params.data)
     }
     static navigationOptions = {
         title: '论坛列表',
@@ -246,7 +246,7 @@ export default class ForumList extends Component{
         )
     }
     AddForum(){
-        this.props.navigation.navigate('AddForum')
+        this.props.navigation.navigate('AddForum',{data:this.state.data})
     }
     render(){
         if(!this.state.dataSource){
