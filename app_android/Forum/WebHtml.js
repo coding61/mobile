@@ -22,8 +22,8 @@ import WebViewBridge from 'react-native-webview-bridge';
 var {height, width} = Dimensions.get('window');
 
 //var default_url = 'https://app.bcjiaoyu.com/girl/cxyteam_forum_moblie/detail.html';
-var default_url='http://192.168.1.103:8080/CXYTeam/cxyteam-html5/cxyteam_forum_moblie/detail.html';
-//var default_url='https://www.cxy61.com/girl/cxyteam_forum_moblie/detail.html';
+//var default_url='http://192.168.1.104:8080/CXYTeam/cxyteam-html5/cxyteam_forum_moblie/detail.html';
+var default_url='https://www.cxy61.com/girl/cxyteam_forum_moblie/detail.html';
 
 export default class WebHtml extends Component{
     constructor(props) {
@@ -61,7 +61,6 @@ export default class WebHtml extends Component{
         this.inputText = this.state.url;
         return(
             <View style={{flex: 1}}>
-                <Text>{this.state.webViewData}</Text>
                 <WebView
                     ref={webview => this.webview = webview}
                     automaticallyAdjustContentInsets={false}

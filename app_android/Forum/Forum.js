@@ -29,9 +29,11 @@ export default class Forum extends Component{
             nextPage: null,
             isLoading: false,
             url: 'https://www.cxy61.com/program_girl/forum/sections/',
+            //url: 'https://app.bcjiaoyu.com/program_girl/forum/sections/',
             loadText: '正在加载...',
             isRefreshing: false,
-            token:'28d2479302bf86369bcec62939099f40b96a62ee',
+            //token:'f0b3897f26417c66c27d6e782724317010694cdc'
+            token:'e8755971e912d26aa0b365fdee98354945c346de',
         }
         
     }
