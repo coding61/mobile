@@ -137,7 +137,7 @@ let Utils = {
                 console.log(err);
                 callback(null);
             }else{
-                if (!result.match(/[0-9a-z]{40}/g)) {
+                if (!result) {
                     callback(null)
                 }else{
                     callback(result)

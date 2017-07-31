@@ -46,18 +46,12 @@ class RootApp extends Component{
                             navigate('Forum', { name: 'Forum' })
                         }
                 />
-                <Button 
-                    title="消息1"
-                    onPress={()=>{this.props.navigation.navigate('MessagePage1')}}
-                />
+                
                 <Button 
                     title="消息"
                     onPress={()=>{this.props.navigation.navigate('MessagePage', {userinfo:''})}}
                 />
-                <Button 
-                    title="消息2"
-                    onPress={()=>{this.props.navigation.navigate('CodeEditWebView', {userinfo:''})}}
-                />
+  
           </View>
         )
     }

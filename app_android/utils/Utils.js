@@ -8,7 +8,7 @@ import {
     Linking
 } from 'react-native'
 const isIOS = Platform.OS == "ios"
-const HeaderH = isIOS ? 64 : 44
+const HeaderH = isIOS ? 64 : 64
 
 const deviceH = Dimensions.get('window').height
 const deviceW = Dimensions.get('window').width
