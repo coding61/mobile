@@ -20,22 +20,17 @@ import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
 import WebViewBridge from 'react-native-webview-bridge';
 var {height, width} = Dimensions.get('window');
 
-/*var DEFAULT_URL = 'https://www.bcjiaoyu.com/mobile/html/index.html';*/
-//var default_url='http://192.168.1.103:8080/CXYTeam/cxyteam-html5/cxyteam_forum_moblie/add.html';
+//var default_url='http://192.168.1.104:8080/CXYTeam/cxyteam-html5/cxyteam_forum_moblie/add.html';
 var default_url='https://www.cxy61.com/girl/cxyteam_forum_moblie/add.html';
-
+//var default_url='https://app.bcjiaoyu.com/girl/cxyteam_forum_moblie/add.html';
 export default class AddForum extends Component{
     constructor(props) {
         super(props);
         this.state = {
             url: default_url,
-            status: 'No Page Loaded',
-            backButtonEnabled: false,
-            forwardButtonEnabled: false,
-            loading: true,
             scalesPageToFit: true,
             data:{
-                token:this.props.navigation.state.params.data.token,
+                token:this.props.navigation.state.params.token,
                 pk:this.props.navigation.state.params.data.pk,
             },
         }
@@ -55,12 +50,14 @@ export default class AddForum extends Component{
     sendMessage() {
         this.webview.postMessage(JSON.stringify(this.state.data));
     }
-    handleMessage (evt: any)  {
-        const message = evt.nativeEvent.data
+    handleMessage (evt)  {
+        const message = JSON.parse(evt.nativeEvent.data)
+        if(message.data.data=='data'){
+          this.props.navigation.goBack()
+        }
     }
 
     render() {
-        this.inputText = this.state.url;
         return(
             <View style={{flex: 1}}>
             <WebView
@@ -73,7 +70,6 @@ export default class AddForum extends Component{
                   onMessage ={this.handleMessage.bind(this)}
                   decelerationRate="normal"
                   onLoad ={this.sendMessage.bind(this)}
-                  onNavigationStateChange={this.onNavigationStateChange}
                   onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
                   startInLoadingState={true}
                   mixedContentMode="always"

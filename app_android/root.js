@@ -24,7 +24,6 @@ import ThirdSiteWebView from './pages/ThirdSiteWebView.js';
 
 import Forum from './Forum/Forum.js';
 import ForumList from './Forum/ForumList.js';
-
 import WebHtml from './Forum/WebHtml.js';
 import AddForum from './Forum/AddForum.js';
 import {StackNavigator} from 'react-navigation';
@@ -47,10 +46,23 @@ class RootApp extends Component{
                             navigate('Forum', { name: 'Forum' })
                         }
                 />
+<<<<<<< HEAD
+=======
+                
+>>>>>>> 12164588c3ec34a094a02d51b2c02dd26b379d50
                 <Button 
                     title="消息"
                     onPress={()=>{this.props.navigation.navigate('MessagePage', {userinfo:''})}}
                 />
+<<<<<<< HEAD
+=======
+
+                <Button 
+                    title="在线编辑器"
+                    onPress={()=>{this.props.navigation.navigate('CodeEditWebView', {userinfo:''})}}
+                />
+  
+>>>>>>> 12164588c3ec34a094a02d51b2c02dd26b379d50
           </View>
         )
     }

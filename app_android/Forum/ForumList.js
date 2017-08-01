@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {
-     AppRegistry, 
+  AppRegistry, 
   StyleSheet, 
   Image, 
   Text, 
@@ -18,6 +18,8 @@ import {
 }from 'react-native';
 
 var {height, width} = Dimensions.get('window');
+var basePath='https://www.cxy61.com/';
+//var basePath='https://app.bcjiaoyu.com/'
 import WebHtml from './WebHtml';
 import AddForum from './AddForum';
 export default class ForumList extends Component{
@@ -31,7 +33,7 @@ export default class ForumList extends Component{
             tag: 0,
             nextPage: null,
             isLoading: false,
-            url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&myposts=false&page=1',  
+            url:basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&myposts=false&page=1',  
             loadText: '正在加载...',
             types:new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
             isRefreshing: false,
@@ -83,42 +85,41 @@ export default class ForumList extends Component{
     detail(index){
         if(index==0){
             this.setState({
-                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&myposts=false&page=1'
+                url:basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&myposts=false&page=1'
             },()=>{
                 this._loadAlldata()
             })
         }else if(index==1){
             this.setState({
-                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=true&page=1'
+                url:basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=true&page=1'
             },()=>{
                 this._loadAlldata()
             })
         }else if(index==2){
             this.setState({
-                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=&page=1&status=solved'
+                url:basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=&page=1&status=solved'
             },()=>{
                 this._loadAlldata()
             })
         }else if(index==3){
             this.setState({
-                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=&page=1&status=unsolved'
+                url:basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=&page=1&status=unsolved'
             },()=>{
                 this._loadAlldata()
             })
         }else if(index==4){
              this.setState({
-                url:'https://www.cxy61.com/program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=true&page=1&status='
+                url:basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=true&page=1&status='
             },()=>{
                 this._loadAlldata()
             })
         }else if(index==5){
              this.setState({
-                url:'https://www.cxy61.com/program_girl/collect/collections/'
+                url:basePath+'program_girl/collect/collections/'
             },()=>{
                 this._loadAlldata()
             })
         } 
-
     }
 
     _renderNext() {
@@ -146,7 +147,6 @@ export default class ForumList extends Component{
                               ]
                             )
                         } else {
-                            console.log(responseJson)
                             var resultArr;
                             resultArr = this.state.dataArr.concat();
                             responseJson.results.map(result=> {
@@ -267,11 +267,20 @@ export default class ForumList extends Component{
     }
     render(){
         if(!this.state.dataSource){
-            return(<Text>SSSSS</Text>)
+            return(<Text style={{alignItems:'center'}}>加载中.....</Text>)
         }else{
             return (
                 <View style={styles.container}>
-                    <ScrollView>
+                    <ScrollView
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.isRefreshing}
+                                onRefresh={this._onRefresh.bind(this)}
+                                tintColor='#cccccc'
+                                title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
+                                titleColor='#cccccc' />
+                        }
+                    >
                         <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#DEDEDE',paddingLeft:20,paddingBottom:10,}}>
                             <Image style={{width:50,height:50,marginTop:10,}} source={{uri:this.state.data.icon}}/>
                             <View style={{paddingLeft:20,paddingRight:10,paddingTop:10,}}>
@@ -314,16 +323,9 @@ export default class ForumList extends Component{
                             automaticallyAdjustContentInsets={false}
                             enableEmptySections={true}
                             onEndReached={this._renderNext.bind(this)}
-                            onEndReachedThreshold={1}
+                            onEndReachedThreshold={3}
                             renderFooter={this._renderFooter.bind(this)}
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={this.state.isRefreshing}
-                                    onRefresh={this._onRefresh.bind(this)}
-                                    tintColor='#cccccc'
-                                    title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
-                                    titleColor='#cccccc' />
-                            }
+                            
                         >
                         </ListView>
                     </ScrollView>

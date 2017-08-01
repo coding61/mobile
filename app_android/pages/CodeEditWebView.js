@@ -111,7 +111,7 @@ class CodeEditWebView extends Component {
 			<View style={{flex:1, backgroundColor:'rgb(245,245,245)'}}>
 				<WebView 
 					ref={(webview) => this.webview = webview}
-					source={{uri:'https://app.bcjiaoyu.com/girl/app/home/codeEditRN.html'}}
+					source={{uri:Http.domainPage+'/app/home/codeEditRN.html'}}
 					automaticallyAdjustContentInsets={true}
 					javaScriptEnabled={true}
 					domStorageEnabled={true}
