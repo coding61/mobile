@@ -151,9 +151,13 @@ class MessagePage extends Component{
       // prop: 'value'
     }
     componentWillMount() {
+<<<<<<< HEAD
+        var chatArray = [];
+=======
         // var chatArray = [];
         // Utils.setValue("chatData", JSON.stringify(chatArray));
         // Utils.setValue("token", null);
+>>>>>>> 12164588c3ec34a094a02d51b2c02dd26b379d50
 
         this._fetchUserInfo();
         this._load();
@@ -905,7 +909,10 @@ class MessagePage extends Component{
                                 showAction:true
                             })
                         }else{
+<<<<<<< HEAD
+=======
                             // 按钮由选择课程-->开始学习
+>>>>>>> 12164588c3ec34a094a02d51b2c02dd26b379d50
                             this.setState({
                                 // actionTag:actionBeginStudyTag,
                                 showAction:true
@@ -1572,7 +1579,11 @@ class MessagePage extends Component{
                         </View>
                         <Image
                           style={styles.answerAvatar}
+<<<<<<< HEAD
+                          source={{uri: state.params.userinfo?(state.params.userinfo.avatar.replace("http://", "https://")):('https://static1.bcjiaoyu.com/binshu.jpg')}}
+=======
                           source={{uri: state.params.userinfo?state.params.userinfo.avatar.replace("http://", "https://"):'https://static1.bcjiaoyu.com/binshu.jpg'}}
+>>>>>>> 12164588c3ec34a094a02d51b2c02dd26b379d50
                         />
                         
                     </View>
