@@ -10,7 +10,8 @@ import {
   TouchableOpacity,
   TextInput,
   Keyboard,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
@@ -58,6 +59,8 @@ export default class Login extends Component {
                 AsyncStorage.setItem('token', responseJson.token, () => {
                   _this.props.navigation.goBack();
                 })
+              } else {
+                alert('登陆失败，请重新登陆');
               }
             })
 
