@@ -988,9 +988,11 @@ class MessagePage extends Component{
         var actionText = this.state.options.join(',')
         this._loadAnswer(actionText)    //界面显示人工回复
         
-        var item = this.state.data[this.state.index];
-        item = this.state.currentItem
-        item.action[index]["select"] = false
+        // var item = this.state.data[this.state.index];
+        var item = this.state.currentItem
+        for (var i = 0; i < item.action.length; i++) {
+            item.action[i]["select"] = false
+        }
 
         this.setState({
             showAction:false,
