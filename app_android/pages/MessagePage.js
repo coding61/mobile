@@ -825,6 +825,12 @@ class MessagePage extends Component{
 
         Utils.isLogin((token)=>{
             if (this.state.actionTag == actionChooseCourseTag && !token){
+                // 点击选择课程去登陆的时候
+            }else if(this.state.actionTag == actionChooseCourseTag && !this.state.chooseCourse){
+                //没有选课程
+                this.setState({
+                    showAction:true
+                })
             }else{
                 // 去掉点选择课程登录的时候，不打印选择课程
                 this._loadAnswer(actionText)    //界面显示人工回复
@@ -1037,6 +1043,23 @@ class MessagePage extends Component{
     // 学习论坛点击
     _clickStudyLuntan = ()=>{
         this.setState({showHelpActions:false})
+        this._loadLuntan();
+    }
+    _loadLuntan(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                // 已登录
+                console.log("go to luntan");
+                this.props.navigation.navigate('Forum')
+            }else{
+                console.log("go to login .");
+                // 未登录
+                this.props.navigation.navigate('Login', {user:'', callback:()=>{
+                    
+                    this._fetchUserInfo();
+                }})
+            }
+        })
     }
     // 退出登录点击
     _clickQuitLogin = ()=>{
