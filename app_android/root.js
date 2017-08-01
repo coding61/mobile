@@ -51,6 +51,11 @@ class RootApp extends Component{
                     title="消息"
                     onPress={()=>{this.props.navigation.navigate('MessagePage', {userinfo:''})}}
                 />
+
+                <Button 
+                    title="在线编辑器"
+                    onPress={()=>{this.props.navigation.navigate('CodeEditWebView', {userinfo:''})}}
+                />
   
           </View>
         )
