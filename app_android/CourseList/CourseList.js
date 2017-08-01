@@ -12,7 +12,7 @@ import {
   Alert,
   AsyncStorage
 } from 'react-native';
-//252 189 209
+
 const {width, height} = Dimensions.get('window');
 import {StackNavigator} from 'react-navigation';
 var token = 'ff014f55ad02c8f799d4103b19b436520875ea73';

@@ -140,8 +140,6 @@ class MessagePage extends Component{
     }
     componentWillMount() {
         var chatArray = [];
-        Utils.setValue("chatData", JSON.stringify(chatArray));
-        Utils.setValue("token", null);
 
         this._fetchUserInfo();
         this._load();
@@ -844,7 +842,10 @@ class MessagePage extends Component{
                                 showAction:true
                             })
                         }else{
-
+                            this.setState({
+                                // actionTag:actionBeginStudyTag,
+                                showAction:true
+                            })
                         }
                     })
                 }})
@@ -855,6 +856,7 @@ class MessagePage extends Component{
                         actionTag:actionChooseCourseTag,
                         showAction:true
                     })
+                    this._fetchUserInfo();
                 }})
             }
         })
@@ -1357,7 +1359,7 @@ class MessagePage extends Component{
                         </View>
                         <Image
                           style={styles.answerAvatar}
-                          source={{uri: state.params.userinfo.avatar.replace("http://", "https://")}}
+                          source={{uri: state.params.userinfo?(state.params.userinfo.avatar.replace("http://", "https://")):('https://static1.bcjiaoyu.com/binshu.jpg')}}
                         />
                         
                     </View>
