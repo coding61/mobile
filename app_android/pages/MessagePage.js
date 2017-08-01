@@ -16,7 +16,8 @@ import {
     Image,
     Animated,
     Easing,
-    DeviceEventEmitter
+    DeviceEventEmitter,
+    ScrollView
 }from 'react-native'
 
 import chatdata from '../data1.js';
@@ -1188,11 +1189,13 @@ class MessagePage extends Component{
     _renderScaleBigImage(){
         return (
             <TouchableOpacity onPress={this._clickBigImg} style={styles.imgShadowView}>
-                <Image
-                  resizeMode={'contain'}
-                  style={{width:width, height:Utils.getImgWidthHeight(this.state.bigImgUrl, width)}}
-                  source={{uri:this.state.bigImgUrl}}
-                />
+                <ScrollView style={{maxHeight:height-headerH}}>
+                    <Image
+                      resizeMode={'contain'}
+                      style={{width:width, height:Utils.getImgWidthHeight(this.state.bigImgUrl, width), marginTop:Utils.getImgWidthHeight(this.state.bigImgUrl, width)>height-headerH?0:(height-headerH-Utils.getImgWidthHeight(this.state.bigImgUrl, width))/2}}
+                      source={{uri:this.state.bigImgUrl}}
+                    />
+                </ScrollView>
             </TouchableOpacity>
         )
     }
@@ -1374,7 +1377,7 @@ class MessagePage extends Component{
                                   {item.message}
                                 </Text>
                                 <Text style={{color:'rgb(84, 180, 225)'}}>
-                                  {item.link}
+                                  {item.link=="www.code.com"?"点击打开编辑器":"点击打开新网页"}
                                 </Text>
                             </View> 
                             <Image
@@ -1610,14 +1613,14 @@ class MessagePage extends Component{
     _renderTableView(){
         return (
             <View style={{flex:1}}>
-                <View style={{width:width, maxHeight:height-headerH-60}}>
+                <View style={{width:width, maxHeight:height-headerH-75-10}}>
                     <FlatList 
                         ref={(flatlist)=>this._flatList=flatlist}
-                        style={{maxHeight:height-headerH-60-30}}
+                        style={{maxHeight:height-headerH-75-10}}
                         data={this.state.dataSource}
                         renderItem={this._renderItem}
                         ListHeaderComponent={this.state.showHeaderComponent?this._renderHeader:null}
-                        // ListFooterComponent={this._renderFooter}
+                        // ListFooterComponent={this.state.loadingChat?this._renderFooter:null}
                         extraData={this.state.loadingChat}
                         keyExtractor={this._keyExtractor}
                         onLayout={ (e) => {
@@ -1638,9 +1641,9 @@ class MessagePage extends Component{
                                 // this._flatList.scrollToIndex({viewPosition: 0, index: 0}); 
                                 // console.log("-----scrollTop");
                             }else{
-                                if (contentHeight > height-headerH-90) {
+                                if (contentHeight > height-headerH-75-10) {
                                     // this._flatList.scrollToIndex({viewPosition: 1, index: this.state.number-1});
-                                    this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-60-30)});
+                                    this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-75-10)});
                                     // console.log("-----scrollEnd");
                                     // this._flatList.scrollToEnd();  //与getItemLayout配合使用
                                 } 
@@ -1868,20 +1871,20 @@ const styles = StyleSheet.create({
         top: 19.5
     },
     // ------------------------------------------底部按钮
-    btns:{
+    btns:{//底部按钮高度75
         // height:60, 
         width:width,
         position:'absolute',
         bottom:0
     },
-    help:{
+    help:{//帮助按钮总高35
         width:25, 
         height:25, 
         marginBottom:5,
         marginTop:5, 
         marginLeft:width-35
     },
-    actions:{
+    actions:{//按钮高度40
         flexDirection:'row', 
         justifyContent:'flex-end', 
         marginHorizontal:8, 
@@ -1892,23 +1895,35 @@ const styles = StyleSheet.create({
         backgroundColor:'rgb(250, 80, 131)', 
         borderRadius:5, 
         borderBottomRightRadius:0, 
-        padding:5, 
-        marginLeft:5
+        // padding:10, 
+        marginLeft:5,
+        height:30,
+        paddingHorizontal:10,
+        alignItems:'center',
+        justifyContent:'center'
     },
     // ----------------选项按钮
     btnOption:{
         backgroundColor:'white', 
         borderRadius:5, 
         borderBottomRightRadius:0, 
-        padding:5, 
-        marginLeft:5
+        // padding:10, 
+        marginLeft:5,
+        height:30,
+        paddingHorizontal:10,
+        alignItems:'center',
+        justifyContent:'center'
     },
     btnOptionSelect:{
         backgroundColor:'rgb(250, 80, 131)', 
         borderRadius:5, 
         borderBottomRightRadius:0, 
-        padding:5, 
-        marginLeft:5
+        // padding:10, 
+        marginLeft:5,
+        height:30,
+        paddingHorizontal:10,
+        alignItems:'center',
+        justifyContent:'center'
     },
     // ----------------帮助按钮组
     helpParentView:{
@@ -1958,6 +1973,9 @@ const styles = StyleSheet.create({
         borderRadius:5, 
         marginHorizontal:10,
         marginTop:10,
+
+        position:'absolute',
+        bottom:-40
     },
 
     // ----------------------------------------钻石动画
@@ -2020,8 +2038,8 @@ const styles = StyleSheet.create({
         backgroundColor:'rgba(0,0,0,0.6)',
         top:0,
         left:0,
-        alignItems:'center',
-        justifyContent:'center'
+        // alignItems:'center',
+        // justifyContent:'center'
         // overflow:'scroll'
     },
     imgView:{
