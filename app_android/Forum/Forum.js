@@ -28,21 +28,30 @@ export default class Forum extends Component{
             tag: 0,
             nextPage: null,
             isLoading: false,
-            url: 'https://www.cxy61.com/program_girl/forum/sections/',
-            //url: 'https://app.bcjiaoyu.com/program_girl/forum/sections/',
+            //url: 'https://www.cxy61.com/program_girl/forum/sections/',
+            url: 'https://app.bcjiaoyu.com/program_girl/forum/sections/',
             loadText: '正在加载...',
             isRefreshing: false,
+            token:'',
             //token:'f0b3897f26417c66c27d6e782724317010694cdc'
-            token:'e8755971e912d26aa0b365fdee98354945c346de',
+            //token:'e8755971e912d26aa0b365fdee98354945c346de',
         }
         
     }
     static navigationOptions = {
       title: '论坛',
     }
-
     componentDidMount() {
-       this._loadData()
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    self._loadData();
+                });
+            }else{
+                Alert.alert('请先登录帐号！')
+            }
+        });
     }
     _loadData() {
         this.setState({
@@ -100,7 +109,7 @@ export default class Forum extends Component{
         this.props.navigation.navigate('ForumList', { data: data,token:this.state.token })
     }
     _renderRow(rowData, SectionID, rowID, highlightRow) {
-        var timeArray = rowData.newposts.create_time.split('.')[0].split('T');
+        /*var timeArray = rowData.newposts.create_time.split('.')[0].split('T');
         var year = timeArray[0].split('-')[0];
         var month = timeArray[0].split('-')[1];
         var day = timeArray[0].split('-')[2];
@@ -121,7 +130,7 @@ export default class Forum extends Component{
             time = "昨天 " + rowData.newposts.create_time.slice(11, 16);
         }else{
             time = rowData.newposts.create_time.slice(0, 10).replace('T', ' ');
-        }
+        }*/
         return (
             <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
                 style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
@@ -130,7 +139,7 @@ export default class Forum extends Component{
                     <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.6,}}>
                         <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.name}</Text>
                         <Text style={{paddingBottom:10}}>{rowData.newposts.title}</Text>
-                        <Text style={{paddingBottom:10}}>{rowData.newposts.author}  {time}</Text>
+                        <Text style={{paddingBottom:10}}>{rowData.newposts.author}  {rowData.newposts.create_time}</Text>
                     </View>
                     <Text style={{paddingLeft:10,flex:1,paddingTop:20,}}>帖数:{rowData.total}</Text>
                 </View>
