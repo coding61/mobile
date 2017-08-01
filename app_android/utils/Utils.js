@@ -7,8 +7,14 @@ import {
     Platform,
     Linking
 } from 'react-native'
+
 const isIOS = Platform.OS == "ios"
-const HeaderH = isIOS ? 64 : 64
+const TopStatusBarIOS = 20
+const TopStatusBarAndroid = 25
+const TopNavBarHeight = 48
+const BottomStatusBarAndroid = 48
+const HeaderH = isIOS ? 64 : TopNavBarHeight+TopStatusBarAndroid
+const BottomH = isIOS ? 0 : BottomStatusBarAndroid
 
 const deviceH = Dimensions.get('window').height
 const deviceW = Dimensions.get('window').width
