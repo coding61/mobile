@@ -26,6 +26,7 @@ import Forum from './Forum/Forum.js';
 import ForumList from './Forum/ForumList.js';
 import WebHtml from './Forum/WebHtml.js';
 import AddForum from './Forum/AddForum.js';
+import Forum_Details from './Forum/Forum_Details.js';
 import {StackNavigator} from 'react-navigation';
 
 import Login from './Login/Login.js';
@@ -68,10 +69,12 @@ const styles = StyleSheet.create({
 
 const app = StackNavigator({
     RootApp:{screen: RootApp},
+    
     Forum:{screen: Forum},
     ForumList:{screen:ForumList},
     WebHtml:{screen:WebHtml},
     AddForum:{screen:AddForum},
+    Forum_Details:{screen:Forum_Details},
     
     MessagePage:{screen: MessagePage},
     MessagePage1:{screen:MessagePage1},

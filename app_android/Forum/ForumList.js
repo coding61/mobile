@@ -22,6 +22,7 @@ var basePath='https://www.cxy61.com/';
 //var basePath='https://app.bcjiaoyu.com/'
 import WebHtml from './WebHtml';
 import AddForum from './AddForum';
+import Forum_Details from './Forum_Details';
 export default class ForumList extends Component{
     constructor(props) {
         super(props);
@@ -189,7 +190,8 @@ export default class ForumList extends Component{
         })
     }
     forumdetail(data){
-        this.props.navigation.navigate('WebHtml', { data: data,token:this.state.token })
+       // this.props.navigation.navigate('WebHtml', { data: data,token:this.state.token })
+        this.props.navigation.navigate('Forum_Details', { data: data,token:this.state.token })
     }
     renderForumRow(rowData){
         if(rowData.types=='posts'){
