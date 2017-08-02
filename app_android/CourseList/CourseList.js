@@ -15,7 +15,6 @@ import {
 
 const {width, height} = Dimensions.get('window');
 import {StackNavigator} from 'react-navigation';
-var token = 'ff014f55ad02c8f799d4103b19b436520875ea73';
 var itemHead = {nostart: require('../assets/Course/nostart.png'), processing:require('../assets/Course/onstudy.png'), finish: require('../assets/Course/onfinish.png')};
 
 
@@ -174,7 +173,7 @@ class CourseList extends Component {
   _loadData() {
     var _this = this;
     AsyncStorage.getItem("token", function(errs, results) {
-      fetch('https://app.bcjiaoyu.com/program_girl/course/courses/', {headers: {Authorization: 'Token ' + results, 'content-type': 'application/json'}})
+      fetch('https://www.cxy61.com/program_girl/course/courses/', {headers: {Authorization: 'Token ' + results, 'content-type': 'application/json'}})
         .then(response => {
           if (response.status === 200) {
             return response.json()
