@@ -109,7 +109,7 @@ export default class Forum extends Component{
         this.props.navigation.navigate('ForumList', { data: data,token:this.state.token })
     }
     _renderRow(rowData, SectionID, rowID, highlightRow) {
-        /*var timeArray = rowData.newposts.create_time.split('.')[0].split('T');
+        var timeArray = rowData.newposts.create_time.split('.')[0].split('T');
         var year = timeArray[0].split('-')[0];
         var month = timeArray[0].split('-')[1];
         var day = timeArray[0].split('-')[2];
@@ -130,7 +130,7 @@ export default class Forum extends Component{
             time = "昨天 " + rowData.newposts.create_time.slice(11, 16);
         }else{
             time = rowData.newposts.create_time.slice(0, 10).replace('T', ' ');
-        }*/
+        }
         return (
             <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
                 style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
@@ -139,7 +139,7 @@ export default class Forum extends Component{
                     <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.6,}}>
                         <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.name}</Text>
                         <Text style={{paddingBottom:10}}>{rowData.newposts.title}</Text>
-                        <Text style={{paddingBottom:10}}>{rowData.newposts.author}  {rowData.newposts.create_time}</Text>
+                        <Text style={{paddingBottom:10}}>{rowData.newposts.author}  {time}</Text>
                     </View>
                     <Text style={{paddingLeft:10,flex:1,paddingTop:20,}}>帖数:{rowData.total}</Text>
                 </View>
