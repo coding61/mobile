@@ -693,7 +693,7 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    // console.log(response);
+                    console.log(response);
                     // Util.updateInfo(json);
                     this.setState({
                         userInfo:response
