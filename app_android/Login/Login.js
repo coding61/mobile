@@ -36,7 +36,7 @@ export default class Login extends Component {
   }
   goLogin() {
     var _this = this;
-    fetch('https://app.bcjiaoyu.com/program_girl/userinfo/invitation_code_login/',{
+    fetch('https://www.cxy61.com/program_girl/userinfo/invitation_code_login/',{
               method: "POST",
               headers: {
                 'Accept': 'application/json',
