@@ -131,11 +131,54 @@ class CourseList extends Component {
   }
   navigatePress = () => {
     if (this.state.selectData !== null) {
+      console.log(this.state.selectData)
+      if (this.state.selectData.learn_extent.status === 'finish') {
+        Alert.alert('提示','是否重新学习此课程',
+        [{text: '否', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: '是', onPress: () => this.goReset()},
+        ],{ cancelable: false })
+      } else {
       this.props.navigation.state.params.callback(this.state.selectData.pk, this.state.selectData.learn_extent.last_lesson);
       this.props.navigation.goBack();
+      } 
     } else {
       alert('还未选择课程');
     }
+  }
+  goReset() {
+    var _this = this;
+    AsyncStorage.getItem("token", function(errs, results) {
+      if (results) {
+        fetch('https://www.cxy61.com/program_girl/userinfo/update_learnextent/',{
+                  method: "POST",
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Token ' + results
+                  },
+                  body: JSON.stringify({
+                    course: _this.state.selectData.pk,
+                    lesson: "0",
+                  }),
+                })
+                .then(response=> {
+                  if (response.status === 200) {
+                    return response.json()
+                  } else {
+                    return 'fail'
+                  }
+                })
+                .then(responseJson=> {
+                  if (responseJson !== 'fail') {
+                    _this.props.navigation.state.params.callback(_this.state.selectData.pk, 0);
+                    _this.props.navigation.goBack();
+                  } else {
+                    alert('失败，请重试');
+                  }
+                })
+      }
+    })
+
   }
   changeAll(selected, pk) {
     var data = this.state.data;
