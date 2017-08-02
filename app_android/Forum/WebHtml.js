@@ -43,7 +43,7 @@ export default class WebHtml extends Component{
     }
  
     componentDidMount() {
-       
+       //alert(this.state.data.token)
     }
 
     onShouldStartLoadWithRequest(event){
@@ -53,9 +53,11 @@ export default class WebHtml extends Component{
     sendMessage() {
         this.webview.postMessage(JSON.stringify(this.state.data));
     }
-    handleMessage(e) {
-        var data=JSON.parse(e.nativeEvent.data)
-        this.setState({ webViewData:data.data.A});
+    handleMessage(evt) {
+        var message = evt.nativeEvent.data
+        if(message==200){
+          this.props.navigation.goBack()
+        }
     }
     render() {
         this.inputText = this.state.url;

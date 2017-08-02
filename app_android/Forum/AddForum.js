@@ -51,9 +51,9 @@ export default class AddForum extends Component{
         this.webview.postMessage(JSON.stringify(this.state.data));
     }
     handleMessage (evt)  {
-        const message = JSON.parse(evt.nativeEvent.data)
-        if(message.data.data=='data'){
-          this.props.navigation.goBack()
+        var message = evt.nativeEvent.data
+        if(message==200){
+            this.props.navigation.goBack()
         }
     }
 

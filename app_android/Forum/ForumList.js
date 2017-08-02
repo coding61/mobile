@@ -45,7 +45,6 @@ export default class ForumList extends Component{
     };
     componentWillMount(){
         
-        
     }
 
     componentDidMount(){
