@@ -84,6 +84,7 @@ class MessagePage extends Component{
             itemHeight:0,                //item的高度
             bigImgUrl:"",                //放大图片的 url
             showBigImgView:false,        //是否显示大图组件
+            showFindHelpView:false,      //是否显示查找帮助组件
 
         };
         this.leftEnterValue = new Animated.Value(0)     //左侧进入动画
@@ -907,7 +908,7 @@ class MessagePage extends Component{
                         chooseCourse:course,
                         chooseCourseIndex:courseIndex
                     }, ()=>{
-                        if (this.state.chooseCourse != this.state.course) {
+                        if (this.state.chooseCourse && this.state.chooseCourse != this.state.course) {
                             // 按钮由选择课程-->开始学习
                             this.setState({
                                 actionTag:actionBeginStudyTag,
@@ -1038,7 +1039,16 @@ class MessagePage extends Component{
     }
     // 寻找帮助点击
     _clickFindHelp = ()=>{
-        this.setState({showHelpActions:false})
+        this.setState({
+            showHelpActions:false,
+            showFindHelpView:true
+        })
+    }
+    // 寻找帮助 shadowview点击
+    _clickFindHelpShadow = ()=>{
+        this.setState({
+            showFindHelpView:false
+        })
     }
     // 学习论坛点击
     _clickStudyLuntan = ()=>{
@@ -1106,7 +1116,8 @@ class MessagePage extends Component{
 
             itemHeight:0,                //item的高度
             bigImgUrl:"",                //放大图片的 url
-            showBigImgView:false,
+            showBigImgView:false,        //是否显示大图组件
+            showFindHelpView:false,      //是否显示查找帮助组件
         })
         Utils.clearAllValue()
         this.setState({showHelpActions:false})
@@ -1209,6 +1220,15 @@ class MessagePage extends Component{
     }
 
     // ---------------------UI 布局
+    _renderFindHelp(){
+        return (
+            <TouchableOpacity onPress={this._clickFindHelpShadow} style={styles.findHelpShadowView}>
+                <View style={{}}>
+                    <Text style={styles.findHelpText}>如需帮助，请使用学习论坛进行发帖，会有专人帮您解答。</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
     _renderScaleBigImage(){
         return (
             <TouchableOpacity onPress={this._clickBigImg} style={styles.imgShadowView}>
@@ -1697,6 +1717,9 @@ class MessagePage extends Component{
                 {
                     this.state.showBigImgView? this._renderScaleBigImage() : null
                 }
+                {
+                    this.state.showFindHelpView? this._renderFindHelp() : null
+                }
             </View>
         )
     }
@@ -2070,6 +2093,21 @@ const styles = StyleSheet.create({
         height:height-headerH,
         overflow:'scroll',
         backgroundColor:'red'
+    },
+    // --------------------------------------寻找帮助
+    findHelpShadowView:{
+        width:width, 
+        height:height-headerH, 
+        backgroundColor:'rgba(0,0,0,0.6)',
+        position:'absolute', 
+        alignItems:'center', 
+        // justifyContent:'center'
+    },
+    findHelpText:{
+        color: 'white',
+        fontSize: 20,
+        width: width*.8,
+        marginTop:(height-headerH)*.3
     }
 
 });
