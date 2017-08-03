@@ -188,7 +188,7 @@ export default class ForumList extends Component{
         })
     }
     forumdetail(data){
-       this.props.navigation.navigate('WebHtml', { data: data,token:this.state.token })
+        this.props.navigation.navigate('WebHtml', { data: data,token:this.state.token })
         //this.props.navigation.navigate('Forum_Details', { data: data,token:this.state.token })
     }
     renderForumRow(rowData){
