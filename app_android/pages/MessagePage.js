@@ -180,16 +180,17 @@ class MessagePage extends Component{
         this.timer && clearTimeout(this.timer);
     }
     _load(){
+        var this_ = this
         var chatArray = [];
         Utils.getValue("chatData", (err, result)=>{
             var chatData = JSON.parse(result);
             if (chatData && chatData.length) {
-                this._loadStorageMessages();
+                this_._loadStorageMessages();
             }else{
-                this.setState({
+                this_.setState({
                     showHeaderComponent:false
                 })
-                this._loadDefaultMessages();
+                this_._loadDefaultMessages();
             }
         })
     }
@@ -359,6 +360,7 @@ class MessagePage extends Component{
     }
     // 方法2
     _loadStorageMessages(){
+        var this_ = this
         Utils.getStorageData((chatData, data, index, optionData, optionIndex, currentCourse, currentCourseIndex)=>{
             // console.log(chatData);
             // console.log(data);
@@ -366,7 +368,7 @@ class MessagePage extends Component{
             // console.log(optionData);
             // console.log(optionIndex);
             
-            this.setState({
+            this_.setState({
                 chatData:chatData,
                 data:data,
                 index:index,
@@ -380,21 +382,21 @@ class MessagePage extends Component{
             }, ()=>{
                 if (currentCourse) {
                     // 先更改数据源，后加载缓存数据
-                    this.setState({
+                    this_.setState({
                         loading:false
                     }, ()=>{
-                        this._fetchCourseInfoForInit(currentCourse, "way2");
+                        this_._fetchCourseInfoForInit(currentCourse, "way2");
                     })
                 }else{
                     // 加载存储数据中所有的数据（最新10个数据）
                     var array = [];
-                    for (var i = this.state.chatData.length - 1; i > this.state.chatData.length-1-this.state.count; i--) {
-                        if(this.state.chatData[i]){
-                            array.push(this.state.chatData[i]);
+                    for (var i = this_.state.chatData.length - 1; i > this_.state.chatData.length-1-this_.state.count; i--) {
+                        if(this_.state.chatData[i]){
+                            array.push(this_.state.chatData[i]);
                         }
                     }
                     array = array.reverse();
-                    this._loadStorageMessage(array, 0, array.length, false);        
+                    this_._loadStorageMessage(array, 0, array.length, false);        
                 }
                 
             })
@@ -517,11 +519,11 @@ class MessagePage extends Component{
         Utils.setValue("optionIndex", JSON.stringify(this.state.optionIndex));
     }
     // ---------------------动画事件
-    _loadGrowAni(){
+    _loadGrowAni(num){
         this._growAni();
         this.setState({
             showGrowAni:true,
-            growNum:40
+            growNum:num
         }, ()=>{
             this.timer = setTimeout(()=>{
                 this.setState({
@@ -582,6 +584,7 @@ class MessagePage extends Component{
     }
     // ---------------------网络请求
     _fetchCourseInfoWithPk(course){
+        var this_ = this;
         Utils.isLogin((token)=>{
             if (token) {
                 console.log(1);
@@ -599,16 +602,16 @@ class MessagePage extends Component{
                         return
                     }
                     
-                    this.setState({
+                    this_.setState({
                         courseIndex:response.learn_extent.last_lesson    //记录进度
                     }, ()=>{
                         // 存储课程进度下标
                         Utils.setValue("currentCourseIndex", JSON.stringify(this.state.courseIndex));
-                        var courseIndex = this.state.courseIndex;  //进度
-                        this.setState({
+                        var courseIndex = this_.state.courseIndex;  //进度
+                        this_.setState({
                             totalData:array
                         }, ()=>{
-                            this._loadMessages(courseIndex+1)
+                            this_._loadMessages(courseIndex+1)
                         })
                     })
                 }, (err) => {
@@ -620,6 +623,7 @@ class MessagePage extends Component{
         })
     }
     _fetchCourseInfoForInit(course, way){
+        var this_ = this;
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "get",
@@ -628,7 +632,7 @@ class MessagePage extends Component{
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
                     console.log(response);
-                    this.setState({
+                    this_.setState({
                         loading:true
                     })
                     // 方法1，捕获异常
@@ -640,40 +644,40 @@ class MessagePage extends Component{
                         return;
                     }
                     
-                    var courseIndex = this.state.courseIndex;
+                    var courseIndex = this_.state.courseIndex;
                     // 更改数据源
                     if(array[courseIndex+1]){
-                        this.setState({
+                        this_.setState({
                             data:array[courseIndex+1],
                             optionData:[],
                             optionIndex:0
                         }, ()=>{
-                            this._storeDataIndex();
+                            this_._storeDataIndex();
 
                             if (way == "way1") {
                                 // 方法1
-                                this.setState({
-                                    dataSource:this.state.chatData
+                                this_.setState({
+                                    dataSource:this_.state.chatData
                                 }, ()=>{
-                                    if (this.state.currentItem.action) {
-                                        this.setState({
+                                    if (this_.state.currentItem.action) {
+                                        this_.setState({
                                             showAction:true
                                         })
                                     }else{
-                                        this._loadStorageLastItem();
+                                        this_._loadStorageLastItem();
                                     }
                                 })
                             }else{
                                 // 方法2
                                 // 加载存储数据中所有的数据（最新10个数据）
                                 var array = [];
-                                for (var i = this.state.chatData.length - 1; i > this.state.chatData.length-1-this.state.count; i--) {
-                                    if(this.state.chatData[i]){
-                                        array.push(this.state.chatData[i]);
+                                for (var i = this_.state.chatData.length - 1; i > this_.state.chatData.length-1-this_.state.count; i--) {
+                                    if(this_.state.chatData[i]){
+                                        array.push(this_.state.chatData[i]);
                                     }
                                 }
                                 array = array.reverse();
-                                this._loadStorageMessage(array, 0, array.length);
+                                this_._loadStorageMessage(array, 0, array.length);
                             }
                         })
                     }
@@ -686,9 +690,10 @@ class MessagePage extends Component{
         })
     }
     _fetchUserInfo(){
+        var this_ = this
         Utils.isLogin((token)=>{
             if (token) {
-                const {setParams} = this.props.navigation;
+                const {setParams} = this_.props.navigation;
                 var type = "get",
                     url = Http.whoami,
                     token = token,
@@ -696,7 +701,7 @@ class MessagePage extends Component{
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
                     console.log(response);
                     // Util.updateInfo(json);
-                    this.setState({
+                    this_.setState({
                         userInfo:response
                     })
                     setParams({userinfo:response})
@@ -710,11 +715,13 @@ class MessagePage extends Component{
         
     }
     _fetchAddReward(course, courseIndex, chapter, growNum, zuanNum){
+        var this_ = this;
         Utils.isLogin((token)=>{
             if (token) {
+                const {setParams, state} = this_.props.navigation;
                 if (!chapter || chapter == "") {
                     //直接要下一条数据
-                    this._loadClickBtnAction();
+                    this_._loadClickBtnAction();
                     return
                 }
                 var type = "put",
@@ -729,61 +736,66 @@ class MessagePage extends Component{
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
                     console.log(response);
-                    // this._loadGrowAni();
-                    // this._loadZuanAni(GrowAniTime);
-                    // this._loadGradeAni(GrowAniTime+ZuanAniTime);
-                    
-                    
-                    var growAni = false,
-                        zuanAni = false;
-                    if (json.experience > this.state.userinfo.experience) {
-                        // 打开经验动画
-                        growAni = true
-                        this._loadGrowAni();
-                    }
-                    if (json.diamond > this.state.userinfo.diamond) {
-                        // 打开钻石动画
-                        zuanAni = true
-                        if (growAni){
-                            this._loadZuanAni(GrowAniTime);
-                        }else{
-                            this._loadZuanAni(0);
-                        } 
-                    }
-                    if(this.state.userinfo.grade.current_name != json.grade.current_name){
-                        // 打开升级动画
-                        if (growAni) {
-                            if (zuanAni) {
-                                this._loadGradeAni(GrowAniTime+ZuanAniTime);
-                            }else{
-                                this._loadGradeAni(GrowAniTime);
-                            }
-                        }else{
-                            if (zuanAni) {
-                                this._loadGradeAni(ZuanAniTime);
-                            }else{
-                                this._loadGradeAni(0);
-                            }
-                        } 
-                    }
-
+                    var json = state.params.userinfo;
                     // 更新个人信息
-                    this.setState({
+                    this_.setState({
                         userInfo:response
                     })
                     setParams({userinfo:response})
+
+                    
+                    var growAni = false,
+                        zuanAni = false;
+                    if (response.experience > json.experience) {
+                        // 打开经验动画
+                        growAni = true
+                        this_._loadGrowAni(growNum);
+                    }
+                    if (response.diamond > json.diamond) {
+                        // 打开钻石动画
+                        zuanAni = true
+                        if (growAni){
+                            this_._loadZuanAni(GrowAniTime);
+                        }else{
+                            this_._loadZuanAni(0);
+                        } 
+                    }
+                    if(json.grade.current_name != response.grade.current_name){
+                        // 打开升级动画
+                        if (growAni) {
+                            if (zuanAni) {
+                                this_._loadGradeAni(GrowAniTime+ZuanAniTime);
+                            }else{
+                                this_._loadGradeAni(GrowAniTime);
+                            }
+                        }else{
+                            if (zuanAni) {
+                                this_._loadGradeAni(ZuanAniTime);
+                            }else{
+                                this_._loadGradeAni(0);
+                            }
+                        } 
+                    }
+                    
+                    // // 更新个人信息
+                    // this_.setState({
+                    //     userInfo:response
+                    // })
+                    // setParams({userinfo:response})
             
-                    this._loadClickBtnAction();
+                    this_._loadClickBtnAction();
+                    
                 }, (err) => {
-                    // console.log(err);
+                    console.log(err);
                     // Utils.showMessage('网络请求失败');
-                    this._loadClickBtnAction();
+                    this_._loadClickBtnAction();
                 });
             }
         })
         
     }
     _fetchUpdateExtent(course, courseIndex){
+        var this_ = this;
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "post",
@@ -795,14 +807,13 @@ class MessagePage extends Component{
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
                     console.log(response);
-                    this._loadClickBtnAction();
+                    this_._loadClickBtnAction();
                 }, (err) => {
                     // console.log(err);
                     // Utils.showMessage('网络请求失败');
                 });
             } 
-        })
-        
+        }) 
     }
     
     // ---------------------点击事件
@@ -823,18 +834,19 @@ class MessagePage extends Component{
         }else if (this.state.actionTag == actionRestartStudyTag) {
             actionText = "重新学习"
         }
-
+        
+        var this_ = this;
         Utils.isLogin((token)=>{
-            if (this.state.actionTag == actionChooseCourseTag && !token){
+            if (this_.state.actionTag == actionChooseCourseTag && !token){
                 // 点击选择课程去登陆的时候
-            }else if(this.state.actionTag == actionChooseCourseTag && !this.state.chooseCourse){
+            }else if(this_.state.actionTag == actionChooseCourseTag && !this_.state.chooseCourse){
                 //没有选课程
-                this.setState({
+                this_.setState({
                     showAction:true
                 })
             }else{
                 // 去掉点选择课程登录的时候，不打印选择课程
-                this._loadAnswer(actionText)    //界面显示人工回复
+                this_._loadAnswer(actionText)    //界面显示人工回复
             }
         })
 
@@ -899,23 +911,24 @@ class MessagePage extends Component{
         }
     }
     _loadChooseCourse(){
+        var this_ = this;
         Utils.isLogin((token)=>{
             if (token) {
                 // 已登录
                 console.log("go to chooseCourse");
-                this.props.navigation.navigate('CourseList', {user:'', callback:(course, courseIndex)=>{
-                    this.setState({
+                this_.props.navigation.navigate('CourseList', {user:'', callback:(course, courseIndex)=>{
+                    this_.setState({
                         chooseCourse:course,
                         chooseCourseIndex:courseIndex
                     }, ()=>{
-                        if (this.state.chooseCourse && this.state.chooseCourse != this.state.course) {
+                        if (this_.state.chooseCourse && this_.state.chooseCourse != this_.state.course) {
                             // 按钮由选择课程-->开始学习
-                            this.setState({
+                            this_.setState({
                                 actionTag:actionBeginStudyTag,
                                 showAction:true
                             })
                         }else{
-                            this.setState({
+                            this_.setState({
                                 // actionTag:actionBeginStudyTag,
                                 showAction:true
                             })
@@ -925,12 +938,12 @@ class MessagePage extends Component{
             }else{
                 console.log("go to login .");
                 // 未登录
-                this.props.navigation.navigate('Login', {user:'', callback:()=>{
-                    this.setState({
+                this_.props.navigation.navigate('Login', {user:'', callback:()=>{
+                    this_.setState({
                         actionTag:actionChooseCourseTag,
                         showAction:true
                     })
-                    this._fetchUserInfo();
+                    this_._fetchUserInfo();
                 }})
             }
         })
@@ -1056,17 +1069,18 @@ class MessagePage extends Component{
         this._loadLuntan();
     }
     _loadLuntan(){
+        var this_ = this;
         Utils.isLogin((token)=>{
             if (token) {
                 // 已登录
                 console.log("go to luntan");
-                this.props.navigation.navigate('Forum')
+                this_.props.navigation.navigate('Forum')
             }else{
                 console.log("go to login .");
                 // 未登录
-                this.props.navigation.navigate('Login', {user:'', callback:()=>{
+                this_.props.navigation.navigate('Login', {user:'', callback:()=>{
                     
-                    this._fetchUserInfo();
+                    this_._fetchUserInfo();
                 }})
             }
         })
