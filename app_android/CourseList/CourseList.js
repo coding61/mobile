@@ -62,7 +62,7 @@ class CourseItem extends Component {
                     })
                     .then(responseJson=> {
                       if (responseJson !== 'fail') {
-                        _this.props.navigation.state.params.callback(_this.props.pk, 0);
+                        _this.props.navigation.state.params.callback(_this.props.pk, 0, true);
                         _this.props.navigation.goBack();
                       } else {
                         alert('失败，请重试');
@@ -70,8 +70,11 @@ class CourseItem extends Component {
                     })
           }
         })
+      } else if (this.props.status === 'processing'){
+        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, false);
+        this.props.navigation.goBack();
       } else {
-        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson);
+        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, true);
         this.props.navigation.goBack();
       }
     }
