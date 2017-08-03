@@ -36,7 +36,8 @@ class CourseItem extends Component {
     super();
   }
   onPress() {
-    if (this.props.status === 'nostart') {
+    console.log(this.props.isopen)
+    if (this.props.isopen === false) {
       alert('课程未开放');
     } else {
      this.props.changeAll(!this.props.isSelected, this.props.pk); 
@@ -45,11 +46,11 @@ class CourseItem extends Component {
   render() {
 
     return (
-        <TouchableOpacity onPress={this.onPress.bind(this)} style={[CourseStyle.itemStyle,this.props.status === 'nostart'?({backgroundColor: 'rgb(230, 230, 230)'}):(this.props.isSelected?({backgroundColor: 'rgb(252, 189, 209)'}):({backgroundColor: 'white'}))]}>
+        <TouchableOpacity onPress={this.onPress.bind(this)} style={[CourseStyle.itemStyle,this.props.isopen === false?({backgroundColor: 'rgb(230, 230, 230)'}):(this.props.isSelected?({backgroundColor: 'rgb(252, 189, 209)'}):({backgroundColor: 'white'}))]}>
           <Text numberOfLines={1} style={{backgroundColor: 'rgba(255,255,255,0)', fontSize: 11, marginTop: 15}}>{this.props.title}</Text>
           <Image style={{width: 50, height: 50, marginTop: 15}} source={{uri: this.props.headImg}}/>
           <Text numberOfLines={4} style={{marginBottom: 15, letterSpacing: 2, lineHeight: 12, marginTop: 15, width: width / 3 - 20, fontSize: 10, color: 'rgb(150, 151, 152)'}}>{this.props.text}</Text>
-          <Image style={CourseStyle.itemImgStyle} source={itemHead[this.props.status]} />
+          {this.props.isopen === false?(<Image style={CourseStyle.itemImgStyle} source={itemHead['nostart']} />):(this.props.status === 'nostart'?(null):(<Image style={CourseStyle.itemImgStyle} source={itemHead[this.props.status]} />))}
         </TouchableOpacity> 
     )
   }
@@ -84,7 +85,7 @@ class CourseFlat extends Component {
 
   _keyExtractor = (item, index) => index
   _renderItem = ({item}) => {
-    return  (<CourseItem isSelected={item.isSelected} changeAll={this.props.changeAll} pk={item.pk} status={item.learn_extent.status} title={item.name} headImg={item.images} text={item.content} />)
+    return  (<CourseItem isSelected={item.isSelected} changeAll={this.props.changeAll} pk={item.pk} isopen={item.isopen} status={item.learn_extent.status} title={item.name} headImg={item.images} text={item.content} />)
   }
   render() {
     return (
@@ -131,7 +132,6 @@ class CourseList extends Component {
   }
   navigatePress = () => {
     if (this.state.selectData !== null) {
-      console.log(this.state.selectData)
       if (this.state.selectData.learn_extent.status === 'finish') {
         Alert.alert('提示','是否重新学习此课程',
         [{text: '否', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
