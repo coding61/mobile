@@ -36,12 +36,70 @@ class CourseItem extends Component {
     super();
   }
   onPress() {
-    console.log(this.props.isopen)
-    if (this.props.isopen === false) {
-      alert('课程未开放');
-    } else {
-     this.props.changeAll(!this.props.isSelected, this.props.pk); 
+    function toBack() {
+      if (this.props.status === 'finish') {
+        var _this = this;
+        AsyncStorage.getItem("token", function(errs, results) {
+          if (results) {
+            fetch('https://www.cxy61.com/program_girl/userinfo/update_learnextent/',{
+                      method: "POST",
+                      headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Token ' + results
+                      },
+                      body: JSON.stringify({
+                        course: _this.props.pk,
+                        lesson: "0",
+                      }),
+                    })
+                    .then(response=> {
+                      if (response.status === 200) {
+                        return response.json()
+                      } else {
+                        return 'fail'
+                      }
+                    })
+                    .then(responseJson=> {
+                      if (responseJson !== 'fail') {
+                        _this.props.navigation.state.params.callback(_this.props.pk, 0);
+                        _this.props.navigation.goBack();
+                      } else {
+                        alert('失败，请重试');
+                      }
+                    })
+          }
+        })
+      } else {
+        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson);
+        this.props.navigation.goBack();
+      }
     }
+    if (this.props.isopen === true) {
+      if (this.props.status === 'nostart') {
+        toBack.bind(this)();
+      } else if (this.props.status === 'processing') {
+        Alert.alert('','你是否确定要继续学习？',
+        [{text: '是', onPress: () => toBack.bind(this)(), style: 'cancel'},
+        {text: '否', onPress: () => {}}
+        ],{ cancelable: false })
+      } else if (this.props.status === 'finish') {
+        Alert.alert('','你是否确定要再学一遍？',
+        [{text: '是', onPress: () => toBack.bind(this)(), style: 'cancel'},
+        {text: '否', onPress: () => {}}
+        ],{ cancelable: false })
+      } else {}
+    } else {
+      Alert.alert('','此课程尚未开放',
+      [{text: '确认', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
+      ],{ cancelable: false })
+    }
+
+    // if (this.props.isopen === false) {
+    //   alert('课程未开放');
+    // } else {
+    //  this.props.changeAll(!this.props.isSelected, this.props.pk); 
+    // }
   }
   render() {
 
@@ -85,7 +143,7 @@ class CourseFlat extends Component {
 
   _keyExtractor = (item, index) => index
   _renderItem = ({item}) => {
-    return  (<CourseItem isSelected={item.isSelected} changeAll={this.props.changeAll} pk={item.pk} isopen={item.isopen} status={item.learn_extent.status} title={item.name} headImg={item.images} text={item.content} />)
+    return  (<CourseItem navigation={this.props.navigation} last_lesson={item.learn_extent.last_lesson} isSelected={item.isSelected} changeAll={this.props.changeAll} pk={item.pk} isopen={item.isopen} status={item.learn_extent.status} title={item.name} headImg={item.images} text={item.content} />)
   }
   render() {
     return (
@@ -118,9 +176,10 @@ class CourseList extends Component {
     headerTitleStyle: {
       color: 'white',
       fontWeight: '400'
-    },
-    headerRight: <RightBtn press={()=>navigation.state.params.navigatePress()} />
+    }
+    // headerRight: <RightBtn press={()=>navigation.state.params.navigatePress()} />
   })
+
   constructor() {
     super();
     let dataArr = new Array();
@@ -130,21 +189,21 @@ class CourseList extends Component {
     }
 
   }
-  navigatePress = () => {
-    if (this.state.selectData !== null) {
-      if (this.state.selectData.learn_extent.status === 'finish') {
-        Alert.alert('提示','是否重新学习此课程',
-        [{text: '否', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: '是', onPress: () => this.goReset()},
-        ],{ cancelable: false })
-      } else {
-      this.props.navigation.state.params.callback(this.state.selectData.pk, this.state.selectData.learn_extent.last_lesson);
-      this.props.navigation.goBack();
-      } 
-    } else {
-      alert('还未选择课程');
-    }
-  }
+  // navigatePress = () => {
+  //   if (this.state.selectData !== null) {
+  //     if (this.state.selectData.learn_extent.status === 'finish') {
+  //       Alert.alert('提示','是否重新学习此课程',
+  //       [{text: '否', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+  //       {text: '是', onPress: () => this.goReset()},
+  //       ],{ cancelable: false })
+  //     } else {
+  //     this.props.navigation.state.params.callback(this.state.selectData.pk, this.state.selectData.learn_extent.last_lesson);
+  //     this.props.navigation.goBack();
+  //     } 
+  //   } else {
+  //     alert('还未选择课程');
+  //   }
+  // }
   goReset() {
     var _this = this;
     AsyncStorage.getItem("token", function(errs, results) {
@@ -263,7 +322,7 @@ class CourseList extends Component {
   }
   _keyExtractor = (item, index) => index
   _renderItem = ({item}) => {
-    return  (<CourseFlat changeAll={this.changeAll.bind(this)} data={item} />)
+    return  (<CourseFlat navigation={this.props.navigation} changeAll={this.changeAll.bind(this)} data={item} />)
   }
   render() {
     return (
