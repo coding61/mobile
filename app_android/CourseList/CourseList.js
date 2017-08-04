@@ -108,7 +108,7 @@ class CourseItem extends Component {
         this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, false);
         this.props.navigation.goBack();
       } else {
-        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, true);
+        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, false);
         this.props.navigation.goBack();
       }
     }
