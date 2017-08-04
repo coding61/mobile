@@ -93,7 +93,7 @@ class MessagePage extends Component{
     // -----导航栏自定制
     static navigationOptions = ({navigation}) => {
         const {state, setParams, goBack, navigate} = navigation;
-        var json = state.params.userinfo;
+        var json = state.params.userinfo?state.params.userinfo:"";
         if (json && json != "") {
             var pw = 0;
             if (json.grade.current_all_experience != json.grade.next_all_experience) {
@@ -748,9 +748,9 @@ class MessagePage extends Component{
                     if (response.experience > json.experience) {
                         // 打开经验动画
                         growAni = true
-                        this_._loadGrowAni(growNum);
+                        this_._loadGrowAni(response.experience-json.experience);
                     }
-                    if (response.diamond > json.diamond) {
+                    if (response.diamond > json.diamond) {-
                         // 打开钻石动画
                         zuanAni = true
                         if (growAni){
@@ -855,7 +855,7 @@ class MessagePage extends Component{
             // TODO:判断是否登录，如果未登录，跳到登录页，否则，跳到选择课程页
             // 选择课程
             
-            this._loadChooseCourse();
+            this._loadChooseCourse(false);
             
             /*
             this.setState({
@@ -909,7 +909,7 @@ class MessagePage extends Component{
             }
         }
     }
-    _loadChooseCourse(){
+    _loadChooseCourse(help){
         var this_ = this;
         Utils.isLogin((token)=>{
             if (token) {
@@ -933,6 +933,25 @@ class MessagePage extends Component{
                                     actionTag:actionBeginStudyTag,
                                     showAction:true
                                 })
+                            }else if(this_.state.chooseCourse == this_.state.course){
+                                // 课程相等，继续上次学习, 重新学习/开始学习-->变为原来的
+                                if (this_.state.actionTag == actionBeginStudyTag || this_.state.actionTag == actionRestartStudyTag) {
+                                    if (this_.state.currentItem.record == true) {
+                                        this.setState({
+                                            actionTag:actionRecordTag,
+                                            showAction:true
+                                        })
+                                    }else{
+                                        this_.setState({
+                                            actionTag:actionCommonTag,
+                                            showAction:true
+                                        })
+                                    }
+                                }else{
+                                    this_.setState({
+                                        showAction:true
+                                    })
+                                }
                             }else{
                                 this_.setState({
                                     showAction:true
@@ -949,11 +968,16 @@ class MessagePage extends Component{
                 console.log("go to login .");
                 // 未登录
                 this_.props.navigation.navigate('Login', {user:'', callback:()=>{
-                    this_.setState({
-                        actionTag:actionChooseCourseTag,
-                        showAction:true
-                    })
-                    this_._fetchUserInfo();
+                    if (help == true) {
+                        //点了帮助选择课程
+                        this_._fetchUserInfo();
+                    }else{
+                        this_.setState({
+                            actionTag:actionChooseCourseTag,
+                            showAction:true
+                        })
+                        this_._fetchUserInfo();
+                    }
                 }})
             }
         })
@@ -1058,7 +1082,7 @@ class MessagePage extends Component{
     // 选择课程点击
     _clickChooseCourse = ()=>{
         this.setState({showHelpActions:false})
-        this._loadChooseCourse();
+        this._loadChooseCourse(true);
     }
     // 寻找帮助点击
     _clickFindHelp = ()=>{
@@ -1352,28 +1376,56 @@ class MessagePage extends Component{
         return (
             item.exercises
             ?
-                <View style={{}}>
-                    <View style={styles.actions}>
-                        {
-                            item.action.map((a, i)=>{
-                                return (
-                                    <TouchableOpacity style={a.select?styles.btnOptionSelect:styles.btnOption} key={i} onPress={this._clickOptionEvent.bind(this, i, a.content)}>
-                                        <Text style={a.select?{color:'white'}:{color:'rgb(250, 80, 131)', fontSize:13}}>{a.content}</Text>
-                                    </TouchableOpacity>
-                                    
-                                )
-                            })
-                        }
-                        <TouchableOpacity onPress={this._clickOptionSubmitEvent.bind(this)}>
-                            <View style={styles.btnSubmit}>
-                                <Text style={{color:'white', fontSize:13}}>
-                                    {"Ok"}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                        
+                this.state.actionTag == actionBeginStudyTag
+                ?
+                    <View style={{}}>
+                        <View style={styles.actions}>
+                            <TouchableOpacity onPress={this._clickBtnActionEvent.bind(this)}>
+                                <View style={styles.btnSubmit}>
+                                    <Text style={{color:'white', fontSize:13}}>
+                                    {"开始学习"}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
+                :
+                    this.state.actionTag == actionRestartStudyTag
+                    ?
+                        <View style={{}}>
+                            <View style={styles.actions}>
+                                <TouchableOpacity onPress={this._clickBtnActionEvent.bind(this)}>
+                                    <View style={styles.btnSubmit}>
+                                        <Text style={{color:'white', fontSize:13}}>
+                                        {"重新学习"}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    :
+                        <View style={{}}>
+                            <View style={styles.actions}>
+                                {
+                                    item.action.map((a, i)=>{
+                                        return (
+                                            <TouchableOpacity style={a.select?styles.btnOptionSelect:styles.btnOption} key={i} onPress={this._clickOptionEvent.bind(this, i, a.content)}>
+                                                <Text style={a.select?{color:'white'}:{color:'rgb(250, 80, 131)', fontSize:13}}>{a.content}</Text>
+                                            </TouchableOpacity>
+                                            
+                                        )
+                                    })
+                                }
+                                <TouchableOpacity onPress={this._clickOptionSubmitEvent.bind(this)}>
+                                    <View style={styles.btnSubmit}>
+                                        <Text style={{color:'white', fontSize:13}}>
+                                            {"Ok"}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                                
+                            </View>
+                        </View>
             :
                 <View style={{}}>
                     <View style={styles.actions}>
