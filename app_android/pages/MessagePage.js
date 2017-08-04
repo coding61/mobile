@@ -742,7 +742,6 @@ class MessagePage extends Component{
                         userInfo:response
                     })
                     setParams({userinfo:response})
-
                     
                     var growAni = false,
                         zuanAni = false;
@@ -875,8 +874,8 @@ class MessagePage extends Component{
             })
             */
             
-        }else if (this.state.actionTag == actionBeginStudyTag) {
-            //开始学习
+        }else if (this.state.actionTag == actionBeginStudyTag || this.state.actionTag == actionRestartStudyTag) {
+            // 开始学习
             this.setState({
                 course:this.state.chooseCourse,
                 courseIndex:this.state.chooseCourseIndex,
@@ -916,22 +915,33 @@ class MessagePage extends Component{
             if (token) {
                 // 已登录
                 console.log("go to chooseCourse");
-                this_.props.navigation.navigate('CourseList', {user:'', callback:(course, courseIndex)=>{
+                this_.props.navigation.navigate('CourseList', {user:'', callback:(course, courseIndex, restart)=>{
                     this_.setState({
                         chooseCourse:course,
                         chooseCourseIndex:courseIndex
                     }, ()=>{
-                        if (this_.state.chooseCourse && this_.state.chooseCourse != this_.state.course) {
-                            // 按钮由选择课程-->开始学习
-                            this_.setState({
-                                actionTag:actionBeginStudyTag,
-                                showAction:true
-                            })
+                        if (this_.state.chooseCourse) {
+                            if (restart == true) {
+                                // 按钮由选择课程-->重新学习
+                                this_.setState({
+                                    actionTag:actionRestartStudyTag,
+                                    showAction:true
+                                })
+                            }else if (this_.state.chooseCourse != this_.state.course) {
+                                // 按钮由选择课程-->开始学习
+                                this_.setState({
+                                    actionTag:actionBeginStudyTag,
+                                    showAction:true
+                                })
+                            }else{
+                                this_.setState({
+                                    showAction:true
+                                })
+                            }
                         }else{
                             this_.setState({
-                                // actionTag:actionBeginStudyTag,
                                 showAction:true
-                            })
+                            })                                
                         }
                     })
                 }})
