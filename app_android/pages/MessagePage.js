@@ -85,10 +85,12 @@ class MessagePage extends Component{
             bigImgUrl:"",                //放大图片的 url
             showBigImgView:false,        //是否显示大图组件
             showFindHelpView:false,      //是否显示查找帮助组件
+            loadStorageMsg:false,        //判断加载的是缓存数据还是新数据
 
         };
         this.leftEnterValue = new Animated.Value(0)     //左侧进入动画
         this.growAniValue = new Animated.Value(0)       //经验动画
+        this.bottomEnterValue = new Animated.Value(0)   //底部进入动画
     };
     // -----导航栏自定制
     static navigationOptions = ({navigation}) => {
@@ -158,12 +160,11 @@ class MessagePage extends Component{
         // Utils.setValue("chatData", JSON.stringify(chatArray));
         // Utils.setValue("token", null);
 
-
         this._fetchUserInfo();
         this._load();
-        // this._loadDefaultMessages();
     }
     componentDidMount() {
+        
     }
     componentDidUpdate(prevProps, prevState) {
         /*
@@ -177,6 +178,7 @@ class MessagePage extends Component{
     }
 
     componentWillUnmount() {
+        // this.props.navigation.setParams({userinfo:""})
         this.timer && clearTimeout(this.timer);
     }
     _load(){
@@ -194,7 +196,13 @@ class MessagePage extends Component{
             }
         })
     }
+    // -------------------------------------------默认数据&新数据相关
     _loadDefaultMessages(){
+        // 有动画标志
+        this.setState({
+            loadStorageMsg:false
+        })
+
         var array = chatdata["default"];
 
         for (var i = 0; i < array.length; i++) {
@@ -215,6 +223,11 @@ class MessagePage extends Component{
         })  
     }
     _loadMessages(courseIndex){
+        // 有动画标志
+        this.setState({
+            loadStorageMsg:false
+        })
+
         if (!this.state.totalData[courseIndex]) {
             Utils.showMessage("恭喜，您已经完成本课程的学习。您可以选择其它课程，再继续");
             return
@@ -241,7 +254,10 @@ class MessagePage extends Component{
         })  
     }
     _loadMessage(arr, i, opt){
-        // this._leftAnimate(this.leftEnterValue);
+        // 有动画标志
+        this.setState({
+            loadStorageMsg:false
+        })
 
         //显示等待符号
         this.setState({
@@ -258,6 +274,8 @@ class MessagePage extends Component{
                     dataSource:array,
                     currentItem:item
                 },()=>{
+                    // this._leftAnimate();
+
                     // 1.存储消息
                     this._storeChatData(item, "message");
 
@@ -296,6 +314,7 @@ class MessagePage extends Component{
                         }
 
                         this.timer = setTimeout(()=>{
+                            // this._bottomAnimate();
                             this.setState({
                                 showAction:true
                             })
@@ -312,7 +331,7 @@ class MessagePage extends Component{
 
         })
     }
-    // -----------------缓存数据相关
+    // -------------------------------------------缓存数据相关
     // 方法1
     _loadStorageMessages1(){
         Utils.getStorageData((chatData, data, index, optionData, optionIndex, currentCourse, currentCourseIndex)=>{
@@ -347,6 +366,7 @@ class MessagePage extends Component{
                         dataSource:this.state.chatData
                     }, ()=>{
                         if (this.state.currentItem.action) {
+                            // this._bottomAnimate();
                             this.setState({
                                 showAction:true
                             })
@@ -360,6 +380,11 @@ class MessagePage extends Component{
     }
     // 方法2
     _loadStorageMessages(){
+        // 无动画标志
+        this.setState({
+            loadStorageMsg:true
+        })
+
         var this_ = this
         Utils.getStorageData((chatData, data, index, optionData, optionIndex, currentCourse, currentCourseIndex)=>{
             // console.log(chatData);
@@ -455,6 +480,7 @@ class MessagePage extends Component{
         }
 
         if (this.state.currentItem.action) {
+            // this._bottomAnimate();
             if (this.state.currentItem.action == "点击选择课程") {
                 this.setState({
                     actionTag:actionChooseCourseTag,
@@ -485,7 +511,7 @@ class MessagePage extends Component{
             }
         }
     }
-    // ------------------数据存储
+    // -------------------------------------------数据存储
     _storeChatData(item, tag){
         // 1.存储数据
         var chatArray = [];
@@ -518,7 +544,7 @@ class MessagePage extends Component{
         Utils.setValue("optionData", JSON.stringify(this.state.optionData));
         Utils.setValue("optionIndex", JSON.stringify(this.state.optionIndex));
     }
-    // ---------------------动画事件
+    // -------------------------------------------动画事件
     _loadGrowAni(num){
         this._growAni();
         this.setState({
@@ -582,7 +608,18 @@ class MessagePage extends Component{
             }
         ).start(()=>{})
     }
-    // ---------------------网络请求
+    _bottomAnimate(){
+        this.bottomEnterValue.setValue(0);
+        Animated.timing(
+            this.bottomEnterValue,
+            {
+                toValue:1,
+                duration:1000,
+                easing:Easing.linear
+            }
+        ).start(()=>{})
+    }
+    // ------------------------------------------网络请求
     _fetchCourseInfoWithPk(course){
         var this_ = this;
         Utils.isLogin((token)=>{
@@ -593,7 +630,7 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    console.log(response);
+                    // console.log(response);
                     try{
                         var array = JSON.parse(response.json);
                     }
@@ -617,7 +654,7 @@ class MessagePage extends Component{
                 }, (err) => {
                     console.log(2);
                     // console.log(err);
-                    Utils.showMessage('网络请求失败');
+                    // Utils.showMessage('网络请求失败');
                 });
             }
         })
@@ -631,7 +668,7 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    console.log(response);
+                    // console.log(response);
                     this_.setState({
                         loading:true
                     })
@@ -660,6 +697,7 @@ class MessagePage extends Component{
                                     dataSource:this_.state.chatData
                                 }, ()=>{
                                     if (this_.state.currentItem.action) {
+                                        // this._bottomAnimate();
                                         this_.setState({
                                             showAction:true
                                         })
@@ -684,7 +722,7 @@ class MessagePage extends Component{
 
                 }, (err) => {
                     // console.log(err);
-                    Utils.showMessage('网络请求失败');
+                    // Utils.showMessage('网络请求失败');
                 });
             }
         })
@@ -699,7 +737,7 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    console.log(response);
+                    // console.log(response);
                     // Util.updateInfo(json);
                     this_.setState({
                         userInfo:response
@@ -708,7 +746,7 @@ class MessagePage extends Component{
 
                 }, (err) => {
                     // console.log(err);
-                    Utils.showMessage('网络请求失败');
+                    // Utils.showMessage('网络请求失败');
                 });
             }
         })
@@ -735,7 +773,12 @@ class MessagePage extends Component{
                         diamond_amount:zuanNum
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    console.log(response);
+                    // console.log(response);
+                    if (response.status == -4) {
+                        // 重复领奖
+                        this_._loadClickBtnAction();
+                        return
+                    }
                     var json = state.params.userinfo;
                     // 更新个人信息
                     this_.setState({
@@ -750,7 +793,7 @@ class MessagePage extends Component{
                         growAni = true
                         this_._loadGrowAni(response.experience-json.experience);
                     }
-                    if (response.diamond > json.diamond) {-
+                    if (response.diamond > json.diamond) {
                         // 打开钻石动画
                         zuanAni = true
                         if (growAni){
@@ -785,7 +828,7 @@ class MessagePage extends Component{
                     this_._loadClickBtnAction();
                     
                 }, (err) => {
-                    console.log(err);
+                    // console.log(err);
                     // Utils.showMessage('网络请求失败');
                     this_._loadClickBtnAction();
                 });
@@ -805,7 +848,7 @@ class MessagePage extends Component{
                         lesson:courseIndex
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    console.log(response);
+                    // console.log(response);
                     this_._loadClickBtnAction();
                 }, (err) => {
                     // console.log(err);
@@ -815,7 +858,7 @@ class MessagePage extends Component{
         }) 
     }
     
-    // ---------------------点击事件
+    // ------------------------------------------点击事件
     // action 按钮 点击事件
     _clickBtnActionEvent(){
         //向下滚动
@@ -840,6 +883,7 @@ class MessagePage extends Component{
                 // 点击选择课程去登陆的时候
             }else if(this_.state.actionTag == actionChooseCourseTag && !this_.state.chooseCourse){
                 //没有选课程
+                // this._bottomAnimate();
                 this_.setState({
                     showAction:true
                 })
@@ -914,12 +958,14 @@ class MessagePage extends Component{
         Utils.isLogin((token)=>{
             if (token) {
                 // 已登录
-                console.log("go to chooseCourse");
-                this_.props.navigation.navigate('CourseList', {user:'', callback:(course, courseIndex, restart)=>{
+                // console.log("go to chooseCourse");
+                this_.props.navigation.navigate('CourseList', {callback:(course, courseIndex, restart)=>{
+                    // this.props.navigation.setParams({userinfo:""})
                     this_.setState({
                         chooseCourse:course,
                         chooseCourseIndex:courseIndex
                     }, ()=>{
+                        // this._bottomAnimate();
                         if (this_.state.chooseCourse) {
                             if (restart == true) {
                                 // 按钮由选择课程-->重新学习
@@ -965,13 +1011,14 @@ class MessagePage extends Component{
                     })
                 }})
             }else{
-                console.log("go to login .");
+                // console.log("go to login .");
                 // 未登录
-                this_.props.navigation.navigate('Login', {user:'', callback:()=>{
+                this_.props.navigation.navigate('Login', {callback:()=>{
                     if (help == true) {
                         //点了帮助选择课程
                         this_._fetchUserInfo();
                     }else{
+                        // this._bottomAnimate();
                         this_.setState({
                             actionTag:actionChooseCourseTag,
                             showAction:true
@@ -1073,7 +1120,7 @@ class MessagePage extends Component{
             this.state.options.splice(this.state.options.indexOf(option), 1)
         }
         this.state.options.sort()
-        console.log(this.state.options)
+        // console.log(this.state.options)
 
         this.setState({
             currentItem:item
@@ -1107,12 +1154,12 @@ class MessagePage extends Component{
         Utils.isLogin((token)=>{
             if (token) {
                 // 已登录
-                console.log("go to luntan");
+                // console.log("go to luntan");
                 this_.props.navigation.navigate('Forum')
             }else{
-                console.log("go to login .");
+                // console.log("go to login .");
                 // 未登录
-                this_.props.navigation.navigate('Login', {user:'', callback:()=>{
+                this_.props.navigation.navigate('Login', {callback:()=>{
                     
                     this_._fetchUserInfo();
                 }})
@@ -1122,7 +1169,7 @@ class MessagePage extends Component{
     // 退出登录点击
     _clickQuitLogin = ()=>{
         const {setParams} = this.props.navigation;
-        setParams({userinfo:null})
+        setParams({userinfo:""})
         this.setState({
             loading:false,
             totalData:[],                //某课程总数据
@@ -1238,6 +1285,8 @@ class MessagePage extends Component{
             number:this.state.number+1,
             dataSource:array,
         }, ()=>{
+            // this._leftAnimate();
+
             this._storeChatData(dic, "line");
             
             //隐藏等待符号
@@ -1261,13 +1310,15 @@ class MessagePage extends Component{
             number:this.state.number+1,
             dataSource:array,
         }, ()=>{
+            // this._leftAnimate();
+
             this._storeChatData(dic, "answer");
         })
 
         // TODO:存储数据
     }
 
-    // ---------------------UI 布局
+    // ----------------------------------------------------------UI 布局
     _renderFindHelp(){
         return (
             <TouchableOpacity onPress={this._clickFindHelpShadow} style={styles.findHelpShadowView}>
@@ -1369,86 +1420,65 @@ class MessagePage extends Component{
                 
         )
     }
-    // action 按钮数据加载
+    // ----------------------------------------action 按钮数据加载
+    _renderBtnAction(text){
+        return (
+            <View style={{}}>
+                <View style={styles.actions}>
+                    <TouchableOpacity onPress={this._clickBtnActionEvent.bind(this)}>
+                        <View style={styles.btnSubmit}>
+                            <Text style={{color:'white', fontSize:13}}>
+                            {text}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+    }
+    _renderBtnActionOption(item){
+        return (
+            <View style={{}}>
+                <View style={styles.actions}>
+                    {
+                        item.action.map((a, i)=>{
+                            return (
+                                <TouchableOpacity style={a.select?styles.btnOptionSelect:styles.btnOption} key={i} onPress={this._clickOptionEvent.bind(this, i, a.content)}>
+                                    <Text style={a.select?{color:'white'}:{color:'rgb(250, 80, 131)', fontSize:13}}>{a.content}</Text>
+                                </TouchableOpacity>
+                                
+                            )
+                        })
+                    }
+                    <TouchableOpacity onPress={this._clickOptionSubmitEvent.bind(this)}>
+                        <View style={styles.btnSubmit}>
+                            <Text style={{color:'white', fontSize:13}}>
+                                {"Ok"}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    
+                </View>
+            </View>
+        )
+    }
     _renderBtnActions(){
         var item = this.state.data[this.state.index];
         item = this.state.currentItem;
         return (
-            item.exercises
+            this.state.actionTag == actionBeginStudyTag
             ?
-                this.state.actionTag == actionBeginStudyTag
-                ?
-                    <View style={{}}>
-                        <View style={styles.actions}>
-                            <TouchableOpacity onPress={this._clickBtnActionEvent.bind(this)}>
-                                <View style={styles.btnSubmit}>
-                                    <Text style={{color:'white', fontSize:13}}>
-                                    {"开始学习"}
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                :
-                    this.state.actionTag == actionRestartStudyTag
-                    ?
-                        <View style={{}}>
-                            <View style={styles.actions}>
-                                <TouchableOpacity onPress={this._clickBtnActionEvent.bind(this)}>
-                                    <View style={styles.btnSubmit}>
-                                        <Text style={{color:'white', fontSize:13}}>
-                                        {"重新学习"}
-                                        </Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    :
-                        <View style={{}}>
-                            <View style={styles.actions}>
-                                {
-                                    item.action.map((a, i)=>{
-                                        return (
-                                            <TouchableOpacity style={a.select?styles.btnOptionSelect:styles.btnOption} key={i} onPress={this._clickOptionEvent.bind(this, i, a.content)}>
-                                                <Text style={a.select?{color:'white'}:{color:'rgb(250, 80, 131)', fontSize:13}}>{a.content}</Text>
-                                            </TouchableOpacity>
-                                            
-                                        )
-                                    })
-                                }
-                                <TouchableOpacity onPress={this._clickOptionSubmitEvent.bind(this)}>
-                                    <View style={styles.btnSubmit}>
-                                        <Text style={{color:'white', fontSize:13}}>
-                                            {"Ok"}
-                                        </Text>
-                                    </View>
-                                </TouchableOpacity>
-                                
-                            </View>
-                        </View>
+                this._renderBtnAction("开始学习")
             :
-                <View style={{}}>
-                    <View style={styles.actions}>
-                        <TouchableOpacity onPress={this._clickBtnActionEvent.bind(this)}>
-                            <View style={styles.btnSubmit}>
-                                <Text style={{color:'white', fontSize:13}}>
-                                {
-                                    this.state.actionTag == actionBeginStudyTag
-                                    ?
-                                        "开始学习"
-                                    :
-                                        this.state.actionTag == actionRestartStudyTag
-                                        ?
-                                            "重新学习"
-                                        :
-                                            item.action
-                                }
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                        
-                    </View>
-                </View>
+                this.state.actionTag == actionRestartStudyTag
+                ?
+                    this._renderBtnAction("重新学习")
+                :
+                    item.exercises
+                    ?
+                        this._renderBtnActionOption(item)
+                    : 
+                        this._renderBtnAction(item.action)
         )
     }
     _renderBottomBtns(){
@@ -1467,8 +1497,109 @@ class MessagePage extends Component{
             </View>
         )
     }
-
-    // 正常数据加载
+    
+    // ----------------------------------------无动画消息
+    // 文本信息
+    _renderItemTextMessage(item){
+        return (
+            <View style={[styles.message, ]}>
+                <Image
+                  style={styles.avatar}
+                  source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                />
+                <View style={styles.msgView}>
+                    <View style={styles.messageView}>
+                        <Text style={styles.messageText}>
+                            {item.message}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        ) 
+    }
+    // 图片信息
+    _renderItemImgMessage(item){
+        return (
+            <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
+                <View style={styles.message}>
+                    <Image
+                      style={styles.avatar}
+                      source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                    />
+                    <View style={styles.msgView}>
+                        <Image
+                          style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
+                          source={{uri: item.img}}
+                        />
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+    // 链接信息
+    _renderItemLinkMessage(item){
+        return (
+            <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
+                <View style={styles.message}>
+                    <Image
+                      style={styles.avatar}
+                      source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                    />
+                    <View style={styles.msgView}>  
+                        <View style={[styles.messageView, {flex:1}]}>
+                            <Text style={styles.messageText}>
+                              {item.message}
+                            </Text>
+                            <Text style={{color:'rgb(84, 180, 225)'}}>
+                              {item.link=="www.code.com"?"点击打开编辑器":"点击打开新网页"}
+                            </Text>
+                        </View> 
+                        <Image
+                          style={{width:15, height:15, marginHorizontal:10}}
+                          source={require('../images/arrow.png')}
+                        />
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+    // 分割线信息 
+    _renderItemLineMessage(item){
+        return (
+            <View style={styles.sepLine}>
+                <Image
+                  style={styles.line}
+                  source={require('../images/line.png')}
+                />
+                <View style={{paddingHorizontal:10, backgroundColor:'rgb(229, 230, 231)'}}>
+                    <Text style={{color: 'rgb(166, 166, 166)'}}>
+                        {item.message}
+                    </Text>
+                </View>
+            </View>
+        )
+    }
+    // 用户回复信息
+    _renderItemAnswerMessage(item){
+        const {state, setParams, goBack, navigate} = this.props.navigation;
+        return (
+            <View style={styles.answer}>
+                <View style={styles.answerMsgView}>
+                    <View style={styles.answerView}>
+                        <Text style={styles.answerText}>
+                            {item.message}
+                        </Text>
+                    </View>
+                </View>
+                <Image
+                  style={styles.answerAvatar}
+                  source={{uri: state.params.userinfo?state.params.userinfo.avatar.replace("http://", "https://"):'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                />
+            </View>
+        )
+        
+    }
+    // 消息加载中
     _renderLoadingChat(){
         return (
             <View style={[styles.loadingChat,]}>
@@ -1480,101 +1611,88 @@ class MessagePage extends Component{
             </View>
         ) 
     }
+    // 无动画的消息
     _renderItemMessage(item, index){
+        
         return (
-            item.link
+            item.line == true
             ?
-                <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
-                    <View style={styles.message}>
-                        <Image
-                          style={styles.avatar}
-                          source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                        />
-                        <View style={styles.msgView}>  
-                            <View style={[styles.messageView, {flex:1}]}>
-                                <Text style={styles.messageText}>
-                                  {item.message}
-                                </Text>
-                                <Text style={{color:'rgb(84, 180, 225)'}}>
-                                  {item.link=="www.code.com"?"点击打开编辑器":"点击打开新网页"}
-                                </Text>
-                            </View> 
-                            <Image
-                              style={{width:15, height:15, marginHorizontal:10}}
-                              source={require('../images/arrow.png')}
-                            />
-                        </View>
-                    </View>
-                </TouchableOpacity>
+                this._renderItemLineMessage(item)
             :
-                item.img
+                item.question == false
                 ?
-                    <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
-                        <View style={styles.message}>
-                            <Image
-                              style={styles.avatar}
-                              source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                            />
-                            <View style={styles.msgView}>
-                                <Image
-                                  style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
-                                  source={{uri: item.img}}
-                                />
-                            </View>
-                        </View>
-                    </TouchableOpacity>
+                    this._renderItemAnswerMessage(item)
                 :
-                    <View style={[styles.message, ]}>
-                        <Image
-                          style={styles.avatar}
-                          source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                        />
-                        <View style={styles.msgView}>
-                            <View style={styles.messageView}>
-                                <Text style={styles.messageText}>
-                                    {item.message}
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
+                    item.link
+                    ?
+                        this._renderItemLinkMessage(item)
+                    :
+                        item.img
+                        ?
+                            this._renderItemImgMessage(item)
+                        :
+                            this._renderItemTextMessage(item)
+
         )
     }
-    
 
-    // 动画数据加载
-    _renderLoadingChatAni(){
+
+    // ---------------------------------------有动画消息
+    // 文本信息
+    _renderItemTextMessageAni(item){
         const translateX = this.leftEnterValue.interpolate({
             inputRange:[0, 1],
             outputRange:[-2000, 0]
         })
-        const opacity = this.leftEnterValue.interpolate({
-            inputRange:[0, 1],
-            outputRange:[0, 1]
-        })
         return (
-            <Animated.View style={[styles.loadingChat, {transform:[{translateX:translateX}], opacity:opacity}]}>
+            <Animated.View style={[styles.message, {transform:[{translateX:translateX}]}]}>
                 <Image
-                  style={{height:15}}
-                  source={require('../images/chat.gif')}
-                  resizeMode='contain'
+                  style={styles.avatar}
+                  source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                 />
+                <View style={styles.msgView}>
+                    <View style={styles.messageView}>
+                        <Text style={[styles.messageText, {}]}>
+                            {item.message}
+                        </Text>
+                    </View>
+                </View>
             </Animated.View>
-        )  
+        )
     }
-    _renderItemMessageAni(item, index){
+    // 图片信息
+    _renderItemImgMessageAni(item){
         const translateX = this.leftEnterValue.interpolate({
             inputRange:[0, 1],
             outputRange:[-2000, 0]
         })
-        const opacity = this.leftEnterValue.interpolate({
+        return (
+            <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
+                <Animated.View style={[styles.message, {transform:[{translateX:translateX}]}]}>
+                    <Image
+                      style={styles.avatar}
+                      source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                    />
+                    <View style={styles.msgView}>
+                        <Image
+                          style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
+                          source={{uri: item.img}}
+                        />
+                    </View>
+                </Animated.View>
+            </TouchableOpacity>
+        )
+    }
+    // 链接信息
+    _renderItemLinkMessageAni(item){
+        const translateX = this.leftEnterValue.interpolate({
             inputRange:[0, 1],
-            outputRange:[0, 1]
+            outputRange:[-2000, 0]
         })
 
         return (
-            item.link
-            ?
-                <Animated.View style={[styles.message, {transform:[{translateX:translateX}], opacity:opacity}]}>
+            <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
+                <Animated.View style={[styles.message, {transform:[{translateX:translateX}]}]}>
                     <Image
                       style={styles.avatar}
                       source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
@@ -1594,121 +1712,58 @@ class MessagePage extends Component{
                         />
                     </View>
                 </Animated.View>
-            :
-                item.img
-                ?
-                    index+1 == this.state.number
-                    ?
-                        <Animated.View style={[styles.message, {transform:[{translateX:translateX}], opacity:opacity}]}>
-                            <Image
-                              style={styles.avatar}
-                              source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                            />
-                            <View style={styles.msgView}>
-                                <Image
-                                  style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
-                                  source={{uri: item.img}}
-                                />
-                                <Text style={{color:'red'}}>
-                                    {index+1}{this.state.number}
-                                </Text>
-                            </View>
-                        </Animated.View>
-                    :
-                        <View style={[styles.message, ]}>
-                            <Image
-                              style={styles.avatar}
-                              source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                            />
-                            <View style={styles.msgView}>
-                                <Image
-                                  style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
-                                  source={{uri: item.img}}
-                                />
-                                <Text style={{}}>
-                                    {index+1}{this.state.number}
-                                </Text>
-                            </View>
-                        </View>
-                :
-                    index+1 == this.state.number
-                    ?
-                        <Animated.View style={[styles.message, {transform:[{translateX:translateX}], opacity:opacity}]}>
-                            <Image
-                              style={styles.avatar}
-                              source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                            />
-                            <View style={styles.msgView}>
-                                <View style={styles.messageView}>
-                                    <Text style={[styles.messageText, {color:'red'}]}>
-                                        {item.message}{index+1}{this.state.number}
-                                    </Text>
-                                </View>
-                            </View>
-                        </Animated.View>
-                    :
-                        <View style={[styles.message, ]}>
-                            <Image
-                              style={styles.avatar}
-                              source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                            />
-                            <View style={styles.msgView}>
-                                <View style={styles.messageView}>
-                                    <Text style={styles.messageText}>
-                                        {item.message}{index+1}{this.state.number}
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
+            </TouchableOpacity>
         )
-
     }
-
-
-    // 缓存数据加载
-    _renderItemChatStroage(item, index){
-        const {state, setParams, goBack, navigate} = this.props.navigation;
+    // 消息加载中
+    _renderLoadingChatAni(){
+        const translateX = this.leftEnterValue.interpolate({
+            inputRange:[0, 1],
+            outputRange:[-2000, 0]
+        })
+        const opacity = this.leftEnterValue.interpolate({
+            inputRange:[0, 1],
+            outputRange:[0, 1]
+        })
+        return (
+            <Animated.View style={[styles.loadingChat, {transform:[{translateX:translateX}], opacity:opacity}]}>
+                <Image
+                  style={{height:15}}
+                  source={require('../images/chat.gif')}
+                  resizeMode='contain'
+                />
+            </Animated.View>
+        )  
+    }
+    // 有动画的消息
+    _renderItemMessageAni(item, index){
+        
         return (
             item.line == true
             ?
-                <View style={styles.sepLine}>
-                    <Image
-                      style={styles.line}
-                      source={require('../images/line.png')}
-                    />
-                    <View style={{paddingHorizontal:10, backgroundColor:'rgb(229, 230, 231)'}}>
-                        <Text style={{color: 'rgb(166, 166, 166)'}}>
-                            {item.message}
-                        </Text>
-                    </View>
-                </View>
+                this._renderItemLineMessage(item)
             :
                 item.question == false
                 ?
-                    <View style={styles.answer}>
-                        <View style={styles.answerMsgView}>
-                            <View style={styles.answerView}>
-                                <Text style={styles.answerText}>
-                                    {item.message}
-                                </Text>
-                            </View>
-                        </View>
-                        <Image
-                          style={styles.answerAvatar}
-
-                          source={{uri: state.params.userinfo?state.params.userinfo.avatar.replace("http://", "https://"):'https://static1.bcjiaoyu.com/binshu.jpg'}}
-
-                        />
-                        
-                    </View>
+                    this._renderItemAnswerMessage(item)
                 :
-                    this._renderItemMessage(item, index)
+                    item.link
+                    ?
+                        index+1 == this.state.number?this._renderItemLinkMessageAni(item):this._renderItemLinkMessage(item)
+                    :
+                        item.img
+                        ?
+                            index + 1 == this.state.number?this._renderItemImgMessageAni(item):this._renderItemImgMessage(item)
+                        :
+                            index + 1 == this.state.number?this._renderItemTextMessageAni(item):this._renderItemTextMessage(item)
+
         )
     }
+
+    // ---------------------------------------消息列表
     _renderItem = ({item, index}) => (
-        this._renderItemChatStroage(item, index)
-        // this._renderItemMessage(item, index)
-        // this._renderItemMessageAni(item, index)
+        // this.state.loadStorageMsg?this._renderItemMessage(item, index):this._renderItemMessageAni(item, index)
+        this._renderItemMessage(item, index)
     )
     _renderHeader = ()=>{
         return  <TouchableOpacity onPress={this._clickLoadMore.bind(this)}>
