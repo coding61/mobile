@@ -36,6 +36,40 @@ class CourseItem extends Component {
     super();
   }
   onPress() {
+    function toReset() {
+      var _this = this;
+        AsyncStorage.getItem("token", function(errs, results) {
+          if (results) {
+            fetch('https://www.cxy61.com/program_girl/userinfo/update_learnextent/',{
+                      method: "POST",
+                      headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Token ' + results
+                      },
+                      body: JSON.stringify({
+                        course: _this.props.pk,
+                        lesson: "0",
+                      }),
+                    })
+                    .then(response=> {
+                      if (response.status === 200) {
+                        return response.json()
+                      } else {
+                        return 'fail'
+                      }
+                    })
+                    .then(responseJson=> {
+                      if (responseJson !== 'fail') {
+                        _this.props.navigation.state.params.callback(_this.props.pk, 0, true);
+                        _this.props.navigation.goBack();
+                      } else {
+                        alert('失败，请重试');
+                      }
+                    })
+          }
+        })
+    }
     function toBack() {
       if (this.props.status === 'finish') {
         var _this = this;
@@ -74,7 +108,7 @@ class CourseItem extends Component {
         this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, false);
         this.props.navigation.goBack();
       } else {
-        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, true);
+        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, false);
         this.props.navigation.goBack();
       }
     }
@@ -82,9 +116,9 @@ class CourseItem extends Component {
       if (this.props.status === 'nostart') {
         toBack.bind(this)();
       } else if (this.props.status === 'processing') {
-        Alert.alert('','你是否确定要继续学习？',
-        [{text: '是', onPress: () => toBack.bind(this)(), style: 'cancel'},
-        {text: '否', onPress: () => {}}
+        Alert.alert('','此课程已经开始学习，请选择重新开始学习还是继续上次学习？',
+        [{text: '继续上次', onPress: () => toBack.bind(this)(), style: 'cancel'},
+        {text: '重新开始', onPress: () => toReset.bind(this)()}
         ],{ cancelable: false })
       } else if (this.props.status === 'finish') {
         Alert.alert('','你是否确定要再学一遍？',
