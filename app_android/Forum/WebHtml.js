@@ -65,7 +65,7 @@ export default class WebHtml extends Component{
             <View style={{flex: 1}}>
                 <WebView
                     ref={webview => this.webview = webview}
-                    automaticallyAdjustContentInsets={false}
+                    automaticallyAdjustContentInsets={true}
                     style={styles.webView}
                     domStorageEnabled={true}
                     source={{uri: this.state.url}}
