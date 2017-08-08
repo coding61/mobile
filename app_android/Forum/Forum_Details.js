@@ -18,8 +18,10 @@ import {
 }from 'react-native';
 import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
 import Content_Rex from './Content_Rex';
+import ForumDeatilCont from './ForumDeatilCont';
 var {height, width} = Dimensions.get('window');
-
+var basePath='https://www.cxy61.com/';
+//var basePath='https://app.bcjiaoyu.com/'
 export default class Forum_Details extends Component{
     constructor(props) {
         super(props);
@@ -44,14 +46,35 @@ export default class Forum_Details extends Component{
 
     componentDidMount() {
        this._loadData()
+       this._loadUserinfo()
+    }
+    _loadUserinfo(){
+        info_url=basePath+'program_girl/userinfo/whoami/';
+        fetch(info_url,{
+            headers: {Authorization: 'Token ' + this.state.token}
+        })
+        .then(response=>{
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                return '加载失败';
+            }
+        })
+        .then(responseJson=>{
+            this.setState({
+                UserInfo:responseJson,
+                UserPk:responseJson.pk,
+            })
+        })
+        .catch((error) => {
+            console.error(error);  
+        })
     }
     _loadData() {
         this.setState({
             isLoading: true
         },()=> {
-            fetch(this.state.url,{
-                    headers: {Authorization: 'Token ' + this.state.token}
-                })
+            fetch(this.state.url)
             .then(response => {
                 if (response.status === 200) {
                     return response.json();
@@ -84,7 +107,6 @@ export default class Forum_Details extends Component{
                 }
             })
             .catch((error) => {
-                console.error(error);
                 Alert.alert(
                       '加载失败,请重试',
                       '',
@@ -104,54 +126,51 @@ export default class Forum_Details extends Component{
             this.setState({
                 isLoading: true
             },()=> {
-                fetch(this.state.nextPage, {
-                    headers: {Authorization: 'Token ' + this.state.token}
+                fetch(this.state.nextPage)
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        return '加载失败';
+                    }
                 })
-                    .then(response => {
-                        if (response.status === 200) {
-                            return response.json();
-                        } else {
-                            return '加载失败';
-                        }
-                    })
-                    .then(responseJson=> {
-                        if (responseJson === '加载失败') {
-                            Alert.alert(
-                              '加载失败,请重试',
-                              '',
-                              [
-                                {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
-                              ]
-                            )
-                        } else {
-                            var resultArr;
-                            resultArr = this.state.dataArr.concat();
-                            responseJson.results.map(result=> {
-                                resultArr.push(result);
-                            })
-                            this.setState({
-                                nextPage: responseJson.next,
-                                dataArr: resultArr,
-                                dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
-                                isLoading: false,
-                                loadText: responseJson.next?('正在加载...'):('没有更多了')
-                            })
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
+                .then(responseJson=> {
+                    if (responseJson === '加载失败') {
                         Alert.alert(
-                              '加载失败,请重试',
-                              '',
-                              [
-                                {text: '确定', onPress: ()=> {}, style: 'destructive'},
-                              ]
-                            )
-                        this.setState({
-                            isLoading: false,
-                            isRefreshing: false
+                          '加载失败,请重试',
+                          '',
+                          [
+                            {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
+                          ]
+                        )
+                    } else {
+                        var resultArr;
+                        resultArr = this.state.dataArr.concat();
+                        responseJson.results.map(result=> {
+                            resultArr.push(result);
                         })
+                        this.setState({
+                            nextPage: responseJson.next,
+                            dataArr: resultArr,
+                            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
+                            isLoading: false,
+                            loadText: responseJson.next?('正在加载...'):('没有更多了')
+                        })
+                    }
+                })
+                .catch((error) => {
+                    Alert.alert(
+                          '加载失败,请重试',
+                          '',
+                          [
+                            {text: '确定', onPress: ()=> {}, style: 'destructive'},
+                          ]
+                        )
+                    this.setState({
+                        isLoading: false,
+                        isRefreshing: false
                     })
+                })
             })
         }
     }
@@ -160,33 +179,34 @@ export default class Forum_Details extends Component{
     }
     renderForumRow(rowData){
         return (
-            <View style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
-                <View style={{flexDirection:'row',paddingTop:10,}}>
+            <View style={{width: width,flex:1, backgroundColor: '#f2f2f2',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingRight:10,}}>
+                <View style={{flexDirection:'row',paddingTop:10,backgroundColor:'#f2f2f2',width:width,paddingLeft:15}}>
                     <View style={{alignItems:'center'}}>
-                        <Image style={{width:30,height:30,borderRadius:25,}} source={{uri:rowData.posts.userinfo.avatar}}/>
-                        <Text style={{paddingTop:10}}>{rowData.posts.userinfo.grade.current_name}</Text>
+                        <Image style={{width:30,height:30,borderRadius:15,}} source={{uri:rowData.userinfo.avatar}}/>
+                        <Text style={{paddingTop:5,fontSize:12,}}>{rowData.userinfo.grade.current_name}</Text>
                     </View>
                     <View style={{paddingLeft:10,paddingRight:10,width:width*0.7,}}>
-                        <Text style={{paddingBottom:10,color:'#4f99cf'}}>{rowData.posts.userinfo.name}</Text>
+                        <Text style={{paddingBottom:10,color:'#4f99cf'}}>{rowData.userinfo.name}</Text>
                         <Text style={{paddingBottom:10}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                     </View>
                     <Text style={{fontSize:14,paddingTop:10,}}>回复</Text>
                 </View>
-                <Text>{rowData.content}</Text>
+                <ForumDeatilCont data={rowData.content}></ForumDeatilCont>
+                
                 {rowData.replymore.map((result,index)=> {
                     return(
-                        <View key={index} style={{backgroundColor: 'rgb(243,243,243)',}}>
+                        <View key={index} style={{backgroundColor:'#ffffff',width:width*0.94,marginLeft:width*0.03,borderBottomWidth:1,borderBottomColor:'#cccccc'}}>
                             <View  style={{flexDirection:'row',justifyContent:'flex-start',paddingTop:10,paddingBottom:10,paddingLeft:20,}}>
                                 <View style={{alignItems:'center'}}>
-                                    <Image style={{width:30,height:30,marginTop:20,borderRadius:25,}} source={{uri:result.userinfo.avatar}}/>
-                                    <Text style={{paddingTop:10}}>{result.userinfo.grade.current_name}</Text>
+                                    <Image style={{width:30,height:30,borderRadius:15,}} source={{uri:result.userinfo.avatar}}/>
+                                    <Text style={{paddingTop:10,fontSize:12,}}>{result.userinfo.grade.current_name}</Text>
                                 </View>
                                 <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.7,}}>
                                     <Text style={{paddingBottom:10,color:'#4f99cf'}}>{result.userinfo.name}</Text>
                                     <Text style={{paddingBottom:10}}>{result.create_time.slice(0, 16).replace("T", " ")}</Text>
                                 </View> 
                             </View>
-                            <Text>{result.content}</Text>
+                            <ForumDeatilCont data={result.content}></ForumDeatilCont>
                         </View>
                     )
                 })}
@@ -197,7 +217,7 @@ export default class Forum_Details extends Component{
         this.setState({
             isRefreshing: true
         },()=> {
-            this._loadAlldata();
+            this._loadData();
         })
     }
     _goBack(){
@@ -207,10 +227,10 @@ export default class Forum_Details extends Component{
     }
 
     render() {
-        var Content=Content_Rex.content(this.state.data.content);
         var data=this.state.data;
         return(
             <View style={{flex:1,backgroundColor:'#ffffff'}}>
+                <ScrollView>
                 <Text style={{paddingTop:20,paddingBottom:10,paddingLeft:10,paddingRight:10,fontSize:16,color:'#292929'}}>{data.title}</Text>
                 <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:'#F2F2F2'}}>
                     <View style={{alignItems:'center',}}>
@@ -229,26 +249,22 @@ export default class Forum_Details extends Component{
                             <Image style={{width:14,height:13,marginTop:5,}} source={require('../assets/Forum/unCollect.png')}/>
                         </TouchableOpacity> 
                         <TouchableOpacity style={{paddingBottom:8,}}>
-                            <Text>回复</Text>
+                            <Text>回复主贴</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{paddingBottom:8,}}>
-                            <Text>删除此贴</Text>
-                        </TouchableOpacity>
+                        {data.pk==this.state.UserPk?(
+                            <TouchableOpacity style={{paddingBottom:8,}}>
+                                <Text>删除此贴</Text>
+                            </TouchableOpacity>
+                            ):(null)}
                     </View>
                 </View> 
-                <WebView
-                    source={{html: Content}}
-                    style={{width:width,paddingLeft:10,paddingRight:10,flex:1,}}
-                    ref={webview => this.webview = webview}
-                    automaticallyAdjustContentInsets={false}
-                    javaScriptEnabled={true}
-                    decelerationRate="normal"
-                    startInLoadingState={true}
-                    mixedContentMode="always"
-                />
+                <View style={{marginBottom:10,}}>
+                    <ForumDeatilCont data={this.state.data.content}></ForumDeatilCont>
+                    <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,}}>回帖数量({data.reply_count})</Text>
+                </View>
                 <ListView
                         horizontal={false}
-                        contentContainerStyle={{width:width,justifyContent:'flex-start',alignItems:'center', }}
+                        contentContainerStyle={{width:width,justifyContent:'flex-start',alignItems:'center' }}
                         dataSource={this.state.dataSource}
                         renderRow={this.renderForumRow.bind(this)}
                         automaticallyAdjustContentInsets={false}
@@ -266,6 +282,7 @@ export default class Forum_Details extends Component{
                         }
                     >
                 </ListView>
+                </ScrollView>
             </View>
         )
     }

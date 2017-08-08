@@ -15,7 +15,7 @@ import {
   RefreshControl,
   TouchableHighlight,
   InteractionManager,
-  WebView
+  WebView,
 }from 'react-native';
 import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
 import WebViewBridge from 'react-native-webview-bridge';
@@ -43,7 +43,7 @@ export default class WebHtml extends Component{
     }
  
     componentDidMount() {
-       //alert(this.state.data.token)
+
     }
 
     onShouldStartLoadWithRequest(event){
@@ -53,27 +53,29 @@ export default class WebHtml extends Component{
     sendMessage() {
         this.webview.postMessage(JSON.stringify(this.state.data));
     }
+
     handleMessage(evt) {
         var message = evt.nativeEvent.data
-        if(message==200){
-          this.props.navigation.goBack()
+        if (message == 200) {
+            this.props.navigation.goBack()
         }
     }
+
     render() {
         this.inputText = this.state.url;
-        return(
+        return (
             <View style={{flex: 1}}>
                 <WebView
                     ref={webview => this.webview = webview}
-                    automaticallyAdjustContentInsets={false}
+                    automaticallyAdjustContentInsets={true}
                     style={styles.webView}
                     domStorageEnabled={true}
                     source={{uri: this.state.url}}
                     javaScriptEnabled={true}
                     domStorageEnabled={true}
-                    onMessage ={this.handleMessage.bind(this)}
+                    onMessage={this.handleMessage.bind(this)}
                     decelerationRate="normal"
-                    onLoad ={this.sendMessage.bind(this)}
+                    onLoad={this.sendMessage.bind(this)}
                     onNavigationStateChange={this.onNavigationStateChange}
                     onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
                     startInLoadingState={true}
@@ -85,14 +87,14 @@ export default class WebHtml extends Component{
     }
 }
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  webView: {
-    backgroundColor: 'rgba(255,255,255,0.8)',
-    height: 350,
-    width:width,
+    container: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+    },
+    webView: {
+        backgroundColor: 'rgba(255,255,255,0.8)',
+        height: 350,
+        width: width,
   },
 
 });
