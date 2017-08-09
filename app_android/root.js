@@ -31,6 +31,9 @@ import {StackNavigator} from 'react-navigation';
 
 import Login from './Login/Login.js';
 import CourseList from './CourseList/CourseList.js';
+import Register from './Login/Register.js';
+import FindWord from './Login/FindWord.js';
+import SelectHead from './Login/SelectHead.js';
 
 class RootApp extends Component{
     constructor(props) {
@@ -82,7 +85,10 @@ const app = StackNavigator({
     ThirdSiteWebView:{screen:ThirdSiteWebView},
 
     Login:{screen: Login},
-    CourseList:{screen: CourseList}
+    CourseList:{screen: CourseList},
+    Register:{screen: Register},
+    FindWord: {screen: FindWord},
+    SelectHead: {screen: SelectHead}
 }, {
     //initialRouteName: 'Forum',             //配置初始路由的名称
     initialRouteName: 'MessagePage',             //配置初始路由的名称

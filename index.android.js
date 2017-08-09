@@ -14,6 +14,7 @@ import {
 import RootApp from './app_android/root'
 import Login from './app_android/Login/Login.js';
 import CourseList from './app_android/CourseList/CourseList.js';
+import Register from './app_android/Login/Register.js';
 export default class ProgramGirl extends Component {
   render() {
     return (
