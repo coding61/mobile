@@ -17,8 +17,11 @@ import {
     Animated,
     Easing,
     DeviceEventEmitter,
-    ScrollView
+    ScrollView,
+    Modal
 }from 'react-native'
+import ImageViewer from 'react-native-image-zoom-viewer';
+import Sound from 'react-native-sound';
 
 import chatdata from '../data1.js';
 import Utils from '../utils/Utils.js';
@@ -164,7 +167,7 @@ class MessagePage extends Component{
         this._load();
     }
     componentDidMount() {
-        
+
     }
     componentDidUpdate(prevProps, prevState) {
         /*
@@ -545,6 +548,22 @@ class MessagePage extends Component{
         Utils.setValue("optionIndex", JSON.stringify(this.state.optionIndex));
     }
     // -------------------------------------------动画事件
+    _loadAudio(flag){
+        var url = flag=="zuan"?"https://static1.bcjiaoyu.com/Diamond%20Drop.wav":"https://static1.bcjiaoyu.com/level_up.mp3";
+        // url = "https://static1.bcjiaoyu.com/level_up.mp3"
+        const callback = (error, sound) => {
+            if (error) {
+              console.log(error)
+              return;
+            }
+            // Run optional pre-play callback
+            sound.play(() => {
+                console.log('play successful!');
+              sound.release();
+            });
+          };
+        const sound = new Sound(url, error => callback(error, sound));
+    }
     _loadGrowAni(num){
         this._growAni();
         this.setState({
@@ -561,6 +580,7 @@ class MessagePage extends Component{
     }
     _loadZuanAni(waittime){
         this.timer = setTimeout(()=>{
+            // this._loadAudio("zuan");   //打开钻石音频
             this.setState({
                 showZuanAni:true
             }, ()=>{
@@ -574,6 +594,7 @@ class MessagePage extends Component{
     }
     _loadGradeAni(waittime){
         this.timer = setTimeout(()=>{
+            // this._loadAudio("grade");   //打开升级音频
             this.setState({
                 showGradeAni:true
             }, ()=>{
@@ -630,6 +651,9 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (!response) {
+                        //请求失败
+                    };
                     // console.log(response);
                     try{
                         var array = JSON.parse(response.json);
@@ -668,6 +692,9 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (!response) {
+                        //请求失败
+                    };
                     // console.log(response);
                     this_.setState({
                         loading:true
@@ -737,6 +764,9 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (!response) {
+                        //请求失败
+                    };
                     // console.log(response);
                     // Util.updateInfo(json);
                     this_.setState({
@@ -762,6 +792,10 @@ class MessagePage extends Component{
                     this_._loadClickBtnAction();
                     return
                 }
+                course = String(course)
+                courseIndex = String(courseIndex)
+                chapter = String(chapter)
+
                 var type = "put",
                     url = Http.addReward,
                     token = token,
@@ -773,7 +807,19 @@ class MessagePage extends Component{
                         diamond_amount:zuanNum
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    // console.log(response);
+                    // this_._loadGrowAni(20);
+                    // this_._loadAudio("zuan");   //打开钻石音频
+                    // this_._loadZuanAni(GrowAniTime);
+                    // this_._loadAudio("grade");   //打开钻石音频
+                    // this_._loadGradeAni(GrowAniTime+ZuanAniTime);
+
+                    
+                    if (!response) {
+                        //请求失败
+                        this_._loadClickBtnAction();
+                        return
+                    };
+                    console.log(response);
                     if (response.status == -4) {
                         // 重复领奖
                         this_._loadClickBtnAction();
@@ -787,7 +833,8 @@ class MessagePage extends Component{
                     setParams({userinfo:response})
                     
                     var growAni = false,
-                        zuanAni = false;
+                        zuanAni = false,
+                        gradeAni = false;
                     if (response.experience > json.experience) {
                         // 打开经验动画
                         growAni = true
@@ -804,6 +851,7 @@ class MessagePage extends Component{
                     }
                     if(json.grade.current_name != response.grade.current_name){
                         // 打开升级动画
+                        gradeAni = true
                         if (growAni) {
                             if (zuanAni) {
                                 this_._loadGradeAni(GrowAniTime+ZuanAniTime);
@@ -827,6 +875,7 @@ class MessagePage extends Component{
             
                     this_._loadClickBtnAction();
                     
+                    
                 }, (err) => {
                     // console.log(err);
                     // Utils.showMessage('网络请求失败');
@@ -848,6 +897,9 @@ class MessagePage extends Component{
                         lesson:courseIndex
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (!response) {
+                        //请求失败
+                    };
                     // console.log(response);
                     this_._loadClickBtnAction();
                 }, (err) => {
@@ -1329,16 +1381,12 @@ class MessagePage extends Component{
         )
     }
     _renderScaleBigImage(){
+        var  images = []
+        images.push({url:this.state.bigImgUrl})
         return (
-            <TouchableOpacity onPress={this._clickBigImg} style={styles.imgShadowView}>
-                <ScrollView style={{maxHeight:height-headerH}}>
-                    <Image
-                      resizeMode={'contain'}
-                      style={{width:width, height:Utils.getImgWidthHeight(this.state.bigImgUrl, width), marginTop:Utils.getImgWidthHeight(this.state.bigImgUrl, width)>height-headerH?0:(height-headerH-Utils.getImgWidthHeight(this.state.bigImgUrl, width))/2}}
-                      source={{uri:this.state.bigImgUrl}}
-                    />
-                </ScrollView>
-            </TouchableOpacity>
+            <Modal visible={this.state.showBigImgView} transparent={true} onRequestClose={()=>{}}>
+                <ImageViewer imageUrls={images} onClick={this._clickBigImg}/>
+            </Modal>
         )
     }
     _renderZuanView(){
@@ -1787,10 +1835,10 @@ class MessagePage extends Component{
     _renderTableView(){
         return (
             <View style={{flex:1}}>
-                <View style={{width:width, maxHeight:height-headerH-75-10}}>
+                <View style={{width:width, maxHeight:height-headerH-80-10}}>
                     <FlatList 
                         ref={(flatlist)=>this._flatList=flatlist}
-                        style={{maxHeight:height-headerH-75-10}}
+                        style={{maxHeight:height-headerH-80-10}}
                         data={this.state.dataSource}
                         renderItem={this._renderItem}
                         ListHeaderComponent={this.state.showHeaderComponent?this._renderHeader:null}
@@ -1815,9 +1863,9 @@ class MessagePage extends Component{
                                 // this._flatList.scrollToIndex({viewPosition: 0, index: 0}); 
                                 // console.log("-----scrollTop");
                             }else{
-                                if (contentHeight > height-headerH-75-10) {
+                                if (contentHeight > height-headerH-80-10) {
                                     // this._flatList.scrollToIndex({viewPosition: 1, index: this.state.number-1});
-                                    this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-75-10)});
+                                    this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-80-10)});
                                     // console.log("-----scrollEnd");
                                     // this._flatList.scrollToEnd();  //与getItemLayout配合使用
                                 } 
@@ -1993,13 +2041,15 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius:0, 
         paddingHorizontal:5, 
         paddingVertical:10,  
-        backgroundColor:'white'
+        backgroundColor:'white',
+        paddingLeft:10
     },
     messageText:{
         fontSize:15, 
         lineHeight:22.5, 
         color:'rgb(58, 59, 60)',
-        textAlign:'justify'
+        textAlign:'justify',
+        // backgroundColor:'blue',
     },
     // --------------------------------------------人工回复
     answer:{
@@ -2048,18 +2098,18 @@ const styles = StyleSheet.create({
         top: 19.5
     },
     // ------------------------------------------底部按钮
-    btns:{//底部按钮高度75
+    btns:{//底部按钮高度80
         // height:60, 
         width:width,
         position:'absolute',
         bottom:0
     },
-    help:{//帮助按钮总高35
-        width:25, 
-        height:25, 
+    help:{//帮助按钮总高40
+        width:30, 
+        height:30, 
         marginBottom:5,
         marginTop:5, 
-        marginLeft:width-35
+        marginLeft:width-40
     },
     actions:{//按钮高度40
         flexDirection:'row', 
@@ -2105,7 +2155,7 @@ const styles = StyleSheet.create({
     // ----------------帮助按钮组
     helpParentView:{
         position:'absolute',
-        bottom:42,
+        bottom:45,
         right:5
     },
     helpActionsView:{
@@ -2121,13 +2171,13 @@ const styles = StyleSheet.create({
     helpActionTextParent:{
         alignItems:'center', 
         justifyContent:'center', 
-        height:30
+        height:40
     },
     helpActionText:{
-        width:60
+        width:80,
         // height: 30, 
         // lineHeight: 30, 
-        // textAlign:'center',
+        textAlign:'center',
         // backgroundColor:'red'
     },
     helpActionArrow:{

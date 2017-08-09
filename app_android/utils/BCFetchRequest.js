@@ -38,13 +38,22 @@ let BCFetchRequest = {
 		}
 		
 		fetch(url, dic)
-		.then((response) => response.text())
-		.then((responseText) => {
-			if (responseText) {
-				successCallback(JSON.parse(responseText));
+		.then((response) => {
+            if (response.status === 200) {
+            	return response.json();
+            }else{
+            	return response.text()
+            }
+		})
+		.then((responseResult) => {
+			// console.log(responseResult);
+			if (typeof responseResult === "string") {
+				//请求失败
+				successCallback(null)
 			}else{
-				successCallback(responseText);
+				successCallback(responseResult);
 			}
+			
 		})
 		.catch((err) => {
 			failCallback(err);
