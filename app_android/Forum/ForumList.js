@@ -118,7 +118,12 @@ export default class ForumList extends Component{
             },()=>{
                 this._loadAlldata()
             })
-        } 
+        }else if(index==6){
+            this.props.navigation.navigate('NewsCenter', { token:this.state.token })
+        }else if(index==7){
+            this.props.navigation.navigate('RankingList', { token:this.state.token })
+        }
+
     }
 
     _renderNext() {
@@ -188,7 +193,7 @@ export default class ForumList extends Component{
         })
     }
     forumdetail(data){
-        this.props.navigation.navigate('WebHtml', { data: data,token:this.state.token })
+        this.props.navigation.navigate('WebHtml', { data: data.pk,token:this.state.token })
         //this.props.navigation.navigate('Forum_Details', { data: data,token:this.state.token })
     }
     renderForumRow(rowData){
@@ -312,6 +317,14 @@ export default class ForumList extends Component{
                             <TouchableOpacity onPress={this.detail.bind(this,5)}
                             style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
                                 <Text style={{color:'#ffffff'}}>我的收藏</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.detail.bind(this,6)}
+                                              style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>消息中心</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.detail.bind(this,7)}
+                                              style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
+                                <Text style={{color:'#ffffff'}}>排行榜</Text>
                             </TouchableOpacity>
                         </View>
                         

@@ -60,7 +60,7 @@ export default class ForumDeatilCont extends Component{
     render() {
         var Content=this.content(this.props.data);
         return(
-            <Text style={{padding:20}}>{Content}</Text>
+            <View style={{padding:20}}>{Content}</View>
         )
     }
 }
