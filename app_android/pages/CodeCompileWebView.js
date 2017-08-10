@@ -65,10 +65,12 @@ class CodeCompileWebView extends Component {
 	onMessage = (event)=>{
         console.log('onMessage->event.nativeEvent.data:');
         console.log(event.nativeEvent.data);
+        alert(JSON.stringify(event.nativeEvent.data));
     }
     postMessage = () => {
 	    if (this.webview) {
-	      this.webview.postMessage('"Hello" from React Native!'+this.state.language);
+	    	console.log("rn->h5")
+	        this.webview.postMessage("python");
 	    }
 	}
 	render() {
