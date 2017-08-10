@@ -3,22 +3,15 @@ import {
   AppRegistry, 
   StyleSheet, 
   Image, 
-  Text, 
-  TextInput, 
+  Text,
   View, 
   ScrollView,
   Dimensions, 
   TouchableOpacity,
   ListView,
   AsyncStorage,
-  Alert,
-  RefreshControl,
-  TouchableHighlight,
-  InteractionManager,
   WebView,
 }from 'react-native';
-import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
-import WebViewBridge from 'react-native-webview-bridge';
 var {height, width} = Dimensions.get('window');
 
 //var default_url = 'https://app.bcjiaoyu.com/girl/cxyteam_forum_moblie/detail.html';
@@ -34,7 +27,7 @@ export default class WebHtml extends Component{
             webViewData:'',
             data:{
                 token:this.props.navigation.state.params.token,
-                pk:this.props.navigation.state.params.data.pk,
+                pk:this.props.navigation.state.params.data,
             }, 
         }
     }
