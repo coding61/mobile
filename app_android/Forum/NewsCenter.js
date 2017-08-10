@@ -9,7 +9,6 @@ import {
     Dimensions,
     TouchableOpacity,
     ListView,
-    AsyncStorage,
     Alert,
     RefreshControl,
 }from 'react-native';
