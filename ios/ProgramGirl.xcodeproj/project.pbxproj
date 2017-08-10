@@ -624,9 +624,7 @@
 						DevelopmentTeam = 3CD52VCXD2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
-					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = TA5Z7L48ET;
-					};
+					
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
@@ -1115,7 +1113,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = TA5Z7L48ET;
+				DEVELOPMENT_TEAM = TPCJ534SQ6;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
@@ -1128,7 +1126,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.chengxuyuan.programgirl;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cxy61.girls;
 				PRODUCT_NAME = ProgramGirl;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1139,7 +1137,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TA5Z7L48ET;
+				DEVELOPMENT_TEAM = TPCJ534SQ6;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
@@ -1152,7 +1150,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.chengxuyuan.programgirl;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cxy61.girls;
 				PRODUCT_NAME = ProgramGirl;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
