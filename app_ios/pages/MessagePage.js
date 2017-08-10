@@ -16,8 +16,12 @@ import {
     Image,
     Animated,
     Easing,
-    DeviceEventEmitter
+    DeviceEventEmitter,
+    ScrollView,
+    Modal
 }from 'react-native'
+import ImageViewer from 'react-native-image-zoom-viewer';
+import Sound from 'react-native-sound';
 
 import chatdata from '../data1.js';
 import Utils from '../utils/Utils.js';
@@ -83,14 +87,17 @@ class MessagePage extends Component{
             itemHeight:0,                //item的高度
             bigImgUrl:"",                //放大图片的 url
             showBigImgView:false,        //是否显示大图组件
+            showFindHelpView:false,      //是否显示查找帮助组件
+            loadStorageMsg:false,        //判断加载的是缓存数据还是新数据
         };
         this.leftEnterValue = new Animated.Value(0)     //左侧进入动画
         this.growAniValue = new Animated.Value(0)       //经验动画
+        this.bottomEnterValue = new Animated.Value(0)   //底部进入动画
     };
     // -----导航栏自定制
     static navigationOptions = ({navigation}) => {
         const {state, setParams, goBack, navigate} = navigation;
-        var json = state.params.userinfo;
+        var json = state.params.userinfo?state.params.userinfo:"";
         if (json && json != "") {
             var pw = 0;
             if (json.grade.current_all_experience != json.grade.next_all_experience) {
@@ -160,26 +167,7 @@ class MessagePage extends Component{
     componentDidMount() {
     }
     componentDidUpdate(prevProps, prevState) {
-        // console.log("contentHeight:" + this.state.contentHeight);
-        // if (this.state.contentHeight > height-headerH-90) {
-        //     if (this.state.scrollTopLastItem == true) {
-        //         this.setState({
-        //             scrollTop:false,
-        //             scrollTopLastItem:false
-        //         })
-        //     }
-
-        //     if (this.state.scrollTop == true) {
-        //         this._flatList.scrollToIndex({viewPosition: 0, index: 0}); 
-        //         console.log("-----scrollTop");
-        //     }else{
-        //         console.log("-----scrollEnd");
-
-        //         setTimeout(()=>{
-        //             this._flatList.scrollToEnd();
-        //         }, 10)
-        //     } 
-        // }
+        
     }
 
     componentWillUnmount() {
@@ -200,6 +188,11 @@ class MessagePage extends Component{
         })
     }
     _loadDefaultMessages(){
+        // 有动画标志
+        this.setState({
+            loadStorageMsg:false
+        })
+
         var array = chatdata["default"];
 
         for (var i = 0; i < array.length; i++) {
@@ -220,6 +213,11 @@ class MessagePage extends Component{
         })  
     }
     _loadMessages(courseIndex){
+        // 有动画标志
+        this.setState({
+            loadStorageMsg:false
+        })
+
         if (!this.state.totalData[courseIndex]) {
             Utils.showMessage("恭喜，您已经完成本课程的学习。您可以选择其它课程，再继续");
             return
@@ -246,7 +244,10 @@ class MessagePage extends Component{
         })  
     }
     _loadMessage(arr, i, opt){
-        // this._leftAnimate(this.leftEnterValue);
+        // 有动画标志
+        this.setState({
+            loadStorageMsg:false
+        })
 
         //显示等待符号
         this.setState({
@@ -263,6 +264,8 @@ class MessagePage extends Component{
                     dataSource:array,
                     currentItem:item
                 },()=>{
+                    // this._leftAnimate();
+
                     // 1.存储消息
                     this._storeChatData(item, "message");
 
@@ -301,6 +304,7 @@ class MessagePage extends Component{
                         }
 
                         this.timer = setTimeout(()=>{
+                            // this._bottomAnimate();
                             this.setState({
                                 showAction:true
                             })
@@ -352,6 +356,7 @@ class MessagePage extends Component{
                         dataSource:this.state.chatData
                     }, ()=>{
                         if (this.state.currentItem.action) {
+                            // this._bottomAnimate();
                             this.setState({
                                 showAction:true
                             })
@@ -365,6 +370,11 @@ class MessagePage extends Component{
     }
     // 方法2
     _loadStorageMessages(){
+        // 无动画标志
+        this.setState({
+            loadStorageMsg:true
+        })
+
         Utils.getStorageData((chatData, data, index, optionData, optionIndex, currentCourse, currentCourseIndex)=>{
             // console.log(chatData);
             // console.log(data);
@@ -460,6 +470,7 @@ class MessagePage extends Component{
 
         // 判断底部 action
         if (this.state.currentItem.action) {
+            // this._bottomAnimate();
             if (this.state.currentItem.action == "点击选择课程") {
                 this.setState({
                     actionTag:actionChooseCourseTag,
@@ -524,11 +535,27 @@ class MessagePage extends Component{
         Utils.setValue("optionIndex", JSON.stringify(this.state.optionIndex));
     }
     // ---------------------动画事件
-    _loadGrowAni(){
+    _loadAudio(flag){
+        var url = flag=="zuan"?"https://static1.bcjiaoyu.com/Diamond%20Drop.wav":"https://static1.bcjiaoyu.com/level_up.mp3";
+        // url = "https://static1.bcjiaoyu.com/level_up.mp3"
+        const callback = (error, sound) => {
+            if (error) {
+              console.log(error)
+              return;
+            }
+            // Run optional pre-play callback
+            sound.play(() => {
+                console.log('play successful!');
+              sound.release();
+            });
+          };
+        const sound = new Sound(url, error => callback(error, sound));
+    }
+    _loadGrowAni(num){
         this._growAni();
         this.setState({
             showGrowAni:true,
-            growNum:40
+            growNum:num
         }, ()=>{
             this.timer = setTimeout(()=>{
                 this.setState({
@@ -540,6 +567,7 @@ class MessagePage extends Component{
     }
     _loadZuanAni(waittime){
         this.timer = setTimeout(()=>{
+            // this._loadAudio("zuan");   //打开钻石音频
             this.setState({
                 showZuanAni:true
             }, ()=>{
@@ -553,6 +581,7 @@ class MessagePage extends Component{
     }
     _loadGradeAni(waittime){
         this.timer = setTimeout(()=>{
+            // this._loadAudio("grade");   //打开升级音频
             this.setState({
                 showGradeAni:true
             }, ()=>{
@@ -587,10 +616,20 @@ class MessagePage extends Component{
             }
         ).start(()=>{})
     }
+    _bottomAnimate(){
+        this.bottomEnterValue.setValue(0);
+        Animated.timing(
+            this.bottomEnterValue,
+            {
+                toValue:1,
+                duration:1000,
+                easing:Easing.linear
+            }
+        ).start(()=>{})
+    }
     // ---------------------网络请求
     _fetchCourseInfoWithPk(course){
         Utils.isLogin((token)=>{
-            token = "229f00b183b4390f4d429049941c7259cdba663e";
             if (token) {
                 console.log(1);
                 var type = "get",
@@ -598,7 +637,10 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    console.log(response);
+                    if (!response) {
+                        //请求失败
+                    };
+                    // console.log(response);
                     try{
                         var array = JSON.parse(response.json);
                     }
@@ -624,21 +666,23 @@ class MessagePage extends Component{
                 }, (err) => {
                     console.log(2);
                     // console.log(err);
-                    Utils.showMessage('网络请求失败');
+                    // Utils.showMessage('网络请求失败');
                 });
             }
         })
     }
     _fetchCourseInfoForInit(course, way){
         Utils.isLogin((token)=>{
-            token = "229f00b183b4390f4d429049941c7259cdba663e";
             if (token) {
                 var type = "get",
                     url = Http.courseInfo(course),
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    console.log(response);
+                    if (!response) {
+                        //请求失败
+                    };
+                    // console.log(response);
                     this.setState({
                         loading:true
                     })
@@ -667,6 +711,7 @@ class MessagePage extends Component{
                                     dataSource:this.state.chatData
                                 }, ()=>{
                                     if (this.state.currentItem.action) {
+                                        // this._bottomAnimate();
                                         this.setState({
                                             showAction:true
                                         })
@@ -691,14 +736,13 @@ class MessagePage extends Component{
 
                 }, (err) => {
                     // console.log(err);
-                    Utils.showMessage('网络请求失败');
+                    // Utils.showMessage('网络请求失败');
                 });
             }
         })
     }
     _fetchUserInfo(){
         Utils.isLogin((token)=>{
-            token = "229f00b183b4390f4d429049941c7259cdba663e";
             if (token) {
                 const {setParams} = this.props.navigation;
                 var type = "get",
@@ -706,6 +750,9 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (!response) {
+                        //请求失败
+                    };
                     // console.log(response);
                     // Util.updateInfo(json);
                     this.setState({
@@ -715,20 +762,24 @@ class MessagePage extends Component{
 
                 }, (err) => {
                     // console.log(err);
-                    Utils.showMessage('网络请求失败');
+                    // Utils.showMessage('网络请求失败');
                 });
             }
         })
     }
     _fetchAddReward(course, courseIndex, chapter, growNum, zuanNum){
         Utils.isLogin((token)=>{
-            token = "229f00b183b4390f4d429049941c7259cdba663e";
             if (token) {
+                const {setParams, state} = this.props.navigation;
                 if (!chapter || chapter == "") {
                     //直接要下一条数据
                     this._loadClickBtnAction();
                     return
                 }
+                course = String(course)
+                courseIndex = String(courseIndex)
+                chapter = String(chapter)
+
                 var type = "put",
                     url = Http.addReward,
                     token = token,
@@ -740,20 +791,39 @@ class MessagePage extends Component{
                         diamond_amount:zuanNum
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    console.log(response);
+                    // console.log(response);
                     // this._loadGrowAni();
                     // this._loadZuanAni(GrowAniTime);
                     // this._loadGradeAni(GrowAniTime+ZuanAniTime);
                     
+
+                    if (!response) {
+                        //请求失败
+                        this._loadClickBtnAction();
+                        return
+                    };
+                    console.log(response);
+                    if (response.status == -4) {
+                        // 重复领奖
+                        this._loadClickBtnAction();
+                        return
+                    }
+                    var json = state.params.userinfo;
+                    // 更新个人信息
+                    this.setState({
+                        userInfo:response
+                    })
+                    setParams({userinfo:response})
                     
                     var growAni = false,
-                        zuanAni = false;
-                    if (json.experience > this.state.userinfo.experience) {
+                        zuanAni = false,
+                        gradeAni = false;
+                    if (response.experience > json.experience) {
                         // 打开经验动画
                         growAni = true
-                        this._loadGrowAni();
+                        this._loadGrowAni(response.experience-json.experience);
                     }
-                    if (json.diamond > this.state.userinfo.diamond) {
+                    if (response.diamond > json.diamond) {
                         // 打开钻石动画
                         zuanAni = true
                         if (growAni){
@@ -762,8 +832,9 @@ class MessagePage extends Component{
                             this._loadZuanAni(0);
                         } 
                     }
-                    if(this.state.userinfo.grade.current_name != json.grade.current_name){
+                    if(json.grade.current_name != response.grade.current_name){
                         // 打开升级动画
+                        gradeAni = true
                         if (growAni) {
                             if (zuanAni) {
                                 this._loadGradeAni(GrowAniTime+ZuanAniTime);
@@ -779,11 +850,11 @@ class MessagePage extends Component{
                         } 
                     }
 
-                    // 更新个人信息
-                    this.setState({
-                        userInfo:response
-                    })
-                    setParams({userinfo:response})
+                    // // 更新个人信息
+                    // this.setState({
+                    //     userInfo:response
+                    // })
+                    // setParams({userinfo:response})
             
                     this._loadClickBtnAction();
                 }, (err) => {
@@ -796,7 +867,6 @@ class MessagePage extends Component{
     }
     _fetchUpdateExtent(course, courseIndex){
         Utils.isLogin((token)=>{
-            token = "229f00b183b4390f4d429049941c7259cdba663e";
             if (token) {
                 var type = "post",
                     url = Http.updateExtent,
@@ -806,7 +876,10 @@ class MessagePage extends Component{
                         lesson:courseIndex
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    console.log(response);
+                    if (!response) {
+                        //请求失败
+                    };
+                    // console.log(response);
                     this._loadClickBtnAction();
                 }, (err) => {
                     // console.log(err);
@@ -835,8 +908,14 @@ class MessagePage extends Component{
             actionText = "重新学习"
         }
         Utils.isLogin((token)=>{
-            token="111"
             if (this.state.actionTag == actionChooseCourseTag && !token){
+                // 点击选择课程去登陆的时候
+            }else if(this.state.actionTag == actionChooseCourseTag && !this.state.chooseCourse){
+                //没有选课程
+                // this._bottomAnimate();
+                this.setState({
+                    showAction:true
+                })
             }else{
                 // 去掉点选择课程登录的时候，不打印选择课程
                 this._loadAnswer(actionText)    //界面显示人工回复
@@ -850,27 +929,9 @@ class MessagePage extends Component{
             // TODO:判断是否登录，如果未登录，跳到登录页，否则，跳到选择课程页
             // 选择课程
             
-            // this._loadChooseCourse();
+            this._loadChooseCourse(false);
             
-            this.setState({
-                chooseCourse:2,
-                chooseCourseIndex:0
-            }, ()=>{
-                if (this.state.chooseCourse != this.state.course) {
-                    // 按钮由选择课程-->开始学习
-                    this.setState({
-                        actionTag:actionBeginStudyTag,
-                        showAction:true
-                    })
-                }else{
-                    this.setState({
-                        // actionTag:actionBeginStudyTag,
-                        showAction:true
-                    })
-                }
-            })
-            
-        }else if (this.state.actionTag == actionBeginStudyTag) {
+        }else if (this.state.actionTag == actionBeginStudyTag || this.state.actionTag == actionRestartStudyTag) {
             //开始学习
             this.setState({
                 course:this.state.chooseCourse,
@@ -906,39 +967,80 @@ class MessagePage extends Component{
         }
     }
     // 选择课程点击
-    _loadChooseCourse(){
+    _loadChooseCourse(help){
+        var this_ = this;
         Utils.isLogin((token)=>{
             if (token) {
                 // 已登录
-                this.props.navigation.navigate('CourseList', {user:'', callback:(course, courseIndex)=>{
-                    this.setState({
+                // console.log("go to chooseCourse");
+                this_.props.navigation.navigate('CourseList', {callback:(course, courseIndex, restart)=>{
+                    // this.props.navigation.setParams({userinfo:""})
+                    this_.setState({
                         chooseCourse:course,
                         chooseCourseIndex:courseIndex
                     }, ()=>{
-                        if (this.state.chooseCourse != this.state.course) {
-                            // 按钮由选择课程-->开始学习
-                            this.setState({
-                                actionTag:actionBeginStudyTag,
-                                showAction:true
-                            })
+                        // this._bottomAnimate();
+                        if (this_.state.chooseCourse) {
+                            if (restart == true) {
+                                // 按钮由选择课程-->重新学习
+                                this_.setState({
+                                    actionTag:actionRestartStudyTag,
+                                    showAction:true
+                                })
+                            }else if (this_.state.chooseCourse != this_.state.course) {
+                                // 按钮由选择课程-->开始学习
+                                this_.setState({
+                                    actionTag:actionBeginStudyTag,
+                                    showAction:true
+                                })
+                            }else if(this_.state.chooseCourse == this_.state.course){
+                                // 课程相等，继续上次学习, 重新学习/开始学习-->变为原来的
+                                if (this_.state.actionTag == actionBeginStudyTag || this_.state.actionTag == actionRestartStudyTag) {
+                                    if (this_.state.currentItem.record == true) {
+                                        this.setState({
+                                            actionTag:actionRecordTag,
+                                            showAction:true
+                                        })
+                                    }else{
+                                        this_.setState({
+                                            actionTag:actionCommonTag,
+                                            showAction:true
+                                        })
+                                    }
+                                }else{
+                                    this_.setState({
+                                        showAction:true
+                                    })
+                                }
+                            }else{
+                                this_.setState({
+                                    showAction:true
+                                })
+                            }
                         }else{
-                            this.setState({
-                                // actionTag:actionBeginStudyTag,
+                            this_.setState({
                                 showAction:true
-                            })
+                            })                                
                         }
                     })
                 }})
             }else{
+                // console.log("go to login .");
                 // 未登录
-                this.props.navigation.navigate('Login', {user:'', callback:()=>{
-                     this.setState({
-                        actionTag:actionChooseCourseTag,
-                        showAction:true
-                    })
-                    this._fetchUserInfo();
+                this_.props.navigation.navigate('Login', {callback:()=>{
+                    if (help == true) {
+                        //点了帮助选择课程
+                        this_._fetchUserInfo();
+                    }else{
+                        // this._bottomAnimate();
+                        this_.setState({
+                            actionTag:actionChooseCourseTag,
+                            showAction:true
+                        })
+                        this_._fetchUserInfo();
+                    }
                 }})
-            }  
+            }
         })
     }
     // action 按钮
@@ -1041,18 +1143,47 @@ class MessagePage extends Component{
     // 选择课程点击
     _clickChooseCourse = ()=>{
         this.setState({showHelpActions:false})
-        this._loadChooseCourse();
+        this._loadChooseCourse(true);
     }
     // 寻找帮助点击
     _clickFindHelp = ()=>{
-        this.setState({showHelpActions:false})
+        this.setState({
+            showHelpActions:false,
+            showFindHelpView:true
+        })
+    }
+    // 寻找帮助 shadowview点击
+    _clickFindHelpShadow = ()=>{
+        this.setState({
+            showFindHelpView:false
+        })
     }
     // 学习论坛点击
     _clickStudyLuntan = ()=>{
         this.setState({showHelpActions:false})
+        this._loadLuntan();
+    }
+    _loadLuntan(){
+        var this_ = this;
+        Utils.isLogin((token)=>{
+            if (token) {
+                // 已登录
+                // console.log("go to luntan");
+                this_.props.navigation.navigate('Forum')
+            }else{
+                // console.log("go to login .");
+                // 未登录
+                this_.props.navigation.navigate('Login', {callback:()=>{
+                    
+                    this_._fetchUserInfo();
+                }})
+            }
+        })
     }
     // 退出登录点击
     _clickQuitLogin = ()=>{
+        const {setParams} = this.props.navigation;
+        setParams({userinfo:""})
         this.setState({
             loading:false,
             totalData:[],                //某课程总数据
@@ -1094,10 +1225,12 @@ class MessagePage extends Component{
 
             itemHeight:0,                //item的高度
             bigImgUrl:"",                //放大图片的 url
-            showBigImgView:false,
+            showBigImgView:false,        //是否显示大图组件
+            showFindHelpView:false,      //是否显示查找帮助组件
         })
         Utils.clearAllValue()
         this.setState({showHelpActions:false})
+
         this._fetchUserInfo();
         this._load();
     }
@@ -1166,6 +1299,8 @@ class MessagePage extends Component{
             number:this.state.number+1,
             dataSource:array,
         }, ()=>{
+            // this._leftAnimate();
+
             this._storeChatData(dic, "line");
             
             //隐藏等待符号
@@ -1189,6 +1324,8 @@ class MessagePage extends Component{
             number:this.state.number+1,
             dataSource:array,
         }, ()=>{
+            // this._leftAnimate();
+
             this._storeChatData(dic, "answer");
         })
 
@@ -1196,15 +1333,22 @@ class MessagePage extends Component{
     }
 
     // ---------------------UI 布局
-    _renderScaleBigImage(){
+    _renderFindHelp(){
         return (
-            <TouchableOpacity onPress={this._clickBigImg} style={styles.imgShadowView}>
-                <Image
-                  resizeMode={'contain'}
-                  style={{width:width, height:Utils.getImgWidthHeight(this.state.bigImgUrl, width)}}
-                  source={{uri:this.state.bigImgUrl}}
-                />
+            <TouchableOpacity onPress={this._clickFindHelpShadow} style={styles.findHelpShadowView}>
+                <View style={{}}>
+                    <Text style={styles.findHelpText}>如需帮助，请使用学习论坛进行发帖，会有专人帮您解答。</Text>
+                </View>
             </TouchableOpacity>
+        )
+    }
+    _renderScaleBigImage(){
+        var  images = []
+        images.push({url:this.state.bigImgUrl})
+        return (
+            <Modal visible={this.state.showBigImgView} transparent={true} onRequestClose={()=>{}}>
+                <ImageViewer imageUrls={images} onClick={this._clickBigImg}/>
+            </Modal>
         )
     }
     _renderZuanView(){
@@ -1258,84 +1402,93 @@ class MessagePage extends Component{
     }
     _renderHelpActions(){
         return (
-            <View style={styles.helpActionsView}>
-                <TouchableOpacity style={{borderBottomColor:'#d2d2d2', borderBottomWidth:1}} onPress={this._clickChooseCourse}>
-                    <Text style={styles.helpActionText}>{"选择课程"}</Text>
-                </TouchableOpacity>
+                <View style={styles.helpParentView}>
+                    <View style={styles.helpActionsView}>
+                        <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickChooseCourse}>
+                            <Text style={styles.helpActionText}>{"选择课程"}</Text>
+                        </TouchableOpacity>
 
-                <TouchableOpacity style={{borderBottomColor:'#d2d2d2', borderBottomWidth:1}} onPress={this._clickStudyLuntan}>
-                    <Text style={styles.helpActionText}>{"学习论坛"}</Text>
-                </TouchableOpacity>
+                        <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickStudyLuntan}>
+                            <Text style={styles.helpActionText}>{"学习论坛"}</Text>
+                        </TouchableOpacity>
+                        
+                        <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickQuitLogin}>
+                            <Text style={styles.helpActionText}>{"退出登录"}</Text>
+                        </TouchableOpacity>
+            
+                        <TouchableOpacity onPress={this._clickFindHelp} style={styles.helpActionTextParent}>
+                            <Text style={styles.helpActionText}>{"寻找帮助"}</Text>
+                        </TouchableOpacity>
+
+                    </View>
+                    <Image
+                      style={styles.helpActionArrow}
+                      source={require('../images/arrow-w.png')}
+                      resizeMode={"contain"}
+                    />
+                </View>
                 
-                <TouchableOpacity style={{borderBottomColor:'#d2d2d2', borderBottomWidth:1}} onPress={this._clickQuitLogin}>
-                    <Text style={styles.helpActionText}>{"退出登录"}</Text>
-                </TouchableOpacity>
-    
-                <TouchableOpacity onPress={this._clickFindHelp}>
-                    <Text style={styles.helpActionText}>{"寻找帮助"}</Text>
-                </TouchableOpacity>
-                
-                <Image
-                  style={styles.helpActionArrow}
-                  source={require('../images/arrow-w.png')}
-                  resizeMode={"contain"}
-                />
-                
+        )
+    }
+    // ----------------------------------------action 按钮数据加载
+    _renderBtnAction(text){
+        return (
+            <View style={{}}>
+                <View style={styles.actions}>
+                    <TouchableOpacity onPress={this._clickBtnActionEvent.bind(this)}>
+                        <View style={styles.btnSubmit}>
+                            <Text style={{color:'white', fontSize:13}}>
+                            {text}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     }
-    // action 按钮数据加载
+    _renderBtnActionOption(item){
+        return (
+            <View style={{}}>
+                <View style={styles.actions}>
+                    {
+                        item.action.map((a, i)=>{
+                            return (
+                                <TouchableOpacity style={a.select?styles.btnOptionSelect:styles.btnOption} key={i} onPress={this._clickOptionEvent.bind(this, i, a.content)}>
+                                    <Text style={a.select?{color:'white'}:{color:'rgb(250, 80, 131)', fontSize:13}}>{a.content}</Text>
+                                </TouchableOpacity>
+                                
+                            )
+                        })
+                    }
+                    <TouchableOpacity onPress={this._clickOptionSubmitEvent.bind(this)}>
+                        <View style={styles.btnSubmit}>
+                            <Text style={{color:'white', fontSize:13}}>
+                                {"Ok"}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    
+                </View>
+            </View>
+        )
+    }
     _renderBtnActions(){
         var item = this.state.data[this.state.index];
         item = this.state.currentItem;
         return (
-            item.exercises
+            this.state.actionTag == actionBeginStudyTag
             ?
-                <View style={{}}>
-                    <View style={styles.actions}>
-                        {
-                            item.action.map((a, i)=>{
-                                return (
-                                    <TouchableOpacity style={a.select?styles.btnOptionSelect:styles.btnOption} key={i} onPress={this._clickOptionEvent.bind(this, i, a.content)}>
-                                        <Text style={a.select?{color:'white'}:{color:'rgb(250, 80, 131)', fontSize:13}}>{a.content}</Text>
-                                    </TouchableOpacity>
-                                    
-                                )
-                            })
-                        }
-                        <TouchableOpacity onPress={this._clickOptionSubmitEvent.bind(this)}>
-                            <View style={styles.btnSubmit}>
-                                <Text style={{color:'white', fontSize:13}}>
-                                    {"Ok"}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                        
-                    </View>
-                </View>
+                this._renderBtnAction("开始学习")
             :
-                <View style={{}}>
-                    <View style={styles.actions}>
-                        <TouchableOpacity onPress={this._clickBtnActionEvent.bind(this)}>
-                            <View style={styles.btnSubmit}>
-                                <Text style={{color:'white', fontSize:13}}>
-                                {
-                                    this.state.actionTag == actionBeginStudyTag
-                                    ?
-                                        "开始学习"
-                                    :
-                                        this.state.actionTag == actionRestartStudyTag
-                                        ?
-                                            "重新学习"
-                                        :
-                                            item.action
-                                }
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                        
-                    </View>
-                </View>
+                this.state.actionTag == actionRestartStudyTag
+                ?
+                    this._renderBtnAction("重新学习")
+                :
+                    item.exercises
+                    ?
+                        this._renderBtnActionOption(item)
+                    : 
+                        this._renderBtnAction(item.action)
         )
     }
     _renderBottomBtns(){
@@ -1355,7 +1508,108 @@ class MessagePage extends Component{
         )
     }
 
-    // 正常数据加载
+    // ----------------------------------------无动画消息
+    // 文本信息
+    _renderItemTextMessage(item){
+        return (
+            <View style={[styles.message, ]}>
+                <Image
+                  style={styles.avatar}
+                  source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                />
+                <View style={styles.msgView}>
+                    <View style={styles.messageView}>
+                        <Text style={styles.messageText}>
+                            {item.message}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        ) 
+    }
+    // 图片信息
+    _renderItemImgMessage(item){
+        return (
+            <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
+                <View style={styles.message}>
+                    <Image
+                      style={styles.avatar}
+                      source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                    />
+                    <View style={styles.msgView}>
+                        <Image
+                          style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
+                          source={{uri: item.img}}
+                        />
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+    // 链接信息
+    _renderItemLinkMessage(item){
+        return (
+            <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
+                <View style={styles.message}>
+                    <Image
+                      style={styles.avatar}
+                      source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                    />
+                    <View style={styles.msgView}>  
+                        <View style={[styles.messageView, {flex:1}]}>
+                            <Text style={styles.messageText}>
+                              {item.message}
+                            </Text>
+                            <Text style={{color:'rgb(84, 180, 225)'}}>
+                              {item.link=="www.code.com"?"点击打开编辑器":"点击打开新网页"}
+                            </Text>
+                        </View> 
+                        <Image
+                          style={{width:15, height:15, marginHorizontal:10}}
+                          source={require('../images/arrow.png')}
+                        />
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+    // 分割线信息 
+    _renderItemLineMessage(item){
+        return (
+            <View style={styles.sepLine}>
+                <Image
+                  style={styles.line}
+                  source={require('../images/line.png')}
+                />
+                <View style={{paddingHorizontal:10, backgroundColor:'rgb(229, 230, 231)'}}>
+                    <Text style={{color: 'rgb(166, 166, 166)'}}>
+                        {item.message}
+                    </Text>
+                </View>
+            </View>
+        )
+    }
+    // 用户回复信息
+    _renderItemAnswerMessage(item){
+        const {state, setParams, goBack, navigate} = this.props.navigation;
+        return (
+            <View style={styles.answer}>
+                <View style={styles.answerMsgView}>
+                    <View style={styles.answerView}>
+                        <Text style={styles.answerText}>
+                            {item.message}
+                        </Text>
+                    </View>
+                </View>
+                <Image
+                  style={styles.answerAvatar}
+                  source={{uri: state.params.userinfo?state.params.userinfo.avatar.replace("http://", "https://"):'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                />
+            </View>
+        )
+        
+    }
+    // 消息加载中
     _renderLoadingChat(){
         return (
             <View style={[styles.loadingChat,]}>
@@ -1367,101 +1621,88 @@ class MessagePage extends Component{
             </View>
         ) 
     }
+    // 无动画的消息
     _renderItemMessage(item, index){
+        
         return (
-            item.link
+            item.line == true
             ?
-                <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
-                    <View style={styles.message}>
-                        <Image
-                          style={styles.avatar}
-                          source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                        />
-                        <View style={styles.msgView}>  
-                            <View style={[styles.messageView, {flex:1}]}>
-                                <Text style={styles.messageText}>
-                                  {item.message}
-                                </Text>
-                                <Text style={{color:'rgb(84, 180, 225)'}}>
-                                  {item.link}
-                                </Text>
-                            </View> 
-                            <Image
-                              style={{width:15, height:15, marginHorizontal:10}}
-                              source={require('../images/arrow.png')}
-                            />
-                        </View>
-                    </View>
-                </TouchableOpacity>
+                this._renderItemLineMessage(item)
             :
-                item.img
-                ?   
-                    <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
-                        <View style={styles.message}>
-                            <Image
-                              style={styles.avatar}
-                              source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                            />
-                            <View style={styles.msgView}>
-                                <Image
-                                  style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
-                                  source={{uri: item.img}}
-                                />
-                            </View>
-                        </View>
-                    </TouchableOpacity>
+                item.question == false
+                ?
+                    this._renderItemAnswerMessage(item)
                 :
-                    <View style={[styles.message, ]} >
-                        <Image
-                          style={styles.avatar}
-                          source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                        />
-                        <View style={styles.msgView}>
-                            <View style={styles.messageView}>
-                                <Text style={styles.messageText}>
-                                    {item.message}
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
+                    item.link
+                    ?
+                        this._renderItemLinkMessage(item)
+                    :
+                        item.img
+                        ?
+                            this._renderItemImgMessage(item)
+                        :
+                            this._renderItemTextMessage(item)
+
         )
     }
-    
 
-    // 动画数据加载
-    _renderLoadingChatAni(){
+
+    // ---------------------------------------有动画消息
+    // 文本信息
+    _renderItemTextMessageAni(item){
         const translateX = this.leftEnterValue.interpolate({
             inputRange:[0, 1],
             outputRange:[-2000, 0]
         })
-        const opacity = this.leftEnterValue.interpolate({
-            inputRange:[0, 1],
-            outputRange:[0, 1]
-        })
         return (
-            <Animated.View style={[styles.loadingChat, {transform:[{translateX:translateX}], opacity:opacity}]}>
+            <Animated.View style={[styles.message, {transform:[{translateX:translateX}]}]}>
                 <Image
-                  style={{height:15}}
-                  source={require('../images/chat.gif')}
-                  resizeMode='contain'
+                  style={styles.avatar}
+                  source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                 />
+                <View style={styles.msgView}>
+                    <View style={styles.messageView}>
+                        <Text style={[styles.messageText, {}]}>
+                            {item.message}
+                        </Text>
+                    </View>
+                </View>
             </Animated.View>
-        )  
+        )
     }
-    _renderItemMessageAni(item, index){
+    // 图片信息
+    _renderItemImgMessageAni(item){
         const translateX = this.leftEnterValue.interpolate({
             inputRange:[0, 1],
             outputRange:[-2000, 0]
         })
-        const opacity = this.leftEnterValue.interpolate({
+        return (
+            <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
+                <Animated.View style={[styles.message, {transform:[{translateX:translateX}]}]}>
+                    <Image
+                      style={styles.avatar}
+                      source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                    />
+                    <View style={styles.msgView}>
+                        <Image
+                          style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
+                          source={{uri: item.img}}
+                        />
+                    </View>
+                </Animated.View>
+            </TouchableOpacity>
+        )
+    }
+    // 链接信息
+    _renderItemLinkMessageAni(item){
+        const translateX = this.leftEnterValue.interpolate({
             inputRange:[0, 1],
-            outputRange:[0, 1]
+            outputRange:[-2000, 0]
         })
 
         return (
-            item.link
-            ?
-                <Animated.View style={[styles.message, {transform:[{translateX:translateX}], opacity:opacity}]}>
+            <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
+                <Animated.View style={[styles.message, {transform:[{translateX:translateX}]}]}>
                     <Image
                       style={styles.avatar}
                       source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
@@ -1481,116 +1722,59 @@ class MessagePage extends Component{
                         />
                     </View>
                 </Animated.View>
-            :
-                item.img
-                ?
-                    index+1 == this.state.number
-                    ?
-                        <Animated.View style={[styles.message, {transform:[{translateX:translateX}], opacity:opacity}]}>
-                            <Image
-                              style={styles.avatar}
-                              source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                            />
-                            <View style={styles.msgView}>
-                                <Image
-                                  style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
-                                  source={{uri: item.img}}
-                                />
-                                <Text style={{color:'red'}}>
-                                    {index+1}{this.state.number}
-                                </Text>
-                            </View>
-                        </Animated.View>
-                    :
-                        <View style={[styles.message, ]}>
-                            <Image
-                              style={styles.avatar}
-                              source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                            />
-                            <View style={styles.msgView}>
-                                <Image
-                                  style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
-                                  source={{uri: item.img}}
-                                />
-                                <Text style={{}}>
-                                    {index+1}{this.state.number}
-                                </Text>
-                            </View>
-                        </View>
-                :
-                    index+1 == this.state.number
-                    ?
-                        <Animated.View style={[styles.message, {transform:[{translateX:translateX}], opacity:opacity}]}>
-                            <Image
-                              style={styles.avatar}
-                              source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                            />
-                            <View style={styles.msgView}>
-                                <View style={styles.messageView}>
-                                    <Text style={[styles.messageText, {color:'red'}]}>
-                                        {item.message}{index+1}{this.state.number}
-                                    </Text>
-                                </View>
-                            </View>
-                        </Animated.View>
-                    :
-                        <View style={[styles.message, ]}>
-                            <Image
-                              style={styles.avatar}
-                              source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                            />
-                            <View style={styles.msgView}>
-                                <View style={styles.messageView}>
-                                    <Text style={styles.messageText}>
-                                        {item.message}{index+1}{this.state.number}
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
+            </TouchableOpacity>
         )
-
     }
-
-    // 缓存数据加载
-    _renderItemChatStroage(item, index){
-        const {state, setParams, goBack, navigate} = this.props.navigation;
+    // 消息加载中
+    _renderLoadingChatAni(){
+        const translateX = this.leftEnterValue.interpolate({
+            inputRange:[0, 1],
+            outputRange:[-2000, 0]
+        })
+        const opacity = this.leftEnterValue.interpolate({
+            inputRange:[0, 1],
+            outputRange:[0, 1]
+        })
+        return (
+            <Animated.View style={[styles.loadingChat, {transform:[{translateX:translateX}], opacity:opacity}]}>
+                <Image
+                  style={{height:15}}
+                  source={require('../images/chat.gif')}
+                  resizeMode='contain'
+                />
+            </Animated.View>
+        )  
+    }
+    // 有动画的消息
+    _renderItemMessageAni(item, index){
+        
         return (
             item.line == true
             ?
-                <View style={styles.sepLine}>
-                    <Image
-                      style={styles.line}
-                      source={require('../images/line.png')}
-                    />
-                    <Text style={{color: 'rgb(166, 166, 166)', paddingHorizontal:10}}>
-                        {item.message}
-                    </Text>
-                </View>
+                this._renderItemLineMessage(item)
             :
                 item.question == false
                 ?
-                    <View style={styles.answer}>
-                        <View style={styles.answerMsgView}>
-                            <View style={styles.answerView}>
-                                <Text style={styles.answerText}>
-                                    {item.message}
-                                </Text>
-                            </View>
-                        </View>
-                        <Image
-                          style={styles.answerAvatar}
-                          source={{uri: state.params.userinfo?state.params.userinfo.avatar.replace("http://", "https://"):'https://static1.bcjiaoyu.com/binshu.jpg'}}
-                        />
-                        
-                    </View>
+                    this._renderItemAnswerMessage(item)
                 :
-                    this._renderItemMessage(item, index)
+                    item.link
+                    ?
+                        index+1 == this.state.number?this._renderItemLinkMessageAni(item):this._renderItemLinkMessage(item)
+                    :
+                        item.img
+                        ?
+                            index + 1 == this.state.number?this._renderItemImgMessageAni(item):this._renderItemImgMessage(item)
+                        :
+                            index + 1 == this.state.number?this._renderItemTextMessageAni(item):this._renderItemTextMessage(item)
+
         )
     }
+
+
+    // ---------------------------------------消息列表
     _renderItem = ({item, index}) => (
-        this._renderItemChatStroage(item, index)
-        // this._renderItemMessage(item, index)
-        // this._renderItemMessageAni(item, index)
+        // this.state.loadStorageMsg?this._renderItemMessage(item, index):this._renderItemMessageAni(item, index)
+        this._renderItemMessage(item, index)
     )
     _renderHeader = ()=>{
         return  <TouchableOpacity onPress={this._clickLoadMore.bind(this)}>
@@ -1614,14 +1798,14 @@ class MessagePage extends Component{
     _renderTableView(){
         return (
             <View style={{flex:1}}>
-                <View style={{width:width, maxHeight:height-headerH-60}}>
+                <View style={{width:width, maxHeight:height-headerH-80-10}}>
                     <FlatList 
                         ref={(flatlist)=>this._flatList=flatlist}
-                        style={{maxHeight:height-headerH-60-30}}
+                        style={{maxHeight:height-headerH-80-10}}
                         data={this.state.dataSource}
                         renderItem={this._renderItem}
                         ListHeaderComponent={this.state.showHeaderComponent?this._renderHeader:null}
-                        // ListFooterComponent={this._renderFooter}
+                        // ListFooterComponent={this.state.loadingChat?this._renderFooter:null}
                         extraData={this.state.loadingChat}
                         keyExtractor={this._keyExtractor}
                         onLayout={ (e) => {
@@ -1632,7 +1816,7 @@ class MessagePage extends Component{
                         //     { length: this.state.itemHeight, offset: (this.state.itemHeight + 2) * index, index }
                         // )}
                         onContentSizeChange={ (contentWidth, contentHeight) => {
-                            console.log(contentHeight);
+                            // console.log(contentHeight);
                             this.setState({
                                 contentHeight:contentHeight
                             })
@@ -1640,15 +1824,14 @@ class MessagePage extends Component{
                             if (this.state.scrollTop == true) {
                                 this._flatList.scrollToOffset({animated: true, offset: 0});
                                 // this._flatList.scrollToIndex({viewPosition: 0, index: 0}); 
-                                console.log("-----scrollTop");
+                                // console.log("-----scrollTop");
                             }else{
-                                if (contentHeight > height-headerH-90) {
+                                if (contentHeight > height-headerH-80-10) {
                                     // this._flatList.scrollToIndex({viewPosition: 1, index: this.state.number-1});
-                                    this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-60-30)});
-                                    console.log("-----scrollEnd");
+                                    this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-80-10)});
+                                    // console.log("-----scrollEnd");
                                     // this._flatList.scrollToEnd();  //与getItemLayout配合使用
-                                }
-                                
+                                } 
                             } 
                         }}
                     />
@@ -1676,9 +1859,13 @@ class MessagePage extends Component{
                 {
                     this.state.showBigImgView? this._renderScaleBigImage() : null
                 }
+                {
+                    this.state.showFindHelpView? this._renderFindHelp() : null
+                }
             </View>
         )
     }
+
     // 页面加载中...
     _renderLoadingView(){
         return (
@@ -1818,13 +2005,15 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius:0, 
         paddingHorizontal:5, 
         paddingVertical:10,  
-        backgroundColor:'white'
+        backgroundColor:'white',
+        paddingLeft:10
     },
     messageText:{
         fontSize:15, 
         lineHeight:22.5, 
         color:'rgb(58, 59, 60)',
-        textAlign:'justify'
+        textAlign:'justify',
+        // backgroundColor:'blue',
     },
     // --------------------------------------------人工回复
     answer:{
@@ -1873,20 +2062,20 @@ const styles = StyleSheet.create({
         top: 19.5
     },
     // ------------------------------------------底部按钮
-    btns:{
+    btns:{//底部按钮高度80
         // height:60, 
         width:width,
         position:'absolute',
         bottom:0
     },
-    help:{
-        width:25, 
-        height:25, 
+    help:{//帮助按钮总高40
+        width:30, 
+        height:30, 
         marginBottom:5,
         marginTop:5, 
-        marginLeft:width-35
+        marginLeft:width-40
     },
-    actions:{
+    actions:{//按钮高度40
         flexDirection:'row', 
         justifyContent:'flex-end', 
         marginHorizontal:8, 
@@ -1897,47 +2086,72 @@ const styles = StyleSheet.create({
         backgroundColor:'rgb(250, 80, 131)', 
         borderRadius:5, 
         borderBottomRightRadius:0, 
-        padding:10, 
-        marginLeft:5
+        // padding:10, 
+        marginLeft:5,
+        height:30,
+        paddingHorizontal:10,
+        alignItems:'center',
+        justifyContent:'center'
     },
     // ----------------选项按钮
     btnOption:{
         backgroundColor:'white', 
         borderRadius:5, 
         borderBottomRightRadius:0, 
-        padding:10, 
-        marginLeft:5
+        // padding:10, 
+        marginLeft:5,
+        height:30,
+        paddingHorizontal:10,
+        alignItems:'center',
+        justifyContent:'center'
     },
     btnOptionSelect:{
         backgroundColor:'rgb(250, 80, 131)', 
         borderRadius:5, 
         borderBottomRightRadius:0, 
-        padding:10, 
-        marginLeft:5
+        // padding:10, 
+        marginLeft:5,
+        height:30,
+        paddingHorizontal:10,
+        alignItems:'center',
+        justifyContent:'center'
     },
     // ----------------帮助按钮组
+    helpParentView:{
+        position:'absolute',
+        bottom:45,
+        right:5
+    },
     helpActionsView:{
-        position: 'absolute', 
-        bottom:42, 
+        // position: 'absolute', 
+        // bottom:42, 
+        // right:5,
         backgroundColor: 'white', 
         borderWidth:1,
         borderColor:'#d2d2d2',
         borderRadius: 5,
-        right:5,
         paddingHorizontal:10
     },
+    helpActionTextParent:{
+        alignItems:'center', 
+        justifyContent:'center', 
+        height:40
+    },
     helpActionText:{
-        width:60, 
-        height: 30, 
-        lineHeight: 30, 
-        textAlign:'center'
+        width:80,
+        // height: 30, 
+        // lineHeight: 30, 
+        textAlign:'center',
+        // backgroundColor:'red'
     },
     helpActionArrow:{
         position:'absolute', 
+        right:10,
         height:11, 
         width:16, 
-        bottom:-11, 
-        right:10
+        bottom:-10
+        // backgroundColor:'red'
+        // overflow:'visible'
     },
 
     // ----------------------------------------消息等待
@@ -1950,6 +2164,9 @@ const styles = StyleSheet.create({
         borderRadius:5, 
         marginHorizontal:10,
         marginTop:10,
+
+        position:'absolute',
+        bottom:-40
     },
 
     // ----------------------------------------钻石动画
@@ -2012,8 +2229,8 @@ const styles = StyleSheet.create({
         backgroundColor:'rgba(0,0,0,0.6)',
         top:0,
         left:0,
-        alignItems:'center',
-        justifyContent:'center'
+        // alignItems:'center',
+        // justifyContent:'center'
         // overflow:'scroll'
     },
     imgView:{
@@ -2021,8 +2238,22 @@ const styles = StyleSheet.create({
         height:height-headerH,
         overflow:'scroll',
         backgroundColor:'red'
+    },
+    // --------------------------------------寻找帮助
+    findHelpShadowView:{
+        width:width, 
+        height:height-headerH, 
+        backgroundColor:'rgba(0,0,0,0.6)',
+        position:'absolute', 
+        alignItems:'center', 
+        // justifyContent:'center'
+    },
+    findHelpText:{
+        color: 'white',
+        fontSize: 20,
+        width: width*.8,
+        marginTop:(height-headerH)*.3
     }
-
 });
 
 export default MessagePage;

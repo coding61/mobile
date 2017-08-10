@@ -3,8 +3,7 @@ import {
   AppRegistry, 
   StyleSheet, 
   Image, 
-  Text, 
-  TextInput, 
+  Text,
   View, 
   ScrollView,
   Dimensions, 
@@ -13,9 +12,7 @@ import {
   AsyncStorage,
   Alert,
   RefreshControl,
-  InteractionManager,
 }from 'react-native';
-import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
 import ForumList from './ForumList';
 var {height, width} = Dimensions.get('window');
 

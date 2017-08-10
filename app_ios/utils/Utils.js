@@ -7,8 +7,14 @@ import {
     Platform,
     Linking
 } from 'react-native'
+
 const isIOS = Platform.OS == "ios"
-const HeaderH = isIOS ? 64 : 44
+const TopStatusBarIOS = 20
+const TopStatusBarAndroid = 25
+const TopNavBarHeight = 48
+const BottomStatusBarAndroid = 48
+const HeaderH = isIOS ? 64 : TopNavBarHeight+TopStatusBarAndroid
+const BottomH = isIOS ? 0 : BottomStatusBarAndroid
 
 const deviceH = Dimensions.get('window').height
 const deviceW = Dimensions.get('window').width
@@ -67,21 +73,21 @@ function NumberToChinese(num){
     return chnStr;
 }
 let Utils = {
-	width:Dimensions.get('window').width,
-	height:Dimensions.get('window').height,
+    width:Dimensions.get('window').width,
+    height:Dimensions.get('window').height,
     headerHeight:HeaderH,
-	navBarBgColor:'rgb(253,202,24)',
-	tabBarBgColor:'rgb(255,255,255)',
-	bodyBgColor:'rgb(245,245,245)',
-	tabBarIconUnSColor:'rgb(124,124,124)',
-	tabbarIconSColor:'rgb(253,202,24)',
+    navBarBgColor:'rgb(253,202,24)',
+    tabBarBgColor:'rgb(255,255,255)',
+    bodyBgColor:'rgb(245,245,245)',
+    tabBarIconUnSColor:'rgb(124,124,124)',
+    tabbarIconSColor:'rgb(253,202,24)',
     themeColor:'rgb(253,202,24)',
-	px2dp:(px)=>{
-		return px * deviceW/basePx
-	},
-	numberToChinese:(number)=>{
-		return NumberToChinese(number)
-	},
+    px2dp:(px)=>{
+        return px * deviceW/basePx
+    },
+    numberToChinese:(number)=>{
+        return NumberToChinese(number)
+    },
     setValue:(key, value)=>{
         AsyncStorage.setItem(key,value);
     },

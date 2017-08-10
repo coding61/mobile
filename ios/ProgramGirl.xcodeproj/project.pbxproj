@@ -215,6 +215,13 @@
 			remoteGlobalIDString = 2D2A28201D9B03D100D4039D;
 			remoteInfo = "RCTAnimation-tvOS";
 		};
+		7404FE3D1F3C0943003CF16D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B77BB5AD22014F398FA16B64 /* RNSound.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 19825A1E1BD4A89800EE0337;
+			remoteInfo = RNSound;
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -467,6 +474,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		7404FE3A1F3C0943003CF16D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7404FE3E1F3C0943003CF16D /* libRNSound.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -624,9 +639,7 @@
 						DevelopmentTeam = 3CD52VCXD2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
-					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 3CD52VCXD2;
-					};
+					
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
@@ -869,6 +882,13 @@
 			fileType = archive.ar;
 			path = libRCTAnimation.a;
 			remoteRef = 5E9157341DD0AC6500FF2AA8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7404FE3E1F3C0943003CF16D /* libRNSound.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSound.a;
+			remoteRef = 7404FE3D1F3C0943003CF16D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
@@ -1128,7 +1148,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.chengxuyuan.programgirl;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cxy61.girls;
 				PRODUCT_NAME = ProgramGirl;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1152,7 +1172,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.chengxuyuan.programgirl;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cxy61.girls;
 				PRODUCT_NAME = ProgramGirl;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

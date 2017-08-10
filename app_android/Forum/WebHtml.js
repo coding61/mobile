@@ -3,26 +3,14 @@ import {
   AppRegistry, 
   StyleSheet, 
   Image, 
-  Text, 
-  TextInput, 
-  View, 
-  ScrollView,
-  Dimensions, 
-  TouchableOpacity,
-  ListView,
-  AsyncStorage,
-  Alert,
-  RefreshControl,
-  TouchableHighlight,
-  InteractionManager,
+  Text,
+  View,
+  Dimensions,
   WebView,
 }from 'react-native';
-import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
-import WebViewBridge from 'react-native-webview-bridge';
 var {height, width} = Dimensions.get('window');
 
 //var default_url = 'https://app.bcjiaoyu.com/girl/cxyteam_forum_moblie/detail.html';
-//var default_url='http://192.168.1.104:8080/CXYTeam/cxyteam-html5/cxyteam_forum_moblie/detail.html';
 var default_url='https://www.cxy61.com/girl/cxyteam_forum_moblie/detail.html';
 
 export default class WebHtml extends Component{
@@ -34,7 +22,7 @@ export default class WebHtml extends Component{
             webViewData:'',
             data:{
                 token:this.props.navigation.state.params.token,
-                pk:this.props.navigation.state.params.data.pk,
+                pk:this.props.navigation.state.params.data,
             }, 
         }
     }

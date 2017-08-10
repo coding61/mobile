@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {
-  AppRegistry, 
   StyleSheet, 
   Image, 
   Text, 
@@ -10,14 +9,11 @@ import {
   Dimensions, 
   TouchableOpacity,
   ListView,
-  AsyncStorage,
   Alert,
   RefreshControl,
-  InteractionManager,
   WebView,
 }from 'react-native';
-import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
-import Content_Rex from './Content_Rex';
+
 import ForumDeatilCont from './ForumDeatilCont';
 var {height, width} = Dimensions.get('window');
 var basePath='https://www.cxy61.com/';

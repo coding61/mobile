@@ -8,10 +8,6 @@ import {
   PropTypes,
   Alert,
   AsyncStorage,
-  NativeAppEventEmitter,
-  BackAndroid,
-  NavigatorIOS,
-  Navigator,
   Button
 }from 'react-native';
 
@@ -28,6 +24,8 @@ import ForumList from './Forum/ForumList.js';
 import WebHtml from './Forum/WebHtml.js';
 import AddForum from './Forum/AddForum.js';
 import Forum_Details from './Forum/Forum_Details.js';
+import NewsCenter from './Forum/NewsCenter.js';
+import RankingList from './Forum/RankingList.js';
 import {StackNavigator} from 'react-navigation';
 
 import Login from './Login/Login.js';
@@ -78,6 +76,8 @@ const app = StackNavigator({
     WebHtml:{screen:WebHtml},
     AddForum:{screen:AddForum},
     Forum_Details:{screen:Forum_Details},
+    NewsCenter:{screen:NewsCenter},
+    RankingList:{screen:RankingList},
     
     MessagePage:{screen: MessagePage},
     MessagePage1:{screen:MessagePage1},
