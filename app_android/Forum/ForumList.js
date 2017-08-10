@@ -196,13 +196,13 @@ export default class ForumList extends Component{
         })
     }
     forumdetail(data){
-        this.props.navigation.navigate('WebHtml', { data: data.pk,token:this.state.token,callback(msg){
+        this.props.navigation.navigate('WebHtml', { data: data.pk,token:this.state.token,callback:(msg)=>{
             this._onRefresh()
         }})
         //this.props.navigation.navigate('Forum_Details', { data: data,token:this.state.token })
     }
     AddForum(){
-        this.props.navigation.navigate('AddForum',{data:this.state.data,token:this.state.token,callback(msg){
+        this.props.navigation.navigate('AddForum',{data:this.state.data,token:this.state.token,callback:(msg)=>{
             this._onRefresh()
         }})
     }
