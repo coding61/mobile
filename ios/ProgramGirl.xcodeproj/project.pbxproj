@@ -236,6 +236,13 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		C30162FE1F3C333400711262 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B77BB5AD22014F398FA16B64 /* RNSound.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 19825A1E1BD4A89800EE0337;
+			remoteInfo = RNSound;
+		};
 		C359B71C1F283F62000C2C98 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 146833FF1AC3E56700842450 /* React.xcodeproj */;
@@ -535,6 +542,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		C30162FB1F3C333400711262 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C30162FF1F3C333400711262 /* libRNSound.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -624,9 +639,7 @@
 						DevelopmentTeam = 3CD52VCXD2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
-					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = TA5Z7L48ET;
-					};
+					
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
@@ -695,7 +708,7 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
-					ProductGroup = 7404FE3A1F3C0943003CF16D /* Products */;
+					ProductGroup = C30162FB1F3C333400711262 /* Products */;
 					ProjectRef = B77BB5AD22014F398FA16B64 /* RNSound.xcodeproj */;
 				},
 			);
@@ -890,6 +903,13 @@
 			fileType = archive.ar;
 			path = libRCTText.a;
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C30162FF1F3C333400711262 /* libRNSound.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSound.a;
+			remoteRef = C30162FE1F3C333400711262 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		C359B71D1F283F62000C2C98 /* libthird-party.a */ = {
@@ -1115,7 +1135,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = TA5Z7L48ET;
+				DEVELOPMENT_TEAM = 3CD52VCXD2;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
@@ -1128,7 +1148,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.chengxuyuan.programgirl;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cxy61.girls;
 				PRODUCT_NAME = ProgramGirl;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1139,7 +1159,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TA5Z7L48ET;
+				DEVELOPMENT_TEAM = 3CD52VCXD2;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
@@ -1152,7 +1172,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.chengxuyuan.programgirl;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cxy61.girls;
 				PRODUCT_NAME = ProgramGirl;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
