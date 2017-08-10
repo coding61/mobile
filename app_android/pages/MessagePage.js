@@ -1185,10 +1185,11 @@ class MessagePage extends Component{
     }
     // 寻找帮助点击
     _clickFindHelp = ()=>{
-        this.setState({
-            showHelpActions:false,
-            showFindHelpView:true
-        })
+        this.props.navigation.navigate("CodeCompileWebView", {language:"python"})
+        // this.setState({
+        //     showHelpActions:false,
+        //     showFindHelpView:true
+        // })
     }
     // 寻找帮助 shadowview点击
     _clickFindHelpShadow = ()=>{

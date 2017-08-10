@@ -9,58 +9,181 @@ import {
   Dimensions,
   TouchableOpacity,
   TextInput,
-  Keyboard
+  Keyboard,
+  AsyncStorage,
+  Alert,
+  ScrollView
 } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 export default class Login extends Component {
+  static navigationOptions = {
+    headerStyle: {
+      backgroundColor: 'rgb(251, 110, 169)'
+    },
+  }
   constructor() {
     super();
     this.state = {
       inviteCode: '',
-      passWord: ''
+      passWord: '',
+      phoneNum: '',
+      phoneWord: '',
+      loginWay: 'right'
     }
+  }
+  componentWillUnmount() {
+    this.props.navigation.state.params.callback();
   }
   _cancelkeyboard() {
     Keyboard.dismiss();
   }
+  phoneLogin() {
+    var _this = this;
+    fetch('https://www.cxy61.com/program_girl/userinfo/telephone_login/',{
+              method: "POST",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                telephone: this.state.phoneNum,
+                password: this.state.phoneWord,
+              }),
+            })
+            .then(response=> {
+              if (response.status === 200) {
+                return response.json();
+              } else {
+                return 'fail';
+              }
+            })
+            .then(responseJson => {
+              if (responseJson !== 'fail') {
+                AsyncStorage.setItem('token', responseJson.token, () => {
+                  _this.props.navigation.goBack();
+                })
+              } else {
+                alert('登陆失败，请重新登陆');
+              }
+            })
+  }
+  goLogin() {
+    var _this = this;
+    fetch('https://www.cxy61.com/program_girl/userinfo/invitation_code_login/',{
+              method: "POST",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                code: this.state.inviteCode,
+                password: this.state.passWord,
+              }),
+            })
+            .then(response=> {
+              if (response.status === 200) {
+                return response.json();
+              } else {
+                return 'fail';
+              }
+            })
+            .then(responseJson => {
+              if (responseJson !== 'fail') {
+                AsyncStorage.setItem('token', responseJson.token, () => {
+                  _this.props.navigation.goBack();
+                })
+              } else {
+                alert('登陆失败，请重新登陆');
+              }
+            })
+
+  }
   render() {
     return (
       <View style={{flex: 1}}>
+        {this.state.loginWay === 'left'?(
         <TouchableOpacity onPress={() => this._cancelkeyboard()} activeOpacity={1} style={LoginStyle.container}>
-          <StatusBar barStyle="light-content" />
           <Image style={LoginStyle.titleStyle} source={require('../assets/Login/chengxuyuanjihua.png')} />
           <View>
             <View style={LoginStyle.inputViewStyle}>
-              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 15}}>{'邀请码'}</Text>
+              <Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'手机号'}</Text>
+              <TextInput
+                style={LoginStyle.inputStyle}
+                onChangeText={(phoneNum) => this.setState({phoneNum})}
+                value={this.state.phoneNum}
+                keyboardType={'numeric'}
+                maxLength={11}
+                underlineColorAndroid={'transparent'}
+              />
+            </View>
+            <View style={LoginStyle.inputViewStyle}>
+              <Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'密    码'}</Text>
+              <TextInput
+                style={LoginStyle.inputStyle}
+                onChangeText={(phoneWord) => this.setState({phoneWord})}
+                value={this.state.phoneWord}
+                maxLength={10}
+                secureTextEntry={true}
+                underlineColorAndroid={'transparent'}
+              />
+            </View>
+          </View>
+          <TouchableOpacity onPress={this.phoneLogin.bind(this)} style={LoginStyle.loginBtn}>
+            <Text style={LoginStyle.loginBtnText}>{'登录'}</Text>
+          </TouchableOpacity>
+            <View style={{flexDirection: 'row', width: 2 * width / 3, height: 50, alignItems: 'center', justifyContent: 'space-between'}}>
+              {/* <TouchableOpacity onPress={()=> this.props.navigation.navigate('FindWord')}>
+                <Text style={{fontSize: 13, color: 'white'}}>{'忘记密码？'}</Text>
+              </TouchableOpacity> */}
+              <Text>{''}</Text>
+              <TouchableOpacity onPress={()=> this.props.navigation.navigate('Register')}>
+                <Text style={{fontSize: 13, color: 'white'}}>{'注册'}</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        ):(
+        <TouchableOpacity onPress={() => this._cancelkeyboard()} activeOpacity={1} style={LoginStyle.container}>
+          <Image style={LoginStyle.titleStyle} source={require('../assets/Login/chengxuyuanjihua.png')} />
+          <View>
+            <View style={LoginStyle.inputViewStyle}>
+              <Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'邀请码'}</Text>
               <TextInput
                 style={LoginStyle.inputStyle}
                 onChangeText={(inviteCode) => this.setState({inviteCode})}
                 value={this.state.inviteCode}
-                blurOnSubmit={true}
                 keyboardType={'numeric'}
                 maxLength={8}
+                underlineColorAndroid={'transparent'}
               />
             </View>
             <View style={LoginStyle.inputViewStyle}>
-              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 15}}>{'密码    '}</Text>
+              <Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'密    码'}</Text>
               <TextInput
                 style={LoginStyle.inputStyle}
                 onChangeText={(passWord) => this.setState({passWord})}
                 value={this.state.passWord}
-                blurOnSubmit={true}
                 keyboardType={'numeric'}
                 maxLength={4}
-                secureTextEntry={true}
+                secureTextEntry={false}
+                underlineColorAndroid={'transparent'}
               />
             </View>
           </View>
-          <Text style={{fontSize: 13, lineHeight: 25, width: 2 * width / 3, color:'white'}}>{'提示:邀请码请到微信公众号cxy-61或者下方二维码获取'}</Text>
-          <Image style={{width: width / 3, height: width / 3}} source={require('../assets/Login/erweima.png')}/>
-          <TouchableOpacity style={LoginStyle.loginBtn}>
+          <TouchableOpacity onPress={this.goLogin.bind(this)} style={LoginStyle.loginBtn}>
             <Text style={LoginStyle.loginBtnText}>{'登录'}</Text>
           </TouchableOpacity>
-        </TouchableOpacity>
+            {/* <Text style={{width: 2 * width / 3,fontSize: 13, lineHeight: 25, color: 'white'}}>{"提示:建议您登录后在“首页”的右下角点击“问号”帮助按钮进行手机绑定，以方便您后期的学习。"}</Text> */}
+          </TouchableOpacity>
+        )}
+        <View style={{position: 'absolute', left: 0, top: 0, width: width, height: 40, flexDirection: 'row'}}>
+          <TouchableOpacity onPress={()=> this.setState({loginWay: 'left'})} style={[{width: width / 2, height: 40, alignItems: 'center', justifyContent: 'center'},this.state.loginWay === 'left'?({borderBottomColor: 'white', borderBottomWidth: 1}):(null)]}>
+            <Text style={{color:'white'}}>手机号登陆</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=> this.setState({loginWay: 'right'})} style={[{width: width / 2, height: 40, alignItems: 'center', justifyContent: 'center'},this.state.loginWay === 'right'?({borderBottomColor: 'white', borderBottomWidth: 1}):(null)]}>
+            <Text style={{color:'white'}}>邀请码登陆</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
@@ -71,7 +194,7 @@ const LoginStyle = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgb(251, 110, 169)',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-around'
   },
   titleStyle: {
     width: width / 2 + 2,
@@ -83,7 +206,7 @@ const LoginStyle = StyleSheet.create({
     height: width / 9,
     backgroundColor: 'white',
     borderRadius: 3,
-    marginBottom: height / 10,
+    marginTop: 50, 
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -97,13 +220,13 @@ const LoginStyle = StyleSheet.create({
     height: width / 9,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop:30
+    marginTop:15
   },
   inputStyle: {
     textAlign: 'center',
-    fontSize: 17,
+    fontSize: 15,
     marginLeft: 5,
-    height:20,
+    height:40,
     width: width / 2,
     borderBottomWidth: 1,
     borderBottomColor: 'white',
