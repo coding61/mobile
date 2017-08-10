@@ -53,7 +53,6 @@ export default class WebHtml extends Component{
     }
 
     render() {
-        this.inputText = this.state.url;
         return (
             <View style={{flex: 1}}>
                 <WebView

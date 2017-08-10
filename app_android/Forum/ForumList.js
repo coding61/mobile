@@ -41,11 +41,7 @@ export default class ForumList extends Component{
     }
     static navigationOptions = {
         title: '论坛列表',
-        
     };
-    componentWillMount(){
-        
-    }
 
     componentDidMount(){
        this._loadAlldata()
@@ -259,7 +255,7 @@ export default class ForumList extends Component{
                             <Text style={{paddingTop:10}}>{rowData.userinfo.grade.current_name}</Text>
                         </View>
                         <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.7,}}>
-                            <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.status=='solved'?(<Text style={{color:'#cccccc'}}>[已解决]</Text>):(<Text style={{color:'red'}}>[未解决]</Text>)}{rowData.title}</Text>
+                            <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.status=='unsolved'?(<Text style={{color:'red'}}>[未解决]</Text>):(<Text style={{color:'#cccccc'}}>[{status_display}]</Text>)}{rowData.title}</Text>
                             <Text style={{paddingBottom:10}} numberOfLines={2}>{rowData.content}</Text>
                             <Text style={{paddingBottom:10}}>{rowData.userinfo.name}  {time}</Text>
                         </View>
