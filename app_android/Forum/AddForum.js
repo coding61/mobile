@@ -7,18 +7,11 @@ import {
   TextInput, 
   View, 
   ScrollView,
-  Dimensions, 
-  TouchableOpacity,
-  ListView,
-  AsyncStorage,
-  Alert,
-  RefreshControl,
-  InteractionManager,
+  Dimensions,
   WebView
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
 
-//var default_url='http://192.168.25.174:8080/CXYTeam/cxyteam-html5/cxyteam_forum_moblie/add.html';
 var default_url='https://www.cxy61.com/girl/cxyteam_forum_moblie/add.html';
 //var default_url='https://app.bcjiaoyu.com/girl/cxyteam_forum_moblie/add.html';
 export default class AddForum extends Component{
@@ -51,6 +44,7 @@ export default class AddForum extends Component{
     handleMessage (evt)  {
         var message = evt.nativeEvent.data
         if(message==200){
+            this.props.navigation.state.params.callback(message);
             this.props.navigation.goBack()
         }
     }
