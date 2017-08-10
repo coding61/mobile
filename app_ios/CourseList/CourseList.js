@@ -8,12 +8,13 @@ import {
   Dimensions,
   TouchableOpacity,
   SectionList,
-  FlatList
+  FlatList,
+  Alert,
+  AsyncStorage
 } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 import {StackNavigator} from 'react-navigation';
-var token = 'ff014f55ad02c8f799d4103b19b436520875ea73';
 var itemHead = {nostart: require('../assets/Course/nostart.png'), processing:require('../assets/Course/onstudy.png'), finish: require('../assets/Course/onfinish.png')};
 
 
@@ -24,7 +25,7 @@ class RightBtn extends Component {
   }
   render() {
     return (
-      <TouchableOpacity style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+      <TouchableOpacity onPress={()=>this.props.press()} style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
         <Text style={{color: 'white'}}>{'完成'}</Text>
       </TouchableOpacity>
     )
@@ -34,20 +35,177 @@ class CourseItem extends Component {
   constructor() {
     super();
   }
+  onPress() {
+    function toReset() {
+      var _this = this;
+        AsyncStorage.getItem("token", function(errs, results) {
+          if (results) {
+            fetch('https://www.cxy61.com/program_girl/userinfo/update_learnextent/',{
+                      method: "POST",
+                      headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Token ' + results
+                      },
+                      body: JSON.stringify({
+                        course: _this.props.pk,
+                        lesson: "0",
+                      }),
+                    })
+                    .then(response=> {
+                      if (response.status === 200) {
+                        return response.json()
+                      } else {
+                        return 'fail'
+                      }
+                    })
+                    .then(responseJson=> {
+                      if (responseJson !== 'fail') {
+                        _this.props.navigation.state.params.callback(_this.props.pk, 0, true);
+                        _this.props.navigation.goBack();
+                      } else {
+                        alert('失败，请重试');
+                      }
+                    })
+          }
+        })
+    }
+    function toBack() {
+      if (this.props.status === 'finish') {
+        var _this = this;
+        AsyncStorage.getItem("token", function(errs, results) {
+          if (results) {
+            fetch('https://www.cxy61.com/program_girl/userinfo/update_learnextent/',{
+                      method: "POST",
+                      headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Token ' + results
+                      },
+                      body: JSON.stringify({
+                        course: _this.props.pk,
+                        lesson: "0",
+                      }),
+                    })
+                    .then(response=> {
+                      if (response.status === 200) {
+                        return response.json()
+                      } else {
+                        return 'fail'
+                      }
+                    })
+                    .then(responseJson=> {
+                      if (responseJson !== 'fail') {
+                        _this.props.navigation.state.params.callback(_this.props.pk, 0, true);
+                        _this.props.navigation.goBack();
+                      } else {
+                        alert('失败，请重试');
+                      }
+                    })
+          }
+        })
+      } else if (this.props.status === 'processing'){
+        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, false);
+        this.props.navigation.goBack();
+      } else {
+        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, false);
+        this.props.navigation.goBack();
+      }
+    }
+    if (this.props.isopen === true) {
+      if (this.props.status === 'nostart') {
+        toBack.bind(this)();
+      } else if (this.props.status === 'processing') {
+        Alert.alert('','此课程已经开始学习，请选择重新开始学习还是继续上次学习？',
+        [{text: '继续上次', onPress: () => toBack.bind(this)(), style: 'cancel'},
+        {text: '重新开始', onPress: () => toReset.bind(this)()}
+        ],{ cancelable: false })
+      } else if (this.props.status === 'finish') {
+        Alert.alert('','你是否确定要再学一遍？',
+        [{text: '是', onPress: () => toBack.bind(this)(), style: 'cancel'},
+        {text: '否', onPress: () => {}}
+        ],{ cancelable: false })
+      } else {}
+    } else {
+      Alert.alert('','此课程尚未开放',
+      [{text: '确认', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
+      ],{ cancelable: false })
+    }
+
+    // if (this.props.isopen === false) {
+    //   alert('课程未开放');
+    // } else {
+    //  this.props.changeAll(!this.props.isSelected, this.props.pk); 
+    // }
+  }
   render() {
-    console.log(this.props.status)
+
     return (
-        <TouchableOpacity style={CourseStyle.itemStyle}>
+        <TouchableOpacity onPress={this.onPress.bind(this)} style={[CourseStyle.itemStyle,this.props.isopen === false?({backgroundColor: 'rgb(230, 230, 230)'}):(this.props.isSelected?({backgroundColor: 'rgb(252, 189, 209)'}):({backgroundColor: 'white'}))]}>
           <Text numberOfLines={1} style={{backgroundColor: 'rgba(255,255,255,0)', fontSize: 11, marginTop: 15}}>{this.props.title}</Text>
           <Image style={{width: 50, height: 50, marginTop: 15}} source={{uri: this.props.headImg}}/>
           <Text numberOfLines={4} style={{marginBottom: 15, letterSpacing: 2, lineHeight: 12, marginTop: 15, width: width / 3 - 20, fontSize: 10, color: 'rgb(150, 151, 152)'}}>{this.props.text}</Text>
-          <Image style={CourseStyle.itemImgStyle} source={itemHead[this.props.status]} />
+          {this.props.isopen === false?(<Image style={CourseStyle.itemImgStyle} source={itemHead['nostart']} />):(this.props.status === 'nostart'?(null):(<Image style={CourseStyle.itemImgStyle} source={itemHead[this.props.status]} />))}
         </TouchableOpacity> 
     )
   }
 }
+class CourseFlat extends Component {
+  constructor() {
+    super();
+    this.state = {
+      title: null,
+      titleLength: 0
+    }
+  }
+  componentWillMount() {
+    var title = this.props.data.profession + '(' + '共' + this.props.data.dataArr.length.toString() + '门课)';
+    var titleLength = title.split("").length;
+    this.setState({
+      title: title,
+      titleLength: titleLength,
+      data: this.props.data
+    })    
+  }
+  componentWillReceiveProps(nextProps) {
+    var title = nextProps.data.profession + '(' + '共' + nextProps.data.dataArr.length.toString() + '门课)';
+    var titleLength = title.split("").length;
+    this.setState({
+      title: title,
+      titleLength: titleLength,
+      data: nextProps.data
+    })  
+
+  }
+
+  _keyExtractor = (item, index) => index
+  _renderItem = ({item}) => {
+    return  (<CourseItem navigation={this.props.navigation} last_lesson={item.learn_extent.last_lesson} isSelected={item.isSelected} changeAll={this.props.changeAll} pk={item.pk} isopen={item.isopen} status={item.learn_extent.status} title={item.name} headImg={item.images} text={item.content} />)
+  }
+  render() {
+    return (
+      <View>
+        <View style={{flexDirection: 'row', marginTop: 10}}>
+                <View style={{width: this.state.titleLength * 9, backgroundColor: 'rgb(80, 189, 251)'}}>
+                  <Text style={{marginLeft: 5, height: 24, lineHeight: 20, fontSize: 10, color: 'white'}}>{this.state.title}</Text>
+                </View>
+              <View style={{width: 0, height: 0, borderLeftColor: 'rgb(80, 189, 251)', borderLeftWidth: 12, borderTopColor: 'transparent', borderTopWidth: 12, borderBottomWidth: 12, borderBottomColor: 'transparent'}}/>
+            </View>
+        <FlatList 
+          horizontal={true}
+          extraData={this.state}
+          data={this.state.data.dataArr}
+          renderItem={this._renderItem}
+          keyExtractor={this._keyExtractor}
+        />
+      </View>
+    )
+  }
+}
+
+
 class CourseList extends Component {
-  static navigationOptions = {
+  static navigationOptions  = ({ navigation, screenProps }) => ({
     title: '选择课程',
     headerStyle: {
       backgroundColor: 'rgb(251, 109, 150)'
@@ -55,65 +213,163 @@ class CourseList extends Component {
     headerTitleStyle: {
       color: 'white',
       fontWeight: '400'
-    },
-    headerRight: <RightBtn />
-  }
+    }
+    // headerRight: <RightBtn press={()=>navigation.state.params.navigatePress()} />
+  })
+
   constructor() {
     super();
     let dataArr = new Array();
     this.state = {
-      data: dataArr
+      data: dataArr,
+      selectData: null
     }
+
   }
+  // navigatePress = () => {
+  //   if (this.state.selectData !== null) {
+  //     if (this.state.selectData.learn_extent.status === 'finish') {
+  //       Alert.alert('提示','是否重新学习此课程',
+  //       [{text: '否', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+  //       {text: '是', onPress: () => this.goReset()},
+  //       ],{ cancelable: false })
+  //     } else {
+  //     this.props.navigation.state.params.callback(this.state.selectData.pk, this.state.selectData.learn_extent.last_lesson);
+  //     this.props.navigation.goBack();
+  //     } 
+  //   } else {
+  //     alert('还未选择课程');
+  //   }
+  // }
+  goReset() {
+    var _this = this;
+    AsyncStorage.getItem("token", function(errs, results) {
+      if (results) {
+        fetch('https://www.cxy61.com/program_girl/userinfo/update_learnextent/',{
+                  method: "POST",
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Token ' + results
+                  },
+                  body: JSON.stringify({
+                    course: _this.state.selectData.pk,
+                    lesson: "0",
+                  }),
+                })
+                .then(response=> {
+                  if (response.status === 200) {
+                    return response.json()
+                  } else {
+                    return 'fail'
+                  }
+                })
+                .then(responseJson=> {
+                  if (responseJson !== 'fail') {
+                    _this.props.navigation.state.params.callback(_this.state.selectData.pk, 0);
+                    _this.props.navigation.goBack();
+                  } else {
+                    alert('失败，请重试');
+                  }
+                })
+      }
+    })
 
+  }
+  changeAll(selected, pk) {
+    var data = this.state.data;
+    if (selected === false) {
+      for (let i=0;i<data.length;i++) {
+        for (let j=0;j<data[i].dataArr.length;j++) {
+          if (data[i].dataArr[j].pk === pk) {
+            data[i].dataArr[j].isSelected = false;
+            this.setState({
+              selectData: null
+            })
+            break;
+          }
+        }
+      }
+    } else {
+      for (let i=0;i<data.length;i++) {
+        for (let j=0;j<data[i].dataArr.length;j++) {
+          if (data[i].dataArr[j].pk === pk) {
+            data[i].dataArr[j].isSelected = true;
+            this.setState({
+              selectData: data[i].dataArr[j]
+            })
+          } else {
+            data[i].dataArr[j].isSelected = false;
+          }
+        }
+      }
+    }
+    this.setState({
+      data: data
+    })
+
+  }
+  _loadData() {
+    var _this = this;
+    AsyncStorage.getItem("token", function(errs, results) {
+      fetch('https://www.cxy61.com/program_girl/course/courses/', {headers: {Authorization: 'Token ' + results, 'content-type': 'application/json'}})
+        .then(response => {
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            return 'fail';
+          }
+        })
+        .then(responseJson => {
+          if (responseJson !== 'fail') {
+            var dataSource = new Array();
+            responseJson.forEach((item, index) => {
+              var isHas = false;
+              for (let i=0;i<dataSource.length;i++) {
+                if (item.profession === dataSource[i].profession) {
+                  item.isSelected = false;
+                  dataSource[i].dataArr.push(item);
+                  isHas = true;
+                  break;
+                }
+              }
+              if (!isHas) {
+                var dataArray = new Array();
+                dataArray.push(item);
+                item.isSelected = false;
+                dataSource.push({"profession": item.profession, "dataArr": dataArray})
+              } 
+            })
+            _this.setState({
+              data: dataSource
+            })
+            console.log(responseJson);
+          } else {
+            
+          }
+        })
+    })
+
+  }
   componentDidMount() {
-    fetch('https://app.bcjiaoyu.com/program_girl/course/courses/', {headers: {Authorization: 'Token ' + token, 'content-type': 'application/json'}})
-      .then(response => {
-        if (response.status === 200) {
-          return response.json()
-        } else {
-          return 'fail';
-        }
-      })
-      .then(responseJson => {
-        if (responseJson !== 'fail') {
-          var newData = new Array();
-          newData = responseJson.map((item, index) => {
-            return {
-              index: index,
-              status: item.learn_extent.status,
-              title: item.name,
-              headImg: item.images,
-              text: item.content
-            }
-          })
-          this.setState({
-            data: newData
-          })
-          console.log(newData)
-        } else {
-          
-        }
-      })
-
+    this.props.navigation.setParams({
+        navigatePress:this.navigatePress
+    })
+    this._loadData();
   }
   _keyExtractor = (item, index) => index
   _renderItem = ({item}) => {
-    return  (<CourseItem status={item.status} title={item.title} headImg={item.headImg} text={item.text} />)
+    return  (<CourseFlat navigation={this.props.navigation} changeAll={this.changeAll.bind(this)} data={item} />)
   }
   render() {
     return (
       <View style={CourseStyle.container}>
-        <View>
-          <Text style={{width: 60, fontSize: 12, backgroundColor: 'rgb(80, 189, 251)', color: 'white'}}>啊啊啊</Text>
-        </View>
-        <FlatList 
-          horizontal={true}
+         <FlatList 
           data={this.state.data}
+          extraData={this.state}
           renderItem={this._renderItem}
           keyExtractor={this._keyExtractor}
-        />
-
+        /> 
       </View>
     )
   }
@@ -125,17 +381,18 @@ const CourseStyle = StyleSheet.create({
     backgroundColor: 'rgb(242, 243, 244)'
   },
   itemStyle: {
-    marginTop: 64, 
+    marginTop: 10,
     width: width / 3,
     height: (width < 350?(64 * width / 155 + 30):(64 * width / 155 + 15)), 
     backgroundColor: 'white',
     borderRadius: 3,
-    marginLeft: 20,
+    marginLeft: 10,
+    marginRight: 5,
     shadowOffset:{ width:-2, height:2}, 
     shadowColor:'black', 
     shadowOpacity:0.1, 
     shadowRadius:1, 
-    alignItems: 'center',
+    alignItems: 'center'
   },
   itemImgStyle: {
     position: 'absolute',
@@ -143,8 +400,4 @@ const CourseStyle = StyleSheet.create({
     top: 0
   }
 })
-const course = StackNavigator({  
-    course: {screen: CourseList}    
-  
-}); 
-export default course;
+export default CourseList;
