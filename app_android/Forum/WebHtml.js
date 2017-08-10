@@ -33,7 +33,9 @@ export default class WebHtml extends Component{
     componentDidMount() {
 
     }
-
+    componentWillUnmount(){
+        this.props.navigation.state.params.callback(message);
+    }
     onShouldStartLoadWithRequest(event){
         return true;
     }
