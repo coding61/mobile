@@ -20,6 +20,7 @@ import MessagePage1 from './pages/MessagePage1.js';
 import CodeEditWebView from './pages/CodeEditWebView.js';
 import CodeEditWebView1 from './pages/CodeEditWebView1.js';
 import ThirdSiteWebView from './pages/ThirdSiteWebView.js';
+import CodeCompileWebView from './pages/CodeCompileWebView.js';
 
 
 import Forum from './Forum/Forum.js';
@@ -83,6 +84,7 @@ const app = StackNavigator({
     CodeEditWebView:{screen:CodeEditWebView},
     CodeEditWebView1:{screen:CodeEditWebView1},
     ThirdSiteWebView:{screen:ThirdSiteWebView},
+    CodeCompileWebView:{screen:CodeCompileWebView},
 
     Login:{screen: Login},
     CourseList:{screen: CourseList},
