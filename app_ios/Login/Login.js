@@ -114,7 +114,6 @@ export default class Login extends Component {
                 value={this.state.phoneNum}
                 keyboardType={'numeric'}
                 maxLength={11}
-                underlineColorAndroid={'transparent'}
               />
             </View>
             <View style={LoginStyle.inputViewStyle}>
@@ -125,7 +124,6 @@ export default class Login extends Component {
                 value={this.state.phoneWord}
                 maxLength={10}
                 secureTextEntry={true}
-                underlineColorAndroid={'transparent'}
               />
             </View>
           </View>
@@ -154,7 +152,6 @@ export default class Login extends Component {
                 value={this.state.inviteCode}
                 keyboardType={'numeric'}
                 maxLength={8}
-                underlineColorAndroid={'transparent'}
               />
             </View>
             <View style={LoginStyle.inputViewStyle}>
@@ -166,7 +163,6 @@ export default class Login extends Component {
                 keyboardType={'numeric'}
                 maxLength={4}
                 secureTextEntry={false}
-                underlineColorAndroid={'transparent'}
               />
             </View>
           </View>
@@ -178,10 +174,10 @@ export default class Login extends Component {
         )}
         <View style={{position: 'absolute', left: 0, top: 0, width: width, height: 40, flexDirection: 'row'}}>
           <TouchableOpacity onPress={()=> this.setState({loginWay: 'left'})} style={[{width: width / 2, height: 40, alignItems: 'center', justifyContent: 'center'},this.state.loginWay === 'left'?({borderBottomColor: 'white', borderBottomWidth: 1}):(null)]}>
-            <Text style={{color:'white'}}>手机号登陆</Text>
+            <Text style={{color:'white', backgroundColor: 'rgba(0,0,0,0)'}}>手机号登陆</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=> this.setState({loginWay: 'right'})} style={[{width: width / 2, height: 40, alignItems: 'center', justifyContent: 'center'},this.state.loginWay === 'right'?({borderBottomColor: 'white', borderBottomWidth: 1}):(null)]}>
-            <Text style={{color:'white'}}>邀请码登陆</Text>
+            <Text style={{color:'white', backgroundColor: 'rgba(0,0,0,0)'}}>邀请码登陆</Text>
           </TouchableOpacity>
         </View>
       </View>

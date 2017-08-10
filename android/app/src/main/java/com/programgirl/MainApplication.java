@@ -3,6 +3,7 @@ package com.programgirl;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.zmxv.RNSound.BuildConfig;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.facebook.react.ReactNativeHost;
@@ -25,6 +26,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new WebViewBridgePackage(),
             new RNSoundPackage()
       );
     }
