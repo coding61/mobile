@@ -173,7 +173,7 @@ export default class Login extends Component {
           <TouchableOpacity onPress={this.goLogin.bind(this)} style={LoginStyle.loginBtn}>
             <Text style={LoginStyle.loginBtnText}>{'登录'}</Text>
           </TouchableOpacity>
-            <Text style={{width: 2 * width / 3,fontSize: 13, lineHeight: 25, color: 'white'}}>{"提示:建议您登录后在“首页”的右下角点击“问号”帮助按钮进行手机绑定，以方便您后期的学习。"}</Text>
+            {/* <Text style={{width: 2 * width / 3,fontSize: 13, lineHeight: 25, color: 'white'}}>{"提示:建议您登录后在“首页”的右下角点击“问号”帮助按钮进行手机绑定，以方便您后期的学习。"}</Text> */}
           </TouchableOpacity>
         )}
         <View style={{position: 'absolute', left: 0, top: 0, width: width, height: 40, flexDirection: 'row'}}>
