@@ -29,11 +29,114 @@ export default class Forum extends Component{
             loadText: '正在加载...',
             isRefreshing: false,
             token:'',
+            moreshow:false,
         }
     }
     static navigationOptions = {
-      title: '论坛',
+        title: '论坛',
+       /* headerRight:(
+            <NavigationItem
+                title='...'
+                onPress={this.changeshow.bind(this)}
+            />
+        )*/
     }
+ /*   _renderBottomBtns(){
+        return (
+            <View style={{position:'absolute',right:0,top:0,}}>
+                {
+                    this.state.moreshow? this._renderBtnActions() : null
+                }
+                <TouchableOpacity onPress={()=>{this.setState({moreshow:!this.state.moreshow})}}>
+                    <Text>...</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+    _renderBtnActions(){
+        var item = this.state.data[this.state.index];
+        item = this.state.currentItem;
+        return (
+            <View style={{width:80,height:100,borderWidth:1,borderColor:'#cccccc'}}>
+                <TouchableOpacity onPress={}>
+                    <Text>我的帖子</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={}>
+                    <Text>我的收藏</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{this.setState({moreshow:!this.state.moreshow})}}>
+                    <Text>消息中心</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{this.setState({moreshow:!this.state.moreshow})}}>
+                    <Text>排行榜</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+    changeshow(){
+        this.setState({
+            moreshow:!this.state.moreshow
+        })
+    }
+    // 选项按钮点击
+    _clickOptionEvent(index, option){
+        var item = this.state.data[this.state.index];
+        item = this.state.currentItem
+        if (item.action[index]["select"] == false) {
+            item.action[index]["select"] = true
+            this.state.options.push(option)
+        }else{
+            item.action[index]["select"] = false
+            this.state.options.splice(this.state.options.indexOf(option), 1)
+        }
+        this.state.options.sort()
+        // console.log(this.state.options)
+
+        this.setState({
+            currentItem:item
+        })
+    }
+    // 选择课程点击
+    _clickChooseCourse = ()=>{
+        this.setState({showHelpActions:false})
+        this._loadChooseCourse(true);
+    }
+    // 寻找帮助点击
+    _clickFindHelp = ()=>{
+        this.props.navigation.navigate("CodeCompileWebView", {language:"python"})
+        // this.setState({
+        //     showHelpActions:false,
+        //     showFindHelpView:true
+        // })
+    }
+    // 寻找帮助 shadowview点击
+    _clickFindHelpShadow = ()=>{
+        this.setState({
+            showFindHelpView:false
+        })
+    }
+    // 学习论坛点击
+    _clickStudyLuntan = ()=>{
+        this.setState({showHelpActions:false})
+        this._loadLuntan();
+    }
+    _loadLuntan(){
+        var this_ = this;
+        Utils.isLogin((token)=>{
+            if (token) {
+                // 已登录
+                // console.log("go to luntan");
+                this_.props.navigation.navigate('Forum')
+            }else{
+                // console.log("go to login .");
+                // 未登录
+                this_.props.navigation.navigate('Login', {callback:()=>{
+
+                    this_._fetchUserInfo();
+                }})
+            }
+        })
+    }*/
     componentDidMount() {
         var self = this;
         AsyncStorage.getItem('token', function(errs, result) {

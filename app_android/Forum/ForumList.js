@@ -193,8 +193,15 @@ export default class ForumList extends Component{
         })
     }
     forumdetail(data){
-        this.props.navigation.navigate('WebHtml', { data: data.pk,token:this.state.token })
+        this.props.navigation.navigate('WebHtml', { data: data.pk,token:this.state.token,callback(msg){
+            this._onRefresh()
+        }})
         //this.props.navigation.navigate('Forum_Details', { data: data,token:this.state.token })
+    }
+    AddForum(){
+        this.props.navigation.navigate('AddForum',{data:this.state.data,token:this.state.token,callback(msg){
+            this._onRefresh()
+        }})
     }
     renderForumRow(rowData){
         if(rowData.types=='posts'){
@@ -267,9 +274,7 @@ export default class ForumList extends Component{
             )
         }
     }
-    AddForum(){
-        this.props.navigation.navigate('AddForum',{data:this.state.data,token:this.state.token})
-    }
+
     render(){
         if(!this.state.dataSource){
             return(<Text style={{alignItems:'center'}}>加载中.....</Text>)
@@ -318,14 +323,14 @@ export default class ForumList extends Component{
                             style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
                                 <Text style={{color:'#ffffff'}}>我的收藏</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={this.detail.bind(this,6)}
+                            {/*<TouchableOpacity onPress={this.detail.bind(this,6)}
                                               style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
                                 <Text style={{color:'#ffffff'}}>消息中心</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={this.detail.bind(this,7)}
+                            </TouchableOpacity>*/}
+                           {/* <TouchableOpacity onPress={this.detail.bind(this,7)}
                                               style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
                                 <Text style={{color:'#ffffff'}}>排行榜</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>*/}
                         </View>
                         
                         <ListView

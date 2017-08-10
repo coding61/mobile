@@ -45,6 +45,7 @@ export default class WebHtml extends Component{
     handleMessage(evt) {
         var message = evt.nativeEvent.data
         if (message == 200) {
+            this.props.navigation.state.params.callback(message);
             this.props.navigation.goBack()
         }
     }
