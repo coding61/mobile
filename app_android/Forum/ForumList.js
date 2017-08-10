@@ -51,9 +51,6 @@ export default class ForumList extends Component{
        this._loadAlldata()
       
     }
-    componentWillReceiveProps(){
-        this._loadAlldata()
-    }
     _loadAlldata() {
         this.setState({
             isLoading: true
