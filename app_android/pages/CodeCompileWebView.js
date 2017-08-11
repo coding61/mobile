@@ -89,8 +89,8 @@ class CodeCompileWebView extends Component {
 					onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
 					startInLoadingState={true}
 		          	scalesPageToFit={true}
-		          	onMessage={this.onMessage.bind(this)}
-		          	onLoad={this.postMessage.bind(this)}
+		          	// onMessage={this.onMessage.bind(this)}
+		          	// onLoad={this.postMessage.bind(this)}
 				/>
 			</View>
 	    )  

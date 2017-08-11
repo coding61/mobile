@@ -1,0 +1,31 @@
+{
+  "name": "ProgramGirl",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "react": "16.0.0-alpha.12",
+    "react-native": "0.46.4",
+<<<<<<< HEAD
+    "react-native-loader": "^1.1.0",
+=======
+    "react-native-image-zoom-viewer": "^2.0.9",
+>>>>>>> 8150928af3137986de8944341fd9c0a66d3b2544
+    "react-native-pullrefresh-scrollview": "^1.1.3",
+    "react-native-sound": "^0.10.3",
+    "react-native-webview-bridge": "^0.33.0",
+    "react-navigation": "^1.0.0-beta.11"
+  },
+  "devDependencies": {
+    "babel-jest": "20.0.3",
+    "babel-preset-react-native": "2.1.0",
+    "jest": "20.0.4",
+    "react-test-renderer": "16.0.0-alpha.12"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
