@@ -22,6 +22,14 @@ import CodeEditWebView1 from './pages/CodeEditWebView1.js';
 import ThirdSiteWebView from './pages/ThirdSiteWebView.js';
 // import CodeCompileWebView from './pages/CodeCompileWebView.js';
 
+import Forum from './Forum/Forum.js';
+import ForumList from './Forum/ForumList.js';
+import WebHtml from './Forum/WebHtml.js';
+import AddForum from './Forum/AddForum.js';
+import Forum_Details from './Forum/Forum_Details.js';
+import NewsCenter from './Forum/NewsCenter.js';
+import RankingList from './Forum/RankingList.js';
+
 import Login from './Login/Login.js';
 import CourseList from './CourseList/CourseList.js';
 import Register from './Login/Register.js';
@@ -60,11 +68,13 @@ const styles = StyleSheet.create({
 const app = StackNavigator({
     RootApp:{screen: RootApp},
     
-    // Forum:{screen: Forum},
-    // ForumList:{screen:ForumList},
-    // WebHtml:{screen:WebHtml},
-    // AddForum:{screen:AddForum},
-    // Forum_Details:{screen:Forum_Details},
+    Forum:{screen: Forum},
+    ForumList:{screen:ForumList},
+    WebHtml:{screen:WebHtml},
+    AddForum:{screen:AddForum},
+    Forum_Details:{screen:Forum_Details},
+    NewsCenter:{screen:NewsCenter},
+    RankingList:{screen:RankingList},
     
     MessagePage:{screen: MessagePage},
     MessagePage1:{screen:MessagePage1},

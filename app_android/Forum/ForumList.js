@@ -70,11 +70,11 @@ export default class ForumList extends Component{
             })
             .catch((error) => {
                 console.error(error);
-                this.setState({
-                    isLoading: false,
-                    isRefreshing: false
-                    })
-                }); 
+                // this.setState({
+                //     isLoading: false,
+                //     isRefreshing: false
+                //     })
+            }); 
         })
     }
     detail(index){

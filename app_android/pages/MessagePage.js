@@ -162,7 +162,6 @@ class MessagePage extends Component{
         // var chatArray = [];
         // Utils.setValue("chatData", JSON.stringify(chatArray));
         // Utils.setValue("token", null);
-
         this._fetchUserInfo();
         this._load();
     }
@@ -1012,6 +1011,7 @@ class MessagePage extends Component{
                 // 已登录
                 // console.log("go to chooseCourse");
                 this_.props.navigation.navigate('CourseList', {callback:(course, courseIndex, restart)=>{
+                    console.log("callback");
                     // this.props.navigation.setParams({userinfo:""})
                     this_.setState({
                         chooseCourse:course,
@@ -1208,7 +1208,9 @@ class MessagePage extends Component{
             if (token) {
                 // 已登录
                 // console.log("go to luntan");
-                this_.props.navigation.navigate('Forum')
+                this_.props.navigation.navigate('Forum', {callback:()=>{
+                    this_._fetchUserInfo();
+                }})
             }else{
                 // console.log("go to login .");
                 // 未登录

@@ -1169,7 +1169,9 @@ class MessagePage extends Component{
             if (token) {
                 // 已登录
                 // console.log("go to luntan");
-                this_.props.navigation.navigate('Forum')
+                this_.props.navigation.navigate('Forum', {callback:()=>{
+                    this_._fetchUserInfo();
+                }})
             }else{
                 // console.log("go to login .");
                 // 未登录

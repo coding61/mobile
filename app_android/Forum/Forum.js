@@ -137,6 +137,9 @@ export default class Forum extends Component{
             }
         })
     }*/
+    componentWillUnmount() {
+        this.props.navigation.state.params.callback();
+    }
     componentDidMount() {
         var self = this;
         AsyncStorage.getItem('token', function(errs, result) {
