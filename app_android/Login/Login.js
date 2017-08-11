@@ -33,6 +33,7 @@ export default class Login extends Component {
     }
   }
   componentWillUnmount() {
+    console.log('返回')
     this.props.navigation.state.params.callback();
   }
   _cancelkeyboard() {

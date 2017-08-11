@@ -241,6 +241,9 @@ class CourseList extends Component {
   //     alert('还未选择课程');
   //   }
   // }
+  componentWillUnmount() {
+    this.props.navigation.state.params.callback();
+  }
   goReset() {
     var _this = this;
     AsyncStorage.getItem("token", function(errs, results) {
