@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   ListView,
   AsyncStorage,
-  Alert,
+  AlertIOS,
   RefreshControl,
   InteractionManager,
 }from 'react-native';
@@ -139,7 +139,7 @@ export default class ForumList extends Component{
                     })
                     .then(responseJson=> {
                         if (responseJson === '加载失败') {
-                            Alert.alert(
+                            AlertIOS.alert(
                               '加载失败,请重试',
                               '',
                               [
@@ -163,7 +163,7 @@ export default class ForumList extends Component{
                     })
                     .catch((error) => {
                         console.error(error);
-                        Alert.alert(
+                        AlertIOS.alert(
                               '加载失败,请重试',
                               '',
                               [
@@ -337,7 +337,7 @@ export default class ForumList extends Component{
                             automaticallyAdjustContentInsets={false}
                             enableEmptySections={true}
                             onEndReached={this._renderNext.bind(this)}
-                            onEndReachedThreshold={3}
+                            onEndReachedThreshold={-10}
                             renderFooter={this._renderFooter.bind(this)}
                             
                         >
