@@ -20,7 +20,7 @@ export default class Login extends Component {
   static navigationOptions = {
     headerStyle: {
       backgroundColor: 'rgb(251, 110, 169)'
-    },
+    }
   }
   constructor() {
     super();
@@ -64,7 +64,9 @@ export default class Login extends Component {
                   _this.props.navigation.goBack();
                 })
               } else {
-                alert('登陆失败，请重新登陆');
+                Alert.alert('','登陆失败，请检查手机号和密码是否正确',
+                [{text: '确定', onPress: () => {}}
+                ],{ cancelable: false })
               }
             })
   }
@@ -94,7 +96,9 @@ export default class Login extends Component {
                   _this.props.navigation.goBack();
                 })
               } else {
-                alert('登陆失败，请重新登陆');
+                Alert.alert('','登陆失败，请检查邀请码是否正确',
+                [{text: '确定', onPress: () => {}}
+                ],{ cancelable: false })
               }
             })
 
