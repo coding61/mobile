@@ -3,8 +3,7 @@ import {
   AppRegistry, 
   StyleSheet, 
   Image, 
-  Text, 
-  TextInput, 
+  Text,
   View, 
   ScrollView,
   Dimensions, 
@@ -13,12 +12,10 @@ import {
   AsyncStorage,
   Alert,
   RefreshControl,
-  InteractionManager,
 }from 'react-native';
-import PullRefreshScrollView from 'react-native-pullrefresh-scrollview';
 import ForumList from './ForumList';
 var {height, width} = Dimensions.get('window');
-var token='28d2479302bf86369bcec62939099f40b96a62ee';
+
 export default class Forum extends Component{
     constructor(props) {
         super(props);
@@ -31,24 +28,132 @@ export default class Forum extends Component{
             url: 'https://www.cxy61.com/program_girl/forum/sections/',
             loadText: '正在加载...',
             isRefreshing: false,
-            token:null,
+            token:'',
+            moreshow:false,
         }
     }
+    static navigationOptions = {
+        title: '论坛',
+       /* headerRight:(
+            <NavigationItem
+                title='...'
+                onPress={this.changeshow.bind(this)}
+            />
+        )*/
+    }
+ /*   _renderBottomBtns(){
+        return (
+            <View style={{position:'absolute',right:0,top:0,}}>
+                {
+                    this.state.moreshow? this._renderBtnActions() : null
+                }
+                <TouchableOpacity onPress={()=>{this.setState({moreshow:!this.state.moreshow})}}>
+                    <Text>...</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+    _renderBtnActions(){
+        var item = this.state.data[this.state.index];
+        item = this.state.currentItem;
+        return (
+            <View style={{width:80,height:100,borderWidth:1,borderColor:'#cccccc'}}>
+                <TouchableOpacity onPress={}>
+                    <Text>我的帖子</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={}>
+                    <Text>我的收藏</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{this.setState({moreshow:!this.state.moreshow})}}>
+                    <Text>消息中心</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{this.setState({moreshow:!this.state.moreshow})}}>
+                    <Text>排行榜</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+    changeshow(){
+        this.setState({
+            moreshow:!this.state.moreshow
+        })
+    }
+    // 选项按钮点击
+    _clickOptionEvent(index, option){
+        var item = this.state.data[this.state.index];
+        item = this.state.currentItem
+        if (item.action[index]["select"] == false) {
+            item.action[index]["select"] = true
+            this.state.options.push(option)
+        }else{
+            item.action[index]["select"] = false
+            this.state.options.splice(this.state.options.indexOf(option), 1)
+        }
+        this.state.options.sort()
+        // console.log(this.state.options)
 
+        this.setState({
+            currentItem:item
+        })
+    }
+    // 选择课程点击
+    _clickChooseCourse = ()=>{
+        this.setState({showHelpActions:false})
+        this._loadChooseCourse(true);
+    }
+    // 寻找帮助点击
+    _clickFindHelp = ()=>{
+        this.props.navigation.navigate("CodeCompileWebView", {language:"python"})
+        // this.setState({
+        //     showHelpActions:false,
+        //     showFindHelpView:true
+        // })
+    }
+    // 寻找帮助 shadowview点击
+    _clickFindHelpShadow = ()=>{
+        this.setState({
+            showFindHelpView:false
+        })
+    }
+    // 学习论坛点击
+    _clickStudyLuntan = ()=>{
+        this.setState({showHelpActions:false})
+        this._loadLuntan();
+    }
+    _loadLuntan(){
+        var this_ = this;
+        Utils.isLogin((token)=>{
+            if (token) {
+                // 已登录
+                // console.log("go to luntan");
+                this_.props.navigation.navigate('Forum')
+            }else{
+                // console.log("go to login .");
+                // 未登录
+                this_.props.navigation.navigate('Login', {callback:()=>{
+
+                    this_._fetchUserInfo();
+                }})
+            }
+        })
+    }*/
     componentDidMount() {
-       
-       this._loadData()
-       
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    self._loadData();
+                });
+            }else{
+                Alert.alert('请先登录帐号！')
+            }
+        });
     }
     _loadData() {
         this.setState({
             isLoading: true
         },()=> {
-            fetch(this.state.url, {
-                headers: {
-                    Authorization: 'Token '+ token 
-                }
-            })
+            fetch(this.state.url)
             .then(response => {
                 if (response.status === 200) {
                     return response.json();
@@ -96,8 +201,47 @@ export default class Forum extends Component{
             })
         })  
     }
+    _clickForumList(data){
+        this.props.navigation.navigate('ForumList', { data: data,token:this.state.token })
+    }
     _renderRow(rowData, SectionID, rowID, highlightRow) {
-        return <OrderCell data={rowData}  _loadData={this._loadData.bind(this)} navigator={this.props.navigator} _refeshView={this._onRefresh.bind(this)} />
+        var timeArray = rowData.newposts.create_time.split('.')[0].split('T');
+        var year = timeArray[0].split('-')[0];
+        var month = timeArray[0].split('-')[1];
+        var day = timeArray[0].split('-')[2];
+        var hour = timeArray[1].split(':')[0];
+        var minute = timeArray[1].split(':')[1];
+        var second = timeArray[1].split(':')[2];
+        var create = new Date(year, month-1, day, hour, minute, second);
+        var current = new Date();
+        var s1 = current.getTime() - create.getTime(); //相差的毫秒
+        var time = null;
+        if (s1 / (60 * 1000) < 1) {
+            time = "刚刚";
+        }else if (s1 / (60 * 1000) < 60){
+            time = parseInt(s1 / (60 * 1000)) + "分钟前";
+        }else if(s1 / (60 * 1000) < 24 * 60){
+            time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
+        }else if(s1 / (60 * 1000) < 24 * 60 * 2){
+            time = "昨天 " + rowData.newposts.create_time.slice(11, 16);
+        }else{
+            time = rowData.newposts.create_time.slice(0, 10).replace('T', ' ');
+        }
+        return (
+            <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
+                style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
+                <View style={{flexDirection:'row',}}>
+                    <Image style={{width:50,height:50,marginTop:20,}} source={{uri:rowData.icon}}/>
+                    <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.6,}}>
+                        <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.name}</Text>
+                        <Text style={{paddingBottom:10}}>{rowData.newposts.title}</Text>
+                        <Text style={{paddingBottom:10}}>{rowData.newposts.author}  {time}</Text>
+                    </View>
+                    <Text style={{paddingLeft:10,flex:1,paddingTop:20,}}>帖数:{rowData.total}</Text>
+                </View>
+            </TouchableOpacity>
+
+        )
     }
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
@@ -106,7 +250,7 @@ export default class Forum extends Component{
             },()=> {
                 fetch(this.state.nextPage, {
                     headers: {
-                        Authorization: 'Token '+ token
+                        Authorization: 'Token '+ this.state.token
                     }
                 })
                 .then(response => {
@@ -168,20 +312,17 @@ export default class Forum extends Component{
         })
     }
     _goBack(){
-        if (this.props.navigator) {
-            this.props.navigator.pop()
+        if (this.props.navigation) {
+            this.props.navigation.pop()
         }   
     }
+
     render() {
-        return(
+        if(!this.state.dataSource){
+            return(<View></View>)
+        }else{
+             return(
             <View style={{flex: 1, backgroundColor: 'rgb(242,243,244)'}}>
-                <View style={{width:width,height:44,borderBottomWidth:1,borderBottomColor:'#e4e4e4',justifyContent:'flex-start',backgroundColor:'#F7F8F9',alignItems:'center',flexDirection:'row',}}>
-                    <TouchableOpacity style={{height:44,width:50,marginLeft:16,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',}} 
-                    onPress={this._goBack.bind(this)}>
-                       <Image  source={require('./assets/Forum/back.png')}/>
-                    </TouchableOpacity>
-                    <Text style={{color:'#3e3e3e',fontSize:18,fontWeight:'bold',marginLeft:width*0.25,}}>论坛</Text>
-                </View>
                 <ListView
                     dataSource={this.state.dataSource}  
                     renderRow={this._renderRow.bind(this)}
@@ -201,59 +342,6 @@ export default class Forum extends Component{
                 />
             </View>
         )
-    }
-}
-class OrderCell extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: this.props.data,
         }
     }
-    componentWillMount() {
-        
-    }
-
-    componentWillReceiveProps(nextProps) {
-        
-    }
-     _clickGoodsDetail(){
-        if (this.props.navigator) {
-            this.props.navigator.push({
-                component: ForumList,
-                params: {
-                    data:this.state.data,
-                }
-            })
-        }
-    }
-    render() {
-        return(
-            <TouchableOpacity onPress={this._clickGoodsDetail.bind(this)}
-                style={{width: width, backgroundColor: 'white',alignItems: 'center',paddingLeft:20,paddingRight:20,}}>
-                <View style={{flexDirection:'row',}}>
-                  <View style={{paddingTop:20,}}>
-                    <Image source={require('./assets/Forum/back.png')}></Image>
-                    <Text>黄金5</Text>
-                  </View>
-                  <View>
-                    <Text>HTML5TOALUN</Text>
-                    <Text>关于什么事</Text>
-                    <Text>荒野求生 2017-02-02</Text>
-                  </View>
-                  <View>
-                    <Text>发帖数：55555</Text>
-                  </View>
-                </View>
-            </TouchableOpacity>
-        )
-    }
 }
-OrderCell.propTypes = {
-    data: React.PropTypes.object.isRequired,
-    navigator: React.PropTypes.any.isRequired
-}
-SlideView.propTypes = {
-    _change: React.PropTypes.func.isRequired
-}
-
