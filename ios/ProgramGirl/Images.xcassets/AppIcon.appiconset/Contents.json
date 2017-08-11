@@ -23,7 +23,7 @@
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "g80.png",
+      "filename" : "l80.png",
       "scale" : "2x"
     },
     {
@@ -34,13 +34,13 @@
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "g120.png",
+      "filename" : "l120.png",
       "scale" : "2x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "g180.png",
+      "filename" : "l180.png",
       "scale" : "3x"
     }
   ],
