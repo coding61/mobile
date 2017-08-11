@@ -46,11 +46,12 @@ export default class RankingList extends Component{
             });
     }
     renderRank(rowData, sectionID, rowID, highlightRow){
+        let id=rowID+1;
         if(rowID%2==0){
             return(
                 <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#ffffff',width:width,padding:10,}}>
-                    <View style={{justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{justifyContent:'center',alignItems:'center',width:20,height:20,borderRadius:10,textAlign:'center',backgroundColor:'#FF69B4',fontSize:14,}}>{rowID+1}</Text>
+                    <View style={{justifyContent:'center',alignItems:'center',marginRight:40,}}>
+                        <Text style={{justifyContent:'center',alignItems:'center',width:20,height:20,borderRadius:10,textAlign:'center',backgroundColor:'#FF69B4',fontSize:14,}}>{id}</Text>
                     </View>
                     <Image style={{width:40,height:40,borderRadius:20,}} source={{uri:rowData.avatar}}/>
                     <Text style={{paddingLeft:20,}}>{rowData.name}</Text>
@@ -63,7 +64,7 @@ export default class RankingList extends Component{
             return(
                 <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#ffffff',width:width,padding:10,}}>
                     <View style={{justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{justifyContent:'center',alignItems:'center',width:20,height:20,borderRadius:10,textAlign:'center',backgroundColor:'#FF69B4',fontSize:14,}}>{rowID+1}</Text>
+                        <Text style={{justifyContent:'center',alignItems:'center',width:20,height:20,borderRadius:10,textAlign:'center',backgroundColor:'#FF69B4',fontSize:14,}}>{id}</Text>
                     </View>
                     <Image style={{width:40,height:40,borderRadius:20,}} source={{uri:rowData.avatar}}/>
                     <Text style={{paddingLeft:20,}}>{rowData.name}</Text>
