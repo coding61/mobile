@@ -154,7 +154,7 @@ export default class NewsCenter extends Component{
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
                               style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,padding:10}}>
                 <View>
-                    <Text numberOfLines={2} style={{fontSize:14,paddingBottom:10,}}>{rowData.status=='read'?(<Text style={{color:'#cccccc'}}>[已读]</Text>):(<Text style={{color:'red'}}>[未读]</Text>)}{rowData.text}</Text>
+                    <Text numberOfLines={2} style={{fontSize:14,paddingBottom:10,}}>{rowData.status=='read'?(<Text style={{color:'#cccccc',marginRight:8,}}>[已读]</Text>):(<Text style={{color:'red',marginRight:8,}}>[未读]</Text>)}{rowData.text}</Text>
                     <Text style={{marginLeft:width*0.74}}>{time}</Text>
                 </View>
             </TouchableOpacity>
