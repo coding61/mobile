@@ -319,10 +319,10 @@ export default class ForumList extends Component{
                             style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
                                 <Text style={{color:'#ffffff'}}>我的收藏</Text>
                             </TouchableOpacity>
-                            {/*<TouchableOpacity onPress={this.detail.bind(this,6)}
+                            <TouchableOpacity onPress={this.detail.bind(this,6)}
                                               style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
                                 <Text style={{color:'#ffffff'}}>消息中心</Text>
-                            </TouchableOpacity>*/}
+                            </TouchableOpacity>
                            {/* <TouchableOpacity onPress={this.detail.bind(this,7)}
                                               style={{backgroundColor: '#FF69B4',marginRight:20,padding:10,marginTop:10,marginBottom:10,alignItems:'center',padding:10,justifyContent:'center',}}>
                                 <Text style={{color:'#ffffff'}}>排行榜</Text>
