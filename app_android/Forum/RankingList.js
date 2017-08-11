@@ -48,9 +48,9 @@ export default class RankingList extends Component{
     renderRank(rowData, sectionID, rowID, highlightRow){
         if(rowID%2==0){
             return(
-                <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#f2f2f2',width:width,padding:10,}}>
+                <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#ffffff',width:width,padding:10,}}>
                     <View style={{justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{justifyContent:'center',alignItems:'center',width:20,height:20,borderRadius:10,textAlign:'center',backgroundColor:'#FF69B4',fontSize:14,}}>{rowID}</Text>
+                        <Text style={{justifyContent:'center',alignItems:'center',width:20,height:20,borderRadius:10,textAlign:'center',backgroundColor:'#FF69B4',fontSize:14,}}>{rowID+1}</Text>
                     </View>
                     <Image style={{width:40,height:40,borderRadius:20,}} source={{uri:rowData.avatar}}/>
                     <Text style={{paddingLeft:20,}}>{rowData.name}</Text>
@@ -61,10 +61,15 @@ export default class RankingList extends Component{
             )
         }else {
             return(
-                <View style={{flexDirection:'row',backgroundColor:'#f3f3f3'}}>
-                    <Text>{rowID}.</Text>
-                    <Text>{rowData.name}</Text>
-                    <Text>{rowData.grade.current_name}</Text>
+                <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#ffffff',width:width,padding:10,}}>
+                    <View style={{justifyContent:'center',alignItems:'center'}}>
+                        <Text style={{justifyContent:'center',alignItems:'center',width:20,height:20,borderRadius:10,textAlign:'center',backgroundColor:'#FF69B4',fontSize:14,}}>{rowID+1}</Text>
+                    </View>
+                    <Image style={{width:40,height:40,borderRadius:20,}} source={{uri:rowData.avatar}}/>
+                    <Text style={{paddingLeft:20,}}>{rowData.name}</Text>
+                    <View style={{marginLeft:20,}}>
+                        <Text style={{fontSize:14,}}>{rowData.grade.current_name} / {rowData.experience}</Text>
+                    </View>
                 </View>
             )
         }
