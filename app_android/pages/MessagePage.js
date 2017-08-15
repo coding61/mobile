@@ -1283,6 +1283,8 @@ class MessagePage extends Component{
     }
     // 消息链接点击
     _clickMessageLink(link){
+        var language = link.split("/")[1]?link.split("/")[1]:"python";
+
         link == "www.code.com"
         ?
             // 编辑器
@@ -1291,7 +1293,6 @@ class MessagePage extends Component{
             link.indexOf("www.compile.com") > -1
             ?
                 //编译器
-                var language = link.split("/")[1]
                 this.props.navigation.navigate("CodeCompileWebView", {language:language})
             :
                 Utils.openURL(link)
