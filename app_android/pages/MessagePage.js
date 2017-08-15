@@ -1185,7 +1185,6 @@ class MessagePage extends Component{
     }
     // 寻找帮助点击
     _clickFindHelp = ()=>{
-        // this.props.navigation.navigate("CodeCompileWebView", {language:"python"})
         this.setState({
             showHelpActions:false,
             showFindHelpView:true
@@ -1284,12 +1283,20 @@ class MessagePage extends Component{
     }
     // 消息链接点击
     _clickMessageLink(link){
+        var language = link.split("/")[1]?link.split("/")[1]:"python";
+
         link == "www.code.com"
         ?
+            // 编辑器
             this.props.navigation.navigate("CodeEditWebView")
         :
-            Utils.openURL(link)
-            // this.props.navigation.navigate('ThirdSiteWebView', {url:link})
+            link.indexOf("www.compile.com") > -1
+            ?
+                //编译器
+                this.props.navigation.navigate("CodeCompileWebView", {language:language})
+            :
+                Utils.openURL(link)
+                // this.props.navigation.navigate('ThirdSiteWebView', {url:link})
     }
     // 大图点击事件
     _clickBigImg = ()=>{
@@ -1589,6 +1596,12 @@ class MessagePage extends Component{
     }
     // 链接信息
     _renderItemLinkMessage(item){
+        var text = "点击打开新网页"
+        if (item.link == "www.code.com") {
+            text = "点击打开编辑器"
+        }else if (item.link.indexOf("www.compile.com") > -1) {
+            text = "点击打开编译器"
+        }
         return (
             <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
                 <View style={styles.message}>
@@ -1602,7 +1615,7 @@ class MessagePage extends Component{
                               {item.message}
                             </Text>
                             <Text style={{color:'rgb(84, 180, 225)'}}>
-                              {item.link=="www.code.com"?"点击打开编辑器":"点击打开新网页"}
+                              {text}
                             </Text>
                         </View> 
                         <Image
@@ -1736,6 +1749,13 @@ class MessagePage extends Component{
     }
     // 链接信息
     _renderItemLinkMessageAni(item){
+        var text = "点击打开新网页"
+        if (item.link == "www.code.com") {
+            text = "点击打开编辑器"
+        }else if (item.link.indexOf("www.compile.com") > -1) {
+            text = "点击打开编译器"
+        }
+
         const translateX = this.leftEnterValue.interpolate({
             inputRange:[0, 1],
             outputRange:[-2000, 0]
@@ -1754,7 +1774,7 @@ class MessagePage extends Component{
                               {item.message}
                             </Text>
                             <Text style={{color:'rgb(84, 180, 225)'}}>
-                              {item.link}
+                              {text}
                             </Text>
                         </View> 
                         <Image
