@@ -57,10 +57,34 @@ export default class ForumDeatilCont extends Component{
             .replace(/\n/g, '<br>') //转义换行   
         return content;
     }
-    render() {
-        var Content=this.content(this.props.data);
+    ContentRex(content){
+        //支持的html标签
+        text=content;
+        var output=[];
+        var contenttext= this.escape(content||'').replace(/img\[([^\s]+?)\]/g, function(img){  //转义图片
+            var image=img.replace(/(^img\[)|(\]$)/g, '')
+            output.push(image);
+        })
+        
         return(
-            <View style={{padding:20}}>{Content}</View>
+            <View>
+                <Text>{text}</Text>
+                {output.map((result,index)=> {
+                    return(
+                        <View key={index} style={{backgroundColor:'#ffffff',width:width*0.94,}}>
+                            <Image style={{width:width*0.7,height:200,}} source={{uri:result}}/>
+                        </View>
+                    )
+                })}
+            </View>
+            )
+    }
+
+    render() {
+        return(
+            <View style={{padding:20,}}>
+                {this.ContentRex(this.props.data)}
+            </View>
         )
     }
 }

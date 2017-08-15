@@ -337,7 +337,7 @@ export default class ForumList extends Component{
                             automaticallyAdjustContentInsets={false}
                             enableEmptySections={true}
                             onEndReached={this._renderNext.bind(this)}
-                            onEndReachedThreshold={-10}
+                            onEndReachedThreshold={10}
                             renderFooter={this._renderFooter.bind(this)}
                             
                         >

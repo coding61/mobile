@@ -124,7 +124,9 @@ export default class NewsCenter extends Component{
         }
     }
     forumdetail(data){
-        this.props.navigation.navigate('WebHtml', { data: data.from_id,token:this.state.token })
+        this.props.navigation.navigate('WebHtml', { data: data.from_id,token:this.state.token,callback:(msg)=>{
+            this._onRefresh()
+        }})
         //this.props.navigation.navigate('Forum_Details', { data: data,token:this.state.token })
     }
     renderNews(rowData){
