@@ -62,12 +62,11 @@ class CodeCompileWebView extends Component {
 
 	}
 
-	onMessage = (event)=>{
+	onMessage(event){
         console.log('onMessage->event.nativeEvent.data:');
         console.log(event.nativeEvent.data);
-        alert(JSON.stringify(event.nativeEvent.data));
     }
-    postMessage = () => {
+    postMessage(){
 	    if (this.webview) {
 	    	console.log("rn->h5")
 	        this.webview.postMessage("python");
@@ -89,8 +88,8 @@ class CodeCompileWebView extends Component {
 					onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
 					startInLoadingState={true}
 		          	scalesPageToFit={true}
-		          	// onMessage={this.onMessage.bind(this)}
-		          	// onLoad={this.postMessage.bind(this)}
+		          	onMessage={this.onMessage.bind(this)}
+		          	onLoad={this.postMessage.bind(this)}
 				/>
 			</View>
 	    )  

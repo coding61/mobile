@@ -57,7 +57,7 @@ class RootApp extends Component{
 
                 <Button 
                     title="在线编辑器"
-                    onPress={()=>{this.props.navigation.navigate('CodeEditWebView', {userinfo:''})}}
+                    onPress={()=>{this.props.navigation.navigate('CodeCompileWebView', {userinfo:''})}}
                 />
           </View>
         )
