@@ -85,24 +85,26 @@ export default class ForumList extends Component{
     _changeTag(tag) {
         if (tag === 0 && this.state.isLoading === false) {
             this.setState({
-                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&myposts=false&page=1',
+                tag: tag,
+                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&myposts=false&page=1',
                 nextPage: null,
                 dataArr: new Array(),
                 dataSource: null,
                 loadText: '正在加载...',
-                tag: tag
+                
             },()=> {
                 this._loadAlldata();
                 
             })
         } else if (tag === 1 && this.state.isLoading === false) {
             this.setState({
-                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=true&page=1',
+                tag: tag,
+                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&isessence=true&page=1',
                 nextPage: null,
                 dataArr: new Array(),
                 dataSource: null,
                 loadText: '正在加载...',
-                tag: tag
+                
             },()=> {
                 this._loadAlldata();
                 
@@ -110,7 +112,7 @@ export default class ForumList extends Component{
         } else if (tag === 2 && this.state.isLoading === false){
             this.setState({
                 tag: tag,
-                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=&page=1&status=solved',
+                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&page=1&status=solved',
                 nextPage: null,
                 dataArr: new Array(),
                 dataSource: null,
@@ -122,34 +124,37 @@ export default class ForumList extends Component{
             })
         }else if (tag === 3 && this.state.isLoading === false){
             this.setState({
-                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=&page=1&status=unsolved',
+                tag: tag,
+                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&page=1&status=unsolved',
                 nextPage: null,
                 dataArr: new Array(),
                 dataSource: null,
                 loadText: '正在加载...',
-                tag: tag
+                
             },()=> {
                 this._loadAlldata();
             })
         }else if (tag === 4 && this.state.isLoading === false){
             this.setState({
-                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&keyword=&myposts=true&page=1&status=',
+                tag: tag,
+                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&myposts=true&page=1',
                 nextPage: null,
                 dataArr: new Array(),
                 dataSource: null,
                 loadText: '正在加载...',
-                tag: tag
+                
             },()=> {
                 this._loadAlldata();
             })
         }else if (tag === 5 && this.state.isLoading === false){
             this.setState({
+                tag: tag,
                 url: basePath+'program_girl/collect/collections/',
                 nextPage: null,
                 dataArr: new Array(),
                 dataSource: null,
                 loadText: '正在加载...',
-                tag: tag
+                
             },()=> {
                 this._loadAlldata();
             })
@@ -233,7 +238,7 @@ export default class ForumList extends Component{
         /*this.props.navigation.navigate('WebHtml', { data: data.pk,token:this.state.token,callback:(msg)=>{
             this._onRefresh()
         }})*/
-        this.props.navigation.navigate('Forum_Details', { data: data.pk,token:this.state.token,callback:(msg)=>{
+        this.props.navigation.navigate('Forum_Details', { data: data.pk,token:this.state.token,iscollect:data.collect,callback:(msg)=>{
             this._onRefresh()
         }})
     }
@@ -277,7 +282,7 @@ export default class ForumList extends Component{
                     style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
                     <View style={{flexDirection:'row',}}>
                         <View style={{alignItems:'center'}}>
-                            {!rowData.posts.userinfo.avatar?(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.posts.userinfo.avatar}}/>)}
+                            {!rowData.posts.userinfo.avatar?(<Image style={{width:30,height:30,marginTop:10,borderRadius:15,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:30,height:30,marginTop:10,borderRadius:15,}} source={{uri:rowData.posts.userinfo.avatar}}/>)}
                             <Text style={{paddingTop:10,fontSize:12,color:'#aaaaaa'}}>{rowData.posts.userinfo.grade.current_name}</Text>
                         </View>
                         <View style={{paddingLeft:16,paddingRight:20,paddingTop:10,width:width*0.86,}}>
@@ -286,8 +291,8 @@ export default class ForumList extends Component{
                             <View style={{flexDirection:'row',alignItems:'center',flexWrap:'wrap'}}>
                                 <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.posts.userinfo.name}</Text>
                                 <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{time_last}</Text>
-                                <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.posts.browse_count}浏览</Text>
                                 <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.posts.reply_count}回答</Text>
+                                <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.posts.browse_count}浏览</Text>
                             </View>
                          </View>
                     </View>
@@ -332,12 +337,22 @@ export default class ForumList extends Component{
                         <SlideView _change={this._changeTag.bind(this)}/>
                         <FlatList
                             horizontal={false}
+                            refreshing={true}
                             data={this.state.dataSource}
                             renderItem={this.renderForumRow.bind(this)}
                             onEndReached={this._renderNext.bind(this)}
-                            onEndReachedThreshold={5}
+                            onEndReachedThreshold={0.2}
+                            progressViewOffset={10}
                             keyExtractor={this._keyExtractor}
                             ListFooterComponent={this._renderFooter.bind(this)}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.isRefreshing}
+                                    onRefresh={this._onRefresh.bind(this)}
+                                    tintColor='#cccccc'
+                                    title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
+                                    titleColor='#cccccc' />
+                            }
                         >
                         </FlatList>
                     </View>
@@ -371,30 +386,28 @@ class SlideView extends Component {
                 contentContainerStyle={{height: 44, backgroundColor: 'white',borderBottomWidth:1,borderBottomColor:'#cccccc',marginBottom:3,}}
             >
                 <TouchableOpacity onPress={this._onPress.bind(this, 0)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    {this.state.tag == 0?(<Text style={{color:'#ff6b94'}}>全部</Text>):(<Text>全部</Text>)}
-                    {/*<Text style={[{fontSize: 14},this.state.tag === 0?({color: '#ff6b94'}):(null)]}>全部</Text>*/}
+                    <Text style={[{fontSize: 14},this.state.tag === 0?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>全部</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this._onPress.bind(this, 1)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    {this.state.tag == 1?(<Text style={{color:'#ff6b94'}}>精贴</Text>):(<Text>精贴</Text>)}
-                    {/*<Text style={[{fontSize: 14},this.state.tag === 1?({color: '#ff6b94'}):(null)]}>精贴</Text>*/}
+                    <Text style={[{fontSize: 14},this.state.tag === 1?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>精贴</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this._onPress.bind(this, 2)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag == 2?({color: '#ff6b94'}):(null)]}>已解决</Text>
+                    <Text style={[{fontSize: 14},this.state.tag == 2?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>已解决</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this._onPress.bind(this, 3)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag == 3?({color: '#ff6b94'}):(null)]}>未解决</Text>
+                    <Text style={[{fontSize: 14},this.state.tag == 3?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>未解决</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this._onPress.bind(this, 4)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag ===4?({color: '#ff6b94'}):(null)]}>我的帖子</Text>
+                    <Text style={[{fontSize: 14},this.state.tag ===4?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>我的帖子</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this._onPress.bind(this, 5)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag == 5?({color: '#ff6b94'}):(null)]}>我的收藏</Text>
+                    <Text style={[{fontSize: 14},this.state.tag == 5?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>我的收藏</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this._onPress.bind(this, 6)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag == 6?({color: '#ff6b94'}):(null)]}>消息中心</Text>
+                    <Text style={[{fontSize: 14},this.state.tag == 6?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>消息中心</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this._onPress.bind(this, 7)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag == 7?({color: '#ff6b94'}):(null)]}>排行榜</Text>
+                    <Text style={[{fontSize: 14},this.state.tag == 7?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>排行榜</Text>
                 </TouchableOpacity>
                 <View style={{width: 80, height: 2, backgroundColor: '#ff6b94', position: 'absolute', bottom: 1, left: 80 * this.state.tag}}/>
             </ScrollView>

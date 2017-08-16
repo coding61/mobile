@@ -251,25 +251,25 @@ export default class Forum extends Component{
             return(<View></View>)
         }else{
              return(
-            <View style={{flex: 1, backgroundColor: '#edeef0'}}>
-                <FlatList
-                    data={this.state.dataSource}  
-                    renderItem={this._renderRow.bind(this)}
-                    onEndReached={this._renderNext.bind(this)}
-                    onEndReachedThreshold={10}
-                    ListFooterComponent={this._renderFooter.bind(this)}
-                    keyExtractor={this._keyExtractor}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.isRefreshing}
-                            onRefresh={this._onRefresh.bind(this)}
-                            tintColor='#cccccc'
-                            title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
-                            titleColor='#cccccc' />
-                    }
-                />
-            </View>
-        )
+                <View style={{flex: 1, backgroundColor: '#edeef0'}}>
+                    <FlatList
+                        data={this.state.dataSource}  
+                        renderItem={this._renderRow.bind(this)}
+                        onEndReached={this._renderNext.bind(this)}
+                        onEndReachedThreshold={10}
+                        ListFooterComponent={this._renderFooter.bind(this)}
+                        keyExtractor={this._keyExtractor}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.isRefreshing}
+                                onRefresh={this._onRefresh.bind(this)}
+                                tintColor='#cccccc'
+                                title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
+                                titleColor='#cccccc' />
+                        }
+                    />
+                </View>
+            )
         }
     }
 }
