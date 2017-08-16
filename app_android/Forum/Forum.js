@@ -11,6 +11,7 @@ import {
   ListView,
   AsyncStorage,
   Alert,
+  FlatList,
   RefreshControl,
 }from 'react-native';
 import ForumList from './ForumList';
@@ -21,7 +22,7 @@ export default class Forum extends Component{
         super(props);
         this.state = {
             dataArr: new Array(),
-            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
+            dataSource: '',
             tag: 0,
             nextPage: null,
             isLoading: false,
@@ -32,111 +33,15 @@ export default class Forum extends Component{
             moreshow:false,
         }
     }
+
     static navigationOptions = {
-        title: '论坛',
-       /* headerRight:(
-            <NavigationItem
-                title='...'
-                onPress={this.changeshow.bind(this)}
-            />
-        )*/
-    }
- /*   _renderBottomBtns(){
-        return (
-            <View style={{position:'absolute',right:0,top:0,}}>
-                {
-                    this.state.moreshow? this._renderBtnActions() : null
-                }
-                <TouchableOpacity onPress={()=>{this.setState({moreshow:!this.state.moreshow})}}>
-                    <Text>...</Text>
-                </TouchableOpacity>
-            </View>
-        )
-    }
-    _renderBtnActions(){
-        var item = this.state.data[this.state.index];
-        item = this.state.currentItem;
-        return (
-            <View style={{width:80,height:100,borderWidth:1,borderColor:'#cccccc'}}>
-                <TouchableOpacity onPress={}>
-                    <Text>我的帖子</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={}>
-                    <Text>我的收藏</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{this.setState({moreshow:!this.state.moreshow})}}>
-                    <Text>消息中心</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{this.setState({moreshow:!this.state.moreshow})}}>
-                    <Text>排行榜</Text>
-                </TouchableOpacity>
-            </View>
-        )
-    }
-    changeshow(){
-        this.setState({
-            moreshow:!this.state.moreshow
-        })
-    }
-    // 选项按钮点击
-    _clickOptionEvent(index, option){
-        var item = this.state.data[this.state.index];
-        item = this.state.currentItem
-        if (item.action[index]["select"] == false) {
-            item.action[index]["select"] = true
-            this.state.options.push(option)
-        }else{
-            item.action[index]["select"] = false
-            this.state.options.splice(this.state.options.indexOf(option), 1)
-        }
-        this.state.options.sort()
-        // console.log(this.state.options)
+        headerTitle: '论坛',
+        headerTintColor: "#fff",   
+        headerStyle: { backgroundColor: '#ff6b94',},
+        headerTitleStyle:{marginLeft:width*0.3}
+        
+    };
 
-        this.setState({
-            currentItem:item
-        })
-    }
-    // 选择课程点击
-    _clickChooseCourse = ()=>{
-        this.setState({showHelpActions:false})
-        this._loadChooseCourse(true);
-    }
-    // 寻找帮助点击
-    _clickFindHelp = ()=>{
-        this.props.navigation.navigate("CodeCompileWebView", {language:"python"})
-        // this.setState({
-        //     showHelpActions:false,
-        //     showFindHelpView:true
-        // })
-    }
-    // 寻找帮助 shadowview点击
-    _clickFindHelpShadow = ()=>{
-        this.setState({
-            showFindHelpView:false
-        })
-    }
-    // 学习论坛点击
-    _clickStudyLuntan = ()=>{
-        this.setState({showHelpActions:false})
-        this._loadLuntan();
-    }
-    _loadLuntan(){
-        var this_ = this;
-        Utils.isLogin((token)=>{
-            if (token) {
-                // 已登录
-                // console.log("go to luntan");
-                this_.props.navigation.navigate('Forum')
-            }else{
-                // console.log("go to login .");
-                // 未登录
-                this_.props.navigation.navigate('Login', {callback:()=>{
-
-                    this_._fetchUserInfo();
-                }})
-            }
-        })
-    }*/
     componentWillUnmount() {
         this.props.navigation.state.params.callback();
     }
@@ -181,7 +86,7 @@ export default class Forum extends Component{
                     this.setState({
                         nextPage: responseJson.next,
                         dataArr: resultArr,
-                        dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
+                        dataSource: resultArr,
                         isLoading: false,
                         loadText: responseJson.next?('正在加载...'):('没有更多了...'),
                         isRefreshing: false
@@ -207,8 +112,8 @@ export default class Forum extends Component{
     _clickForumList(data){
         this.props.navigation.navigate('ForumList', { data: data,token:this.state.token })
     }
-    _renderRow(rowData, SectionID, rowID, highlightRow) {
-        var timeArray = rowData.newposts.create_time.split('.')[0].split('T');
+    dealWithTime(Time){
+        var timeArray = Time.split('.')[0].split('T');
         var year = timeArray[0].split('-')[0];
         var month = timeArray[0].split('-')[1];
         var day = timeArray[0].split('-')[2];
@@ -226,25 +131,46 @@ export default class Forum extends Component{
         }else if(s1 / (60 * 1000) < 24 * 60){
             time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
         }else if(s1 / (60 * 1000) < 24 * 60 * 2){
-            time = "昨天 " + rowData.newposts.create_time.slice(11, 16);
+            time = "昨天 " + Time.slice(11, 16);
         }else{
-            time = rowData.newposts.create_time.slice(0, 10).replace('T', ' ');
+            time = Time.slice(0, 10).replace('T', ' ');
         }
-        return (
-            <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
-                style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
-                <View style={{flexDirection:'row',}}>
-                    <Image style={{width:50,height:50,marginTop:20,}} source={{uri:rowData.icon}}/>
-                    <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.6,}}>
-                        <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.name}</Text>
-                        <Text style={{paddingBottom:10}}>{rowData.newposts.title}</Text>
-                        <Text style={{paddingBottom:10}}>{rowData.newposts.author}  {time}</Text>
+        return time;
+    }
+    _renderRow(item) {
+        var rowData=item.item;
+        if(!rowData.newposts){
+            return (
+                <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
+                                  style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
+                    <View style={{flexDirection:'row',}}>
+                        <Image style={{width:50,height:50,marginTop:20,}} source={{uri:rowData.icon}}/>
+                        <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.6,}}>
+                            <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.name}</Text>
+                            <Text style={{paddingBottom:10}}>暂无帖子</Text>
+                        </View>
+                        <Text style={{paddingLeft:10,flex:1,paddingTop:20,}}>帖数:{rowData.total}</Text>
                     </View>
-                    <Text style={{paddingLeft:10,flex:1,paddingTop:20,}}>帖数:{rowData.total}</Text>
-                </View>
-            </TouchableOpacity>
+                </TouchableOpacity>
+            )
+        }else{
+            var time_last=this.dealWithTime(rowData.newposts.last_replied)
+            return (
+                <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
+                    style={{width: width,flex:1, backgroundColor: 'white',alignItems:'center',marginTop:8,marginBottom:8,paddingLeft:10,paddingRight:10,}}>
+                    <View style={{flexDirection:'row',}}>
+                        <Image style={{width:60,height:60,marginTop:20,}} source={{uri:rowData.icon}}/>
+                        <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.6,}}>
+                            <Text style={{fontSize:15,color:'#3B3B3B',paddingBottom:10}}>{rowData.name}</Text>
+                            <Text numberOfLines={1} style={{fontSize:13,paddingBottom:10,color:'#858585'}}>{rowData.newposts.title}</Text>
+                            <Text style={{fontSize:11,paddingBottom:10,color:'#aaaaaa'}}>{rowData.newposts.author}     {time_last}</Text>
+                        </View>
+                        <Text style={{paddingLeft:10,flex:1,paddingTop:20,fontSize:11,color:'#aaaaaa'}}>帖数:{rowData.total}</Text>
+                    </View>
+                </TouchableOpacity>
 
-        )
+            )
+        }
     }
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
@@ -281,7 +207,7 @@ export default class Forum extends Component{
                         this.setState({
                             nextPage: responseJson.next,
                             dataArr: resultArr,
-                            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
+                            dataSource: resultArr,
                             isLoading: false,
                             loadText: responseJson.next?('正在加载...'):('没有更多了...')
                         })
@@ -319,21 +245,20 @@ export default class Forum extends Component{
             this.props.navigation.pop()
         }   
     }
-
+    _keyExtractor = (item, index) => index;
     render() {
         if(!this.state.dataSource){
             return(<View></View>)
         }else{
              return(
-            <View style={{flex: 1, backgroundColor: 'rgb(242,243,244)'}}>
-                <ListView
-                    dataSource={this.state.dataSource}  
-                    renderRow={this._renderRow.bind(this)}
-                    automaticallyAdjustContentInsets={false}
-                    enableEmptySections={true}
+            <View style={{flex: 1, backgroundColor: '#edeef0'}}>
+                <FlatList
+                    data={this.state.dataSource}  
+                    renderItem={this._renderRow.bind(this)}
                     onEndReached={this._renderNext.bind(this)}
-                    onEndReachedThreshold={200}
-                    renderFooter={this._renderFooter.bind(this)}
+                    onEndReachedThreshold={10}
+                    ListFooterComponent={this._renderFooter.bind(this)}
+                    keyExtractor={this._keyExtractor}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.isRefreshing}

@@ -205,43 +205,59 @@ export default class Forum extends Component{
         this.props.navigation.navigate('ForumList', { data: data,token:this.state.token })
     }
     _renderRow(rowData, SectionID, rowID, highlightRow) {
-        var timeArray = rowData.newposts.create_time.split('.')[0].split('T');
-        var year = timeArray[0].split('-')[0];
-        var month = timeArray[0].split('-')[1];
-        var day = timeArray[0].split('-')[2];
-        var hour = timeArray[1].split(':')[0];
-        var minute = timeArray[1].split(':')[1];
-        var second = timeArray[1].split(':')[2];
-        var create = new Date(year, month-1, day, hour, minute, second);
-        var current = new Date();
-        var s1 = current.getTime() - create.getTime(); //相差的毫秒
-        var time = null;
-        if (s1 / (60 * 1000) < 1) {
-            time = "刚刚";
-        }else if (s1 / (60 * 1000) < 60){
-            time = parseInt(s1 / (60 * 1000)) + "分钟前";
-        }else if(s1 / (60 * 1000) < 24 * 60){
-            time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
-        }else if(s1 / (60 * 1000) < 24 * 60 * 2){
-            time = "昨天 " + rowData.newposts.create_time.slice(11, 16);
+        if(!rowData.newposts.create_time){
+           return (
+               <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
+                                 style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
+                   <View style={{flexDirection:'row',}}>
+                       <Image style={{width:50,height:50,marginTop:20,}} source={{uri:rowData.icon}}/>
+                       <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.6,}}>
+                           <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.name}</Text>
+                           <Text style={{paddingBottom:10}}>暂无帖子</Text>
+                       </View>
+                       <Text style={{paddingLeft:10,flex:1,paddingTop:20,}}>帖数:{rowData.total}</Text>
+                   </View>
+               </TouchableOpacity>
+            )
         }else{
-            time = rowData.newposts.create_time.slice(0, 10).replace('T', ' ');
-        }
-        return (
-            <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
-                style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
-                <View style={{flexDirection:'row',}}>
-                    <Image style={{width:50,height:50,marginTop:20,}} source={{uri:rowData.icon}}/>
-                    <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.6,}}>
-                        <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.name}</Text>
-                        <Text style={{paddingBottom:10}}>{rowData.newposts.title}</Text>
-                        <Text style={{paddingBottom:10}}>{rowData.newposts.author}  {time}</Text>
+            var timeArray = rowData.newposts.create_time.split('.')[0].split('T');
+            var year = timeArray[0].split('-')[0];
+            var month = timeArray[0].split('-')[1];
+            var day = timeArray[0].split('-')[2];
+            var hour = timeArray[1].split(':')[0];
+            var minute = timeArray[1].split(':')[1];
+            var second = timeArray[1].split(':')[2];
+            var create = new Date(year, month-1, day, hour, minute, second);
+            var current = new Date();
+            var s1 = current.getTime() - create.getTime(); //相差的毫秒
+            var time = null;
+            if (s1 / (60 * 1000) < 1) {
+                time = "刚刚";
+            }else if (s1 / (60 * 1000) < 60){
+                time = parseInt(s1 / (60 * 1000)) + "分钟前";
+            }else if(s1 / (60 * 1000) < 24 * 60){
+                time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
+            }else if(s1 / (60 * 1000) < 24 * 60 * 2){
+                time = "昨天 " + rowData.newposts.create_time.slice(11, 16);
+            }else{
+                time = rowData.newposts.create_time.slice(0, 10).replace('T', ' ');
+            }
+            return (
+                <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
+                    style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
+                    <View style={{flexDirection:'row',}}>
+                        <Image style={{width:50,height:50,marginTop:20,}} source={{uri:rowData.icon}}/>
+                        <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.6,}}>
+                            <Text style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.name}</Text>
+                            <Text style={{paddingBottom:10}}>{rowData.newposts.title}</Text>
+                            <Text style={{paddingBottom:10}}>{rowData.newposts.author}  {time}</Text>
+                        </View>
+                        <Text style={{paddingLeft:10,flex:1,paddingTop:20,}}>帖数:{rowData.total}</Text>
                     </View>
-                    <Text style={{paddingLeft:10,flex:1,paddingTop:20,}}>帖数:{rowData.total}</Text>
-                </View>
-            </TouchableOpacity>
+                </TouchableOpacity>
 
-        )
+            )
+        }
     }
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {

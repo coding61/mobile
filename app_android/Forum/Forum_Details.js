@@ -9,6 +9,7 @@ import {
   Dimensions, 
   TouchableOpacity,
   ListView,
+  FlatList,
   Alert,
   RefreshControl,
   WebView,
@@ -23,26 +24,51 @@ export default class Forum_Details extends Component{
         super(props);
         this.state = {
             dataArr: new Array(),
-            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
+            dataSource: '',
             tag: 0,
             nextPage: null,
             isLoading: false,
-            url: 'https://www.cxy61.com/program_girl/forum/replies/?posts='+this.props.navigation.state.params.data.pk+'&page=1',
+            url: 'https://www.cxy61.com/program_girl/forum/replies/?posts='+this.props.navigation.state.params.data+'&page=1',
             loadText: '正在加载...',
             isRefreshing: false,
             token:this.props.navigation.state.params.token,
-            data:this.props.navigation.state.params.data,
-
+            pk:this.props.navigation.state.params.data,
+            data:'',
         }
         
     }
     static navigationOptions = {
       title: '论坛详情',
     }
-
+    componentWillUnmount(){
+        this.props.navigation.state.params.callback();
+    }
     componentDidMount() {
-       this._loadData()
-       this._loadUserinfo()
+        this._loadforum()
+        this._loadData()
+        this._loadUserinfo()
+    }
+    _loadforum(){
+        forum_url=basePath+'program_girl/forum/posts/'+this.state.pk+'/';
+        fetch(forum_url,{
+            headers: {Authorization: 'Token ' + this.state.token}
+        })
+            .then(response=>{
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    return '加载失败';
+                }
+            })
+            .then(responseJson=>{
+                this.setState({
+                    data:responseJson,
+
+                })
+            })
+            .catch((error) => {
+                console.error(error);
+            })
     }
     _loadUserinfo(){
         info_url=basePath+'program_girl/userinfo/whoami/';
@@ -95,7 +121,7 @@ export default class Forum_Details extends Component{
                     this.setState({
                         nextPage: responseJson.next,
                         dataArr: resultArr,
-                        dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
+                        dataSource: resultArr,
                         isLoading: false,
                         loadText: responseJson.next?('正在加载...'):('没有更多了...'),
                         isRefreshing: false
@@ -148,20 +174,13 @@ export default class Forum_Details extends Component{
                         this.setState({
                             nextPage: responseJson.next,
                             dataArr: resultArr,
-                            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
+                            dataSource: resultArr,
                             isLoading: false,
                             loadText: responseJson.next?('正在加载...'):('没有更多了')
                         })
                     }
                 })
                 .catch((error) => {
-                    Alert.alert(
-                          '加载失败,请重试',
-                          '',
-                          [
-                            {text: '确定', onPress: ()=> {}, style: 'destructive'},
-                          ]
-                        )
                     this.setState({
                         isLoading: false,
                         isRefreshing: false
@@ -173,7 +192,9 @@ export default class Forum_Details extends Component{
     _renderFooter(){
         return <View style={{alignItems:'center', justifyContent: 'center', width: width, height: 30}}><Text style={{fontSize: 12, color: '#cccccc'}}>{this.state.loadText}</Text></View>
     }
-    renderForumRow(rowData){
+    
+    renderForumRow(item){
+        var rowData=item.item;
         return (
             <View style={{width: width,flex:1, backgroundColor: '#f2f2f2',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingRight:10,}}>
                 <View style={{flexDirection:'row',paddingTop:10,backgroundColor:'#f2f2f2',width:width,paddingLeft:15}}>
@@ -185,10 +206,14 @@ export default class Forum_Details extends Component{
                         <Text style={{paddingBottom:10,color:'#4f99cf'}}>{rowData.userinfo.name}</Text>
                         <Text style={{paddingBottom:10}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                     </View>
-                    <Text style={{fontSize:14,paddingTop:10,}}>回复</Text>
+                    <View>
+                        <Text style={{fontSize:14,paddingTop:10,}}>回复({rowData.replymore.length})</Text>
+                        {this.state.UserPk==rowData.userinfo.pk?(
+                            <Text onPress={this.detele_reply.bind(this,rowData.pk)} style={{fontSize:14,paddingTop:10,color:'red'}} >删除</Text>
+                            ):(null)}
+                    </View>
                 </View>
                 <ForumDeatilCont data={rowData.content}></ForumDeatilCont>
-                
                 {rowData.replymore.map((result,index)=> {
                     return(
                         <View key={index} style={{backgroundColor:'#ffffff',width:width*0.94,marginLeft:width*0.03,borderBottomWidth:1,borderBottomColor:'#cccccc'}}>
@@ -202,11 +227,44 @@ export default class Forum_Details extends Component{
                                     <Text style={{paddingBottom:10}}>{result.create_time.slice(0, 16).replace("T", " ")}</Text>
                                 </View> 
                             </View>
-                            <ForumDeatilCont data={result.content}></ForumDeatilCont>
+                           <ForumDeatilCont data={result.content}></ForumDeatilCont>
                         </View>
                     )
                 })}
             </View>
+        )
+    }
+    detele_reply(pk){
+        Alert.alert(
+            '确认删除回复？',
+            '',
+            [
+                {text: '确定', onPress: ()=> {
+                    var detemore_url=basePath+'forum/replies/'+pk+'/';
+                    fetch(detemore_url,
+                    {
+                        method: 'DELETE',
+                        headers: {Authorization: 'Token ' + this.state.token}
+                    })
+                    .then(response=>{
+                        console.log(response)
+                        if (response.status === 200) {
+                            return response.json();
+                        } else {
+                            return '加载失败';
+                        }
+                    })
+                    .then(responseJson=>{
+                        console.log(responseJson)
+                        this.props.navigation.state.params.callback();
+                        this.props.navigation.goBack();
+                    })
+                    .catch((error) => {
+                        console.error(error);  
+                        })
+                }, style: 'destructive'},
+                {text: '取消', onPress: () => {}, style: 'destructive'},
+             ]
         )
     }
     _onRefresh() {
@@ -216,70 +274,95 @@ export default class Forum_Details extends Component{
             this._loadData();
         })
     }
-    _goBack(){
-        if (this.props.navigation) {
-            this.props.navigation.pop()
-        }   
-    }
+    _keyExtractor = (item, index) => item.id;
 
+    detele_main(){
+        Alert.alert(
+            '确认删除此贴？',
+            '',
+            [
+                {text: '确定', onPress: ()=> {
+                    var dete_url=basePath+'forum/posts/'+this.state.pk+'/';
+                    fetch(dete_url,
+                    {
+                        method: 'DELETE',
+                        headers: {Authorization: 'Token ' + this.state.token}
+                    })
+                    .then(response=>{
+                        console.log(response)
+                        if (response.status === 200) {
+                            return response.json();
+                        } else {
+                            return '加载失败';
+                        }
+                    })
+                    .then(responseJson=>{
+                        console.log(responseJson)
+                        this.props.navigation.state.params.callback();
+                        this.props.navigation.goBack();
+                    })
+                    .catch((error) => {
+                        console.error(error);  
+                        })
+                }, style: 'destructive'},
+                {text: '取消', onPress: () => {}, style: 'destructive'},
+             ]
+        )
+    }
     render() {
         var data=this.state.data;
-        return(
-            <View style={{flex:1,backgroundColor:'#ffffff'}}>
-                <ScrollView>
-                <Text style={{paddingTop:20,paddingBottom:10,paddingLeft:10,paddingRight:10,fontSize:16,color:'#292929'}}>{data.title}</Text>
-                <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:'#F2F2F2'}}>
-                    <View style={{alignItems:'center',}}>
-                        <Image style={{width:50,height:50,borderRadius:25,}} source={{uri:data.userinfo.avatar}}/>
-                        <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
-                    </View>
-                    <View style={{paddingLeft:10,paddingRight:10,width:width*0.62,}}>
-                        <Text style={{paddingBottom:10,color:'#4f99cf'}}>{data.userinfo.name}</Text>
-                        <Text style={{paddingBottom:10}}>{data.create_time.slice(0, 16).replace("T", " ")}</Text>
-                        <TouchableOpacity>
-                            <Text>{data.status_display}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{paddingLeft:10,alignItems:'center'}}>
-                        <TouchableOpacity style={{paddingBottom:8,}}>
-                            <Image style={{width:14,height:13,marginTop:5,}} source={require('../assets/Forum/unCollect.png')}/>
-                        </TouchableOpacity> 
-                        <TouchableOpacity style={{paddingBottom:8,}}>
-                            <Text>回复主贴</Text>
-                        </TouchableOpacity>
-                        {data.pk==this.state.UserPk?(
+        if(!data){
+            return(<Text>加载中...</Text>)
+        }else{
+            return(
+                <View style={{flex:1,backgroundColor:'#ffffff'}}>
+                    <ScrollView>
+                    <Text style={{paddingTop:20,paddingBottom:10,paddingLeft:10,paddingRight:10,fontSize:16,color:'#292929'}}>{data.title}</Text>
+                    <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:'#F2F2F2'}}>
+                        <View style={{alignItems:'center',}}>
+                            {!data.userinfo.avatar?(<Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,borderRadius:25}} source={{uri:data.userinfo.avatar}}/>)}
+                            <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
+                        </View>
+                        <View style={{paddingLeft:10,paddingRight:10,width:width*0.62,}}>
+                            <Text style={{paddingBottom:10,color:'#4f99cf'}}>{data.userinfo.name}</Text>
+                            <Text style={{paddingBottom:10}}>{data.create_time.slice(0, 16).replace("T", " ")}</Text>
+                            <View style={{flexDirection:'row'}}>
+                                {data.userinfo.pk==this.state.UserPk?(data.status=='unsolved'?(<View style={{flexDirection:'row'}}><Text style={{marginRight:10,}}>标记为已解决</Text><Text>关闭问题</Text></View>):(<Text>标记为未解决</Text>)):(<Text>{data.status_display}</Text>)}
+                            </View>
+                        </View>
+                        <View style={{paddingLeft:10,alignItems:'center'}}>
                             <TouchableOpacity style={{paddingBottom:8,}}>
-                                <Text>删除此贴</Text>
+                                {data.collect==true?(<Image style={{width:14,height:13,marginTop:5,}} source={require('../assets/Forum/hadCollect.png')}/>):(<Image style={{width:14,height:13,marginTop:5,}} source={require('../assets/Forum/unCollect.png')}/>)}
                             </TouchableOpacity>
-                            ):(null)}
+                            <Text>回复主贴</Text>
+                            {data.userinfo.pk==this.state.UserPk?(<Text onPress={this.detele_main.bind(this)}>删除此贴</Text>):(null)}
+                        </View>
                     </View>
-                </View> 
-                <View style={{marginBottom:10,}}>
-                    <ForumDeatilCont data={this.state.data.content}></ForumDeatilCont>
-                    <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,}}>回帖数量({data.reply_count})</Text>
+                    <View style={{marginBottom:10,}}>
+                        <ForumDeatilCont data={this.state.data.content} style={{}}></ForumDeatilCont>
+                        <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,marginTop:10,}}>回帖数量({data.reply_count})</Text>
+                    </View>
+                    <FlatList
+                            horizontal={false}
+                            data={this.state.dataSource}
+                            renderItem={this.renderForumRow.bind(this)}
+                            keyExtractor={this._keyExtractor}
+                            onEndReached={this._renderNext.bind(this)}
+                            onEndReachedThreshold={3}
+                            ListFooterComponent={this._renderFooter.bind(this)}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.isRefreshing}
+                                    onRefresh={this._onRefresh.bind(this)}
+                                    tintColor='#cccccc'
+                                    title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
+                                    titleColor='#cccccc' />
+                            }
+                        >
+                    </FlatList>
+                    </ScrollView>
                 </View>
-                <ListView
-                        horizontal={false}
-                        contentContainerStyle={{width:width,justifyContent:'flex-start',alignItems:'center' }}
-                        dataSource={this.state.dataSource}
-                        renderRow={this.renderForumRow.bind(this)}
-                        automaticallyAdjustContentInsets={false}
-                        enableEmptySections={true}
-                        onEndReached={this._renderNext.bind(this)}
-                        onEndReachedThreshold={3}
-                        renderFooter={this._renderFooter.bind(this)}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={this.state.isRefreshing}
-                                onRefresh={this._onRefresh.bind(this)}
-                                tintColor='#cccccc'
-                                title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
-                                titleColor='#cccccc' />
-                        }
-                    >
-                </ListView>
-                </ScrollView>
-            </View>
-        )
+            )
+        }
     }
 }
