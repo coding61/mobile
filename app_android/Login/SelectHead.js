@@ -38,32 +38,38 @@ export default class SelectHead extends Component {
   } 
   goNext = () => {
     var _this = this;
-    fetch('https://www.cxy61.com/program_girl/userinfo/telephone_signup/',{
-              method: "POST",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                telephone:this.props.navigation.state.params.phoneNum,
-                password:this.props.navigation.state.params.passWord,
-                verification_code:this.props.navigation.state.params.textCode,
-                name:this.state.name,
-                avatar:"https://static1.bcjiaoyu.com/head" + (this.state.head + 1).toString() + "@3x.png"
-              }),
-            })
-            .then(response=> {
-              console.log(response)
-              if (response.status === 200) {
-                Alert.alert('','注册成功！',
-                [{text: '确定', onPress: () => this.props.navigation.state.params.gogoback()}
-                ],{ cancelable: false })
-              } else {
-                Alert.alert('','注册失败，请检查验证码是否正确！',
-                [{text: '确定', onPress: () => this.props.navigation.goBack()}
-                ],{ cancelable: false })
-              }
-            })
+    if (this.state.name !== '') {
+      fetch('https://www.cxy61.com/program_girl/userinfo/telephone_signup/',{
+                method: "POST",
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  telephone:this.props.navigation.state.params.phoneNum,
+                  password:this.props.navigation.state.params.passWord,
+                  verification_code:this.props.navigation.state.params.textCode,
+                  name:this.state.name,
+                  avatar:"https://static1.bcjiaoyu.com/head" + (this.state.head + 1).toString() + "@3x.png"
+                }),
+              })
+              .then(response=> {
+                console.log(response)
+                if (response.status === 200) {
+                  Alert.alert('','注册成功！',
+                  [{text: '确定', onPress: () => this.props.navigation.state.params.gogoback()}
+                  ],{ cancelable: false })
+                } else {
+                  Alert.alert('','注册失败，请检查验证码是否正确！',
+                  [{text: '确定', onPress: () => this.props.navigation.goBack()}
+                  ],{ cancelable: false })
+                }
+              })
+    } else {
+      Alert.alert('','请输入用户名',
+      [{text: '确定', onPress: () => {}}
+      ],{ cancelable: false })
+    }
   }
   select = (index) => {
     this.setState({

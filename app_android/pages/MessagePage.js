@@ -90,6 +90,8 @@ class MessagePage extends Component{
             showFindHelpView:false,      //是否显示查找帮助组件
             loadStorageMsg:false,        //判断加载的是缓存数据还是新数据
 
+            courseProgressArray:[],
+
         };
         this.leftEnterValue = new Animated.Value(0)     //左侧进入动画
         this.growAniValue = new Animated.Value(0)       //经验动画
@@ -661,7 +663,8 @@ class MessagePage extends Component{
                         Utils.showMessage("数据格式有问题");
                         return
                     }
-                    
+                    this_._loadCourseProgress(response.total_lesson, response.learn_extent.last_lesson);  //加载课程进度信息
+
                     this_.setState({
                         courseIndex:response.learn_extent.last_lesson    //记录进度
                     }, ()=>{
@@ -706,7 +709,8 @@ class MessagePage extends Component{
                         Utils.showMessage("数据格式有问题!");
                         return;
                     }
-                    
+                    this_._loadCourseProgress(response.total_lesson, this.state.courseIndex);  //加载课程进度信息
+
                     var courseIndex = this_.state.courseIndex;
                     // 更改数据源
                     if(array[courseIndex+1]){
@@ -899,8 +903,10 @@ class MessagePage extends Component{
                     if (!response) {
                         //请求失败
                     };
+                    // this_._loadUpdateCourseProgress(courseIndex);   //更新课程进度
                     // console.log(response);
                     this_._loadClickBtnAction();
+
                 }, (err) => {
                     // console.log(err);
                     // Utils.showMessage('网络请求失败');
@@ -1267,6 +1273,8 @@ class MessagePage extends Component{
             bigImgUrl:"",                //放大图片的 url
             showBigImgView:false,        //是否显示大图组件
             showFindHelpView:false,      //是否显示查找帮助组件
+
+            courseProgressArray:[],
         })
         Utils.clearAllValue()
         this.setState({showHelpActions:false})
@@ -1379,8 +1387,71 @@ class MessagePage extends Component{
 
         // TODO:存储数据
     }
+    // 课程进度初始化
+    _loadCourseProgress(total, studyN){
+        // 1.默认数据加载，2.选择课程
+        var unstudyN = total-studyN;
+        var array = [];
+        for (var i = 0; i < studyN; i++) {
+            var dic = {"status":true}   //已经学过
+            array.push(dic) 
+        }
+        for (var i = 0; i < unstudyN; i++) {
+            var dic = {"status":false}  //未学过的
+            array.push(dic)       
+        }
+        this.setState({
+            courseProgressArray:array
+        })
+    }
+    // 课程进度更新
+    _loadUpdateCourseProgress(courseIndex){
+        this.state.courseProgressArray[courseIndex-1]["status"] = true
+    }
 
     // ----------------------------------------------------------UI 布局
+    _renderItemCourseProgress(item, index){
+        var url = item.status?require('../images/cp1.png'):require("../images/cp2.png")
+        return (
+            <View style={styles.cpPointView}>
+                <Image
+                  style={styles.cpPointImage}
+                  source={url}
+                  resizeMode={'contain'}
+                />
+            </View>
+        )
+    }
+    _renderItemCP = ({item, index}) => (
+        this._renderItemCourseProgress(item, index)
+    )
+    _renderCourseProgress(){
+        var total = this.state.courseProgressArray.length
+        var studyN = this.state.courseIndex
+        var unstudyHeight = studyN==0 ? (total-1)*(cpHeight) : ((total-1)-(studyN-1))*cpHeight
+        var unstudyTop = studyN==0 ? cpHeight/2: cpHeight/2+(studyN-1)*cpHeight
+
+        return (
+            <View style={styles.courseProgressView}>
+                <Image
+                  style={[styles.cpLine, {height:(studyN-1)*cpHeight, top:cpHeight/2}]}
+                  source={require("../images/pink-line.png")}
+                />
+                <Image
+                  style={[styles.cpLine, {height:unstudyHeight, top:unstudyTop}]}
+                  source={require('../images/gray-line.png')}
+                />
+                
+                <FlatList
+                    data={this.state.courseProgressArray}
+                    renderItem={this._renderItemCP}
+                    keyExtractor={this._keyExtractor}
+                />
+                 
+            </View>
+        )
+    }
+    // 寻找帮助
     _renderFindHelp(){
         return (
             <TouchableOpacity onPress={this._clickFindHelpShadow} style={styles.findHelpShadowView}>
@@ -1390,6 +1461,7 @@ class MessagePage extends Component{
             </TouchableOpacity>
         )
     }
+    // 图片放大
     _renderScaleBigImage(){
         var  images = []
         images.push({url:this.state.bigImgUrl})
@@ -1399,6 +1471,7 @@ class MessagePage extends Component{
             </Modal>
         )
     }
+    // 钻石
     _renderZuanView(){
         return(
             <View style={styles.zuanShadowView}>
@@ -1412,6 +1485,7 @@ class MessagePage extends Component{
             </View>
         )
     }
+    // 等级
     _renderGradeView(){
         return(
             <View style={styles.gradeShadowView}>
@@ -1425,6 +1499,7 @@ class MessagePage extends Component{
             </View>
         )
     }
+    // 经验
     _renderGrowView(){
         // 字体放大之后再恢复到最初(放大/缩小)
         const textSize = this.growAniValue.interpolate({
@@ -1448,6 +1523,7 @@ class MessagePage extends Component{
             
         )
     }
+    // 帮助
     _renderHelpActions(){
         return (
                 <View style={styles.helpParentView}>
@@ -1559,13 +1635,15 @@ class MessagePage extends Component{
     // ----------------------------------------无动画消息
     // 文本信息
     _renderItemTextMessage(item){
+        var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
+        var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
         return (
-            <View style={[styles.message, ]}>
+            <View style={[styles.message, {width:widthMsg1}]}>
                 <Image
                   style={styles.avatar}
                   source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                 />
-                <View style={styles.msgView}>
+                <View style={[styles.msgView, {width:widthMsg2}]}>
                     <View style={styles.messageView}>
                         <Text style={styles.messageText}>
                             {item.message}
@@ -1577,16 +1655,18 @@ class MessagePage extends Component{
     }
     // 图片信息
     _renderItemImgMessage(item){
+        var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
+        var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
         return (
             <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
-                <View style={styles.message}>
+                <View style={[styles.message, {width:widthMsg1}]}>
                     <Image
                       style={styles.avatar}
                       source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                     />
-                    <View style={styles.msgView}>
+                    <View style={[styles.msgView, {width:widthMsg2}]}>
                         <Image
-                          style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
+                          style={{width:(widthMsg2)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg2)*0.5)}}
                           source={{uri: item.img}}
                         />
                     </View>
@@ -1596,6 +1676,8 @@ class MessagePage extends Component{
     }
     // 链接信息
     _renderItemLinkMessage(item){
+        var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
+        var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
         var text = "点击打开新网页"
         if (item.link == "www.code.com") {
             text = "点击打开编辑器"
@@ -1604,12 +1686,12 @@ class MessagePage extends Component{
         }
         return (
             <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
-                <View style={styles.message}>
+                <View style={[styles.message, {width:widthMsg1}]}>
                     <Image
                       style={styles.avatar}
                       source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                     />
-                    <View style={styles.msgView}>  
+                    <View style={[styles.msgView, {width:widthMsg2}]}>  
                         <View style={[styles.messageView, {flex:1}]}>
                             <Text style={styles.messageText}>
                               {item.message}
@@ -1645,10 +1727,12 @@ class MessagePage extends Component{
     }
     // 用户回复信息
     _renderItemAnswerMessage(item){
+        var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
+        var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
         const {state, setParams, goBack, navigate} = this.props.navigation;
         return (
-            <View style={styles.answer}>
-                <View style={styles.answerMsgView}>
+            <View style={[styles.answer, {width:widthMsg1}]}>
+                <View style={[styles.answerMsgView, {width:widthMsg2}]}>
                     <View style={styles.answerView}>
                         <Text style={styles.answerText}>
                             {item.message}
@@ -1704,17 +1788,19 @@ class MessagePage extends Component{
     // ---------------------------------------有动画消息
     // 文本信息
     _renderItemTextMessageAni(item){
+        var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
+        var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
         const translateX = this.leftEnterValue.interpolate({
             inputRange:[0, 1],
             outputRange:[-2000, 0]
         })
         return (
-            <Animated.View style={[styles.message, {transform:[{translateX:translateX}]}]}>
+            <Animated.View style={[styles.message, {transform:[{translateX:translateX}], width:widthMsg1}]}>
                 <Image
                   style={styles.avatar}
                   source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                 />
-                <View style={styles.msgView}>
+                <View style={[styles.msgView, {width:widthMsg2}]}>
                     <View style={styles.messageView}>
                         <Text style={[styles.messageText, {}]}>
                             {item.message}
@@ -1726,20 +1812,22 @@ class MessagePage extends Component{
     }
     // 图片信息
     _renderItemImgMessageAni(item){
+        var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
+        var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
         const translateX = this.leftEnterValue.interpolate({
             inputRange:[0, 1],
             outputRange:[-2000, 0]
         })
         return (
             <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
-                <Animated.View style={[styles.message, {transform:[{translateX:translateX}]}]}>
+                <Animated.View style={[styles.message, {transform:[{translateX:translateX}], width:widthMsg1}]}>
                     <Image
                       style={styles.avatar}
                       source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                     />
-                    <View style={styles.msgView}>
+                    <View style={[styles.msgView, {width:widthMsg2}]}>
                         <Image
-                          style={{width:(widthMsg-45-45)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg-45-45)*0.5)}}
+                          style={{width:(widthMsg2)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg2)*0.5)}}
                           source={{uri: item.img}}
                         />
                     </View>
@@ -1749,6 +1837,8 @@ class MessagePage extends Component{
     }
     // 链接信息
     _renderItemLinkMessageAni(item){
+        var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
+        var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
         var text = "点击打开新网页"
         if (item.link == "www.code.com") {
             text = "点击打开编辑器"
@@ -1763,12 +1853,12 @@ class MessagePage extends Component{
 
         return (
             <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
-                <Animated.View style={[styles.message, {transform:[{translateX:translateX}]}]}>
+                <Animated.View style={[styles.message, {transform:[{translateX:translateX}], width:widthMsg1}]}>
                     <Image
                       style={styles.avatar}
                       source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                     />
-                    <View style={styles.msgView}>  
+                    <View style={[styles.msgView, {width:widthMsg2}]}>  
                         <View style={[styles.messageView, {flex:1}]}>
                             <Text style={styles.messageText}>
                               {item.message}
@@ -1856,53 +1946,59 @@ class MessagePage extends Component{
     }
     _keyExtractor = (item, index) => index;
     _renderTableView(){
+        var MessageWidth1 = this.state.courseProgressArray.length?MessageWidth:MessageWidth+CourseProgressWidth
         return (
             <View style={{flex:1}}>
-                <View style={{width:width, maxHeight:height-headerH-80-10}}>
-                    <FlatList 
-                        ref={(flatlist)=>this._flatList=flatlist}
-                        style={{maxHeight:height-headerH-80-10}}
-                        data={this.state.dataSource}
-                        renderItem={this._renderItem}
-                        ListHeaderComponent={this.state.showHeaderComponent?this._renderHeader:null}
-                        // ListFooterComponent={this.state.loadingChat?this._renderFooter:null}
-                        extraData={this.state.loadingChat}
-                        keyExtractor={this._keyExtractor}
-                        onLayout={ (e) => {
-                           const height = e.nativeEvent.layout.height
-                           // console.log(e.nativeEvent.layout);
-                        }}
-                        // getItemLayout={(data, index) => (
-                        //     { length: this.state.itemHeight, offset: (this.state.itemHeight + 2) * index, index }
-                        // )}
-                        onContentSizeChange={ (contentWidth, contentHeight) => {
-                            // console.log(contentHeight);
-                            this.setState({
-                                contentHeight:contentHeight
-                            })
+                <View style={{flexDirection:'row'}}>
+                    {/*******课程进度********/}
+                    {this.state.courseProgressArray.length? this._renderCourseProgress():null}
+                    
+                    {/******会话消息******/}
+                    <View style={{width:MessageWidth1, maxHeight:height-headerH-80-10}}>
+                        <FlatList 
+                            ref={(flatlist)=>this._flatList=flatlist}
+                            style={{maxHeight:height-headerH-80-10}}
+                            data={this.state.dataSource}
+                            renderItem={this._renderItem}
+                            ListHeaderComponent={this.state.showHeaderComponent?this._renderHeader:null}
+                            // ListFooterComponent={this.state.loadingChat?this._renderFooter:null}
+                            extraData={this.state.loadingChat}
+                            keyExtractor={this._keyExtractor}
+                            onLayout={ (e) => {
+                               const height = e.nativeEvent.layout.height
+                               // console.log(e.nativeEvent.layout);
+                            }}
+                            // getItemLayout={(data, index) => (
+                            //     { length: this.state.itemHeight, offset: (this.state.itemHeight + 2) * index, index }
+                            // )}
+                            onContentSizeChange={ (contentWidth, contentHeight) => {
+                                // console.log(contentHeight);
+                                this.setState({
+                                    contentHeight:contentHeight
+                                })
 
-                            if (this.state.scrollTop == true) {
-                                this._flatList.scrollToOffset({animated: true, offset: 0});
-                                // this._flatList.scrollToIndex({viewPosition: 0, index: 0}); 
-                                // console.log("-----scrollTop");
-                            }else{
-                                if (contentHeight > height-headerH-80-10) {
-                                    // this._flatList.scrollToIndex({viewPosition: 1, index: this.state.number-1});
-                                    this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-80-10)});
-                                    // console.log("-----scrollEnd");
-                                    // this._flatList.scrollToEnd();  //与getItemLayout配合使用
+                                if (this.state.scrollTop == true) {
+                                    this._flatList.scrollToOffset({animated: true, offset: 0});
+                                    // this._flatList.scrollToIndex({viewPosition: 0, index: 0}); 
+                                    // console.log("-----scrollTop");
+                                }else{
+                                    if (contentHeight > height-headerH-80-10) {
+                                        // this._flatList.scrollToIndex({viewPosition: 1, index: this.state.number-1});
+                                        this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-80-10)});
+                                        // console.log("-----scrollEnd");
+                                        // this._flatList.scrollToEnd();  //与getItemLayout配合使用
+                                    } 
                                 } 
-                            } 
-                        }}
-                    />
-                    {
-                        this.state.loadingChat?this._renderLoadingChat():null
-                    }
+                            }}
+                        />
+                        {
+                            this.state.loadingChat?this._renderLoadingChat():null
+                        }
+                    </View>
                 </View>
+                {/******底部按钮*****/}
+                {this._renderBottomBtns()}
                 
-                {/*
-                    this.state.showAction? this._renderBtnActions() : null
-                */}
                 {
                     this.state.showZuanAni? this._renderZuanView() : null
                 }
@@ -1912,7 +2008,6 @@ class MessagePage extends Component{
                 {
                     this.state.showGrowAni? this._renderGrowView() : null
                 }
-                {this._renderBottomBtns()}
                 {
                     this.state.showHelpActions? this._renderHelpActions() : null
                 }
@@ -1954,13 +2049,21 @@ class MessagePage extends Component{
         )
     }
 }
-const width = Utils.width;
-const height = Utils.height;
-const headerH = Utils.headerHeight;
+const width = Utils.width;                          //屏幕的总宽
+const height = Utils.height;                        //屏幕的总高
+const headerH = Utils.headerHeight;                 //导航栏的高度
+
+const CourseProgressMarginVer = 10;                 //左侧课程进度上下边距
+const CourseProgressHeight = height-CourseProgressMarginVer*2;                //左侧课程进度的总高, 
+const CourseProgressWidth = 30;                     //左侧课程进度总宽
+const cpHeight = 30;
+const cpMarginVer = 0;
+
+const MessageWidth = width - CourseProgressWidth;   //右侧消息列表的总宽
 
 // 每条消息的宽度
-const marginHorMsg = 5;
-const widthMsg = width - 10;
+const marginHorMsg = 5;                             //右侧消息列表左右间距
+const widthMsg = MessageWidth - marginHorMsg*2;     //右侧消息的宽
 const styles = StyleSheet.create({
     // -------------------------------------------------导航栏
     headerStyle:{
@@ -2312,6 +2415,28 @@ const styles = StyleSheet.create({
         fontSize: 20,
         width: width*.8,
         marginTop:(height-headerH)*.3
+    },
+    // -------------------------------------课程进度
+    courseProgressView:{
+        width:CourseProgressWidth, 
+        height:CourseProgressHeight, 
+        position:'relative',
+        marginVertical:CourseProgressMarginVer,
+        overflow:'scroll'
+    },
+    cpLine:{
+        width:2, 
+        position:'absolute', 
+        left:(CourseProgressWidth-2)/2
+    },
+    cpPointView:{
+        height:cpHeight, 
+        alignItems:'center', 
+        justifyContent:'center'
+    },
+    cpPointImage:{
+        width:15,
+        height:15
     }
 
 });
