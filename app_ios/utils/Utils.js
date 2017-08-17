@@ -73,21 +73,23 @@ function NumberToChinese(num){
     return chnStr;
 }
 let Utils = {
-    width:Dimensions.get('window').width,
-    height:Dimensions.get('window').height,
+	width:Dimensions.get('window').width,
+	height:Dimensions.get('window').height,
     headerHeight:HeaderH,
-    navBarBgColor:'rgb(253,202,24)',
-    tabBarBgColor:'rgb(255,255,255)',
-    bodyBgColor:'rgb(245,245,245)',
+	navBarBgColor:'rgb(250, 80, 131)',
+	tabBarBgColor:'rgb(255,255,255)',
     tabBarIconUnSColor:'rgb(124,124,124)',
     tabbarIconSColor:'rgb(253,202,24)',
-    themeColor:'rgb(253,202,24)',
-    px2dp:(px)=>{
-        return px * deviceW/basePx
-    },
-    numberToChinese:(number)=>{
-        return NumberToChinese(number)
-    },
+
+	bodyBgColor:'rgb(250, 80, 131)',
+    btnBgColor:'rgb(250, 80, 131)',      //app 主题颜色粉色
+    btnBgColorS:'white',                 //app 第二主题色是白色
+	px2dp:(px)=>{
+		return px * deviceW/basePx
+	},
+	numberToChinese:(number)=>{
+		return NumberToChinese(number)
+	},
     setValue:(key, value)=>{
         AsyncStorage.setItem(key,value);
     },
@@ -177,7 +179,10 @@ let Utils = {
                                 var currentCourse = JSON.parse(result);
                                 Utils.getValue("currentCourseIndex", (err, result)=>{
                                     var currentCourseIndex = JSON.parse(result);
-                                    callback(chatData, data, index, optionData, optionIndex, currentCourse, currentCourseIndex);
+                                    Utils.getValue("currentCourseTotal", (err, result)=>{
+                                        var currentCourseTotal = JSON.parse(result);
+                                        callback(chatData, data, index, optionData, optionIndex, currentCourse, currentCourseIndex, currentCourseTotal);
+                                    })
                                 })
                             })
                         })
