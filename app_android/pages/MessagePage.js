@@ -1316,7 +1316,7 @@ class MessagePage extends Component{
             link.indexOf("www.compile.com") > -1
             ?
                 //编译器
-                this.props.navigation.navigate("CodeCompileWebView", {language:language})
+                this.props.navigation.navigate("CodeCompileWebView", {"language":language})
             :
                 Utils.openURL(link)
                 // this.props.navigation.navigate('ThirdSiteWebView', {url:link})
@@ -1752,9 +1752,14 @@ class MessagePage extends Component{
                 <View style={{paddingHorizontal:10, backgroundColor:'rgb(229, 230, 231)'}}>
                     <Text style={{color: 'rgb(166, 166, 166)'}}>
                         {item.message}
-                        <Text style={{color:'rgb(166, 166, 166)', fontSize:12}}>
-                          {item.subMessage}
-                        </Text>
+                        {
+                            item.subMessage
+                            ?
+                            <Text style={{color:'rgb(166, 166, 166)', fontSize:12}}>
+                              {item.subMessage}
+                            </Text>
+                            : null
+                        }
                     </Text>
                 </View>
             </View>
