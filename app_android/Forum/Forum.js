@@ -125,17 +125,16 @@ export default class Forum extends Component{
         var s1 = current.getTime() - create.getTime(); //相差的毫秒
         var time = null;
         if (s1 / (60 * 1000) < 1) {
-            time = "刚刚";
+            return time = "刚刚";
         }else if (s1 / (60 * 1000) < 60){
-            time = parseInt(s1 / (60 * 1000)) + "分钟前";
+            return time = parseInt(s1 / (60 * 1000)) + "分钟前";
         }else if(s1 / (60 * 1000) < 24 * 60){
-            time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
+            return time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
         }else if(s1 / (60 * 1000) < 24 * 60 * 2){
-            time = "昨天 " + Time.slice(11, 16);
+            return time = "昨天 " + Time.slice(11, 16);
         }else{
-            time = Time.slice(0, 10).replace('T', ' ');
+            return time = Time.slice(0, 10).replace('T', ' ');
         }
-        return time;
     }
     _renderRow(item) {
         var rowData=item.item;

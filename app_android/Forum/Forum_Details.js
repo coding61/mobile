@@ -50,7 +50,7 @@ export default class Forum_Details extends Component{
                 (
                 <View style={{flexDirection:'row',marginRight:30,}}>
                     <TouchableOpacity style={{marginRight:30,}} onPress={()=>{
-                        DeviceEventEmitter.emit('emit', state.params.data)
+                        DeviceEventEmitter.emit('collec', state.params.data)
                     }}>
                         {state.params.iscollect==true?(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xin.png')} resizeMode={'contain'}/>):(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xinfull.png')} resizeMode={'contain'}/>)}
                     </TouchableOpacity>
@@ -64,8 +64,8 @@ export default class Forum_Details extends Component{
         };
     }
     componentWillUnmount(){
-        this.props.navigation.state.params.callback();
-        this.eventEm.remove();
+        
+        this.eventEmss.remove();
         
     }
     componentDidMount() {
@@ -73,7 +73,7 @@ export default class Forum_Details extends Component{
         this._loadData()
         this._loadUserinfo()
 
-        this.eventEm = DeviceEventEmitter.addListener('emit', (value)=>{
+        this.eventEmss = DeviceEventEmitter.addListener('collec', (value)=>{
             var data = {};
             data.types = "posts";
             data.pk=value;

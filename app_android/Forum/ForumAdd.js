@@ -38,7 +38,7 @@ export default class ForumAdd extends Component{
                 (
                 <View style={{flexDirection:'row',marginRight:30,}}>
                     <TouchableOpacity style={{marginRight:10,}} onPress={()=>{
-                        DeviceEventEmitter.emit('emit', "1")
+                        DeviceEventEmitter.emit('publish', "1")
                     }}>
                         <Text style={{color:'#ffffff'}}>发布</Text>
                     </TouchableOpacity>
@@ -51,7 +51,7 @@ export default class ForumAdd extends Component{
         this.eventEm.remove();
     }
     componentDidMount() {
-        this.eventEm = DeviceEventEmitter.addListener('emit', (value)=>{
+        this.eventEm = DeviceEventEmitter.addListener('publish', (value)=>{
             var data = {};
             data.section = this.state.pk;
             data.title=this.state.title;
