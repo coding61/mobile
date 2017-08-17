@@ -15,6 +15,7 @@ import {
   RefreshControl,
   InteractionManager,
   FlatList,
+  DeviceEventEmitter
 }from 'react-native';
 
 var {height, width} = Dimensions.get('window');
@@ -48,13 +49,29 @@ export default class ForumList extends Component{
             title: state.params.data.name,
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
-            headerTitleStyle:{alignSelf:'auto',fontSize:14}
+            headerTitleStyle:{alignSelf:'auto',fontSize:14},
+            headerRight:
+                (
+                <View style={{flexDirection:'row',marginRight:30,}}>
+                    <TouchableOpacity  onPress={()=>{
+                        DeviceEventEmitter.emit('addforum', state.params.data)
+                    }}>
+                        <Image style={{width:15,height:15,}} source={require('../assets/Forum/add.png')}/>
+                    </TouchableOpacity>
+                </View>
+                )
         };
     };
-
+    componentWillUnmount(){
+        this.eventEmtt.remove();
+    }
     componentDidMount(){
-       this._loadAlldata()
-      
+        this._loadAlldata()
+        this.eventEmtt = DeviceEventEmitter.addListener('addforum', (value)=>{
+            this.props.navigation.navigate('ForumAdd',{data:value,token:this.state.token,callback:(msg)=>{
+                this._onRefresh()
+            }})
+        }) 
     }
     _loadAlldata() {
         this.setState({
@@ -155,14 +172,12 @@ export default class ForumList extends Component{
             },()=> {
                 this.props.navigation.navigate('NewsCenter', { token:this.state.token })
             })
-            
         }else if (tag === 7 ){
             this.setState({
                 tag: tag
             },()=> {
                 this.props.navigation.navigate('RankingList', { token:this.state.token })
             })
-            
         }
     }
 
@@ -233,14 +248,7 @@ export default class ForumList extends Component{
             this._onRefresh()
         }})
     }
-    AddForum(){
-        /*this.props.navigation.navigate('AddForum',{data:this.state.data,token:this.state.token,callback:(msg)=>{
-            this._onRefresh()
-        }})*/
-        this.props.navigation.navigate('ForumAdd',{data:this.state.data,token:this.state.token,callback:(msg)=>{
-            this._onRefresh()
-        }})
-    }
+    
     dealWithTime(Time){
         var timeArray = Time.split('.')[0].split('T');
         var year = timeArray[0].split('-')[0];
@@ -273,14 +281,14 @@ export default class ForumList extends Component{
             var time_last=this.dealWithTime(rowData.posts.last_replied)
             return (
                 <TouchableOpacity onPress={this.forumdetail.bind(this,rowData.posts)}
-                    style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
-                    <View style={{flexDirection:'row',}}>
-                        <View style={{alignItems:'center'}}>
+                    style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,}}>
+                    <View style={{flexDirection:'row',paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
+                        <View style={{alignItems:'flex-start'}}>
                             {!rowData.posts.userinfo.avatar?(<Image style={{width:30,height:30,marginTop:10,borderRadius:15,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:30,height:30,marginTop:10,borderRadius:15,}} source={{uri:rowData.posts.userinfo.avatar}}/>)}
                             <Text style={{paddingTop:10,fontSize:12,color:'#aaaaaa'}}>{rowData.posts.userinfo.grade.current_name}</Text>
                         </View>
                         <View style={{paddingLeft:16,paddingRight:20,paddingTop:10,width:width*0.86,}}>
-                            <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.posts.status=='unsolved'?(<Text style={{color:'red'}}>[未解决]</Text>):(<Text style={{color:'#cccccc'}}>[{rowData.posts.status_display}]</Text>)}  {rowData.posts.title}</Text>
+                            <Text numberOfLines={2} style={{fontSize:14,lineHeight: 24, color:'#3B3B3B',paddingBottom:10,}}>{rowData.posts.status=='unsolved'?(<Text style={{color:'red'}}>[未解决]</Text>):(<Text style={{color:'#cccccc'}}>[{rowData.posts.status_display}]</Text>)}  {rowData.posts.title}</Text>
                             <Text style={{paddingBottom:10,color:'#858585'}} numberOfLines={1}>{rowData.posts.content}</Text>
                             <View style={{flexDirection:'row',alignItems:'center',flexWrap:'wrap'}}>
                                 <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.posts.userinfo.name}</Text>
@@ -288,7 +296,7 @@ export default class ForumList extends Component{
                                 <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.posts.reply_count}回答</Text>
                                 <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.posts.browse_count}浏览</Text>
                             </View>
-                         </View>
+                        </View>
                     </View>
                 </TouchableOpacity>
             )
@@ -303,7 +311,7 @@ export default class ForumList extends Component{
                             <Text style={{paddingTop:10,fontSize:12,color:'#aaaaaa'}}>{rowData.userinfo.grade.current_name}</Text>
                         </View>
                         <View style={{paddingLeft:16,paddingRight:20,paddingTop:10,width:width*0.86,}}>
-                            <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10}}>{rowData.status=='unsolved'?(<Text style={{color:'red'}}>[未解决]</Text>):(<Text style={{color:'#cccccc'}}>[{rowData.status_display}]</Text>)}  {rowData.title}</Text>
+                            <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10,fontWeight: '100',fontFamily:'Noto SansCJK'}}>{rowData.status=='unsolved'?(<Text style={{color:'red'}}>[未解决]</Text>):(<Text style={{color:'#cccccc'}}>[{rowData.status_display}]</Text>)}  {rowData.title}</Text>
                             <Text style={{paddingBottom:10,color:'#858585'}} numberOfLines={1}>{rowData.content}</Text>
                             <View style={{flexDirection:'row',alignItems:'center',flexWrap:'wrap'}}>
                                 <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.userinfo.name}</Text>
@@ -349,9 +357,7 @@ export default class ForumList extends Component{
                         >
                         </FlatList>
                     </View>
-                    <TouchableOpacity onPress={this.AddForum.bind(this)} style={{position:'absolute',bottom: 50,alignItems:'center',justifyContent:'center',right: 30,height:50,backgroundColor:'#0db7f5',width: 50,borderRadius: 50,}}>
-                        <Text style={{color:'#ffffff',fontSize:40}}>+</Text>
-                    </TouchableOpacity>
+                    
               </View>
             )
         }
