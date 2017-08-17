@@ -19,7 +19,6 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import ForumDeatilCont from './ForumDeatilCont';
 var {height, width} = Dimensions.get('window');
 var basePath='https://www.cxy61.com/';
-//var basePath='https://app.bcjiaoyu.com/'
 export default class Forum_Details extends Component{
     constructor(props) {
         super(props);
@@ -35,10 +34,11 @@ export default class Forum_Details extends Component{
             token:this.props.navigation.state.params.token,
             pk:this.props.navigation.state.params.data,
             data:'',
-            /*collect:this.props.navigation.state.params.iscollect,*/
-        }
-        
-        
+            commentshow:false,
+            Maincommentshow:false,
+            content:'',
+            reply_pk:'',
+        }  
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
@@ -50,11 +50,13 @@ export default class Forum_Details extends Component{
                 (
                 <View style={{flexDirection:'row',marginRight:30,}}>
                     <TouchableOpacity style={{marginRight:30,}} onPress={()=>{
-                        DeviceEventEmitter.emit('emit', "1")
+                        DeviceEventEmitter.emit('emit', state.params.data)
                     }}>
                         {state.params.iscollect==true?(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xin.png')} resizeMode={'contain'}/>):(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xinfull.png')} resizeMode={'contain'}/>)}
                     </TouchableOpacity>
-                    <TouchableOpacity style={{marginTop:3,}}>
+                    <TouchableOpacity style={{marginTop:3,}} onPress={()=>{
+                        DeviceEventEmitter.emit('message', state.params.data)
+                    }}>
                         <Image style={{width:22,height:20,}} source={require('../assets/Forum/message.png')} resizeMode={'contain'}/>
                     </TouchableOpacity>
                 </View>
@@ -64,6 +66,7 @@ export default class Forum_Details extends Component{
     componentWillUnmount(){
         this.props.navigation.state.params.callback();
         this.eventEm.remove();
+        
     }
     componentDidMount() {
         this._loadforum()
@@ -73,16 +76,16 @@ export default class Forum_Details extends Component{
         this.eventEm = DeviceEventEmitter.addListener('emit', (value)=>{
             var data = {};
             data.types = "posts";
-            data.pk=this.state.pk;
-            fetch(basePath+"collect/collection/",
+            data.pk=value;
+            fetch(basePath+"program_girl/collect/collection/",
             {
                 method:'put',
-                headers: {Authorization: 'Token ' + this.state.token},
+                headers: {
+                    'Authorization': 'Token ' + this.state.token,
+                    'Content-Type': 'application/json'},
                 body: JSON.stringify(data),  
             })
             .then((response)=>{
-                //console.log(this.state.token)
-                //console.log(response)
                 if (response.status === 200) {
                     return response.json();
                 } else {
@@ -90,17 +93,55 @@ export default class Forum_Details extends Component{
                 }
             })
             .then((result)=>{
-                //console.log(result)
-                const {setParams} = this.props.navigation;
-                if (result.message == '取消收藏') {
-                    setParams({iscollect:false})
-                } else if (result.message == '收藏成功') {
-                    setParams({iscollect:false})
-                }
+                const {setParams,state} = this.props.navigation;
+                setParams({iscollect:!state.params.iscollect})
+                
             })
             .catch((error) => {
                 console.error(error);
             })
+        })
+
+        this.eventEm = DeviceEventEmitter.addListener('message', (value)=>{
+                  this.Show_Main_Comment()
+        })         
+    }
+    Show_Main_Comment(){
+        this.setState({
+            Maincommentshow:true,
+        })
+    }
+    Show_Comment(pk){
+        this.setState({
+            commentshow:true,
+            reply_pk:pk,
+        })  
+    }
+    Comment_Main(){
+        var data = {};
+        data.posts = this.state.pk;
+        data.content=this.state.content;
+        fetch(basePath+"program_girl/forum/replies_create/",
+        {
+            method:'post',
+            headers: {
+                'Authorization': 'Token ' + this.state.token,
+                'Content-Type': 'application/json'},
+            body: JSON.stringify(data),  
+        })
+        .then((response)=>{
+            return response.json();
+        })
+        .then((result)=>{
+            this.setState({
+                content:'',
+                Maincommentshow:false,
+            })
+             this._onRefresh()
+            
+        })
+        .catch((error) => {
+            console.error(error);
         })
     }
     _loadforum(){
@@ -262,7 +303,7 @@ export default class Forum_Details extends Component{
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                     </View>
                     <View style={{paddingRight:20,}}>
-                        <TouchableOpacity style={{marginTop:3,}}>
+                        <TouchableOpacity style={{marginTop:3,}} onPress={this.Show_Comment.bind(this,rowData.pk)}>
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
@@ -291,7 +332,7 @@ export default class Forum_Details extends Component{
             '',
             [
                 {text: '确定', onPress: ()=> {
-                    var detemore_url=basePath+'forum/replies/'+pk+'/';
+                    var detemore_url=basePath+'program_girl/forum/replies/'+pk+'/';
                     fetch(detemore_url,
                     {
                         method: 'DELETE',
@@ -306,9 +347,7 @@ export default class Forum_Details extends Component{
                         }
                     })
                     .then(responseJson=>{
-                        console.log(responseJson)
-                        this.props.navigation.state.params.callback();
-                        this.props.navigation.goBack();
+                        this._onRefresh()
                     })
                     .catch((error) => {
                         console.error(error);  
@@ -333,24 +372,20 @@ export default class Forum_Details extends Component{
             '',
             [
                 {text: '确定', onPress: ()=> {
-                    var dete_url=basePath+'forum/posts/'+this.state.pk+'/';
+                    var dete_url=basePath+'program_girl/forum/posts/'+this.state.pk+'/';
                     fetch(dete_url,
                     {
                         method: 'DELETE',
-                        headers: {  Authorization: 'Token '+ this.state.token }
+                        headers: {  
+                            'Authorization': 'Token '+ this.state.token,
+                            'Content-Type': 'application/json' }
                     })
                     .then(response=>{
-                        console.log(response)
-                        if (response.status === 200) {
-                            return response.json();
-                        } else {
-                            return '加载失败';
-                        }
+                        return response.json();
                     })
                     .then(responseJson=>{
-                        console.log(responseJson)
-                        /*this.props.navigation.state.params.callback();
-                        this.props.navigation.goBack();*/
+                        this.props.navigation.state.params.callback();
+                        this.props.navigation.goBack();
                     })
                     .catch((error) => {
                         console.error(error);  
@@ -359,6 +394,33 @@ export default class Forum_Details extends Component{
                 {text: '取消', onPress: () => {}, style: 'destructive'},
              ]
         )
+    }
+    Comment(){
+        var data = {};
+        data.replies = this.state.reply_pk;
+        data.content=this.state.content;
+        fetch(basePath+"program_girl/forum/replymore_create/",
+        {
+            method:'post',
+            headers: {
+                'Authorization': 'Token ' + this.state.token,
+                'Content-Type': 'application/json'},
+            body: JSON.stringify(data),  
+        })
+        .then((response)=>{
+            return response.json();
+        })
+        .then((result)=>{
+            this.setState({
+                content:'',
+                commentshow:false,
+            })
+            this._onRefresh()
+            
+        })
+        .catch((error) => {
+            console.error(error);
+        })
     }
     forum_tag(tag){
         if(tag==0){
@@ -370,10 +432,12 @@ export default class Forum_Details extends Component{
         }
         var data = {};
         data.status = statetag;
-        fetch(basePath+"forum/posts/"+this.state.pk+"/",
+        fetch(basePath+"program_girl/forum/posts/"+this.state.pk+"/",
         {
             method: 'patch',
-            headers: {Authorization: 'Token ' + this.state.token},
+            headers: {
+                'Authorization': 'Token ' + this.state.token,
+                'Content-Type': 'application/json'},
             body: JSON.stringify(data),    
         })
         .then(response=>{
@@ -385,7 +449,7 @@ export default class Forum_Details extends Component{
             }
         })
         .then(responseJson=>{
-            /*this.componentDidMount()*/
+            this._loadforum()
         })
         .catch((error) => {
             console.error(error);  
@@ -446,7 +510,36 @@ export default class Forum_Details extends Component{
                             }
                         >
                     </FlatList>
+                    
                     </ScrollView>
+                    {this.state.commentshow?(
+                        <View style={{position:'absolute',flexDirection:'row',backgroundColor:'#ffffff',bottom: 0,alignItems:'center',justifyContent:'center',right: 0,height:50,width:width,borderTopWidth:0.5,borderTopColor:'#aaaaaa'}}>
+                            <TextInput
+                                style={{width:width*0.8,height: 40, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,marginRight:10,}}
+                                onChangeText={(content) => this.setState({content})}
+                                value={this.state.content}
+                                multiline={true}
+                                underlineColorAndroid="transparent"
+                                placeholder='输入评论内容'
+                                placeholderTextColor='#aaaaaa'
+                            />
+                            <Text onPress={this.Comment.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:5,borderRadius:5,}}>提交</Text>
+                        </View>
+                        ):(null)}
+                    {this.state.Maincommentshow?(
+                        <View style={{position:'absolute',flexDirection:'row',backgroundColor:'#ffffff',bottom: 0,alignItems:'center',justifyContent:'center',right: 0,height:50,width:width,borderTopWidth:0.5,borderTopColor:'#aaaaaa'}}>
+                            <TextInput
+                                style={{width:width*0.8,height: 40, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,marginRight:10,}}
+                                onChangeText={(content) => this.setState({content})}
+                                value={this.state.content}
+                                multiline={true}
+                                underlineColorAndroid="transparent"
+                                placeholder='输入评论内容'
+                                placeholderTextColor='#aaaaaa'
+                            />
+                            <Text onPress={this.Comment_Main.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:5,borderRadius:5,}}>提交</Text>
+                        </View>
+                        ):(null)}
                 </View>
             )
         }

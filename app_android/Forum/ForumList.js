@@ -19,9 +19,11 @@ import {
 
 var {height, width} = Dimensions.get('window');
 var basePath='https://www.cxy61.com/';
-//var basePath='https://app.bcjiaoyu.com/'
+
 import WebHtml from './WebHtml';
 import AddForum from './AddForum';
+
+import ForumAdd from './ForumAdd';
 import Forum_Details from './Forum_Details';
 export default class ForumList extends Component{
     constructor(props) {
@@ -34,13 +36,12 @@ export default class ForumList extends Component{
             tag: 0,
             nextPage: null,
             isLoading: false,
-            url:basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&types=&isessence=&myposts=false&page=1',  
+            url:basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&myposts=false&page=1',  
             loadText: '正在加载...',
             isRefreshing: false,
         };
     }
  
-    
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
         return {
@@ -73,12 +74,10 @@ export default class ForumList extends Component{
                     isLoading: false,
                     loadText: responseData.next?('正在加载...'):('没有更多了...'),
                     isRefreshing: false
-                    
-                });     
+                 });     
             })
             .catch((error) => {
                 console.error(error);
-
             }); 
         })
     }
@@ -91,10 +90,8 @@ export default class ForumList extends Component{
                 dataArr: new Array(),
                 dataSource: null,
                 loadText: '正在加载...',
-                
             },()=> {
                 this._loadAlldata();
-                
             })
         } else if (tag === 1 && this.state.isLoading === false) {
             this.setState({
@@ -104,10 +101,8 @@ export default class ForumList extends Component{
                 dataArr: new Array(),
                 dataSource: null,
                 loadText: '正在加载...',
-                
             },()=> {
                 this._loadAlldata();
-                
             })
         } else if (tag === 2 && this.state.isLoading === false){
             this.setState({
@@ -117,7 +112,6 @@ export default class ForumList extends Component{
                 dataArr: new Array(),
                 dataSource: null,
                 loadText: '正在加载...',
-                
             },()=> {
                 this._loadAlldata();
                 
@@ -130,7 +124,6 @@ export default class ForumList extends Component{
                 dataArr: new Array(),
                 dataSource: null,
                 loadText: '正在加载...',
-                
             },()=> {
                 this._loadAlldata();
             })
@@ -142,7 +135,6 @@ export default class ForumList extends Component{
                 dataArr: new Array(),
                 dataSource: null,
                 loadText: '正在加载...',
-                
             },()=> {
                 this._loadAlldata();
             })
@@ -154,7 +146,6 @@ export default class ForumList extends Component{
                 dataArr: new Array(),
                 dataSource: null,
                 loadText: '正在加载...',
-                
             },()=> {
                 this._loadAlldata();
             })
@@ -243,7 +234,10 @@ export default class ForumList extends Component{
         }})
     }
     AddForum(){
-        this.props.navigation.navigate('AddForum',{data:this.state.data,token:this.state.token,callback:(msg)=>{
+        /*this.props.navigation.navigate('AddForum',{data:this.state.data,token:this.state.token,callback:(msg)=>{
+            this._onRefresh()
+        }})*/
+        this.props.navigation.navigate('ForumAdd',{data:this.state.data,token:this.state.token,callback:(msg)=>{
             this._onRefresh()
         }})
     }
@@ -328,7 +322,6 @@ export default class ForumList extends Component{
         if(!this.state.dataSource){
             return( <View style={styles.container}>
                         <SlideView _change={this._changeTag.bind(this)}/>
-                        <Text>加载中...</Text>
                     </View>)
         }else{
             return (

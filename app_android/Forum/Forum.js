@@ -168,7 +168,6 @@ export default class Forum extends Component{
                         <Text style={{paddingLeft:10,flex:1,paddingTop:20,fontSize:11,color:'#aaaaaa'}}>帖数:{rowData.total}</Text>
                     </View>
                 </TouchableOpacity>
-
             )
         }
     }
