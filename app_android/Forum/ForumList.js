@@ -155,14 +155,12 @@ export default class ForumList extends Component{
             },()=> {
                 this.props.navigation.navigate('NewsCenter', { token:this.state.token })
             })
-            
         }else if (tag === 7 ){
             this.setState({
                 tag: tag
             },()=> {
                 this.props.navigation.navigate('RankingList', { token:this.state.token })
             })
-            
         }
     }
 

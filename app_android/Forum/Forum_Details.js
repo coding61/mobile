@@ -381,9 +381,6 @@ export default class Forum_Details extends Component{
                             'Content-Type': 'application/json' }
                     })
                     .then(response=>{
-                        return response.json();
-                    })
-                    .then(responseJson=>{
                         this.props.navigation.state.params.callback();
                         this.props.navigation.goBack();
                     })
