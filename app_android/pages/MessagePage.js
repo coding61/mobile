@@ -22,6 +22,7 @@ import {
 }from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Sound from 'react-native-sound';
+import ImageLoad from 'react-native-image-placeholder';
 
 import chatdata from '../data1.js';
 import Utils from '../utils/Utils.js';
@@ -64,9 +65,11 @@ class MessagePage extends Component{
             contentHeight:0,
 
             course:null,                 //当前课程的 pk
+            courseTotal:0,               //当前课程的总节数
             courseIndex:0,               //当前课程的进度
 
             chooseCourse:null,           //选择课程的 pk
+            chooseCourseTotal:0,         //选择课程的总节数
             chooseCourseIndex:0,         //选择课程的进度
 
             showGradeAni:false,          //是否显示升级动画
@@ -165,10 +168,10 @@ class MessagePage extends Component{
         // Utils.setValue("chatData", JSON.stringify(chatArray));
         // Utils.setValue("token", null);
         this._fetchUserInfo();
-        this._load();
+        this._load(); 
     }
     componentDidMount() {
-
+    
     }
     componentDidUpdate(prevProps, prevState) {
         /*
@@ -338,7 +341,7 @@ class MessagePage extends Component{
     // -------------------------------------------缓存数据相关
     // 方法1
     _loadStorageMessages1(){
-        Utils.getStorageData((chatData, data, index, optionData, optionIndex, currentCourse, currentCourseIndex)=>{
+        Utils.getStorageData((chatData, data, index, optionData, optionIndex, currentCourse, currentCourseIndex, currentCourseTotal)=>{
             // console.log(chatData);
             // console.log(data);
             // console.log(index);
@@ -356,7 +359,8 @@ class MessagePage extends Component{
                 loadingChat:false,
                 currentItem:chatData[chatData.length - 1],
                 course:currentCourse,
-                courseIndex:currentCourseIndex
+                courseIndex:currentCourseIndex,
+                courseTotal:currentCourseTotal
             }, ()=>{
                 console.log("way1...")
                 if (currentCourse) {
@@ -390,7 +394,7 @@ class MessagePage extends Component{
         })
 
         var this_ = this
-        Utils.getStorageData((chatData, data, index, optionData, optionIndex, currentCourse, currentCourseIndex)=>{
+        Utils.getStorageData((chatData, data, index, optionData, optionIndex, currentCourse, currentCourseIndex, currentCourseTotal)=>{
             // console.log(chatData);
             // console.log(data);
             // console.log(index);
@@ -407,7 +411,8 @@ class MessagePage extends Component{
                 loadingChat:false,
                 currentItem:chatData[chatData.length - 1],
                 course:currentCourse,
-                courseIndex:currentCourseIndex
+                courseIndex:currentCourseIndex,
+                courseTotal:currentCourseTotal
             }, ()=>{
                 if (currentCourse) {
                     // 先更改数据源，后加载缓存数据
@@ -663,7 +668,7 @@ class MessagePage extends Component{
                         Utils.showMessage("数据格式有问题");
                         return
                     }
-                    this_._loadCourseProgress(response.total_lesson, response.learn_extent.last_lesson);  //加载课程进度信息
+                    // this_._loadCourseProgress(response.total_lesson, response.learn_extent.last_lesson);  //加载课程进度信息
 
                     this_.setState({
                         courseIndex:response.learn_extent.last_lesson    //记录进度
@@ -709,7 +714,12 @@ class MessagePage extends Component{
                         Utils.showMessage("数据格式有问题!");
                         return;
                     }
-                    this_._loadCourseProgress(response.total_lesson, this.state.courseIndex);  //加载课程进度信息
+
+                    this.setState({
+                        courseTotal:response.total_lesson
+                    })
+
+                    // this_._loadCourseProgress(response.total_lesson, this.state.courseIndex);  //加载课程进度信息
 
                     var courseIndex = this_.state.courseIndex;
                     // 更改数据源
@@ -980,11 +990,13 @@ class MessagePage extends Component{
             this.setState({
                 course:this.state.chooseCourse,
                 courseIndex:this.state.chooseCourseIndex,
+                courseTotal:this.state.chooseCourseTotal,
                 actionTag:actionCommonTag,
                 loadingChat:true
             }, ()=>{
                 Utils.setValue("currentCourse", JSON.stringify(this.state.course))
                 Utils.setValue("currentCourseIndex", JSON.stringify(this.state.courseIndex))
+                Utils.setValue("currentCourseTotal", JSON.stringify(this.state.courseTotal))
                 this._fetchCourseInfoWithPk(this.state.course);
             })
         }else if(this.state.actionTag == actionRecordTag){
@@ -1016,12 +1028,13 @@ class MessagePage extends Component{
             if (token) {
                 // 已登录
                 // console.log("go to chooseCourse");
-                this_.props.navigation.navigate('CourseList', {callback:(course, courseIndex, restart)=>{
+                this_.props.navigation.navigate('CourseList', {callback:(course, courseIndex, restart, courseTotal)=>{
                     console.log("callback");
                     // this.props.navigation.setParams({userinfo:""})
                     this_.setState({
                         chooseCourse:course,
-                        chooseCourseIndex:courseIndex
+                        chooseCourseIndex:courseIndex,
+                        chooseCourseTotal:courseTotal
                     }, ()=>{
                         // this._bottomAnimate();
                         if (this_.state.chooseCourse) {
@@ -1249,9 +1262,11 @@ class MessagePage extends Component{
             contentHeight:0,
 
             course:null,                 //当前课程的 pk
+            courseTotal:0,               //当前课程的总节数
             courseIndex:0,               //当前课程的进度
 
             chooseCourse:null,           //选择课程的 pk
+            chooseCourseTotal:0,         //选择课程的总节数
             chooseCourseIndex:0,         //选择课程的进度
 
             showGradeAni:false,          //是否显示升级动画
@@ -1345,8 +1360,10 @@ class MessagePage extends Component{
         // 节分割线，更改数据源，刷新 UI
         var array = this.state.dataSource;
         var msg = "第" + Utils.numberToChinese(number) + "节"
+        var subMsg = "(共"+this.state.courseTotal + "节)"
         var dic = {
-            "message":msg
+            "message":msg,
+            "subMessage":subMsg
         }
         dic["question"] = false;
         dic["line"] = true;  
@@ -1466,7 +1483,7 @@ class MessagePage extends Component{
         var  images = []
         images.push({url:this.state.bigImgUrl})
         return (
-            <Modal visible={this.state.showBigImgView} transparent={true} onRequestClose={()=>{}}>
+            <Modal visible={this.state.showBigImgView} transparent={true} onRequestClose={this._clickBigImg}>
                 <ImageViewer imageUrls={images} onClick={this._clickBigImg}/>
             </Modal>
         )
@@ -1578,7 +1595,7 @@ class MessagePage extends Component{
                         item.action.map((a, i)=>{
                             return (
                                 <TouchableOpacity style={a.select?styles.btnOptionSelect:styles.btnOption} key={i} onPress={this._clickOptionEvent.bind(this, i, a.content)}>
-                                    <Text style={a.select?{color:'white'}:{color:'rgb(250, 80, 131)', fontSize:13}}>{a.content}</Text>
+                                    <Text style={a.select?{color:whiteColor}:{color:pinkColor, fontSize:13}}>{a.content}</Text>
                                 </TouchableOpacity>
                                 
                             )
@@ -1586,7 +1603,7 @@ class MessagePage extends Component{
                     }
                     <TouchableOpacity onPress={this._clickOptionSubmitEvent.bind(this)}>
                         <View style={styles.btnSubmit}>
-                            <Text style={{color:'white', fontSize:13}}>
+                            <Text style={{color:whiteColor, fontSize:13}}>
                                 {"Ok"}
                             </Text>
                         </View>
@@ -1657,6 +1674,13 @@ class MessagePage extends Component{
     _renderItemImgMessage(item){
         var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
         var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
+        var imgH = Utils.getImgWidthHeight(item.img, widthMsg2*0.5)
+        var imgDePlaSty;
+        if (widthMsg2*0.5>imgH) {
+            imgDePlaSty = {height:imgH-5}
+        }else{
+            imgDePlaSty = {width:widthMsg2*0.5-10}
+        }
         return (
             <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
                 <View style={[styles.message, {width:widthMsg1}]}>
@@ -1665,9 +1689,17 @@ class MessagePage extends Component{
                       source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                     />
                     <View style={[styles.msgView, {width:widthMsg2}]}>
+                        {/*
                         <Image
                           style={{width:(widthMsg2)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg2)*0.5)}}
                           source={{uri: item.img}}
+                        />
+                        */}
+                        <ImageLoad
+                            style={{width:(widthMsg2)*0.5, height:imgH}}
+                            source={{uri: item.img}}
+                            resizeMode={'contain'}
+                            customImagePlaceholderDefaultStyle={imgDePlaSty}
                         />
                     </View>
                 </View>
@@ -1720,6 +1752,9 @@ class MessagePage extends Component{
                 <View style={{paddingHorizontal:10, backgroundColor:'rgb(229, 230, 231)'}}>
                     <Text style={{color: 'rgb(166, 166, 166)'}}>
                         {item.message}
+                        <Text style={{color:'rgb(166, 166, 166)', fontSize:12}}>
+                          {item.subMessage}
+                        </Text>
                     </Text>
                 </View>
             </View>
@@ -1818,6 +1853,13 @@ class MessagePage extends Component{
             inputRange:[0, 1],
             outputRange:[-2000, 0]
         })
+        var imgH = Utils.getImgWidthHeight(item.img, widthMsg2*0.5)
+        var imgDePlaSty;
+        if (widthMsg2*0.5>imgH) {
+            imgDePlaSty = {height:imgH-5}
+        }else{
+            imgDePlaSty = {width:widthMsg2*0.5-10}
+        }
         return (
             <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
                 <Animated.View style={[styles.message, {transform:[{translateX:translateX}], width:widthMsg1}]}>
@@ -1826,9 +1868,17 @@ class MessagePage extends Component{
                       source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                     />
                     <View style={[styles.msgView, {width:widthMsg2}]}>
+                        {/*
                         <Image
                           style={{width:(widthMsg2)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg2)*0.5)}}
                           source={{uri: item.img}}
+                        />
+                        */}
+                        <ImageLoad
+                            style={{width:(widthMsg2)*0.5, height:imgH}}
+                            source={{uri: item.img}}
+                            resizeMode={'contain'}
+                            customImagePlaceholderDefaultStyle={imgDePlaSty}
                         />
                     </View>
                 </Animated.View>
@@ -1951,7 +2001,7 @@ class MessagePage extends Component{
             <View style={{flex:1}}>
                 <View style={{flexDirection:'row'}}>
                     {/*******课程进度********/}
-                    {this.state.courseProgressArray.length? this._renderCourseProgress():null}
+                    {/*this.state.courseProgressArray.length? this._renderCourseProgress():null*/}
                     
                     {/******会话消息******/}
                     <View style={{width:MessageWidth1, maxHeight:height-headerH-80-10}}>
@@ -2064,10 +2114,13 @@ const MessageWidth = width - CourseProgressWidth;   //右侧消息列表的总�
 // 每条消息的宽度
 const marginHorMsg = 5;                             //右侧消息列表左右间距
 const widthMsg = MessageWidth - marginHorMsg*2;     //右侧消息的宽
+
+const pinkColor = Utils.btnBgColor;
+const whiteColor = Utils.btnBgColorS;
 const styles = StyleSheet.create({
     // -------------------------------------------------导航栏
     headerStyle:{
-        backgroundColor:'rgb(250, 80, 131)'
+        backgroundColor:pinkColor
     },
     // ----------导航栏左部分
     headerLeftView:{
@@ -2245,7 +2298,7 @@ const styles = StyleSheet.create({
         // justifyContent:'center'
     },
     btnSubmit:{
-        backgroundColor:'rgb(250, 80, 131)', 
+        backgroundColor:pinkColor, 
         borderRadius:5, 
         borderBottomRightRadius:0, 
         // padding:10, 
@@ -2257,7 +2310,7 @@ const styles = StyleSheet.create({
     },
     // ----------------选项按钮
     btnOption:{
-        backgroundColor:'white', 
+        backgroundColor:whiteColor, 
         borderRadius:5, 
         borderBottomRightRadius:0, 
         // padding:10, 
@@ -2268,7 +2321,7 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     btnOptionSelect:{
-        backgroundColor:'rgb(250, 80, 131)', 
+        backgroundColor:pinkColor, 
         borderRadius:5, 
         borderBottomRightRadius:0, 
         // padding:10, 
