@@ -15,6 +15,7 @@ import {
   RefreshControl,
   InteractionManager,
 }from 'react-native';
+
   var base_path="../assets/Forum/face/";
   var face = {
       "[微笑]":base_path+"0.gif",

@@ -10,15 +10,16 @@ import {
   Dimensions, 
   TouchableOpacity,
   ListView,
+  Modal,
 }from 'react-native';
 import face from './Content_Rex';
 var {height, width} = Dimensions.get('window');
-
+import ImageViewer from 'react-native-image-zoom-viewer';
 export default class ForumDeatilCont extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            
+            modalVisible:false,
         }
     }
     componentDidMount() {
@@ -57,10 +58,44 @@ export default class ForumDeatilCont extends Component{
             .replace(/\n/g, '<br>') //转义换行   
         return content;
     }
-    render() {
-        var Content=this.content(this.props.data);
+    LoadImg(){
+        this.setState({modalVisible:true})
+    }
+    _setModalVisible(){
+        this.setState({modalVisible:!this.state.modalVisible})
+    }
+    ContentRex(content){
+        text=content.replace(/img\[([^\s]+?)\]/g,'')
+        var output=[];
+        var contenttext= this.escape(content||'').replace(/img\[([^\s]+?)\]/g, function(img){  //转义图片
+            var image=img.replace(/(^img\[)|(\]$)/g, '')
+            output.push({url:image});
+        })
+        
         return(
-            <View style={{padding:20}}>{Content}</View>
+            <View style={{paddingLeft:20,paddingTop:10,paddingRight:20,paddingBottom:10,}}>
+                <Text>{text}</Text>
+                <View style={{flexDirection:'row',flexWrap:'wrap'}}>
+                    {output.map((result,index)=> {
+                        return(
+                            <TouchableOpacity key={index} onPress={this.LoadImg.bind(this)} style={{margin:10,}}>
+                                <Image style={{width:80,height:80,}} source={{uri:result.url}}/>
+                            </TouchableOpacity>
+                        )
+                    })}
+                </View>
+                <Modal visible={this.state.modalVisible} transparent={true} onRequestClose={()=>{alert("Modal has been closed.")}}>
+                    <ImageViewer imageUrls={output} onClick={this._setModalVisible.bind(this)}/>
+                </Modal>
+            </View>
+            )
+    }
+
+    render() {
+        return(
+            <View>
+                {this.ContentRex(this.props.data)}
+            </View>
         )
     }
 }

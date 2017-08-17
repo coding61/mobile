@@ -124,10 +124,13 @@ export default class NewsCenter extends Component{
         }
     }
     forumdetail(data){
-        this.props.navigation.navigate('WebHtml', { data: data.from_id,token:this.state.token,callback:(msg)=>{
+        /*this.props.navigation.navigate('WebHtml', { data: data.from_id,token:this.state.token,callback:(msg)=>{
+            this._onRefresh()
+        }})*/
+        this.props.navigation.navigate('Forum_Details', { data: data.from_id,token:this.state.token,callback:(msg)=>{
             this._onRefresh()
         }})
-        //this.props.navigation.navigate('Forum_Details', { data: data,token:this.state.token })
+        
     }
     renderNews(rowData){
         var timeArray = rowData.create_time.split('.')[0].split('T');
