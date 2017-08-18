@@ -69,7 +69,7 @@ class CodeCompileWebView extends Component {
     postMessage(){
 	    if (this.webview) {
 	    	console.log("rn->h5")
-	        this.webview.postMessage("python");
+	        this.webview.postMessage(this.state.language);
 	    }
 	}
 	render() {
