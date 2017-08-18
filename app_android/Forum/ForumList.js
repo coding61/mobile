@@ -26,6 +26,7 @@ import AddForum from './AddForum';
 
 import ForumAdd from './ForumAdd';
 import Forum_Details from './Forum_Details';
+//import NewsCenter from './NewsCenter';
 export default class ForumList extends Component{
     constructor(props) {
         super(props);
@@ -165,18 +166,6 @@ export default class ForumList extends Component{
             },()=> {
                 this._loadAlldata();
             })
-        }else if (tag === 6 ){
-            this.setState({
-                tag: tag
-            },()=> {
-                this.props.navigation.navigate('NewsCenter', { token:this.state.token })
-            })
-        }else if (tag === 7 ){
-            this.setState({
-                tag: tag
-            },()=> {
-                this.props.navigation.navigate('RankingList', { token:this.state.token })
-            })
         }
     }
 
@@ -240,9 +229,6 @@ export default class ForumList extends Component{
         })
     }
     forumdetail(data){
-        /*this.props.navigation.navigate('WebHtml', { data: data.pk,token:this.state.token,callback:(msg)=>{
-            this._onRefresh()
-        }})*/
         this.props.navigation.navigate('Forum_Details', { data: data.pk,token:this.state.token,iscollect:data.collect,callback:(msg)=>{
             this._onRefresh()
         }})
@@ -357,7 +343,6 @@ export default class ForumList extends Component{
                         >
                         </FlatList>
                     </View>
-                    
               </View>
             )
         }
@@ -401,12 +386,6 @@ class SlideView extends Component {
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this._onPress.bind(this, 5)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={[{fontSize: 14},this.state.tag == 5?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>我的收藏</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this._onPress.bind(this, 6)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag == 6?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>消息中心</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this._onPress.bind(this, 7)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag == 7?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>排行榜</Text>
                 </TouchableOpacity>
                 <View style={{width: 80, height: 2, backgroundColor: '#ff6b94', position: 'absolute', bottom: 1, left: 80 * this.state.tag}}/>
             </ScrollView>

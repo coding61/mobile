@@ -7,20 +7,22 @@ import {
     View,
     ScrollView,
     Dimensions,
+    AsyncStorage,
     TouchableOpacity,
     ListView,
     Alert,
+    FlatList,
     RefreshControl,
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
-import WebHtml from './WebHtml';
-var default_url='https://www.cxy61.com/girl/cxyteam_forum_moblie/detail.html';
+//import WebHtml from './WebHtml';
+//import Forum_Details from './Forum_Details';
+//var default_url='https://www.cxy61.com/girl/cxyteam_forum_moblie/detail.html';
 
 export default class NewsCenter extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            token:this.props.navigation.state.params.token,
             url:'https://www.cxy61.com/program_girl/message/messages/?types=forum',
             dataArr: new Array(),
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
@@ -29,21 +31,47 @@ export default class NewsCenter extends Component{
             loadText: '正在加载...',
             isRefreshing: false,
         }
-    }
-    static navigationOptions = {
-        title: '消息中心',
-    }
 
+    }
+    static navigationOptions = ({ navigation }) => {
+        const {state, setParams} = navigation;
+        return {
+            title: '消息中心',
+            headerTintColor: "#fff",   
+            headerStyle: { backgroundColor: '#ff6b94',},
+            headerTitleStyle:{alignSelf:'auto',fontSize:15,},
+            
+        };
+    }
     componentDidMount() {
-        this._loadAlldata()
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    self._loadAlldata();
+                });
+            }
+        });
     }
     _loadAlldata() {
         this.setState({
             isLoading: true
         },()=> {
-            fetch(this.state.url,{headers: {Authorization: 'Token ' + this.state.token}})
-                .then((response) =>response.json())
+            fetch(this.state.url,
+                {   
+                    headers: {
+                        'Authorization': 'Token ' + this.state.token,
+                        'Content-Type': 'application/json'}
+                })
+                .then((response) =>{
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        return response.text();
+                    }
+                })
                 .then((responseData) => {
+                    console.log(responseData)
                     var resultArr = new Array();
                     responseData.results.map(result=> {
                         resultArr.push(result);
@@ -72,49 +100,38 @@ export default class NewsCenter extends Component{
             this.setState({
                 isLoading: true
             },()=> {
-                fetch(this.state.nextPage, {
-                    headers: {Authorization: 'Token ' + this.state.token}
+                fetch(this.state.nextPage,
+                {
+                    headers: {
+                        'Authorization': 'Token ' + this.state.token,
+                        'Content-Type': 'application/json'}
                 })
                     .then(response => {
                         if (response.status === 200) {
                             return response.json();
                         } else {
-                            return '加载失败';
+                            return response.text();
                         }
                     })
                     .then(responseJson=> {
-                        if (responseJson === '加载失败') {
-                            Alert.alert(
-                                '加载失败,请重试',
-                                '',
-                                [
-                                    {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
-                                ]
-                            )
-                        } else {
-                            var resultArr;
-                            resultArr = this.state.dataArr.concat();
-                            responseJson.results.map(result=> {
-                                resultArr.push(result);
-                            })
-                            this.setState({
-                                nextPage: responseJson.next,
-                                dataArr: resultArr,
-                                dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
-                                isLoading: false,
-                                loadText: responseJson.next?('正在加载...'):('没有更多了')
-                            })
-                        }
+                        console.log(responseJson)
+                        var resultArr;
+                        resultArr = this.state.dataArr.concat();
+                        responseJson.results.map(result=> {
+                            resultArr.push(result);
+                        })
+                        this.setState({
+                            nextPage: responseJson.next,
+                            dataArr: resultArr,
+                            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
+                            isLoading: false,
+                            loadText: responseJson.next?('正在加载...'):('没有更多了')
+                        })
+                        
                     })
                     .catch((error) => {
                         console.error(error);
-                        Alert.alert(
-                            '加载失败,请重试',
-                            '',
-                            [
-                                {text: '确定', onPress: ()=> {}, style: 'destructive'},
-                            ]
-                        )
+                       
                         this.setState({
                             isLoading: false,
                             isRefreshing: false
@@ -124,16 +141,14 @@ export default class NewsCenter extends Component{
         }
     }
     forumdetail(data){
-        /*this.props.navigation.navigate('WebHtml', { data: data.from_id,token:this.state.token,callback:(msg)=>{
-            this._onRefresh()
-        }})*/
+       
         this.props.navigation.navigate('Forum_Details', { data: data.from_id,token:this.state.token,callback:(msg)=>{
             this._onRefresh()
         }})
         
     }
-    renderNews(rowData){
-        var timeArray = rowData.create_time.split('.')[0].split('T');
+    dealWithTime(Time){
+        var timeArray = Time.split('.')[0].split('T');
         var year = timeArray[0].split('-')[0];
         var month = timeArray[0].split('-')[1];
         var day = timeArray[0].split('-')[2];
@@ -151,10 +166,17 @@ export default class NewsCenter extends Component{
         }else if(s1 / (60 * 1000) < 24 * 60){
             time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
         }else if(s1 / (60 * 1000) < 24 * 60 * 2){
-            time = "昨天 " + rowData.create_time.slice(11, 16);
+            time = "昨天 " + Time.slice(11, 16);
         }else{
-            time = rowData.create_time.slice(0, 10).replace('T', ' ');
+            time = Time.slice(0, 10).replace('T', ' ');
         }
+        return time;
+
+    }
+    renderNews(rowData){
+        
+        var time=this.dealWithTime(rowData.create_time);
+        
         return (
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
                               style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,padding:10}}>

@@ -13,10 +13,11 @@ import {
   Alert,
   FlatList,
   RefreshControl,
+  DeviceEventEmitter,
 }from 'react-native';
 import ForumList from './ForumList';
 var {height, width} = Dimensions.get('window');
-
+import NewsCenter from './NewsCenter';
 export default class Forum extends Component{
     constructor(props) {
         super(props);
@@ -38,12 +39,22 @@ export default class Forum extends Component{
         headerTitle: '论坛',
         headerTintColor: "#fff",   
         headerStyle: { backgroundColor: '#ff6b94',},
-        headerTitleStyle:{marginLeft:width*0.3}
-        
+        headerTitleStyle:{alignSelf:'auto',},
+        headerRight:
+                (
+                <View style={{marginRight:30,}}>
+                    <TouchableOpacity style={{marginRight:10,marginBottom:20,}} onPress={()=>{
+                        DeviceEventEmitter.emit('newsmore', "1")
+                    }}>
+                        <Text style={{color:'#ffffff',fontSize:30,}}>...</Text>
+                    </TouchableOpacity>
+                </View>
+                )
     };
 
     componentWillUnmount() {
         this.props.navigation.state.params.callback();
+        this.eventEm.remove();
     }
     componentDidMount() {
         var self = this;
@@ -52,10 +63,13 @@ export default class Forum extends Component{
                 self.setState({token: result},()=>{
                     self._loadData();
                 });
-            }else{
-                Alert.alert('请先登录帐号！')
             }
         });
+        self.eventEm = DeviceEventEmitter.addListener('newsmore', (value)=>{
+            self.setState({
+                moreshow:!this.state.moreshow,
+            })
+        })
     }
     _loadData() {
         this.setState({
@@ -125,17 +139,16 @@ export default class Forum extends Component{
         var s1 = current.getTime() - create.getTime(); //相差的毫秒
         var time = null;
         if (s1 / (60 * 1000) < 1) {
-            time = "刚刚";
+            return time = "刚刚";
         }else if (s1 / (60 * 1000) < 60){
-            time = parseInt(s1 / (60 * 1000)) + "分钟前";
+            return time = parseInt(s1 / (60 * 1000)) + "分钟前";
         }else if(s1 / (60 * 1000) < 24 * 60){
-            time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
+            return time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
         }else if(s1 / (60 * 1000) < 24 * 60 * 2){
-            time = "昨天 " + Time.slice(11, 16);
+            return time = "昨天 " + Time.slice(11, 16);
         }else{
-            time = Time.slice(0, 10).replace('T', ' ');
+            return time = Time.slice(0, 10).replace('T', ' ');
         }
-        return time;
     }
     _renderRow(item) {
         var rowData=item.item;
@@ -239,10 +252,17 @@ export default class Forum extends Component{
             this._loadData();
         })
     }
-    _goBack(){
-        if (this.props.navigation) {
-            this.props.navigation.pop()
-        }   
+    _newscenter(){
+        this.props.navigation.navigate('NewsCenter',);
+        this.setState({
+            moreshow:false
+        })
+    }
+    ranklist(){
+        this.props.navigation.navigate('RankingList', { token:this.state.token });
+        this.setState({
+            moreshow:false
+        })
     }
     _keyExtractor = (item, index) => index;
     render() {
@@ -251,6 +271,7 @@ export default class Forum extends Component{
         }else{
              return(
                 <View style={{flex: 1, backgroundColor: '#edeef0'}}>
+                    
                     <FlatList
                         data={this.state.dataSource}  
                         renderItem={this._renderRow.bind(this)}
@@ -267,6 +288,12 @@ export default class Forum extends Component{
                                 titleColor='#cccccc' />
                         }
                     />
+                    {this.state.moreshow?(
+                        <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa'}}>
+                            <Text onPress={this._newscenter.bind(this)} style={{padding:10,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>消息中心</Text>
+                            <Text onPress={this.ranklist.bind(this)} style={{padding:10,}}>排行榜</Text>
+                        </View>
+                        ):(null)}
                 </View>
             )
         }

@@ -50,7 +50,7 @@ export default class Forum_Details extends Component{
                 (
                 <View style={{flexDirection:'row',marginRight:30,}}>
                     <TouchableOpacity style={{marginRight:30,}} onPress={()=>{
-                        DeviceEventEmitter.emit('emit', state.params.data)
+                        DeviceEventEmitter.emit('collec', state.params.data)
                     }}>
                         {state.params.iscollect==true?(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xin.png')} resizeMode={'contain'}/>):(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xinfull.png')} resizeMode={'contain'}/>)}
                     </TouchableOpacity>
@@ -64,16 +64,14 @@ export default class Forum_Details extends Component{
         };
     }
     componentWillUnmount(){
-        this.props.navigation.state.params.callback();
-        this.eventEm.remove();
-        
+        this.eventEmss.remove();
     }
     componentDidMount() {
         this._loadforum()
         this._loadData()
         this._loadUserinfo()
 
-        this.eventEm = DeviceEventEmitter.addListener('emit', (value)=>{
+        this.eventEmss = DeviceEventEmitter.addListener('collec', (value)=>{
             var data = {};
             data.types = "posts";
             data.pk=value;
@@ -137,8 +135,7 @@ export default class Forum_Details extends Component{
                 content:'',
                 Maincommentshow:false,
             })
-             this._onRefresh()
-            
+            this._onRefresh()
         })
         .catch((error) => {
             console.error(error);
@@ -203,11 +200,11 @@ export default class Forum_Details extends Component{
             .then(responseJson=> {
                 if (responseJson === '加载失败') {
                     Alert.alert(
-                      '加载失败,请重试',
-                      '',
-                      [
-                        {text: '确定', onPress: ()=> {this.setState({isLoading: false, isRefreshing: false})}, style: 'destructive'},
-                      ]
+                        '加载失败,请重试',
+                        '',
+                        [
+                            {text: '确定', onPress: ()=> {this.setState({isLoading: false, isRefreshing: false})}, style: 'destructive'},
+                        ]
                     )
                 } else {
                     var resultArr = new Array();
@@ -381,9 +378,6 @@ export default class Forum_Details extends Component{
                             'Content-Type': 'application/json' }
                     })
                     .then(response=>{
-                        return response.json();
-                    })
-                    .then(responseJson=>{
                         this.props.navigation.state.params.callback();
                         this.props.navigation.goBack();
                     })

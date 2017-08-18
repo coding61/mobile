@@ -10,10 +10,9 @@ import {
     Dimensions,
     TouchableOpacity,
     ListView,
-
+    FlatList,
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
-
 
 export default class RankingList extends Component{
     constructor(props) {
@@ -21,11 +20,18 @@ export default class RankingList extends Component{
         this.state = {
             token:this.props.navigation.state.params.token,
             url:'https://www.cxy61.com/program_girl/userinfo/userinfo/diamond/ranking/',
-            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
+            dataSource: '',
         }
     }
-    static navigationOptions = {
-        title: '排行榜',
+    static navigationOptions = ({ navigation }) => {
+        const {state, setParams} = navigation;
+        return {
+            title: '排行榜',
+            headerTintColor: "#fff",   
+            headerStyle: { backgroundColor: '#ff6b94',},
+            headerTitleStyle:{alignSelf:'auto',fontSize:15,paddingLeft:width*0.25},
+            
+        };
     }
 
     componentDidMount() {
@@ -35,9 +41,9 @@ export default class RankingList extends Component{
         fetch(this.state.url,{headers: {Authorization: 'Token ' + this.state.token}})
             .then((response) =>response.json())
             .then((responseData) => {
-                console.log(responseData)
+                
                 this.setState({
-                    dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(responseData.results),
+                    dataSource: responseData.results,
                 });
             })
             .catch((error) => {
@@ -45,49 +51,37 @@ export default class RankingList extends Component{
 
             });
     }
-    renderRank(rowData, sectionID, rowID, highlightRow){
-        let id=rowID+1;
-        if(rowID%2==0){
+    renderRank(item){
+        let id=item.index+1;
+        let rowData=item.item;
             return(
-                <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#ffffff',width:width,padding:10,}}>
-                    <View style={{justifyContent:'center',alignItems:'center',marginRight:40,}}>
-                        <Text style={{justifyContent:'center',alignItems:'center',width:20,height:20,borderRadius:10,textAlign:'center',backgroundColor:'#FF69B4',fontSize:14,}}>{id}</Text>
-                    </View>
-                    <Image style={{width:40,height:40,borderRadius:20,}} source={{uri:rowData.avatar}}/>
-                    <Text style={{paddingLeft:20,}}>{rowData.name}</Text>
+                <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#ffffff',width:width,padding:10,borderBottomColor:'#cccccc',borderBottomWidth:0.5,}}>
+                    {id<4?(<Text style={{fontSize:14,paddingLeft:20,paddingRight:20,color:'red'}}>{id}</Text>):(<Text style={{fontSize:14,paddingLeft:20,paddingRight:20,}}>{id}</Text>)}
+                    {!rowData.avatar?(<Image style={{width:40,height:40,borderRadius:20,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:40,height:40,borderRadius:20,}} source={{uri:rowData.avatar}}/>)}
+                    
+                    <Text style={{paddingLeft:20,width:width*0.4,}}>{rowData.name}</Text>
                     <View style={{marginLeft:20,}}>
                         <Text style={{fontSize:14,}}>{rowData.grade.current_name} / {rowData.experience}</Text>
                     </View>
                 </View>
             )
-        }else {
-            return(
-                <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#ffffff',width:width,padding:10,}}>
-                    <View style={{justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{justifyContent:'center',alignItems:'center',width:20,height:20,borderRadius:10,textAlign:'center',backgroundColor:'#FF69B4',fontSize:14,}}>{id}</Text>
-                    </View>
-                    <Image style={{width:40,height:40,borderRadius:20,}} source={{uri:rowData.avatar}}/>
-                    <Text style={{paddingLeft:20,}}>{rowData.name}</Text>
-                    <View style={{marginLeft:20,}}>
-                        <Text style={{fontSize:14,}}>{rowData.grade.current_name} / {rowData.experience}</Text>
-                    </View>
-                </View>
-            )
-        }
+       
     }
+    _keyExtractor = (item, index) => index;
     render() {
         return (
             <View style={{flex: 1}}>
-                <ListView
+                <FlatList
                     horizontal={false}
                     contentContainerStyle={{width:width,}}
-                    dataSource={this.state.dataSource}
-                    renderRow={this.renderRank.bind(this)}
+                    data={this.state.dataSource}
+                    renderItem={this.renderRank.bind(this)}
+                    keyExtractor={this._keyExtractor}
                     automaticallyAdjustContentInsets={false}
                     enableEmptySections={true}
                     onEndReachedThreshold={3}
                 >
-                </ListView>
+                </FlatList>
             </View>
         )
     }

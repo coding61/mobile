@@ -14,7 +14,6 @@ import {
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
 
-
 export default class RankingList extends Component{
     constructor(props) {
         super(props);

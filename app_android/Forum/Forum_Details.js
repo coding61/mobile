@@ -64,9 +64,7 @@ export default class Forum_Details extends Component{
         };
     }
     componentWillUnmount(){
-        
         this.eventEmss.remove();
-        
     }
     componentDidMount() {
         this._loadforum()
@@ -137,8 +135,7 @@ export default class Forum_Details extends Component{
                 content:'',
                 Maincommentshow:false,
             })
-             this._onRefresh()
-            
+            this._onRefresh()
         })
         .catch((error) => {
             console.error(error);
@@ -203,11 +200,11 @@ export default class Forum_Details extends Component{
             .then(responseJson=> {
                 if (responseJson === '加载失败') {
                     Alert.alert(
-                      '加载失败,请重试',
-                      '',
-                      [
-                        {text: '确定', onPress: ()=> {this.setState({isLoading: false, isRefreshing: false})}, style: 'destructive'},
-                      ]
+                        '加载失败,请重试',
+                        '',
+                        [
+                            {text: '确定', onPress: ()=> {this.setState({isLoading: false, isRefreshing: false})}, style: 'destructive'},
+                        ]
                     )
                 } else {
                     var resultArr = new Array();
