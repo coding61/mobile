@@ -52,44 +52,43 @@ class CodeCompileWebView extends Component {
 	componentDidMount() {
 	}
 	onShouldStartLoadWithRequest = (event) => {
+		// console.log(event);
 	    return true;
 	}
 
   	onNavigationStateChange = (navState) => {
+		// console.log(navState);
+	}
 	
-	}
-	onLoadStart = (event)=>{
-
-	}
-
-	onMessage(event){
+	acceptMessage(event){
         console.log('onMessage->event.nativeEvent.data:');
         console.log(event.nativeEvent.data);
     }
-    postMessage(){
-	    if (this.webview) {
+    sendMessage(){
+	    // if (this.webview) {
 	    	console.log("rn->h5")
-	        this.webview.postMessage(this.state.language);
-	    }
+	    	console.log(this.state.language);
+	        if (this._webview) {
+	        	console.log(11);
+		        this._webview.postMessage(this.state.language);
+	        }
+	    // }
 	}
 	render() {
 		const {params} = this.props.navigation.state
 	    return (
 			<View style={{flex:1, backgroundColor:'rgb(245,245,245)'}}>
 				<WebView 
-					ref={(webview) => this.webview = webview}
+					ref={(webview) => {this._webview = webview}}
 					source={{uri:Http.domainPage+'/app/home/codeCompileRN.html'}}
 					automaticallyAdjustContentInsets={true}
-					javaScriptEnabled={true}
-					domStorageEnabled={true}
+					startInLoadingState={true}
+					scalesPageToFit={true}
 					decelerationRate="normal"
-					onLoadStart={this.onLoadStart}
 					onNavigationStateChange={this.onNavigationStateChange}
 					onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
-					startInLoadingState={true}
-		          	scalesPageToFit={true}
-		          	onMessage={this.onMessage.bind(this)}
-		          	onLoad={this.postMessage.bind(this)}
+		          	onMessage={this.acceptMessage.bind(this)}
+		          	onLoad={this.sendMessage.bind(this)}
 				/>
 			</View>
 	    )  
