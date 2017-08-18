@@ -103,9 +103,9 @@ export default class ForumList extends Component{
             this.setState({
                 tag: tag,
                 url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&myposts=false&page=1',
-                nextPage: null,
+                /*nextPage: null,
                 dataArr: new Array(),
-                dataSource: null,
+                dataSource: null,*/
                 loadText: '正在加载...',
             },()=> {
                 this._loadAlldata();
@@ -114,9 +114,9 @@ export default class ForumList extends Component{
             this.setState({
                 tag: tag,
                 url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&isessence=true&page=1',
-                nextPage: null,
+                /*nextPage: null,
                 dataArr: new Array(),
-                dataSource: null,
+                dataSource: null,*/
                 loadText: '正在加载...',
             },()=> {
                 this._loadAlldata();
@@ -125,21 +125,20 @@ export default class ForumList extends Component{
             this.setState({
                 tag: tag,
                 url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&page=1&status=solved',
-                nextPage: null,
+                /*nextPage: null,
                 dataArr: new Array(),
-                dataSource: null,
+                dataSource: null,*/
                 loadText: '正在加载...',
             },()=> {
                 this._loadAlldata();
-                
             })
         }else if (tag === 3 && this.state.isLoading === false){
             this.setState({
                 tag: tag,
                 url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&page=1&status=unsolved',
-                nextPage: null,
+                /*nextPage: null,
                 dataArr: new Array(),
-                dataSource: null,
+                dataSource: null,*/
                 loadText: '正在加载...',
             },()=> {
                 this._loadAlldata();
@@ -148,9 +147,9 @@ export default class ForumList extends Component{
             this.setState({
                 tag: tag,
                 url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&myposts=true&page=1',
-                nextPage: null,
+                /*nextPage: null,
                 dataArr: new Array(),
-                dataSource: null,
+                dataSource: null,*/
                 loadText: '正在加载...',
             },()=> {
                 this._loadAlldata();
@@ -159,9 +158,9 @@ export default class ForumList extends Component{
             this.setState({
                 tag: tag,
                 url: basePath+'program_girl/collect/collections/',
-                nextPage: null,
+                /*nextPage: null,
                 dataArr: new Array(),
-                dataSource: null,
+                dataSource: null,*/
                 loadText: '正在加载...',
             },()=> {
                 this._loadAlldata();
@@ -344,6 +343,7 @@ export default class ForumList extends Component{
                             onEndReached={this._renderNext.bind(this)}
                             onEndReachedThreshold={0.2}
                             progressViewOffset={10}
+                            contentContainerStyle={{paddingBottom:50,}}
                             keyExtractor={this._keyExtractor}
                             ListFooterComponent={this._renderFooter.bind(this)}
                             refreshControl={
