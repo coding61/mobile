@@ -94,6 +94,7 @@ class MessagePage extends Component{
             loadStorageMsg:false,        //判断加载的是缓存数据还是新数据
 
             courseProgressArray:[],
+            showQuitLogin:false,         //是否显示退出登录按钮
 
         };
         this.leftEnterValue = new Animated.Value(0)     //左侧进入动画
@@ -195,9 +196,13 @@ class MessagePage extends Component{
             var chatData = JSON.parse(result);
             if (chatData && chatData.length) {
                 this_._loadStorageMessages();
+                this.setState({
+                    showQuitLogin:true
+                })
             }else{
                 this_.setState({
-                    showHeaderComponent:false
+                    showHeaderComponent:false,
+                    showQuitLogin:false
                 })
                 this_._loadDefaultMessages();
             }
@@ -1088,14 +1093,19 @@ class MessagePage extends Component{
                     if (help == true) {
                         //点了帮助选择课程
                         this_._fetchUserInfo();
+                        this.setState({
+                            showQuitLogin:true
+                        })
                     }else{
                         // this._bottomAnimate();
                         this_.setState({
                             actionTag:actionChooseCourseTag,
-                            showAction:true
+                            showAction:true,
+                            showQuitLogin:true
                         })
                         this_._fetchUserInfo();
                     }
+
                 }})
             }
         })
@@ -1235,6 +1245,9 @@ class MessagePage extends Component{
                 this_.props.navigation.navigate('Login', {callback:()=>{
                     
                     this_._fetchUserInfo();
+                    this.setState({
+                        showQuitLogin:true
+                    })
                 }})
             }
         })
@@ -1290,6 +1303,7 @@ class MessagePage extends Component{
             showFindHelpView:false,      //是否显示查找帮助组件
 
             courseProgressArray:[],
+            showQuitLogin:false,         //是否显示退出登录按钮
         })
         Utils.clearAllValue()
         this.setState({showHelpActions:false})
@@ -1307,7 +1321,7 @@ class MessagePage extends Component{
     // 消息链接点击
     _clickMessageLink(link){
         var language = link.split("/")[1]?link.split("/")[1]:"python";
-
+        
         link == "www.code.com"
         ?
             // 编辑器
@@ -1552,10 +1566,13 @@ class MessagePage extends Component{
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickStudyLuntan}>
                             <Text style={styles.helpActionText}>{"学习论坛"}</Text>
                         </TouchableOpacity>
-                        
-                        <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickQuitLogin}>
-                            <Text style={styles.helpActionText}>{"退出登录"}</Text>
-                        </TouchableOpacity>
+                        {
+                            this.state.showQuitLogin?
+                            <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickQuitLogin}>
+                                <Text style={styles.helpActionText}>{"退出登录"}</Text>
+                            </TouchableOpacity>
+                            : null
+                        }
             
                         <TouchableOpacity onPress={this._clickFindHelp} style={styles.helpActionTextParent}>
                             <Text style={styles.helpActionText}>{"寻找帮助"}</Text>
