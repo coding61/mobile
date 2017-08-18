@@ -40,7 +40,7 @@ export default class ForumAdd extends Component{
                     <TouchableOpacity style={{marginRight:10,}} onPress={()=>{
                         DeviceEventEmitter.emit('publish', "1")
                     }}>
-                        <Text style={{color:'#ffffff'}}>发布</Text>
+                        <Text style={{color:'#CFCFCF'}}>发布</Text>
                     </TouchableOpacity>
                 </View>
                 )
