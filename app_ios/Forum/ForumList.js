@@ -17,7 +17,6 @@ import {
   FlatList,
   DeviceEventEmitter
 }from 'react-native';
-let thes;
 var {height, width} = Dimensions.get('window');
 var basePath='https://www.cxy61.com/';
 
@@ -41,7 +40,6 @@ export default class ForumList extends Component{
             loadText: '正在加载...',
             isRefreshing: false,
         };
-        thes = this;
     }
  
     static navigationOptions = ({ navigation }) => {

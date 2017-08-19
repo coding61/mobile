@@ -42,7 +42,7 @@ export default class Forum extends Component{
         headerTitleStyle:{alignSelf:'auto',},
         headerRight:
                 (
-                <View style={{marginRight:30,alignItems:'center'}}>
+                <View style={{marginRight:20,alignItems:'center'}}>
                     <TouchableOpacity style={{marginBottom:15,width:40,height:40,}} onPress={()=>{
                         DeviceEventEmitter.emit('newsmore', "1")
                     }}>
