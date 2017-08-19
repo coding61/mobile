@@ -525,7 +525,10 @@ export default class Forum_Details extends Component{
                                     keyboardType='default'
                                     placeholderTextColor='#aaaaaa'
                                 />
-                                <Text onPress={this.Comment.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:7,borderRadius:5,}}>提交</Text>
+                                
+                                <TouchableOpacity onPress={this.Comment.bind(this)} style={{width:width*0.1,height:35,backgroundColor:'#ff6b94',}}>
+                                    <Text  style={{color:'#ffffff',textAlign:'center',paddingTop:7,borderRadius:5,}}>提交</Text>
+                                </TouchableOpacity>
                             </View>
                         </KeyboardAwareScrollView>
                         ):(null)}

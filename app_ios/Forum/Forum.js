@@ -301,7 +301,7 @@ export default class Forum extends Component{
                         }
                     />
                     {this.state.moreshow?(
-                        <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa',paddingRight:5,paddingLeft:5,}}>
+                        <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa',paddingRight:5,paddingLeft:8,}}>
                             <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this._newscenter.bind(this)} style={{padding:15,}}>消息中心</Text></View>
                             <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this.MyCollect.bind(this)} style={{padding:15,}}>我的收藏</Text></View>
                             <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this.MyForum.bind(this)} style={{padding:15,}}>我的帖子</Text></View>
