@@ -14,7 +14,6 @@ import {
   Modal,
   
 }from 'react-native';
-import face from './Content_Rex';
 var basePath='https://www.cxy61.com/';
 var {height, width} = Dimensions.get('window');
 export default class ForumAdd extends Component{
@@ -48,7 +47,7 @@ export default class ForumAdd extends Component{
     }
 
     componentWillUnmount(){
-        this.eventEm.remove();
+        //this.eventEm.remove();
     }
     componentDidMount() {
         this.eventEm = DeviceEventEmitter.addListener('publish', (value)=>{
@@ -76,9 +75,6 @@ export default class ForumAdd extends Component{
                 console.error(error);
             })
         })
-    }
-    componentWillUpdate(){
-
     }
 
     render() {

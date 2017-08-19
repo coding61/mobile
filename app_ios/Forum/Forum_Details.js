@@ -16,6 +16,7 @@ import {
   DeviceEventEmitter
 }from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ForumDeatilCont from './ForumDeatilCont';
 var {height, width} = Dimensions.get('window');
 var basePath='https://www.cxy61.com/';
@@ -91,8 +92,14 @@ export default class Forum_Details extends Component{
                 }
             })
             .then((result)=>{
+                if (result.message == '取消收藏') {
+                    Alert.alert('取消收藏','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+                } else if (result.message == '收藏成功') {
+                    Alert.alert('收藏成功','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+                }
                 const {setParams,state} = this.props.navigation;
                 setParams({iscollect:!state.params.iscollect})
+                state.params.callback();
                 
             })
             .catch((error) => {
@@ -135,6 +142,7 @@ export default class Forum_Details extends Component{
                 content:'',
                 Maincommentshow:false,
             })
+            Alert.alert('回复成功','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
             this._onRefresh()
         })
         .catch((error) => {
@@ -336,7 +344,6 @@ export default class Forum_Details extends Component{
                         headers: {Authorization: 'Token ' + this.state.token}
                     })
                     .then(response=>{
-                        console.log(response)
                         if (response.status === 200) {
                             return response.json();
                         } else {
@@ -409,6 +416,7 @@ export default class Forum_Details extends Component{
                 content:'',
                 commentshow:false,
             })
+            Alert.alert('回复成功','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
             this._onRefresh()
             
         })
@@ -507,32 +515,33 @@ export default class Forum_Details extends Component{
                     
                     </ScrollView>
                     {this.state.commentshow?(
-                        <View style={{position:'absolute',flexDirection:'row',backgroundColor:'#ffffff',bottom: 0,alignItems:'center',justifyContent:'center',right: 0,height:50,width:width,borderTopWidth:0.5,borderTopColor:'#aaaaaa'}}>
-                            <TextInput
-                                style={{width:width*0.8,height: 40, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,marginRight:10,}}
-                                onChangeText={(content) => this.setState({content})}
-                                value={this.state.content}
-                                multiline={true}
-                                underlineColorAndroid="transparent"
-                                placeholder='输入评论内容'
-                                placeholderTextColor='#aaaaaa'
-                            />
-                            <Text onPress={this.Comment.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:5,borderRadius:5,}}>提交</Text>
-                        </View>
+                        <KeyboardAwareScrollView>
+                            <View style={{position:'relative',flexDirection:'row',backgroundColor:'#ffffff',bottom: 0,alignItems:'center',justifyContent:'center',right: 0,height:50,width:width,borderTopWidth:0.5,borderTopColor:'#aaaaaa'}}>
+                                <TextInput
+                                    style={{width:width*0.8,height: 38, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,marginRight:10,marginBottom:5,}}
+                                    onChangeText={(content) => this.setState({content})}
+                                    value={this.state.content}
+                                    placeholder='输入评论内容'
+                                    keyboardType='default'
+                                    placeholderTextColor='#aaaaaa'
+                                />
+                                <Text onPress={this.Comment.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:7,borderRadius:5,}}>提交</Text>
+                            </View>
+                        </KeyboardAwareScrollView>
                         ):(null)}
                     {this.state.Maincommentshow?(
-                        <View style={{position:'absolute',flexDirection:'row',backgroundColor:'#ffffff',bottom: 0,alignItems:'center',justifyContent:'center',right: 0,height:50,width:width,borderTopWidth:0.5,borderTopColor:'#aaaaaa'}}>
-                            <TextInput
-                                style={{width:width*0.8,height: 40, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,marginRight:10,}}
-                                onChangeText={(content) => this.setState({content})}
-                                value={this.state.content}
-                                multiline={true}
-                                underlineColorAndroid="transparent"
-                                placeholder='输入评论内容'
-                                placeholderTextColor='#aaaaaa'
-                            />
-                            <Text onPress={this.Comment_Main.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:5,borderRadius:5,}}>提交</Text>
-                        </View>
+                        <KeyboardAwareScrollView>
+                            <View style={{position:'relative',flexDirection:'row',backgroundColor:'#ffffff',bottom: 0,alignItems:'center',justifyContent:'center',right: 0,height:50,width:width,borderTopWidth:0.5,borderTopColor:'#aaaaaa'}}>
+                                <TextInput
+                                    style={{width:width*0.8,height: 38, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,marginRight:10,marginBottom:5,}}
+                                    onChangeText={(content) => this.setState({content})}
+                                    value={this.state.content}
+                                    placeholder='输入评论内容'
+                                    placeholderTextColor='#aaaaaa'
+                                />
+                                <Text onPress={this.Comment_Main.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:7,borderRadius:5,}}>提交</Text>
+                            </View>
+                        </KeyboardAwareScrollView>
                         ):(null)}
                 </View>
             )

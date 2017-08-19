@@ -91,8 +91,14 @@ export default class Forum_Details extends Component{
                 }
             })
             .then((result)=>{
+                if (result.message == '取消收藏') {
+                    Alert.alert('取消收藏','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+                } else if (result.message == '收藏成功') {
+                    Alert.alert('收藏成功','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+                }
                 const {setParams,state} = this.props.navigation;
                 setParams({iscollect:!state.params.iscollect})
+                state.params.callback();
                 
             })
             .catch((error) => {
@@ -135,6 +141,7 @@ export default class Forum_Details extends Component{
                 content:'',
                 Maincommentshow:false,
             })
+            Alert.alert('回复成功','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
             this._onRefresh()
         })
         .catch((error) => {
@@ -336,7 +343,6 @@ export default class Forum_Details extends Component{
                         headers: {Authorization: 'Token ' + this.state.token}
                     })
                     .then(response=>{
-                        console.log(response)
                         if (response.status === 200) {
                             return response.json();
                         } else {
@@ -409,6 +415,7 @@ export default class Forum_Details extends Component{
                 content:'',
                 commentshow:false,
             })
+            Alert.alert('回复成功','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
             this._onRefresh()
             
         })

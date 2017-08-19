@@ -15,9 +15,6 @@ import {
     RefreshControl,
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
-//import WebHtml from './WebHtml';
-//import Forum_Details from './Forum_Details';
-//var default_url='https://www.cxy61.com/girl/cxyteam_forum_moblie/detail.html';
 
 export default class NewsCenter extends Component{
     constructor(props) {
@@ -102,47 +99,43 @@ export default class NewsCenter extends Component{
             },()=> {
                 fetch(this.state.nextPage,
                 {
-                    headers: {
-                        'Authorization': 'Token ' + this.state.token,
-                        'Content-Type': 'application/json'}
+                    headers: {Authorization: 'Token ' + this.state.token}
                 })
-                    .then(response => {
-                        if (response.status === 200) {
-                            return response.json();
-                        } else {
-                            return response.text();
-                        }
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        return response.text();
+                    }
+                })
+                .then(responseJson=> {
+                    console.log(responseJson)
+                    var resultArr;
+                    resultArr = this.state.dataArr.concat();
+                    responseJson.results.map(result=> {
+                        resultArr.push(result);
                     })
-                    .then(responseJson=> {
-                        console.log(responseJson)
-                        var resultArr;
-                        resultArr = this.state.dataArr.concat();
-                        responseJson.results.map(result=> {
-                            resultArr.push(result);
-                        })
-                        this.setState({
-                            nextPage: responseJson.next,
-                            dataArr: resultArr,
-                            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
-                            isLoading: false,
-                            loadText: responseJson.next?('正在加载...'):('没有更多了')
-                        })
-                        
+                    this.setState({
+                        nextPage: responseJson.next,
+                        dataArr: resultArr,
+                        dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
+                        isLoading: false,
+                        loadText: responseJson.next?('正在加载...'):('没有更多了')
                     })
-                    .catch((error) => {
-                        console.error(error);
-                       
-                        this.setState({
-                            isLoading: false,
-                            isRefreshing: false
-                        })
+                    
+                })
+                .catch((error) => {
+                    console.error(error);
+                    this.setState({
+                        isLoading: false,
+                        isRefreshing: false
                     })
+                })
             })
         }
     }
     forumdetail(data){
-       
-        this.props.navigation.navigate('Forum_Details', { data: data.from_id,token:this.state.token,callback:(msg)=>{
+       this.props.navigation.navigate('Forum_Details', { data: data.from_id,token:this.state.token,callback:(msg)=>{
             this._onRefresh()
         }})
         
@@ -174,15 +167,13 @@ export default class NewsCenter extends Component{
 
     }
     renderNews(rowData){
-        
         var time=this.dealWithTime(rowData.create_time);
-        
         return (
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
                               style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,padding:10}}>
                 <View>
                     <Text numberOfLines={2} style={{fontSize:14,paddingBottom:10,}}>{rowData.status=='read'?(<Text style={{color:'#cccccc',paddingRight:8,}}>[已读]</Text>):(<Text style={{color:'red',paddingRight:8,}}>[未读]</Text>)}   {rowData.text}</Text>
-                    <Text style={{marginLeft:width*0.74}}>{time}</Text>
+                    <Text style={{marginLeft:width*0.70}}>{time}</Text>
                 </View>
             </TouchableOpacity>
         )

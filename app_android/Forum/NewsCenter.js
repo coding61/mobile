@@ -102,9 +102,7 @@ export default class NewsCenter extends Component{
             },()=> {
                 fetch(this.state.nextPage,
                 {
-                    headers: {
-                        'Authorization': 'Token ' + this.state.token,
-                        'Content-Type': 'application/json'}
+                    headers: {Authorization: 'Token ' + this.state.token}
                 })
                     .then(response => {
                         if (response.status === 200) {

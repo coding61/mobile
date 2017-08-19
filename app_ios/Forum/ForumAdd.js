@@ -33,7 +33,7 @@ export default class ForumAdd extends Component{
             title: '发布帖子',
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
-            headerTitleStyle:{alignSelf:'auto',fontSize:14,paddingLeft:width*0.23},
+            headerTitleStyle:{alignSelf:'auto',fontSize:14,},
             headerRight:
                 (
                 <View style={{flexDirection:'row',marginRight:30,}}>
@@ -85,21 +85,20 @@ export default class ForumAdd extends Component{
         return(
             <View style={{flex:1,backgroundColor:'#ffffff'}}>
                 <TextInput
-                    style={{height: 40, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,}}
+                    style={{height: 60, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,}}
                     onChangeText={(title) => this.setState({title})}
                     value={this.state.title}
                     multiline={true}
-                    underlineColorAndroid="transparent"
                     placeholder='标题'
+                    autoFocus={true}
                     placeholderTextColor='#aaaaaa'
                 />
                 <TextInput
-                    style={{height: 100, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,paddingTop:10,paddingRight:10,}}
+                    style={{height: 140, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,paddingTop:10,paddingRight:10,}}
                     onChangeText={(text) => this.setState({text})}
                     value={this.state.text}
                     multiline={true}
                     textAlignVertical='top'
-                    underlineColorAndroid="transparent"
                     placeholder='尽情提问吧'
                     placeholderTextColor='#aaaaaa'
                 />

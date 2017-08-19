@@ -29,6 +29,9 @@ import AddForum from './Forum/AddForum.js';
 import Forum_Details from './Forum/Forum_Details.js';
 import NewsCenter from './Forum/NewsCenter.js';
 import RankingList from './Forum/RankingList.js';
+import ForumAdd from './Forum/ForumAdd.js';
+import MyCollect from './Forum/MyCollect.js';
+import MyForum from './Forum/MyForum.js';
 
 import Login from './Login/Login.js';
 import CourseList from './CourseList/CourseList.js';
@@ -75,6 +78,9 @@ const app = StackNavigator({
     Forum_Details:{screen:Forum_Details},
     NewsCenter:{screen:NewsCenter},
     RankingList:{screen:RankingList},
+    ForumAdd:{screen:ForumAdd},
+    MyCollect:{screen:MyCollect},
+    MyForum:{screen:MyForum},
     
     MessagePage:{screen: MessagePage},
     MessagePage1:{screen:MessagePage1},

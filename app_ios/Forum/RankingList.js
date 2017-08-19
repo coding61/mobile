@@ -29,7 +29,7 @@ export default class RankingList extends Component{
             title: '排行榜',
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
-            headerTitleStyle:{alignSelf:'auto',fontSize:15,paddingLeft:width*0.25},
+            headerTitleStyle:{alignSelf:'auto',fontSize:15,},
             
         };
     }
@@ -41,7 +41,6 @@ export default class RankingList extends Component{
         fetch(this.state.url,{headers: {Authorization: 'Token ' + this.state.token}})
             .then((response) =>response.json())
             .then((responseData) => {
-                
                 this.setState({
                     dataSource: responseData.results,
                 });
@@ -58,8 +57,7 @@ export default class RankingList extends Component{
                 <View style={{flexDirection:'row',alignItems:'center',backgroundColor:'#ffffff',width:width,padding:10,borderBottomColor:'#cccccc',borderBottomWidth:0.5,}}>
                     {id<4?(<Text style={{fontSize:14,paddingLeft:20,paddingRight:20,color:'red'}}>{id}</Text>):(<Text style={{fontSize:14,paddingLeft:20,paddingRight:20,}}>{id}</Text>)}
                     {!rowData.avatar?(<Image style={{width:40,height:40,borderRadius:20,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:40,height:40,borderRadius:20,}} source={{uri:rowData.avatar}}/>)}
-                    
-                    <Text style={{paddingLeft:20,width:width*0.4,}}>{rowData.name}</Text>
+                    <Text style={{paddingLeft:20,width:width*0.38,}}>{rowData.name}</Text>
                     <View style={{marginLeft:20,}}>
                         <Text style={{fontSize:14,}}>{rowData.grade.current_name} / {rowData.experience}</Text>
                     </View>

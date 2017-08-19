@@ -56,8 +56,8 @@ export default class ForumList extends Component{
                 <View style={{flexDirection:'row',marginRight:30,}}>
                     <TouchableOpacity  onPress={()=>{
                         DeviceEventEmitter.emit('addforum', state.params.data)
-                    }}>
-                        <Image style={{width:15,height:15,}} source={require('../assets/Forum/add.png')}/>
+                    }} style={{width:40,height:40,marginTop:20,}}>
+                        <Image style={{width:20,height:20,}} source={require('../assets/Forum/add.png')}/>
                     </TouchableOpacity>
                 </View>
                 )
@@ -367,32 +367,28 @@ class SlideView extends Component {
             <ScrollView 
                 horizontal={true} 
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{height: 44, backgroundColor: 'white',borderBottomWidth:1,borderBottomColor:'#cccccc',marginBottom:3,}}
+                contentContainerStyle={{width:width,height: 44, backgroundColor: 'white',borderBottomWidth:1,borderBottomColor:'#cccccc',marginBottom:3,}}
             >
-                <TouchableOpacity onPress={this._onPress.bind(this, 0)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
+                <TouchableOpacity onPress={this._onPress.bind(this, 0)} style={{width:width/4,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={[{fontSize: 14},this.state.tag === 0?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>全部</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this._onPress.bind(this, 1)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
+                <TouchableOpacity onPress={this._onPress.bind(this, 1)} style={{width:width/4,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={[{fontSize: 14},this.state.tag === 1?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>精贴</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this._onPress.bind(this, 2)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
+                <TouchableOpacity onPress={this._onPress.bind(this, 2)} style={{width:width/4,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={[{fontSize: 14},this.state.tag == 2?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>已解决</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this._onPress.bind(this, 3)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
+                <TouchableOpacity onPress={this._onPress.bind(this, 3)} style={{width:width/4,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={[{fontSize: 14},this.state.tag == 3?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>未解决</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this._onPress.bind(this, 4)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag ===4?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>我的帖子</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this._onPress.bind(this, 5)} style={{width:80,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag == 5?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>我的收藏</Text>
-                </TouchableOpacity>
-                <View style={{width: 80, height: 2, backgroundColor: '#ff6b94', position: 'absolute', bottom: 1, left: 80 * this.state.tag}}/>
+                <View style={{width: width/4, height: 2, backgroundColor: '#ff6b94', position: 'absolute', bottom: 1, left: width/4 * this.state.tag}}/>
             </ScrollView>
         )
     }
 }
-
+SlideView.propTypes = {
+    _change: React.PropTypes.func.isRequired
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,

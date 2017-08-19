@@ -42,8 +42,8 @@ export default class Forum extends Component{
         headerTitleStyle:{alignSelf:'auto',},
         headerRight:
                 (
-                <View style={{marginRight:30,}}>
-                    <TouchableOpacity style={{marginRight:10,marginBottom:20,}} onPress={()=>{
+                <View style={{marginRight:30,alignItems:'center'}}>
+                    <TouchableOpacity style={{marginRight:10,marginBottom:20,width:40,height:40,}} onPress={()=>{
                         DeviceEventEmitter.emit('newsmore', "1")
                     }}>
                         <Text style={{color:'#ffffff',fontSize:30,}}>...</Text>
@@ -264,6 +264,18 @@ export default class Forum extends Component{
             moreshow:false
         })
     }
+    MyCollect(){
+        this.props.navigation.navigate('MyCollect', );
+        this.setState({
+            moreshow:false
+        })
+    }
+    MyForum(){
+        this.props.navigation.navigate('MyForum', );
+        this.setState({
+            moreshow:false
+        })
+    }
     _keyExtractor = (item, index) => index;
     render() {
         if(!this.state.dataSource){
@@ -289,9 +301,11 @@ export default class Forum extends Component{
                         }
                     />
                     {this.state.moreshow?(
-                        <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa'}}>
-                            <Text onPress={this._newscenter.bind(this)} style={{padding:10,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>消息中心</Text>
-                            <Text onPress={this.ranklist.bind(this)} style={{padding:10,}}>排行榜</Text>
+                        <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa',paddingLeft:5,paddingRight:5,}}>
+                            <Text onPress={this._newscenter.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>消息中心</Text>
+                            <Text onPress={this.MyCollect.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>我的收藏</Text>
+                            <Text onPress={this.MyForum.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>我的帖子</Text>
+                            <Text onPress={this.ranklist.bind(this)} style={{padding:15,}}>排行榜</Text>
                         </View>
                         ):(null)}
                 </View>
