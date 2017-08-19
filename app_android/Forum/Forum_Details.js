@@ -64,6 +64,9 @@ export default class Forum_Details extends Component{
         };
     }
     componentWillUnmount(){
+        if(this.props.navigation.state.params.name == 'news'){
+            this.props.navigation.state.params.callback();
+        }
         this.eventEmss.remove();
     }
     componentDidMount() {
@@ -107,47 +110,18 @@ export default class Forum_Details extends Component{
         })
 
         this.eventEm = DeviceEventEmitter.addListener('message', (value)=>{
-                  this.Show_Main_Comment()
+              this.props.navigation.navigate('CommentText', {data: value,name:'main',callback:(msg)=>{
+                this._onRefresh()
+            }}) 
         })         
     }
-    Show_Main_Comment(){
-        this.setState({
-            Maincommentshow:true,
-        })
-    }
+
     Show_Comment(pk){
-        this.setState({
-            commentshow:true,
-            reply_pk:pk,
-        })  
-    }
-    Comment_Main(){
-        var data = {};
-        data.posts = this.state.pk;
-        data.content=this.state.content;
-        fetch(basePath+"program_girl/forum/replies_create/",
-        {
-            method:'post',
-            headers: {
-                'Authorization': 'Token ' + this.state.token,
-                'Content-Type': 'application/json'},
-            body: JSON.stringify(data),  
-        })
-        .then((response)=>{
-            return response.json();
-        })
-        .then((result)=>{
-            this.setState({
-                content:'',
-                Maincommentshow:false,
-            })
-            Alert.alert('回复成功','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+        this.props.navigation.navigate('CommentText', {data: pk,name:'reply',callback:(msg)=>{
             this._onRefresh()
-        })
-        .catch((error) => {
-            console.error(error);
-        })
+        }}) 
     }
+ 
     _loadforum(){
         forum_url=basePath+'program_girl/forum/posts/'+this.state.pk+'/';
         fetch(forum_url,{
@@ -395,34 +369,6 @@ export default class Forum_Details extends Component{
              ]
         )
     }
-    Comment(){
-        var data = {};
-        data.replies = this.state.reply_pk;
-        data.content=this.state.content;
-        fetch(basePath+"program_girl/forum/replymore_create/",
-        {
-            method:'post',
-            headers: {
-                'Authorization': 'Token ' + this.state.token,
-                'Content-Type': 'application/json'},
-            body: JSON.stringify(data),  
-        })
-        .then((response)=>{
-            return response.json();
-        })
-        .then((result)=>{
-            this.setState({
-                content:'',
-                commentshow:false,
-            })
-            Alert.alert('回复成功','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
-            this._onRefresh()
-            
-        })
-        .catch((error) => {
-            console.error(error);
-        })
-    }
     forum_tag(tag){
         if(tag==0){
             statetag='solved'
@@ -442,7 +388,7 @@ export default class Forum_Details extends Component{
             body: JSON.stringify(data),    
         })
         .then(response=>{
-            console.log(response)
+            
             if (response.status === 200) {
                 return response.json();
             } else {
@@ -513,34 +459,6 @@ export default class Forum_Details extends Component{
                     </FlatList>
                     
                     </ScrollView>
-                    {this.state.commentshow?(
-                        <View style={{position:'absolute',flexDirection:'row',backgroundColor:'#ffffff',bottom: 0,alignItems:'center',justifyContent:'center',right: 0,height:50,width:width,borderTopWidth:0.5,borderTopColor:'#aaaaaa'}}>
-                            <TextInput
-                                style={{width:width*0.8,height: 40, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,marginRight:10,}}
-                                onChangeText={(content) => this.setState({content})}
-                                value={this.state.content}
-                                multiline={true}
-                                underlineColorAndroid="transparent"
-                                placeholder='输入评论内容'
-                                placeholderTextColor='#aaaaaa'
-                            />
-                            <Text onPress={this.Comment.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:5,borderRadius:5,}}>提交</Text>
-                        </View>
-                        ):(null)}
-                    {this.state.Maincommentshow?(
-                        <View style={{position:'absolute',flexDirection:'row',backgroundColor:'#ffffff',bottom: 0,alignItems:'center',justifyContent:'center',right: 0,height:50,width:width,borderTopWidth:0.5,borderTopColor:'#aaaaaa'}}>
-                            <TextInput
-                                style={{width:width*0.8,height: 40, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,marginRight:10,}}
-                                onChangeText={(content) => this.setState({content})}
-                                value={this.state.content}
-                                multiline={true}
-                                underlineColorAndroid="transparent"
-                                placeholder='输入评论内容'
-                                placeholderTextColor='#aaaaaa'
-                            />
-                            <Text onPress={this.Comment_Main.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:5,borderRadius:5,}}>提交</Text>
-                        </View>
-                        ):(null)}
                 </View>
             )
         }

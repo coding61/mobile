@@ -138,9 +138,28 @@ export default class NewsCenter extends Component{
             })
         }
     }
+    _loadmessage(pk){
+        forum_url='https://www.cxy61.com/program_girl/message/messages/'+pk+'/';
+        fetch(forum_url,{
+            headers: {Authorization: 'Token ' + this.state.token}
+        })
+            .then(response=>{
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    return '加载失败';
+                }
+            })
+            .then(responseJson=>{
+                
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+    }
     forumdetail(data){
-       
-        this.props.navigation.navigate('Forum_Details', { data: data.from_id,token:this.state.token,callback:(msg)=>{
+        this._loadmessage(data.pk)
+        this.props.navigation.navigate('Forum_Details', { data: data.from_id,token:this.state.token,name:'news',callback:(msg)=>{
             this._onRefresh()
         }})
         

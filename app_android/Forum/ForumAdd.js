@@ -47,7 +47,7 @@ export default class ForumAdd extends Component{
     }
 
     componentWillUnmount(){
-        //this.eventEm.remove();
+        
     }
     componentDidMount() {
         this.eventEm = DeviceEventEmitter.addListener('publish', (value)=>{
@@ -81,16 +81,17 @@ export default class ForumAdd extends Component{
         return(
             <View style={{flex:1,backgroundColor:'#ffffff'}}>
                 <TextInput
-                    style={{height: 40, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,}}
+                    style={{height: 80, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,paddingTop:10}}
                     onChangeText={(title) => this.setState({title})}
                     value={this.state.title}
                     multiline={true}
+                    textAlignVertical='top'
                     underlineColorAndroid="transparent"
                     placeholder='标题'
                     placeholderTextColor='#aaaaaa'
                 />
                 <TextInput
-                    style={{height: 100, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,paddingTop:10,paddingRight:10,}}
+                    style={{height: 150, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,paddingTop:10,paddingRight:10,}}
                     onChangeText={(text) => this.setState({text})}
                     value={this.state.text}
                     multiline={true}

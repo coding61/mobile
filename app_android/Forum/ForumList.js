@@ -53,10 +53,10 @@ export default class ForumList extends Component{
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
             headerRight:
                 (
-                <View style={{flexDirection:'row',marginRight:30,}}>
+                <View style={{flexDirection:'row',marginRight:20,}}>
                     <TouchableOpacity  onPress={()=>{
                         DeviceEventEmitter.emit('addforum', state.params.data)
-                    }} style={{width:40,height:40,marginTop:20,}}>
+                    }} style={{width:26,height:26,alignItems:'center',justifyContent:'center',borderRadius:13,borderColor:'#ffffff',borderWidth:1,}}>
                         <Image style={{width:20,height:20,}} source={require('../assets/Forum/add.png')}/>
                     </TouchableOpacity>
                 </View>
@@ -229,7 +229,7 @@ export default class ForumList extends Component{
         })
     }
     forumdetail(data){
-        this.props.navigation.navigate('Forum_Details', { data: data.pk,token:this.state.token,iscollect:data.collect,callback:(msg)=>{
+        this.props.navigation.navigate('Forum_Details', { data: data.pk,token:this.state.token,iscollect:data.collect,name:'list',callback:(msg)=>{
             this._onRefresh()
         }})
     }
