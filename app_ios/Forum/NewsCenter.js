@@ -15,12 +15,11 @@ import {
     RefreshControl,
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
-
 export default class NewsCenter extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            url:'https://www.cxy61.com/program_girl/message/messages/?types=forum',
+            url:'https://www.cxy61.com/program_girl/message/messages/',
             dataArr: new Array(),
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
             nextPage: null,
@@ -28,7 +27,6 @@ export default class NewsCenter extends Component{
             loadText: '正在加载...',
             isRefreshing: false,
         }
-
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
@@ -109,7 +107,6 @@ export default class NewsCenter extends Component{
                     }
                 })
                 .then(responseJson=> {
-                    console.log(responseJson)
                     var resultArr;
                     resultArr = this.state.dataArr.concat();
                     responseJson.results.map(result=> {
@@ -122,7 +119,6 @@ export default class NewsCenter extends Component{
                         isLoading: false,
                         loadText: responseJson.next?('正在加载...'):('没有更多了')
                     })
-                    
                 })
                 .catch((error) => {
                     console.error(error);
@@ -135,10 +131,9 @@ export default class NewsCenter extends Component{
         }
     }
     forumdetail(data){
-       this.props.navigation.navigate('Forum_Details', { data: data.from_id,token:this.state.token,callback:(msg)=>{
+       this.props.navigation.navigate('Forum_Details', {data: data.from_id,token:this.state.token,callback:(msg)=>{
             this._onRefresh()
         }})
-        
     }
     dealWithTime(Time){
         var timeArray = Time.split('.')[0].split('T');
@@ -170,7 +165,7 @@ export default class NewsCenter extends Component{
         var time=this.dealWithTime(rowData.create_time);
         return (
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
-                              style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,padding:10}}>
+                    style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,padding:10}}>
                 <View>
                     <Text numberOfLines={2} style={{fontSize:14,paddingBottom:10,}}>{rowData.status=='read'?(<Text style={{color:'#cccccc',paddingRight:8,}}>[已读]</Text>):(<Text style={{color:'red',paddingRight:8,}}>[未读]</Text>)}   {rowData.text}</Text>
                     <Text style={{marginLeft:width*0.70}}>{time}</Text>
@@ -189,7 +184,6 @@ export default class NewsCenter extends Component{
         })
     }
     render() {
-
         return (
             <View style={{flex: 1}}>
                 <ListView

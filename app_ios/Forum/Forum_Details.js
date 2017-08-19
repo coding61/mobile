@@ -113,14 +113,20 @@ export default class Forum_Details extends Component{
     }
     Show_Main_Comment(){
         this.setState({
-            Maincommentshow:true,
+            Maincommentshow:!this.state.Maincommentshow,
         })
     }
     Show_Comment(pk){
         this.setState({
-            commentshow:true,
+            commentshow:!this.state.commentshow,
             reply_pk:pk,
         })  
+    }
+    close_Comment(){
+        this.setState({
+            commentshow:!this.state.commentshow,
+           
+        }) 
     }
     Comment_Main(){
         var data = {};
@@ -162,6 +168,7 @@ export default class Forum_Details extends Component{
                 }
             })
             .then(responseJson=>{
+                console.log(responseJson)
                 this.setState({
                     data:responseJson,
 
@@ -312,7 +319,7 @@ export default class Forum_Details extends Component{
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
-                            <Text onPress={this.detele_reply.bind(this,rowData.pk)} style={{fontSize:14,paddingTop:10,color:'red'}} >删除</Text>
+                            <Text onPress={this.detele_reply.bind(this,rowData.pk)} style={{fontSize:14,paddingTop:10,color:'red',width:50,height:30,paddingTop:10,}} >删除</Text>
                             ):(null)}
                     </View>
                 </View>
@@ -518,31 +525,31 @@ export default class Forum_Details extends Component{
                         <KeyboardAwareScrollView>
                             <View style={{position:'relative',flexDirection:'row',backgroundColor:'#ffffff',bottom: 0,alignItems:'center',justifyContent:'center',right: 0,height:50,width:width,borderTopWidth:0.5,borderTopColor:'#aaaaaa'}}>
                                 <TextInput
-                                    style={{width:width*0.8,height: 38, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,marginRight:10,marginBottom:5,}}
+                                    style={{width:width*0.64,height: 38, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,marginRight:10,marginBottom:5,}}
                                     onChangeText={(content) => this.setState({content})}
                                     value={this.state.content}
                                     placeholder='输入评论内容'
                                     keyboardType='default'
                                     placeholderTextColor='#aaaaaa'
                                 />
-                                
-                                <TouchableOpacity onPress={this.Comment.bind(this)} style={{width:width*0.1,height:35,backgroundColor:'#ff6b94',}}>
-                                    <Text  style={{color:'#ffffff',textAlign:'center',paddingTop:7,borderRadius:5,}}>提交</Text>
-                                </TouchableOpacity>
-                            </View>
+                                <Text  onPress={this.Comment.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:8,borderRadius:5,marginRight:5}}>提交</Text>
+                                <Text  onPress={this.close_Comment.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:8,borderRadius:5,}}>关闭</Text>
+                             </View>
                         </KeyboardAwareScrollView>
                         ):(null)}
                     {this.state.Maincommentshow?(
                         <KeyboardAwareScrollView>
                             <View style={{position:'relative',flexDirection:'row',backgroundColor:'#ffffff',bottom: 0,alignItems:'center',justifyContent:'center',right: 0,height:50,width:width,borderTopWidth:0.5,borderTopColor:'#aaaaaa'}}>
                                 <TextInput
-                                    style={{width:width*0.8,height: 38, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,marginRight:10,marginBottom:5,}}
+                                    style={{width:width*0.64,height: 38, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,marginRight:10,marginBottom:5,}}
                                     onChangeText={(content) => this.setState({content})}
                                     value={this.state.content}
                                     placeholder='输入评论内容'
+                                    keyboardType='default'
                                     placeholderTextColor='#aaaaaa'
                                 />
-                                <Text onPress={this.Comment_Main.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:7,borderRadius:5,}}>提交</Text>
+                                <Text onPress={this.Comment_Main.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:8,borderRadius:5,marginRight:8}}>提交</Text>
+                                <Text onPress={this.Show_Main_Comment.bind(this)} style={{width:width*0.1,height:30,backgroundColor:'#ff6b94',color:'#ffffff',textAlign:'center',paddingTop:8,borderRadius:5,}}>关闭</Text>
                             </View>
                         </KeyboardAwareScrollView>
                         ):(null)}

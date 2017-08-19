@@ -311,7 +311,7 @@ export default class Forum_Details extends Component{
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
-                            <Text onPress={this.detele_reply.bind(this,rowData.pk)} style={{fontSize:14,paddingTop:10,color:'red'}} >删除</Text>
+                            <Text onPress={this.detele_reply.bind(this,rowData.pk)} style={{fontSize:14,paddingTop:10,color:'red',paddingTop:10,width:50,height:30,}} >删除</Text>
                             ):(null)}
                     </View>
                 </View>
