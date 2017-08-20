@@ -410,7 +410,7 @@ export default class Forum_Details extends Component{
             return(
                 <View style={{flex:1,backgroundColor:'#ffffff'}}>
                     <ScrollView>
-                    <Text style={{fontSize:16,color:'#292929',padding:15,}}>{data.status_display=='未解决'?(<Text style={{color:'#ff6b94',marginRight:10,}}>[{data.status_display}]</Text>):(<Text style={{color:'#858585',paddingRight:10,}}>[{data.status_display}]</Text>)}   {data.title}</Text>
+                    <Text style={{fontSize:16,color:'#292929',padding:15,}} selectable={true}>{data.status_display=='未解决'?(<Text style={{color:'#ff6b94',marginRight:10,}}>[{data.status_display}]</Text>):(<Text style={{color:'#858585',paddingRight:10,}}>[{data.status_display}]</Text>)}   {data.title}</Text>
                     <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:'#F2F2F2'}}>
                         <View style={{alignItems:'center',paddingLeft:20,}}>
                             {!data.userinfo.avatar?(<Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,borderRadius:25}} source={{uri:data.userinfo.avatar}}/>)}

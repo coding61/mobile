@@ -74,7 +74,7 @@ export default class ForumDeatilCont extends Component{
         
         return(
             <View style={{paddingLeft:20,paddingTop:10,paddingRight:20,paddingBottom:10,}}>
-                <Text>{text}</Text>
+                <Text selectable={true}>{text}</Text>
                 <View style={{flexDirection:'row',flexWrap:'wrap'}}>
                     {output.map((result,index)=> {
                         return(

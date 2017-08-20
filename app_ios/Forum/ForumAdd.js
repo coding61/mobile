@@ -36,11 +36,11 @@ export default class ForumAdd extends Component{
             headerTitleStyle:{alignSelf:'auto',fontSize:14,},
             headerRight:
                 (
-                <View style={{flexDirection:'row',marginRight:30,}}>
+                <View style={{flexDirection:'row',marginRight:18,}}>
                     <TouchableOpacity style={{marginRight:10,}} onPress={()=>{
                         DeviceEventEmitter.emit('publish', "1")
                     }}>
-                        <Text style={{color:'#CFCFCF'}}>发布</Text>
+                        <Text style={{color:'#ffffff',fontSize:18,}}>发布</Text>
                     </TouchableOpacity>
                 </View>
                 )
@@ -85,21 +85,25 @@ export default class ForumAdd extends Component{
         return(
             <View style={{flex:1,backgroundColor:'#ffffff'}}>
                 <TextInput
-                    style={{height: 60, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,}}
+                    style={{height: 80, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,paddingTop:5,fontSize:14,}}
                     onChangeText={(title) => this.setState({title})}
                     value={this.state.title}
                     multiline={true}
                     placeholder='标题'
                     autoFocus={true}
+                    autoCapitalize='none'
+                    enablesReturnKeyAutomatically={true}
                     placeholderTextColor='#aaaaaa'
                 />
                 <TextInput
-                    style={{height: 140, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,paddingTop:10,paddingRight:10,}}
+                    style={{height: 170, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,paddingTop:10,fontSize:14,paddingRight:10,}}
                     onChangeText={(text) => this.setState({text})}
                     value={this.state.text}
                     multiline={true}
+                    autoCapitalize='none'
                     textAlignVertical='top'
                     placeholder='尽情提问吧'
+                    enablesReturnKeyAutomatically={true}
                     placeholderTextColor='#aaaaaa'
                 />
                 

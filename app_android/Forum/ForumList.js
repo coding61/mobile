@@ -56,7 +56,7 @@ export default class ForumList extends Component{
                 <View style={{flexDirection:'row',marginRight:20,}}>
                     <TouchableOpacity  onPress={()=>{
                         DeviceEventEmitter.emit('addforum', state.params.data)
-                    }} style={{width:26,height:26,alignItems:'center',justifyContent:'center',borderRadius:13,borderColor:'#ffffff',borderWidth:1,}}>
+                    }} style={{width:26,height:26,alignItems:'center',justifyContent:'center',}}>
                         <Image style={{width:20,height:20,}} source={require('../assets/Forum/add.png')}/>
                     </TouchableOpacity>
                 </View>

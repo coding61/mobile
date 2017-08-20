@@ -23,8 +23,9 @@ export default class CommentText extends Component{
             content:'',
             pk:this.props.navigation.state.params.data,
             token:'',
+            isDisable:false,
         }
-        console.log(this.state.pk)
+       
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
@@ -62,16 +63,16 @@ export default class CommentText extends Component{
             return response.json();
         })
         .then((result)=>{
-            
             this.setState({
                 content:'',
-               
-            })
-            Alert.alert('回复成功','',[{text:'确定',onPress: () => {
+                isDisable:true,
+            },()=>{
                 this.props.navigation.state.params.callback();
                 this.props.navigation.goBack();
-            }, style: 'destructive'}])
-            
+            })
+            /*Alert.alert('回复成功','',[{text:'确定',onPress: () => {
+                
+            }, style: 'destructive'}])*/
         })
         .catch((error) => {
             console.error(error);
@@ -93,15 +94,17 @@ export default class CommentText extends Component{
             return response.json();
         })
         .then((result)=>{
-            
             this.setState({
-                content:'',
-                
-            })
-            Alert.alert('回复成功','',[{text:'确定',onPress: () => {
+                content:'', 
+                isDisable:true,
+            },()=>{
                 this.props.navigation.state.params.callback();
                 this.props.navigation.goBack();
-            }, style: 'destructive'}])
+            })
+            
+            /*Alert.alert('回复成功','',[{text:'确定',onPress: () => {
+                
+            }, style: 'destructive'}])*/
             
         })
         .catch((error) => {
@@ -120,22 +123,79 @@ export default class CommentText extends Component{
         return (
             <View style={{flex: 1,backgroundColor: '#ffffff',}}>
                <TextInput
-                    style={{width:width*0.9,height: 150, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,marginTop:20,marginBottom:20,marginLeft:width*0.05,}}
+                    style={{width:width*0.9,height: 150, borderColor: '#f1f1f1',paddingTop:10,fontSize:14, borderWidth: 1,paddingLeft:20,marginTop:20,marginBottom:20,marginLeft:width*0.05,}}
                     onChangeText={(content) => this.setState({content})}
                     value={this.state.content}
                     placeholder='输入评论内容'
                     multiline={true}
+                    autoCapitalize='none'
+                    enablesReturnKeyAutomatically={true}
                     textAlignVertical='top'
                     keyboardType='default'
                     placeholderTextColor='#aaaaaa'
                 />
-                <TouchableOpacity onPress={this.postcomment.bind(this)} style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#ff6b94',}}>
+                {/*<Touch  style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#ff6b94',}}
+                        onPress={this.postcomment.bind(this)}
+                        content={()=>{
+                            return(
+                                <Text style={{color:'#ffffff',fontSize:16,}}>提交评论</Text>
+                            )
+                        }}
+                    />*/}
+                <TouchableOpacity onPress={this.postcomment.bind(this)} disabled={this.state.isDisable} style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#ff6b94',}}>
                     <Text style={{color:'#ffffff',fontSize:16,}}>提交评论</Text>
                 </TouchableOpacity>
             </View>
         )
     }
+}
+class Touch extends Component {
 
+    // 构造
+    constructor(props) {
+        super(props);
+        // 初始状态
+        this.state = {
+            isDisable:false,//是否被禁用
+        };
+    }
+
+    componentWillMount() {
+
+    }
+
+    componentWillUnMount() {
+        this.timer && clearTimeout(this.timer)
+    }
+
+  /*  static contextTypes = {
+        navigator: PropTypes.object,
+    };*/
+
+    async ToPress (){
+        const {onPress} = this.props;
+        onPress&&onPress()
+        await this.setState({isDisable:true})//防重复点击
+        this.timer = setTimeout(async()=>{
+            await this.setState({isDisable:false})
+        },2000)
+    }
+
+    render(){
+        const {style,content} = this.props
+        return(
+            <TouchableOpacity
+                disabled={this.state.isDisable}
+                activeOpacity={0.9}
+                style={style?style:{}}
+                onPress={this.ToPress}
+                {...this.props}
+            >
+                {content && content()}
+
+            </TouchableOpacity>
+        )
+    }
 }
 const styles = StyleSheet.create({
     container: {

@@ -64,6 +64,7 @@ export default class NewsCenter extends Component{
                         'Content-Type': 'application/json'}
                 })
                 .then((response) =>{
+                    console.log(response)
                     if (response.status === 200) {
                         return response.json();
                     } else {
@@ -105,6 +106,7 @@ export default class NewsCenter extends Component{
                     headers: {Authorization: 'Token ' + this.state.token}
                 })
                     .then(response => {
+                        console.log(response)
                         if (response.status === 200) {
                             return response.json();
                         } else {

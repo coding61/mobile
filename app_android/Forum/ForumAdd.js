@@ -35,11 +35,11 @@ export default class ForumAdd extends Component{
             headerTitleStyle:{alignSelf:'auto',fontSize:14,paddingLeft:width*0.23},
             headerRight:
                 (
-                <View style={{flexDirection:'row',marginRight:30,}}>
+                <View style={{flexDirection:'row',marginRight:20,}}>
                     <TouchableOpacity style={{marginRight:10,}} onPress={()=>{
                         DeviceEventEmitter.emit('publish', "1")
                     }}>
-                        <Text style={{color:'#CFCFCF'}}>发布</Text>
+                        <Text style={{color:'#ffffff',fontSize:17,}}>发布</Text>
                     </TouchableOpacity>
                 </View>
                 )
