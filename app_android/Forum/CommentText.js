@@ -44,7 +44,6 @@ export default class CommentText extends Component{
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){
                 self.setState({token: result},()=>{
-                    
                 });
             }
         });
@@ -67,16 +66,10 @@ export default class CommentText extends Component{
         .then((result)=>{
             this.setState({
                 content:'',
-                //isDisable:true,
             },()=>{
                 this.props.navigation.state.params.callback();
                 this.props.navigation.goBack();
             })
-            
-           /* Alert.alert('回复成功','',[{text:'确定',onPress: () => {
-                
-            }, style: 'destructive'}])
-            */
         })
         .catch((error) => {
             console.error(error);
@@ -98,22 +91,18 @@ export default class CommentText extends Component{
             return response.json();
         })
         .then((result)=>{
-            
             this.setState({
                 content:'',
-                //isDisable:true,
             },()=>{
                 this.props.navigation.state.params.callback();
                 this.props.navigation.goBack();
             })
-            
         })
         .catch((error) => {
             console.error(error);
         })
     }
     postcomment(){
-
         if(this.props.navigation.state.params.name=='reply'){
             this.Comment()
             this.setState({
@@ -143,67 +132,11 @@ export default class CommentText extends Component{
                 <TouchableOpacity onPress={this.postcomment.bind(this)} disabled={this.state.isDisable} style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#ff6b94',}}>
                     <Text style={{color:'#ffffff',fontSize:16,}}>提交评论</Text>
                 </TouchableOpacity>
-                {/*<Touch  style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#ff6b94',}}
-                        onPress={this.postcomment.bind(this)}
-                        content={()=>{
-                            return(
-                                <Text style={{color:'#ffffff',fontSize:16,}}>提交评论</Text>
-                            )
-                        }}
-                    />*/}
             </View>
         )
     }
-
 }
-class Touch extends Component {
 
-    // 构造
-    constructor(props) {
-        super(props);
-        // 初始状态
-        this.state = {
-            isDisable:false,//是否被禁用
-        };
-    }
-
-    componentWillMount() {
-
-    }
-
-    componentWillUnMount() {
-        this.timer && clearTimeout(this.timer)
-    }
-
-    /*static contextTypes = {
-        navigator: PropTypes.object,
-    };*/
-
-    async ToPress(){
-        const {onPress} = this.props;
-        onPress&&onPress()
-        await this.setState({isDisable:true})//防重复点击
-        this.timer = setTimeout(async()=>{
-            await this.setState({isDisable:false})//1.5秒后可点击
-        },2000)
-    }
-
-    render(){
-        const {style,content} = this.props
-        return(
-            <TouchableOpacity
-                disabled={this.state.isDisable}
-                activeOpacity={0.9}
-                style={style?style:{}}
-                onPress={this.ToPress}
-                {...this.props}
-            >
-                {content && content()}
-
-            </TouchableOpacity>
-        )
-    }
-}
 const styles = StyleSheet.create({
     container: {
         flex: 1,

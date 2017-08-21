@@ -307,7 +307,6 @@ export default class Forum extends Component{
         }else{
              return(
                 <View style={{flex: 1, backgroundColor: '#edeef0'}}>
-                    
                     <FlatList
                         data={this.state.dataSource}  
                         renderItem={this._renderRow.bind(this)}
@@ -330,7 +329,6 @@ export default class Forum extends Component{
                                 <Text onPress={this._newscenter.bind(this)} style={{padding:15,}}>消息中心</Text>
                                 {this.props.navigation.state.params.newscount!=0?(<View style={{position:'absolute',top:13,right:12,width:8,height:8,borderRadius:4,backgroundColor:'red'}}></View>):(null)}
                             </View>
-
                             <Text onPress={this.MyCollect.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>我的收藏</Text>
                             <Text onPress={this.MyForum.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>我的帖子</Text>
                             <Text onPress={this.ranklist.bind(this)} style={{padding:15,}}>排行榜</Text>

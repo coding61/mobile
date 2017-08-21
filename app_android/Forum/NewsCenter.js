@@ -48,7 +48,6 @@ export default class NewsCenter extends Component{
                     </TouchableOpacity>
                 </View>
                 )
-            
         };
     }
     componentWillUnmount(){
@@ -134,41 +133,45 @@ export default class NewsCenter extends Component{
             this.setState({
                 isLoading: true
             },()=> {
+                console.log(this.state.token)
                 fetch(this.state.nextPage,
-                {
-                    headers: {'Authorization': 'Token ' + this.state.token}
+                {   
+                    method: 'get',
+                    headers: {
+                        'Authorization': 'Token ' + this.state.token,
+                        'Content-Type': 'application/json'}
                 })
-                    .then(response => {
-                        console.log(response)
-                        if (response.status === 200) {
-                            return response.json();
-                        } else {
-                            return response.text();
-                        }
+                .then(response => {
+                    console.log(response)
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        return response.text();
+                    }
+                })
+                .then(responseJson=> {
+                    var resultArr;
+                    resultArr = this.state.dataArr.concat();
+                    responseJson.results.map(result=> {
+                        resultArr.push(result);
                     })
-                    .then(responseJson=> {
-                        var resultArr;
-                        resultArr = this.state.dataArr.concat();
-                        responseJson.results.map(result=> {
-                            resultArr.push(result);
-                        })
-                        this.setState({
-                            nextPage: responseJson.next,
-                            dataArr: resultArr,
-                            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
-                            isLoading: false,
-                            loadText: responseJson.next?('正在加载...'):('没有更多了')
-                        })
-                        
+                    this.setState({
+                        nextPage: responseJson.next,
+                        dataArr: resultArr,
+                        dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
+                        isLoading: false,
+                        loadText: responseJson.next?('正在加载...'):('没有更多了')
                     })
-                    .catch((error) => {
-                        console.error(error);
-                       
-                        this.setState({
-                            isLoading: false,
-                            isRefreshing: false
-                        })
+                    
+                })
+                .catch((error) => {
+                    console.error(error);
+                   
+                    this.setState({
+                        isLoading: false,
+                        isRefreshing: false
                     })
+                })
             })
         }
     }

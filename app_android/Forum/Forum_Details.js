@@ -34,10 +34,7 @@ export default class Forum_Details extends Component{
             token:this.props.navigation.state.params.token,
             pk:this.props.navigation.state.params.data,
             data:'',
-            commentshow:false,
-            Maincommentshow:false,
             content:'',
-            reply_pk:'',
         }  
     }
     static navigationOptions = ({ navigation }) => {
@@ -286,7 +283,7 @@ export default class Forum_Details extends Component{
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
                             <TouchableOpacity onPress={this.detele_reply.bind(this,rowData.pk)} style={{width:50,height:30,}}>
-                                <Text  style={{fontSize:14,paddingTop:10,color:'red',}} >删除</Text>
+                                <Text  style={{fontSize:14,paddingTop:10,color:'red',}}>删除</Text>
                             </TouchableOpacity>
                             ):(null)}
                     </View>
@@ -390,7 +387,6 @@ export default class Forum_Details extends Component{
             body: JSON.stringify(data),    
         })
         .then(response=>{
-            
             if (response.status === 200) {
                 return response.json();
             } else {
@@ -407,59 +403,58 @@ export default class Forum_Details extends Component{
     render() {
         var data=this.state.data;
         if(!data){
-            return(<Text>加载中...</Text>)
+            return(<Text style={{alignItems:'center',justifyContent:'center',paddingTop:20,}}>加载中...</Text>)
         }else{
             return(
                 <View style={{flex:1,backgroundColor:'#ffffff'}}>
                     <ScrollView>
-                    <Text style={{fontSize:16,color:'#292929',padding:15,}} selectable={true}>{data.status_display=='未解决'?(<Text style={{color:'#ff6b94',marginRight:10,}}>[{data.status_display}]</Text>):(<Text style={{color:'#858585',paddingRight:10,}}>[{data.status_display}]</Text>)}   {data.title}</Text>
-                    <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:'#F2F2F2'}}>
-                        <View style={{alignItems:'center',paddingLeft:20,}}>
-                            {!data.userinfo.avatar?(<Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,borderRadius:25}} source={{uri:data.userinfo.avatar}}/>)}
-                            <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
+                        <Text style={{fontSize:16,color:'#292929',padding:15,}} selectable={true}>{data.status_display=='未解决'?(<Text style={{color:'#ff6b94',marginRight:10,}}>[{data.status_display}]</Text>):(<Text style={{color:'#858585',paddingRight:10,}}>[{data.status_display}]</Text>)}   {data.title}</Text>
+                        <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:'#F2F2F2'}}>
+                            <View style={{alignItems:'center',paddingLeft:20,}}>
+                                {!data.userinfo.avatar?(<Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,borderRadius:25}} source={{uri:data.userinfo.avatar}}/>)}
+                                <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
+                            </View>
+                            <View style={{paddingLeft:40,paddingRight:10,width:width*0.87,}}>
+                                <Text style={{paddingBottom:10,color:'#858585'}}>{data.userinfo.name}</Text>
+                                <Text style={{paddingBottom:5,color:'#858585'}}>{data.create_time.slice(0, 16).replace("T", " ")}</Text>
+                                <Text style={{color:'#FF6A6A'}}>[{data.types.name}]</Text>
+                            </View>
                         </View>
-                        <View style={{paddingLeft:40,paddingRight:10,width:width*0.87,}}>
-                            <Text style={{paddingBottom:10,color:'#858585'}}>{data.userinfo.name}</Text>
-                            <Text style={{paddingBottom:5,color:'#858585'}}>{data.create_time.slice(0, 16).replace("T", " ")}</Text>
-                            <Text style={{color:'#FF6A6A'}}>[{data.types.name}]</Text>
+                        <View style={{marginBottom:10,}}>
+                            <ForumDeatilCont data={this.state.data.content} ></ForumDeatilCont>
+                            {data.userinfo.pk==this.state.UserPk?(
+                                    <View style={{flexDirection:'row',marginLeft:30,}}>
+                                        {data.status=='unsolved'?(
+                                            <View style={{flexDirection:'row'}}>
+                                                <Text onPress={this.forum_tag.bind(this,0)} style={{color:'#ff6b94',marginRight:30,}}>标记为已解决</Text>
+                                                <Text onPress={this.forum_tag.bind(this,1)} style={{color:'#ff6b94',marginRight:30,}}>关闭问题</Text>    
+                                            </View>
+                                        ):(
+                                            <Text onPress={this.forum_tag.bind(this,2)} style={{color:'#ff6b94',marginRight:30,}}>标记为未解决</Text> 
+                                        )}
+                                        <Text onPress={this.detele_main.bind(this)} style={{color:'#ff6b94',marginRight:30,fontSize:16,}}>删除此贴</Text>
+                                    </View>
+                                ):(null)}
+                            <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,marginTop:10,}}>回帖数量({data.reply_count})</Text>
                         </View>
-                    </View>
-                    <View style={{marginBottom:10,}}>
-                        <ForumDeatilCont data={this.state.data.content} ></ForumDeatilCont>
-                        {data.userinfo.pk==this.state.UserPk?(
-                                <View style={{flexDirection:'row',marginLeft:30,}}>
-                                    {data.status=='unsolved'?(
-                                        <View style={{flexDirection:'row'}}>
-                                            <Text onPress={this.forum_tag.bind(this,0)} style={{color:'#ff6b94',marginRight:30,}}>标记为已解决</Text>
-                                            <Text onPress={this.forum_tag.bind(this,1)} style={{color:'#ff6b94',marginRight:30,}}>关闭问题</Text>    
-                                        </View>
-                                    ):(
-                                        <Text onPress={this.forum_tag.bind(this,2)} style={{color:'#ff6b94',marginRight:30,}}>标记为未解决</Text> 
-                                    )}
-                                    <Text onPress={this.detele_main.bind(this)} style={{color:'#ff6b94',marginRight:30,fontSize:16,}}>删除此贴</Text>
-                                </View>
-                            ):(null)}
-                        <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,marginTop:10,}}>回帖数量({data.reply_count})</Text>
-                    </View>
-                    <FlatList
-                            horizontal={false}
-                            data={this.state.dataSource}
-                            renderItem={this.renderForumRow.bind(this)}
-                            keyExtractor={this._keyExtractor}
-                            onEndReached={this._renderNext.bind(this)}
-                            onEndReachedThreshold={3}
-                            ListFooterComponent={this._renderFooter.bind(this)}
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={this.state.isRefreshing}
-                                    onRefresh={this._onRefresh.bind(this)}
-                                    tintColor='#cccccc'
-                                    title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
-                                    titleColor='#cccccc' />
-                            }
-                        >
-                    </FlatList>
-                    
+                        <FlatList
+                                horizontal={false}
+                                data={this.state.dataSource}
+                                renderItem={this.renderForumRow.bind(this)}
+                                keyExtractor={this._keyExtractor}
+                                onEndReached={this._renderNext.bind(this)}
+                                onEndReachedThreshold={3}
+                                ListFooterComponent={this._renderFooter.bind(this)}
+                                refreshControl={
+                                    <RefreshControl
+                                        refreshing={this.state.isRefreshing}
+                                        onRefresh={this._onRefresh.bind(this)}
+                                        tintColor='#cccccc'
+                                        title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
+                                        titleColor='#cccccc' />
+                                }
+                            >
+                        </FlatList>
                     </ScrollView>
                 </View>
             )

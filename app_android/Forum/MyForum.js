@@ -37,15 +37,14 @@ export default class MyForum extends Component{
             title: '我的帖子',
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
-            headerTitleStyle:{alignSelf:'auto',fontSize:14},
-            
+            headerTitleStyle:{alignSelf:'auto',fontSize:14,marginLeft:width*0.28},
         };
     };
     componentWillUnmount(){
         
     }
     componentDidMount(){
-         var self = this;
+        var self = this;
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){
                 self.setState({token: result},()=>{
@@ -88,44 +87,44 @@ export default class MyForum extends Component{
                 fetch(this.state.nextPage, {
                     headers: {Authorization: 'Token ' + this.state.token}
                 })
-                    .then(response => {
-                        if (response.status === 200) {
-                            return response.json();
-                        } else {
-                            return '加载失败';
-                        }
-                    })
-                    .then(responseJson=> {
-                        if (responseJson === '加载失败') {
-                            Alert.alert(
-                              '加载失败,请重试',
-                              '',
-                              [
-                                {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
-                              ]
-                            )
-                        } else {
-                            var resultArr;
-                            resultArr = this.state.dataArr.concat();
-                            responseJson.results.map(result=> {
-                                resultArr.push(result);
-                            })
-                            this.setState({
-                                nextPage: responseJson.next,
-                                dataArr: resultArr,
-                                dataSource: resultArr,
-                                isLoading: false,
-                                loadText: responseJson.next?('正在加载...'):('没有更多了')
-                            })
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        this.setState({
-                            isLoading: false,
-                            isRefreshing: false
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        return '加载失败';
+                    }
+                })
+                .then(responseJson=> {
+                    if (responseJson === '加载失败') {
+                        Alert.alert(
+                          '加载失败,请重试',
+                          '',
+                          [
+                            {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
+                          ]
+                        )
+                    } else {
+                        var resultArr;
+                        resultArr = this.state.dataArr.concat();
+                        responseJson.results.map(result=> {
+                            resultArr.push(result);
                         })
+                        this.setState({
+                            nextPage: responseJson.next,
+                            dataArr: resultArr,
+                            dataSource: resultArr,
+                            isLoading: false,
+                            loadText: responseJson.next?('正在加载...'):('没有更多了')
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    this.setState({
+                        isLoading: false,
+                        isRefreshing: false
                     })
+                })
             })
         }
     }
@@ -195,7 +194,6 @@ export default class MyForum extends Component{
                 </View>
             </TouchableOpacity>
         )
-        
     }
     _keyExtractor = (item, index) => index;
     render(){

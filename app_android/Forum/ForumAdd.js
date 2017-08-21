@@ -12,7 +12,6 @@ import {
   ListView,
   DeviceEventEmitter,
   Modal,
-  
 }from 'react-native';
 var basePath='https://www.cxy61.com/';
 var {height, width} = Dimensions.get('window');
@@ -100,7 +99,6 @@ export default class ForumAdd extends Component{
                     placeholder='尽情提问吧'
                     placeholderTextColor='#aaaaaa'
                 />
-                
             </View>
         )
     }
