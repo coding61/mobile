@@ -73,6 +73,25 @@ export default class Forum extends Component{
             })
         })
     }
+    _loadunread(){
+        fetch('https://www.cxy61.com/program_girl/message/messages/?types=forum&status=unread',{
+            headers: {Authorization: 'Token ' + this.state.token}
+        })
+        .then(response=>{
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                return '加载失败';
+            }
+        })
+        .then(responseJson=>{
+            const {setParams,state} = this.props.navigation;
+            setParams({newscount:responseJson.count})
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+    }
     _loadData() {
         this.setState({
             isLoading: true
@@ -255,7 +274,9 @@ export default class Forum extends Component{
         })
     }
     _newscenter(){
-        this.props.navigation.navigate('NewsCenter',);
+        this.props.navigation.navigate('NewsCenter',{callback:()=>{
+            this._loadunread()
+        }});
         this.setState({
             moreshow:false
         })
@@ -285,7 +306,6 @@ export default class Forum extends Component{
         }else{
              return(
                 <View style={{flex: 1, backgroundColor: '#edeef0'}}>
-                    
                     <FlatList
                         data={this.state.dataSource}  
                         renderItem={this._renderRow.bind(this)}
@@ -304,7 +324,10 @@ export default class Forum extends Component{
                     />
                     {this.state.moreshow?(
                         <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa',paddingRight:5,paddingLeft:8,}}>
-                            <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this._newscenter.bind(this)} style={{padding:15,}}>消息中心</Text></View>
+                            <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}>
+                                <Text onPress={this._newscenter.bind(this)} style={{padding:15,}}>消息中心</Text>
+                                {this.props.navigation.state.params.newscount!=0?(<View style={{position:'absolute',top:12,right:10,width:8,height:8,borderRadius:4,backgroundColor:'red'}}></View>):(null)}
+                            </View>
                             <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this.MyCollect.bind(this)} style={{padding:15,}}>我的收藏</Text></View>
                             <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this.MyForum.bind(this)} style={{padding:15,}}>我的帖子</Text></View>
                             <View><Text onPress={this.ranklist.bind(this)} style={{padding:15,}}>排行榜</Text></View>

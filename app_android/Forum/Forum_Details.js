@@ -48,13 +48,13 @@ export default class Forum_Details extends Component{
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
             headerRight:
                 (
-                <View style={{flexDirection:'row',marginRight:30,}}>
+                <View style={{flexDirection:'row',marginRight:20,}}>
                     <TouchableOpacity style={{marginRight:30,}} onPress={()=>{
                         DeviceEventEmitter.emit('collec', state.params.data)
                     }}>
                         {state.params.iscollect==true?(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xin.png')} resizeMode={'contain'}/>):(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xinfull.png')} resizeMode={'contain'}/>)}
                     </TouchableOpacity>
-                    <TouchableOpacity style={{marginTop:3,}} onPress={()=>{
+                    <TouchableOpacity style={{marginTop:3,width:40,height:20,marginLeft:10,}} onPress={()=>{
                         DeviceEventEmitter.emit('message', state.params.data)
                     }}>
                         <Image style={{width:22,height:20,}} source={require('../assets/Forum/message.png')} resizeMode={'contain'}/>
@@ -281,11 +281,13 @@ export default class Forum_Details extends Component{
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                     </View>
                     <View style={{paddingRight:20,}}>
-                        <TouchableOpacity style={{marginTop:3,}} onPress={this.Show_Comment.bind(this,rowData.pk)}>
+                        <TouchableOpacity style={{width:40,height:25,paddingLeft:2,}} onPress={this.Show_Comment.bind(this,rowData.pk)}>
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
-                            <Text onPress={this.detele_reply.bind(this,rowData.pk)} style={{fontSize:14,paddingTop:10,color:'red',paddingTop:10,width:50,height:30,}} >删除</Text>
+                            <TouchableOpacity onPress={this.detele_reply.bind(this,rowData.pk)} style={{width:50,height:30,}}>
+                                <Text  style={{fontSize:14,paddingTop:10,color:'red',}} >删除</Text>
+                            </TouchableOpacity>
                             ):(null)}
                     </View>
                 </View>
