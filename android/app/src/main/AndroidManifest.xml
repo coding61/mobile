@@ -33,6 +33,16 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+
+        <service android:name="com.talkingdata.sdk.TDAntiCheatingService"
+            android:process="com.talkingdata.sdk.TDAntiCheatingService">  <!--用户质量评估Service可以配置在主进程或者单独进程-->
+            <intent-filter>
+                <action android:name="com.talkingdata.sdk.TDAntiCheatingService" />
+            </intent-filter>
+        </service>
+            
+            <meta-data android:name="TD_APP_ID" android:value="7C7B55DD67C64E80B6708EF3E9BFD401" />
+            <meta-data android:name="TD_CHANNEL_ID" android:value="tencent_app_market" />
     </application>
 
 </manifest>
