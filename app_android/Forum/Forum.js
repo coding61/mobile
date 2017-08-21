@@ -48,7 +48,7 @@ export default class Forum extends Component{
                         <TouchableOpacity style={{width:30,height:25,}} onPress={()=>{
                             DeviceEventEmitter.emit('newsmore', "1")
                         }}>
-                            {state.params.newscount==0?(<Image style={{width:21,height:4,marginTop:10,}} source={require('../assets/Forum/news.png')}/>):(<Image style={{width:27,height:14,}} source={require('../assets/Forum/hasnews.png')}/>)}
+                            {state.params.newscount==0?(<Image style={{width:21,height:4,marginTop:10,}} source={require('../assets/Forum/news.png')}/>):(<Image style={{width:29,height:14,}} source={require('../assets/Forum/hasnews.png')}/>)}
                         </TouchableOpacity>
                     </View>
                     )
@@ -72,6 +72,25 @@ export default class Forum extends Component{
             self.setState({
                 moreshow:!this.state.moreshow,
             })
+        })
+    }
+    _loadunread(){
+        fetch('https://www.cxy61.com/program_girl/message/messages/?types=forum&status=unread',{
+            headers: {Authorization: 'Token ' + this.state.token}
+        })
+        .then(response=>{
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                return '加载失败';
+            }
+        })
+        .then(responseJson=>{
+            const {setParams,state} = this.props.navigation;
+            setParams({newscount:responseJson.count})
+        })
+        .catch((error) => {
+            console.error(error);
         })
     }
     _loadData() {
@@ -256,7 +275,9 @@ export default class Forum extends Component{
         })
     }
     _newscenter(){
-        this.props.navigation.navigate('NewsCenter',);
+        this.props.navigation.navigate('NewsCenter',{callback:()=>{
+            this._loadunread()
+        }});
         this.setState({
             moreshow:false
         })
@@ -305,7 +326,11 @@ export default class Forum extends Component{
                     />
                     {this.state.moreshow?(
                         <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa',paddingLeft:5,paddingRight:5,}}>
-                            <Text onPress={this._newscenter.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>消息中心</Text>
+                            <View style={{borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>
+                                <Text onPress={this._newscenter.bind(this)} style={{padding:15,}}>消息中心</Text>
+                                {this.props.navigation.state.params.newscount!=0?(<View style={{position:'absolute',top:13,right:12,width:8,height:8,borderRadius:4,backgroundColor:'red'}}></View>):(null)}
+                            </View>
+
                             <Text onPress={this.MyCollect.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>我的收藏</Text>
                             <Text onPress={this.MyForum.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>我的帖子</Text>
                             <Text onPress={this.ranklist.bind(this)} style={{padding:15,}}>排行榜</Text>

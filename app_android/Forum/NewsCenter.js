@@ -52,6 +52,7 @@ export default class NewsCenter extends Component{
         };
     }
     componentWillUnmount(){
+        this.props.navigation.state.params.callback();
         this.eventEmss.remove();
     }
     componentDidMount() {
