@@ -19,7 +19,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   //应用统计分析初始化
-  [TalkingData sessionStarted:@"7C7B55DD67C64E80B6708EF3E9BFD401" withChannelId:@"AppStore"];
+  [TalkingData sessionStarted:@"16FACCF446A4432F8434C703CEAF04B4" withChannelId:@"AppStore"];
 //  [TalkingData setLogEnabled:YES];
   
   NSURL *jsCodeLocation;

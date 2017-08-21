@@ -41,7 +41,7 @@
             </intent-filter>
         </service>
             
-            <meta-data android:name="TD_APP_ID" android:value="7C7B55DD67C64E80B6708EF3E9BFD401" />
+            <meta-data android:name="TD_APP_ID" android:value="16FACCF446A4432F8434C703CEAF04B4" />
             <meta-data android:name="TD_CHANNEL_ID" android:value="tencent_app_market" />
     </application>
 
