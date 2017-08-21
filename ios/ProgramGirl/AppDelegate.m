@@ -12,10 +12,16 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
+#import "TalkingData.h"   //应用统计分析
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  //应用统计分析初始化
+  [TalkingData sessionStarted:@"7C7B55DD67C64E80B6708EF3E9BFD401" withChannelId:@"AppStore"];
+//  [TalkingData setLogEnabled:YES];
+  
   NSURL *jsCodeLocation;
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
