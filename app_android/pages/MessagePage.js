@@ -1093,17 +1093,27 @@ class MessagePage extends Component{
                     if (help == true) {
                         //点了帮助选择课程
                         this_._fetchUserInfo();
-                        this.setState({
-                            showQuitLogin:true
+                        Utils.isLogin((token)=>{
+                            if (token) {
+                                this.setState({
+                                    showQuitLogin:true
+                                })
+                            }
                         })
                     }else{
                         // this._bottomAnimate();
                         this_.setState({
                             actionTag:actionChooseCourseTag,
-                            showAction:true,
-                            showQuitLogin:true
+                            showAction:true
                         })
                         this_._fetchUserInfo();
+                        Utils.isLogin((token)=>{
+                            if (token) {
+                                this.setState({
+                                    showQuitLogin:true
+                                })
+                            }
+                        })
                     }
                 }})
             }
@@ -1260,8 +1270,12 @@ class MessagePage extends Component{
                 this_.props.navigation.navigate('Login', {callback:()=>{
                     
                     this_._fetchUserInfo();
-                    this.setState({
-                        showQuitLogin:true
+                    Utils.isLogin((token)=>{
+                        if (token) {
+                            this.setState({
+                                showQuitLogin:true
+                            })
+                        }
                     })
                 }})
             }
@@ -1513,7 +1527,7 @@ class MessagePage extends Component{
         images.push({url:this.state.bigImgUrl})
         return (
             <Modal visible={this.state.showBigImgView} transparent={true} onRequestClose={this._clickBigImg}>
-                <ImageViewer imageUrls={images} onClick={this._clickBigImg}/>
+                <ImageViewer imageUrls={images} onClick={this._clickBigImg} saveToLocalByLongPress={false}/>
             </Modal>
         )
     }
@@ -1581,17 +1595,18 @@ class MessagePage extends Component{
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickStudyLuntan}>
                             <Text style={styles.helpActionText}>{"学习论坛"}</Text>
                         </TouchableOpacity>
+                        
+                        <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickFindHelp}>
+                            <Text style={styles.helpActionText}>{"寻找帮助"}</Text>
+                        </TouchableOpacity>
+
                         {
                             this.state.showQuitLogin?
-                            <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickQuitLogin}>
-                                <Text style={styles.helpActionText}>{"退出登录"}</Text>
+                            <TouchableOpacity style={[styles.helpActionTextParent]} onPress={this._clickQuitLogin}>
+                                <Text style={[styles.helpActionText, {color:'red'}]}>{"退出登录"}</Text>
                             </TouchableOpacity>
                             : null
                         }
-            
-                        <TouchableOpacity onPress={this._clickFindHelp} style={styles.helpActionTextParent}>
-                            <Text style={styles.helpActionText}>{"寻找帮助"}</Text>
-                        </TouchableOpacity>
 
                     </View>
                     <Image
@@ -2394,6 +2409,7 @@ const styles = StyleSheet.create({
         // height: 30, 
         // lineHeight: 30, 
         textAlign:'center',
+        fontSize:16,
         // backgroundColor:'red'
     },
     helpActionArrow:{
