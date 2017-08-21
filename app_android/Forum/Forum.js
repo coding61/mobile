@@ -48,7 +48,7 @@ export default class Forum extends Component{
                         <TouchableOpacity style={{width:30,height:25,}} onPress={()=>{
                             DeviceEventEmitter.emit('newsmore', "1")
                         }}>
-                            {state.params.newscount==0?(<Image style={{width:21,height:4,marginTop:10,}} source={require('../assets/Forum/news.png')}/>):(<Image style={{width:27,height:14,}} source={require('../assets/Forum/hasnews.png')}/>)}
+                            {state.params.newscount==0?(<Image style={{width:21,height:4,marginTop:10,}} source={require('../assets/Forum/news.png')}/>):(<Image style={{width:29,height:14,}} source={require('../assets/Forum/hasnews.png')}/>)}
                         </TouchableOpacity>
                     </View>
                     )
