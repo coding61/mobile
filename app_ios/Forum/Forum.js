@@ -35,23 +35,25 @@ export default class Forum extends Component{
         }
     }
 
-    static navigationOptions = {
-        headerTitle: '论坛',
-        headerTintColor: "#fff",   
-        headerStyle: { backgroundColor: '#ff6b94',},
-        headerTitleStyle:{alignSelf:'auto',},
-        headerRight:
-                (
-                <View style={{marginRight:20,alignItems:'center'}}>
-                    <TouchableOpacity style={{marginBottom:15,width:40,height:40,}} onPress={()=>{
-                        DeviceEventEmitter.emit('newsmore', "1")
-                    }}>
-                        <Text style={{color:'#ffffff',fontSize:30,}}>...</Text>
-                    </TouchableOpacity>
-                </View>
-                )
+    static navigationOptions = ({ navigation })=>{
+        const {state, setParams} = navigation;
+        return {
+            headerTitle: '论坛',
+            headerTintColor: "#fff",   
+            headerStyle: { backgroundColor: '#ff6b94',},
+            headerTitleStyle:{alignSelf:'auto',},
+            headerRight:
+                    (
+                    <View style={{marginRight:20,alignItems:'center'}}>
+                        <TouchableOpacity style={{width:30,height:25,}} onPress={()=>{
+                            DeviceEventEmitter.emit('newsmore',1 )
+                        }}>
+                            {state.params.newscount==0?(<Image style={{width:18,height:3,marginTop:10,}} source={require('../assets/Forum/news.png')}/>):(<Image style={{width:26,height:13,}} source={require('../assets/Forum/hasnews.png')}/>)}
+                        </TouchableOpacity>
+                    </View>
+                    )
+        }
     };
-
     componentWillUnmount() {
         this.props.navigation.state.params.callback();
         this.eventEm.remove();
@@ -67,7 +69,7 @@ export default class Forum extends Component{
         });
         self.eventEm = DeviceEventEmitter.addListener('newsmore', (value)=>{
             self.setState({
-                moreshow:!this.state.moreshow,
+                moreshow:!self.state.moreshow,
             })
         })
     }

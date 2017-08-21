@@ -9,12 +9,14 @@ import {
     Dimensions,
     AsyncStorage,
     TouchableOpacity,
+    DeviceEventEmitter,
     ListView,
     Alert,
     FlatList,
     RefreshControl,
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
+var basePath='https://www.cxy61.com/';
 export default class NewsCenter extends Component{
     constructor(props) {
         super(props);
@@ -26,7 +28,8 @@ export default class NewsCenter extends Component{
             isLoading: false,
             loadText: '正在加载...',
             isRefreshing: false,
-        }
+        };
+        
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
@@ -35,8 +38,21 @@ export default class NewsCenter extends Component{
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:15,},
+            headerRight:
+                (
+                <View style={{marginRight:20,alignItems:'center'}}>
+                    <TouchableOpacity onPress={()=>{
+                        DeviceEventEmitter.emit('read', 1)
+                    }}>
+                        <Text style={{color:'#ffffff',fontSize:16,}}>一键已读</Text>
+                    </TouchableOpacity>
+                </View>
+                )
             
         };
+    }
+    componentWillUnmount(){
+        this.eventEmss.remove();
     }
     componentDidMount() {
         var self = this;
@@ -47,6 +63,27 @@ export default class NewsCenter extends Component{
                 });
             }
         });
+        self.eventEmss = DeviceEventEmitter.addListener('read', (value)=>{
+            var detemore_url=basePath+'program_girl/message/messages/allread/';
+            fetch(detemore_url,
+            {
+                method: 'PUT',
+                headers: {Authorization: 'Token ' + self.state.token}
+            })
+            .then(response=>{
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    return '加载失败';
+                }
+            })
+            .then(responseJson=>{
+                self._onRefresh()
+            })
+            .catch((error) => {
+                console.error(error);  
+            })
+        })
     }
     _loadAlldata() {
         this.setState({
@@ -95,9 +132,10 @@ export default class NewsCenter extends Component{
             this.setState({
                 isLoading: true
             },()=> {
+                console.log(this.state.token)
                 fetch(this.state.nextPage,
                 {
-                    headers: {Authorization: 'Token ' + this.state.token}
+                    headers: {'Authorization':'Token ' + this.state.token}
                 })
                 .then(response => {
                     console.log(response)

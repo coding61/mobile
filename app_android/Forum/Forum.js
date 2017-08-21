@@ -35,21 +35,24 @@ export default class Forum extends Component{
         }
     }
 
-    static navigationOptions = {
-        headerTitle: '论坛',
-        headerTintColor: "#fff",   
-        headerStyle: { backgroundColor: '#ff6b94',},
-        headerTitleStyle:{alignSelf:'auto',},
-        headerRight:
-                (
-                <View style={{marginRight:20,alignItems:'center'}}>
-                    <TouchableOpacity style={{marginRight:10,marginBottom:20,width:40,height:40,}} onPress={()=>{
-                        DeviceEventEmitter.emit('newsmore', "1")
-                    }}>
-                        <Text style={{color:'#ffffff',fontSize:30,}}>...</Text>
-                    </TouchableOpacity>
-                </View>
-                )
+    static navigationOptions = ({ navigation })=>{
+        const {state, setParams} = navigation;
+        return {
+            headerTitle: '论坛',
+            headerTintColor: "#fff",   
+            headerStyle: { backgroundColor: '#ff6b94',},
+            headerTitleStyle:{alignSelf:'auto',},
+            headerRight:
+                    (
+                    <View style={{marginRight:20,alignItems:'center'}}>
+                        <TouchableOpacity style={{width:30,height:25,}} onPress={()=>{
+                            DeviceEventEmitter.emit('newsmore', "1")
+                        }}>
+                            {state.params.newscount==0?(<Image style={{width:21,height:4,marginTop:10,}} source={require('../assets/Forum/news.png')}/>):(<Image style={{width:27,height:14,}} source={require('../assets/Forum/hasnews.png')}/>)}
+                        </TouchableOpacity>
+                    </View>
+                    )
+        }
     };
 
     componentWillUnmount() {

@@ -16,6 +16,7 @@ import {
     Image,
     Animated,
     Easing,
+    AsyncStorage,
     DeviceEventEmitter,
     ScrollView,
     Modal
@@ -94,6 +95,7 @@ class MessagePage extends Component{
             loadStorageMsg:false,        //判断加载的是缓存数据还是新数据
 
             courseProgressArray:[],
+            newscount:'',
             showQuitLogin:false,         //是否显示退出登录按钮
 
         };
@@ -1232,14 +1234,30 @@ class MessagePage extends Component{
     }
     _loadLuntan(){
         var this_ = this;
+
         Utils.isLogin((token)=>{
             if (token) {
                 // 已登录
                 // console.log("go to luntan");
-                this_.props.navigation.navigate('Forum', {callback:()=>{
-                    this_._fetchUserInfo();
-                }})
-            }else{
+               fetch('https://www.cxy61.com/program_girl/message/messages/?types=forum&status=unread',{
+                    headers: {Authorization: 'Token ' + token}
+                })
+                .then(response=>{
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        return '加载失败';
+                    }
+                })
+                .then(responseJson=>{
+                    this_.props.navigation.navigate('Forum', {newscount:responseJson.count, callback:()=>{
+                        this_._fetchUserInfo();
+                    }}) 
+                })
+                .catch((error) => {
+                    console.error(error);
+                })
+             }else{
                 // console.log("go to login .");
                 // 未登录
                 this_.props.navigation.navigate('Login', {callback:()=>{

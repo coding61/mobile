@@ -67,7 +67,7 @@ export default class CommentText extends Component{
         .then((result)=>{
             this.setState({
                 content:'',
-                isDisable:true,
+                //isDisable:true,
             },()=>{
                 this.props.navigation.state.params.callback();
                 this.props.navigation.goBack();
@@ -101,7 +101,7 @@ export default class CommentText extends Component{
             
             this.setState({
                 content:'',
-                isDisable:true,
+                //isDisable:true,
             },()=>{
                 this.props.navigation.state.params.callback();
                 this.props.navigation.goBack();
@@ -116,8 +116,14 @@ export default class CommentText extends Component{
 
         if(this.props.navigation.state.params.name=='reply'){
             this.Comment()
+            this.setState({
+                isDisable:true,
+            })
         }else{
             this.Comment_Main()
+            this.setState({
+                isDisable:true,
+            })
         }
     }
     render() {

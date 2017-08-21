@@ -12,13 +12,11 @@ import {
     ListView,
     Alert,
     FlatList,
+    DeviceEventEmitter,
     RefreshControl,
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
-//import WebHtml from './WebHtml';
-//import Forum_Details from './Forum_Details';
-//var default_url='https://www.cxy61.com/girl/cxyteam_forum_moblie/detail.html';
-
+var basePath='https://www.cxy61.com/';
 export default class NewsCenter extends Component{
     constructor(props) {
         super(props);
@@ -40,8 +38,21 @@ export default class NewsCenter extends Component{
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:15,},
+            headerRight:
+                (
+                <View style={{marginRight:20,alignItems:'center'}}>
+                    <TouchableOpacity onPress={()=>{
+                        DeviceEventEmitter.emit('read', 1)
+                    }}>
+                        <Text style={{color:'#ffffff',fontSize:16,}}>一键已读</Text>
+                    </TouchableOpacity>
+                </View>
+                )
             
         };
+    }
+    componentWillUnmount(){
+        this.eventEmss.remove();
     }
     componentDidMount() {
         var self = this;
@@ -52,6 +63,27 @@ export default class NewsCenter extends Component{
                 });
             }
         });
+        self.eventEmss = DeviceEventEmitter.addListener('read', (value)=>{
+            var detemore_url=basePath+'program_girl/message/messages/allread/';
+            fetch(detemore_url,
+            {
+                method: 'PUT',
+                headers: {Authorization: 'Token ' + self.state.token}
+            })
+            .then(response=>{
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    return '加载失败';
+                }
+            })
+            .then(responseJson=>{
+                self._onRefresh()
+            })
+            .catch((error) => {
+                console.error(error);  
+            })
+        })
     }
     _loadAlldata() {
         this.setState({
@@ -103,7 +135,7 @@ export default class NewsCenter extends Component{
             },()=> {
                 fetch(this.state.nextPage,
                 {
-                    headers: {Authorization: 'Token ' + this.state.token}
+                    headers: {'Authorization': 'Token ' + this.state.token}
                 })
                     .then(response => {
                         console.log(response)
@@ -114,7 +146,6 @@ export default class NewsCenter extends Component{
                         }
                     })
                     .then(responseJson=> {
-                        console.log(responseJson)
                         var resultArr;
                         resultArr = this.state.dataArr.concat();
                         responseJson.results.map(result=> {
