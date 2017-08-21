@@ -110,7 +110,7 @@ export default class Login extends Component {
               <Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'手机号'}</Text>
               <TextInput
                 style={LoginStyle.inputStyle}
-                onChangeText={(phoneNum) => this.setState({phoneNum})}
+                onChangeText={(phoneNum) => this.setState({phoneNum:phoneNum})}
                 value={this.state.phoneNum}
                 keyboardType={'numeric'}
                 maxLength={11}
@@ -120,9 +120,9 @@ export default class Login extends Component {
               <Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'密    码'}</Text>
               <TextInput
                 style={LoginStyle.inputStyle}
-                onChangeText={(phoneWord) => this.setState({phoneWord})}
+                onChangeText={(phoneWord) => this.setState({phoneWord:phoneWord})}
                 value={this.state.phoneWord}
-                maxLength={10}
+                // maxLength={10}
                 secureTextEntry={true}
               />
             </View>
@@ -148,7 +148,7 @@ export default class Login extends Component {
               <Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'邀请码'}</Text>
               <TextInput
                 style={LoginStyle.inputStyle}
-                onChangeText={(inviteCode) => this.setState({inviteCode})}
+                onChangeText={(inviteCode) => this.setState({inviteCode:inviteCode})}
                 value={this.state.inviteCode}
                 keyboardType={'numeric'}
                 maxLength={8}
@@ -158,11 +158,11 @@ export default class Login extends Component {
               <Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'密    码'}</Text>
               <TextInput
                 style={LoginStyle.inputStyle}
-                onChangeText={(passWord) => this.setState({passWord})}
+                onChangeText={(passWord) => this.setState({passWord:passWord})}
                 value={this.state.passWord}
                 keyboardType={'numeric'}
                 maxLength={4}
-                secureTextEntry={false}
+                secureTextEntry={true}
               />
             </View>
           </View>
@@ -173,10 +173,10 @@ export default class Login extends Component {
           </TouchableOpacity>
         )}
         <View style={{position: 'absolute', left: 0, top: 0, width: width, height: 40, flexDirection: 'row'}}>
-          <TouchableOpacity onPress={()=> this.setState({loginWay: 'left'})} style={[{width: width / 2, height: 40, alignItems: 'center', justifyContent: 'center'},this.state.loginWay === 'left'?({borderBottomColor: 'white', borderBottomWidth: 1}):(null)]}>
+          <TouchableOpacity onPress={()=> this.setState({loginWay: 'left', passWord:"", inviteCode:""})} style={[{width: width / 2, height: 40, alignItems: 'center', justifyContent: 'center'},this.state.loginWay === 'left'?({borderBottomColor: 'white', borderBottomWidth: 1}):(null)]}>
             <Text style={{color:'white', backgroundColor: 'rgba(0,0,0,0)'}}>手机号登陆</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=> this.setState({loginWay: 'right'})} style={[{width: width / 2, height: 40, alignItems: 'center', justifyContent: 'center'},this.state.loginWay === 'right'?({borderBottomColor: 'white', borderBottomWidth: 1}):(null)]}>
+          <TouchableOpacity onPress={()=> this.setState({loginWay: 'right', phoneNum:"", phoneWord:""})} style={[{width: width / 2, height: 40, alignItems: 'center', justifyContent: 'center'},this.state.loginWay === 'right'?({borderBottomColor: 'white', borderBottomWidth: 1}):(null)]}>
             <Text style={{color:'white', backgroundColor: 'rgba(0,0,0,0)'}}>邀请码登陆</Text>
           </TouchableOpacity>
         </View>
