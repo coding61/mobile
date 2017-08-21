@@ -16,6 +16,7 @@ import {
     Image,
     Animated,
     Easing,
+    AsyncStorage,
     DeviceEventEmitter,
     ScrollView,
     Modal
@@ -95,6 +96,7 @@ class MessagePage extends Component{
 
             courseProgressArray:[],
             showQuitLogin:false,         //是否显示退出登录按钮
+            newsCount:0,                 //论坛未读消息
 
         };
         this.leftEnterValue = new Animated.Value(0)     //左侧进入动画
@@ -170,6 +172,7 @@ class MessagePage extends Component{
         // Utils.setValue("token", null);
         this._fetchUserInfo();
         this._load(); 
+        this._fetchLunTanUnread();
     }
     componentDidMount() {
     
@@ -196,8 +199,12 @@ class MessagePage extends Component{
             var chatData = JSON.parse(result);
             if (chatData && chatData.length) {
                 this_._loadStorageMessages();
-                this.setState({
-                    showQuitLogin:true
+                Utils.isLogin((token)=>{
+                    if (token) {
+                        this.setState({
+                            showQuitLogin:true
+                        })
+                    }
                 })
             }else{
                 this_.setState({
@@ -837,7 +844,7 @@ class MessagePage extends Component{
                         this_._loadClickBtnAction();
                         return
                     };
-                    // console.log(response);
+                    console.log(response);
                     if (response.status == -4) {
                         // 重复领奖
                         this_._loadClickBtnAction();
@@ -929,7 +936,28 @@ class MessagePage extends Component{
             } 
         }) 
     }
-    
+    _fetchLunTanUnread(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "get",
+                    url = Http.lunTanUnread,
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (!response) {
+                        //请求失败
+                        return;
+                    };
+                    this.setState({
+                        newsCount:response.count
+                    })
+                }, (err) => {
+                    // console.log(err);
+                    // Utils.showMessage('网络请求失败');
+                });
+            } 
+        }) 
+    }
     // ------------------------------------------点击事件
     // action 按钮 点击事件
     _clickBtnActionEvent(){
@@ -1093,6 +1121,7 @@ class MessagePage extends Component{
                     if (help == true) {
                         //点了帮助选择课程
                         this_._fetchUserInfo();
+                        this_._fetchLunTanUnread();
                         Utils.isLogin((token)=>{
                             if (token) {
                                 this.setState({
@@ -1100,6 +1129,7 @@ class MessagePage extends Component{
                                 })
                             }
                         })
+                        
                     }else{
                         // this._bottomAnimate();
                         this_.setState({
@@ -1107,6 +1137,7 @@ class MessagePage extends Component{
                             showAction:true
                         })
                         this_._fetchUserInfo();
+                        this_._fetchLunTanUnread();
                         Utils.isLogin((token)=>{
                             if (token) {
                                 this.setState({
@@ -1115,6 +1146,7 @@ class MessagePage extends Component{
                             }
                         })
                     }
+
                 }})
             }
         })
@@ -1241,35 +1273,22 @@ class MessagePage extends Component{
     }
     _loadLuntan(){
         var this_ = this;
+
         Utils.isLogin((token)=>{
             if (token) {
                 // 已登录
                 // console.log("go to luntan");
-                fetch('https://www.cxy61.com/program_girl/message/messages/?types=forum&status=unread',{
-                    headers: {Authorization: 'Token ' + token}
-                })
-                .then(response=>{
-                    if (response.status === 200) {
-                        return response.json();
-                    } else {
-                        return '加载失败';
-                    }
-                })
-                .then(responseJson=>{
-                    this_.props.navigation.navigate('Forum', {newscount:responseJson.count, callback:()=>{
-                        this_._fetchUserInfo();
-                    }}) 
-                })
-                .catch((error) => {
-                    console.error(error);
-                })
-                
-            }else{
+                this_.props.navigation.navigate('Forum', {newscount:this.state.newsCount, callback:()=>{
+                    this_._fetchUserInfo();
+                    this_._fetchLunTanUnread();
+                }})
+             }else{
                 // console.log("go to login .");
                 // 未登录
                 this_.props.navigation.navigate('Login', {callback:()=>{
                     
                     this_._fetchUserInfo();
+                    this_._fetchLunTanUnread();
                     Utils.isLogin((token)=>{
                         if (token) {
                             this.setState({
@@ -1333,11 +1352,13 @@ class MessagePage extends Component{
 
             courseProgressArray:[],
             showQuitLogin:false,         //是否显示退出登录按钮
+            newsCount:0,                 //论坛未读消息
         })
         Utils.clearAllValue()
         this.setState({showHelpActions:false})
 
         this._fetchUserInfo();
+        this._fetchLunTanUnread();
         this._load();
     }
     // 消息图片点击
@@ -1350,7 +1371,7 @@ class MessagePage extends Component{
     // 消息链接点击
     _clickMessageLink(link){
         var language = link.split("/")[1]?link.split("/")[1]:"python";
-
+        
         link == "www.code.com"
         ?
             // 编辑器
@@ -1595,8 +1616,8 @@ class MessagePage extends Component{
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickStudyLuntan}>
                             <Text style={styles.helpActionText}>{"学习论坛"}</Text>
                         </TouchableOpacity>
-                        
-                        <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickFindHelp}>
+                
+                        <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickFindHelp} >
                             <Text style={styles.helpActionText}>{"寻找帮助"}</Text>
                         </TouchableOpacity>
 

@@ -95,8 +95,8 @@ class MessagePage extends Component{
             loadStorageMsg:false,        //判断加载的是缓存数据还是新数据
 
             courseProgressArray:[],
-            newscount:'',
             showQuitLogin:false,         //是否显示退出登录按钮
+            newsCount:0,                 //论坛未读消息
 
         };
         this.leftEnterValue = new Animated.Value(0)     //左侧进入动画
@@ -172,6 +172,7 @@ class MessagePage extends Component{
         // Utils.setValue("token", null);
         this._fetchUserInfo();
         this._load(); 
+        this._fetchLunTanUnread();
     }
     componentDidMount() {
     
@@ -198,9 +199,14 @@ class MessagePage extends Component{
             var chatData = JSON.parse(result);
             if (chatData && chatData.length) {
                 this_._loadStorageMessages();
-                this.setState({
-                    showQuitLogin:true
+                Utils.isLogin((token)=>{
+                    if (token) {
+                        this.setState({
+                            showQuitLogin:true
+                        })
+                    }
                 })
+                
             }else{
                 this_.setState({
                     showHeaderComponent:false,
@@ -931,7 +937,28 @@ class MessagePage extends Component{
             } 
         }) 
     }
-    
+    _fetchLunTanUnread(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "get",
+                    url = Http.lunTanUnread,
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (!response) {
+                        //请求失败
+                        return;
+                    };
+                    this.setState({
+                        newsCount:response.count
+                    })
+                }, (err) => {
+                    // console.log(err);
+                    // Utils.showMessage('网络请求失败');
+                });
+            } 
+        }) 
+    }
     // ------------------------------------------点击事件
     // action 按钮 点击事件
     _clickBtnActionEvent(){
@@ -1095,6 +1122,7 @@ class MessagePage extends Component{
                     if (help == true) {
                         //点了帮助选择课程
                         this_._fetchUserInfo();
+                        this_._fetchLunTanUnread();
                         Utils.isLogin((token)=>{
                             if (token) {
                                 this.setState({
@@ -1110,6 +1138,7 @@ class MessagePage extends Component{
                             showAction:true
                         })
                         this_._fetchUserInfo();
+                        this_._fetchLunTanUnread();
                         Utils.isLogin((token)=>{
                             if (token) {
                                 this.setState({
@@ -1250,30 +1279,17 @@ class MessagePage extends Component{
             if (token) {
                 // 已登录
                 // console.log("go to luntan");
-               fetch('https://www.cxy61.com/program_girl/message/messages/?types=forum&status=unread',{
-                    headers: {Authorization: 'Token ' + token}
-                })
-                .then(response=>{
-                    if (response.status === 200) {
-                        return response.json();
-                    } else {
-                        return '加载失败';
-                    }
-                })
-                .then(responseJson=>{
-                    this_.props.navigation.navigate('Forum', {newscount:responseJson.count, callback:()=>{
-                        this_._fetchUserInfo();
-                    }}) 
-                })
-                .catch((error) => {
-                    console.error(error);
-                })
+                this_.props.navigation.navigate('Forum', {newscount:this.state.newsCount, callback:()=>{
+                    this_._fetchUserInfo();
+                    this_._fetchLunTanUnread();
+                }})
              }else{
                 // console.log("go to login .");
                 // 未登录
                 this_.props.navigation.navigate('Login', {callback:()=>{
                     
                     this_._fetchUserInfo();
+                    this_._fetchLunTanUnread();
                     Utils.isLogin((token)=>{
                         if (token) {
                             this.setState({
@@ -1337,11 +1353,13 @@ class MessagePage extends Component{
 
             courseProgressArray:[],
             showQuitLogin:false,         //是否显示退出登录按钮
+            newsCount:0,                 //论坛未读消息
         })
         Utils.clearAllValue()
         this.setState({showHelpActions:false})
 
         this._fetchUserInfo();
+        this._fetchLunTanUnread();
         this._load();
     }
     // 消息图片点击
