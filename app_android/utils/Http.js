@@ -14,6 +14,7 @@ let Http = {
 	updateExtent:Http_Domain + "/userinfo/update_learnextent/",   //更新进度
 	myTeam:Http_Domain + "/userinfo/mygroup/",                    //我的团队
 	teamBrand:Http_Domain + "/userinfo/groups/diamond/ranking/",  //团队排行
+	lunTanUnread:Http_Domain + "/message/messages/?types=forum&status=unread",   //论坛未读消息
 	courseInfo:(pk)=>{                                            //课程信息
 		return Http_Domain + "/course/courses/" + pk + "/"
 	},
