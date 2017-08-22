@@ -21,8 +21,6 @@ import {
 var {height, width} = Dimensions.get('window');
 var basePath='https://www.cxy61.com/';
 
-import WebHtml from './WebHtml';
-import AddForum from './AddForum';
 import ForumAdd from './ForumAdd';
 import Forum_Details from './Forum_Details';
 export default class ForumList extends Component{
