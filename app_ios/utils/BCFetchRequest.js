@@ -41,15 +41,19 @@ let BCFetchRequest = {
 		.then((response) => {
             if (response.status === 200 || response.status=== 400 || response.status == 403) {
             	return response.json();
+            }else if(response.status === 401){
+            	return 401
             }else{
             	return response.text()
             }
 		})
 		.then((responseResult) => {
-			console.log(responseResult);
+			// console.log(responseResult);
 			if (typeof responseResult === "string") {
 				//请求失败
 				successCallback(null)
+			}else if(typeof responseResult === "number"){
+				successCallback(401);
 			}else{
 				successCallback(responseResult);
 			}

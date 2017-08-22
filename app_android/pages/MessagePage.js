@@ -171,10 +171,12 @@ class MessagePage extends Component{
         // var chatArray = [];
         // Utils.setValue("chatData", JSON.stringify(chatArray));
         // Utils.setValue("token", null);
-        this._fetchUserInfo();
+        // Utils.clearAllValue();
         this._load(); 
+        this._fetchUserInfo();
         this._fetchLunTanUnread();
         this._getDeviceInfo();
+
     }
     componentDidMount() {
     
@@ -238,12 +240,23 @@ class MessagePage extends Component{
                         })
                     }
                 })
+                
             }else{
                 this_.setState({
-                    showHeaderComponent:false,
-                    showQuitLogin:false
+                    showHeaderComponent:false
                 })
                 this_._loadDefaultMessages();
+                Utils.isLogin((token)=>{
+                    if (token) {
+                        this.setState({
+                            showQuitLogin:true
+                        })
+                    }else{
+                        this.setState({
+                            showQuitLogin:false
+                        })
+                    }
+                })
             }
         })
     }
@@ -701,6 +714,12 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response == 401) {
+                        //去登录
+                        console.log(401);
+                        this._goLogin();
+                        return;
+                    }
                     if (!response) {
                         //请求失败
                     };
@@ -743,10 +762,16 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response == 401) {
+                        //去登录
+                        return;
+                    }
+
+
                     if (!response) {
                         //请求失败
                     };
-                    // console.log(response);
+                    console.log(response);
                     this_.setState({
                         loading:true
                     })
@@ -821,6 +846,12 @@ class MessagePage extends Component{
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response == 401) {
+                        //去登录
+                        console.log(401);
+                        this._goLogin();
+                        return;
+                    }
                     if (!response) {
                         //请求失败
                     };
@@ -870,7 +901,12 @@ class MessagePage extends Component{
                     // this_._loadAudio("grade");   //打开钻石音频
                     // this_._loadGradeAni(GrowAniTime+ZuanAniTime);
 
-                    
+                    if (response == 401) {
+                        //去登录
+                        console.log(401);
+                        this._goLogin();
+                        return;
+                    }
                     if (!response) {
                         //请求失败
                         this_._loadClickBtnAction();
@@ -954,6 +990,12 @@ class MessagePage extends Component{
                         lesson:courseIndex
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response == 401) {
+                        //去登录
+                        console.log(401);
+                        this._goLogin();
+                        return;
+                    }
                     if (!response) {
                         //请求失败
                     };
@@ -989,6 +1031,133 @@ class MessagePage extends Component{
                 });
             } 
         }) 
+    }
+    _goLogin(){
+        // 未登录
+        // Utils.setValue("token", "");
+        Utils.clearAllValue();
+        const {setParams} = this.props.navigation;
+        setParams({userinfo:""})
+        this.setState({
+            loading:false,
+            totalData:[],                //某课程总数据
+            chatData:[],                 //缓存数据
+            data:null,                   //节数据
+            index:0,                     //节下标
+            currentItem:null,            //当前消息
+            number:0,                    //记录加载数据的个数
+            dataSource:[],               //页面加载的所有数据源
+            loadingChat:true,            //等待符号
+            
+            optionData:[],               //选项数据
+            optionIndex:0,               //选项下标
+            options:[],                  //用户做出的选择
+            actionTag:actionCommonTag,   //默认是普通按钮
+            showAction:false,
+            contentHeight:0,
+
+            course:null,                 //当前课程的 pk
+            courseTotal:0,               //当前课程的总节数
+            courseIndex:0,               //当前课程的进度
+
+            chooseCourse:null,           //选择课程的 pk
+            chooseCourseTotal:0,         //选择课程的总节数
+            chooseCourseIndex:0,         //选择课程的进度
+
+            showGradeAni:false,          //是否显示升级动画
+            showZuanAni:false,           //是否显示钻石动画
+            showGrowAni:false,           //是否显示经验动画
+            growNum:0,                   //经验值
+
+            userinfo:null,               //用户信息
+            count:10,                    //缓存数据一次加载的个数
+
+            showHelpActions:false,       //是否显示帮助组按钮
+            showHeaderComponent:false,   //是否显示头部的组件（加载更多）
+            headerLoadTag:LoadMore,      //默认是点击加载更多
+
+            scrollTop:false,             //是否要向上滚动
+            scrollTopLastItem:false,     //向上滚动，最后一个元素
+
+            itemHeight:0,                //item的高度
+            bigImgUrl:"",                //放大图片的 url
+            showBigImgView:false,        //是否显示大图组件
+            showFindHelpView:false,      //是否显示查找帮助组件
+
+            courseProgressArray:[],
+            showQuitLogin:false,         //是否显示退出登录按钮
+            newsCount:0,                 //论坛未读消息
+        })
+        this.setState({showHelpActions:false})
+
+        this.props.navigation.navigate('Login', {callback:()=>{
+            /*
+            const {setParams} = this.props.navigation;
+            setParams({userinfo:""})
+            this.setState({
+                loading:false,
+                totalData:[],                //某课程总数据
+                chatData:[],                 //缓存数据
+                data:null,                   //节数据
+                index:0,                     //节下标
+                currentItem:null,            //当前消息
+                number:0,                    //记录加载数据的个数
+                dataSource:[],               //页面加载的所有数据源
+                loadingChat:true,            //等待符号
+                
+                optionData:[],               //选项数据
+                optionIndex:0,               //选项下标
+                options:[],                  //用户做出的选择
+                actionTag:actionCommonTag,   //默认是普通按钮
+                showAction:false,
+                contentHeight:0,
+
+                course:null,                 //当前课程的 pk
+                courseTotal:0,               //当前课程的总节数
+                courseIndex:0,               //当前课程的进度
+
+                chooseCourse:null,           //选择课程的 pk
+                chooseCourseTotal:0,         //选择课程的总节数
+                chooseCourseIndex:0,         //选择课程的进度
+
+                showGradeAni:false,          //是否显示升级动画
+                showZuanAni:false,           //是否显示钻石动画
+                showGrowAni:false,           //是否显示经验动画
+                growNum:0,                   //经验值
+
+                userinfo:null,               //用户信息
+                count:10,                    //缓存数据一次加载的个数
+
+                showHelpActions:false,       //是否显示帮助组按钮
+                showHeaderComponent:false,   //是否显示头部的组件（加载更多）
+                headerLoadTag:LoadMore,      //默认是点击加载更多
+
+                scrollTop:false,             //是否要向上滚动
+                scrollTopLastItem:false,     //向上滚动，最后一个元素
+
+                itemHeight:0,                //item的高度
+                bigImgUrl:"",                //放大图片的 url
+                showBigImgView:false,        //是否显示大图组件
+                showFindHelpView:false,      //是否显示查找帮助组件
+
+                courseProgressArray:[],
+                showQuitLogin:false,         //是否显示退出登录按钮
+                newsCount:0,                 //论坛未读消息
+            })
+            this.setState({showHelpActions:false})
+            */
+
+            this._load(); 
+            this._fetchUserInfo();
+            this._fetchLunTanUnread();
+            Utils.isLogin((token)=>{
+                if (token) {
+                    this.setState({
+                        showQuitLogin:true
+                    })
+                }
+            })
+        }})
     }
     // ------------------------------------------点击事件
     // action 按钮 点击事件
