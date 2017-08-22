@@ -21,8 +21,6 @@ import CodeCompileWebView from './pages/CodeCompileWebView.js';
 
 import Forum from './Forum/Forum.js';
 import ForumList from './Forum/ForumList.js';
-import WebHtml from './Forum/WebHtml.js';
-import AddForum from './Forum/AddForum.js';
 import Forum_Details from './Forum/Forum_Details.js';
 import NewsCenter from './Forum/NewsCenter.js';
 import RankingList from './Forum/RankingList.js';
@@ -77,8 +75,6 @@ const app = StackNavigator({
     
     Forum:{screen: Forum},
     ForumList:{screen:ForumList},
-    WebHtml:{screen:WebHtml},
-    AddForum:{screen:AddForum},
     Forum_Details:{screen:Forum_Details},
     NewsCenter:{screen:NewsCenter},
     RankingList:{screen:RankingList},
