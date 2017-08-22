@@ -20,7 +20,6 @@ import {
 
 var {height, width} = Dimensions.get('window');
 
-
 export default class MyCollect extends Component{
     constructor(props) {
         super(props);
@@ -93,44 +92,44 @@ export default class MyCollect extends Component{
                 fetch(this.state.nextPage, {
                     headers: {Authorization: 'Token ' + this.state.token}
                 })
-                    .then(response => {
-                        if (response.status === 200) {
-                            return response.json();
-                        } else {
-                            return '加载失败';
-                        }
-                    })
-                    .then(responseJson=> {
-                        if (responseJson === '加载失败') {
-                            Alert.alert(
-                              '加载失败,请重试',
-                              '',
-                              [
-                                {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
-                              ]
-                            )
-                        } else {
-                            var resultArr;
-                            resultArr = this.state.dataArr.concat();
-                            responseJson.results.map(result=> {
-                                resultArr.push(result);
-                            })
-                            this.setState({
-                                nextPage: responseJson.next,
-                                dataArr: resultArr,
-                                dataSource: resultArr,
-                                isLoading: false,
-                                loadText: responseJson.next?('正在加载...'):('没有更多了')
-                            })
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        this.setState({
-                            isLoading: false,
-                            isRefreshing: false
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        return '加载失败';
+                    }
+                })
+                .then(responseJson=> {
+                    if (responseJson === '加载失败') {
+                        Alert.alert(
+                          '加载失败,请重试',
+                          '',
+                          [
+                            {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
+                          ]
+                        )
+                    } else {
+                        var resultArr;
+                        resultArr = this.state.dataArr.concat();
+                        responseJson.results.map(result=> {
+                            resultArr.push(result);
                         })
+                        this.setState({
+                            nextPage: responseJson.next,
+                            dataArr: resultArr,
+                            dataSource: resultArr,
+                            isLoading: false,
+                            loadText: responseJson.next?('正在加载...'):('没有更多了')
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    this.setState({
+                        isLoading: false,
+                        isRefreshing: false
                     })
+                })
             })
         }
     }
@@ -178,7 +177,6 @@ export default class MyCollect extends Component{
     }
     renderForumRow(item){
         var rowData=item.item.posts;
-        
         var time_last=this.dealWithTime(rowData.last_replied)
         return (
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
@@ -201,7 +199,6 @@ export default class MyCollect extends Component{
                 </View>
             </TouchableOpacity>
         )
-        
     }
     _keyExtractor = (item, index) => index;
     render(){
@@ -213,26 +210,26 @@ export default class MyCollect extends Component{
             return (
                 <View style={styles.container}>
                     <FlatList
-                            horizontal={false}
-                            refreshing={true}
-                            data={this.state.dataSource}
-                            renderItem={this.renderForumRow.bind(this)}
-                            onEndReached={this._renderNext.bind(this)}
-                            onEndReachedThreshold={0.2}
-                            progressViewOffset={10}
-                            contentContainerStyle={{paddingBottom:50,}}
-                            keyExtractor={this._keyExtractor}
-                            ListFooterComponent={this._renderFooter.bind(this)}
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={this.state.isRefreshing}
-                                    onRefresh={this._onRefresh.bind(this)}
-                                    tintColor='#cccccc'
-                                    title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
-                                    titleColor='#cccccc' />
-                            }
-                        >
-                        </FlatList>
+                        horizontal={false}
+                        refreshing={true}
+                        data={this.state.dataSource}
+                        renderItem={this.renderForumRow.bind(this)}
+                        onEndReached={this._renderNext.bind(this)}
+                        onEndReachedThreshold={0.2}
+                        progressViewOffset={10}
+                        contentContainerStyle={{paddingBottom:50,}}
+                        keyExtractor={this._keyExtractor}
+                        ListFooterComponent={this._renderFooter.bind(this)}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.isRefreshing}
+                                onRefresh={this._onRefresh.bind(this)}
+                                tintColor='#cccccc'
+                                title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
+                                titleColor='#cccccc' />
+                        }
+                    >
+                    </FlatList>
                 </View>
             )
         }

@@ -117,7 +117,6 @@ export default class ForumAdd extends Component{
                     enablesReturnKeyAutomatically={true}
                     placeholderTextColor='#aaaaaa'
                 />
-                
             </View>
         )
     }

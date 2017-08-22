@@ -133,10 +133,8 @@ export default class NewsCenter extends Component{
             this.setState({
                 isLoading: true
             },()=> {
-                console.log(this.state.token)
-                fetch(this.state.nextPage,
-                {
-                    headers: {'Authorization':'Token ' + this.state.token}
+                fetch(this.state.nextPage, {
+                    headers: {Authorization: 'Token ' + this.state.token}
                 })
                 .then(response => {
                     console.log(response)
