@@ -65,7 +65,7 @@ export default class ForumList extends Component{
     componentDidMount(){
         this._loadAlldata()
         this.eventEmtt = DeviceEventEmitter.addListener('addforum', (value)=>{
-            console.log(this.props.navigation)
+            
             this.props.navigation.navigate('ForumAdd',{data:value,token:this.state.token,callback:(msg)=>{
                 this._onRefresh()
             }})

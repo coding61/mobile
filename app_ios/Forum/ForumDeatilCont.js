@@ -20,6 +20,7 @@ export default class ForumDeatilCont extends Component{
         super(props);
         this.state = {
             modalVisible:false,
+            imgurl:new Array(),
         }
     }
     componentDidMount() {
@@ -58,8 +59,16 @@ export default class ForumDeatilCont extends Component{
             .replace(/\n/g, '<br>') //转义换行   
         return content;
     }
-    LoadImg(){
-        this.setState({modalVisible:true})
+    LoadImg(img){
+        //console.log(img)
+        //let image;
+        var image = new Array();
+            image.push({url:img})
+
+        this.setState({
+            modalVisible:true,
+            imgurl:image,
+        })
     }
     _setModalVisible(){
         this.setState({modalVisible:!this.state.modalVisible})
@@ -73,19 +82,19 @@ export default class ForumDeatilCont extends Component{
         })
         
         return(
-            <View style={{paddingLeft:20,paddingTop:10,paddingRight:20,paddingBottom:10,}}>
-                <Text selectable={true}>{text}</Text>
+            <View style={{paddingLeft:15,paddingTop:10,paddingRight:15,paddingBottom:10,}}>
+                <Text selectable={true} style={{lineHeight:20,color:'#3f3f3f'}}>{text}</Text>
                 <View style={{flexDirection:'row',flexWrap:'wrap'}}>
                     {output.map((result,index)=> {
                         return(
-                            <TouchableOpacity key={index} onPress={this.LoadImg.bind(this)} style={{margin:10,}}>
+                            <TouchableOpacity key={index} onPress={this.LoadImg.bind(this,result.url)} style={{margin:10,}}>
                                 <Image style={{width:80,height:80,}} source={{uri:result.url}}/>
                             </TouchableOpacity>
                         )
                     })}
                 </View>
                 <Modal visible={this.state.modalVisible} transparent={true} onRequestClose={()=>{alert("Modal has been closed.")}}>
-                    <ImageViewer imageUrls={output} onClick={this._setModalVisible.bind(this)}/>
+                    <ImageViewer imageUrls={this.state.imgurl} onClick={this._setModalVisible.bind(this)}/>
                 </Modal>
             </View>
             )

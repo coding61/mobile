@@ -12,7 +12,7 @@ import {
   ListView,
   DeviceEventEmitter,
   Modal,
-  
+  Alert,
 }from 'react-native';
 import face from './Content_Rex';
 var basePath='https://www.cxy61.com/';
@@ -69,8 +69,19 @@ export default class ForumAdd extends Component{
                 return response.json();
             })
             .then((result)=>{
-                this.props.navigation.state.params.callback();
-                this.props.navigation.goBack();
+                if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
+                    Alert.alert(
+                        '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',
+                        '',
+                        [
+                            {text: '确定', onPress: ()=> {}, style: 'destructive'},
+                            {text: '取消', onPress: () => {}, style: 'destructive'},
+                         ]
+                    )
+                }else{
+                    this.props.navigation.state.params.callback();
+                    this.props.navigation.goBack();
+                }
             })
             .catch((error) => {
                 console.error(error);
