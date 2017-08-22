@@ -138,9 +138,9 @@ export default class Login extends Component {
             <Text style={LoginStyle.loginBtnText}>{'登录'}</Text>
           </TouchableOpacity>
             <View style={{flexDirection: 'row', width: 2 * width / 3, height: 50, alignItems: 'center', justifyContent: 'space-between'}}>
-              {/* <TouchableOpacity onPress={()=> this.props.navigation.navigate('FindWord')}>
+               <TouchableOpacity onPress={()=> this.props.navigation.navigate('FindWord')}>
                 <Text style={{fontSize: 13, color: 'white'}}>{'忘记密码？'}</Text>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
               <Text>{''}</Text>
               <TouchableOpacity onPress={()=> this.props.navigation.navigate('Register')}>
                 <Text style={{fontSize: 13, color: 'white'}}>{'注册'}</Text>

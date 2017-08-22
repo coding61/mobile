@@ -15,6 +15,10 @@ import {
 } from 'react-native';
 import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 import {StackNavigator} from 'react-navigation';
+import Utils from '../utils/Utils.js';
+import BCFetchRequest from '../utils/BCFetchRequest.js';
+import Http from '../utils/Http.js';
+
 const {width, height} = Dimensions.get('window');
 var seeImgs = [require('../assets/Login/see2.png'), require('../assets/Login/see1.png')];
 export default class Register extends Component {
@@ -39,26 +43,46 @@ export default class Register extends Component {
     }
   } 
   attainCode = () => {
-    if (this.state.textCodeNum === '获取验证码') {
-      var time = 30;
-      var _this = this;
-      this.setTime = setInterval(function() {
-        time --;
-        _this.setState({
-          textCodeNum: time 
-        },()=> {
-          if (time < 0) {
-            _this.setState({
-              textCodeNum: '获取验证码'
-            })
-            _this.setTime && clearInterval(_this.setTime);
-          }
-        })
-      }, 1000);
-      fetch('https://www.cxy61.com/program_girl/userinfo/telephone_signup_request/?telephone=' + this.state.phoneNum, {headers: {'content-type': 'application/json'}})
-      .then(response=> {
-        console.log(response);
-      })
+    var reg = /^1[0-9]{10}$/;
+    if (this.state.textCodeNum === '获取验证码' && reg.test(this.state.phoneNum)) {
+        var type = "get",
+            url = Http.getRegCode(this.state.phoneNum),
+            token = null,
+            data = null;
+        BCFetchRequest.fetchData(type, url, token, data, (response) => {
+            if (!response) {
+                //请求失败
+            };
+            if (response.status == 0) {
+                var time = 60;
+                var _this = this;
+                this.setTime = setInterval(function() {
+                    --time;
+                    if (time > 0) {
+                        _this.setState({
+                            textCodeNum:time
+                        })
+                    }else{
+                        _this.setState({
+                            textCodeNum:'获取验证码'
+                        }, ()=>{
+                            clearInterval(_this.setTime);
+                        })
+                    }
+                  }, 1000);
+
+            }else if (response.detail) {
+                alert(response.detail);
+            }else if (response.message) {
+                alert(response.message);
+            }
+
+        }, (err) => {
+            // console.log(err);
+            // Utils.showMessage('网络请求失败');
+        });      
+    }else if (!reg.test(this.state.phoneNum)) {
+        alert("手机号不合法")
     }
   }
   see = () => {

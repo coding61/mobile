@@ -15,9 +15,16 @@ let Http = {
 	myTeam:Http_Domain + "/userinfo/mygroup/",                    //我的团队
 	teamBrand:Http_Domain + "/userinfo/groups/diamond/ranking/",  //团队排行
 	lunTanUnread:Http_Domain + "/message/messages/?types=forum&status=unread",   //论坛未读消息
+	findPassword:Http_Domain + "/userinfo/reset_password/",       //找回密码
 	courseInfo:(pk)=>{                                            //课程信息
 		return Http_Domain + "/course/courses/" + pk + "/"
 	},
+	getPassCode:(phone)=>{
+		return Http_Domain + "/userinfo/reset_password_request/?telephone=" + phone      //获取找回密码验证码
+	},
+	getRegCode:(phone)=>{
+		return Http_Domain + "/userinfo/telephone_signup_request/?telephone=" + phone    //获取手机注册验证码
+	}
 
 
 }

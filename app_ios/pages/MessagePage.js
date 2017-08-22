@@ -24,6 +24,7 @@ import {
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Sound from 'react-native-sound';
 import ImageLoad from 'react-native-image-placeholder';
+import DeviceInfo from 'react-native-device-info';
 
 import chatdata from '../data1.js';
 import Utils from '../utils/Utils.js';
@@ -173,6 +174,8 @@ class MessagePage extends Component{
         this._fetchUserInfo();
         this._load(); 
         this._fetchLunTanUnread();
+        this._getDeviceInfo();
+
     }
     componentDidMount() {
     
@@ -191,6 +194,36 @@ class MessagePage extends Component{
     componentWillUnmount() {
         // this.props.navigation.setParams({userinfo:""})
         this.timer && clearTimeout(this.timer);
+    }
+    _getDeviceInfo(){
+        console.log("Device Unique ID", DeviceInfo.getUniqueID());  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9
+        // * note this is IDFV on iOS so it will change if all apps from the current apps vendor have been previously uninstalled
+
+        console.log("Device Manufacturer", DeviceInfo.getManufacturer());  // e.g. Apple
+
+        console.log("Device Model", DeviceInfo.getModel());  // e.g. iPhone 6
+
+        console.log("Device ID", DeviceInfo.getDeviceId());  // e.g. iPhone7,2 / or the board on Android e.g. goldfish
+
+        console.log("Device Name", DeviceInfo.getSystemName());  // e.g. iPhone OS
+
+        console.log("Device Version", DeviceInfo.getSystemVersion());  // e.g. 9.0
+
+        console.log("Bundle Id", DeviceInfo.getBundleId());  // e.g. com.learnium.mobile
+
+        console.log("Build Number", DeviceInfo.getBuildNumber());  // e.g. 89
+
+        console.log("App Version", DeviceInfo.getVersion());  // e.g. 1.1.0
+
+        console.log("App Version (Readable)", DeviceInfo.getReadableVersion());  // e.g. 1.1.0.89
+
+        console.log("Device Name", DeviceInfo.getDeviceName());  // e.g. Becca's iPhone 6
+
+        console.log("User Agent", DeviceInfo.getUserAgent()); // e.g. Dalvik/2.1.0 (Linux; U; Android 5.1; Google Nexus 4 - 5.1.0 - API 22 - 768x1280 Build/LMY47D)
+
+        console.log("Device Locale", DeviceInfo.getDeviceLocale()); // e.g en-US
+
+        console.log("Device Country", DeviceInfo.getDeviceCountry()); // e.g US
     }
     _load(){
         var this_ = this
@@ -1539,6 +1572,7 @@ class MessagePage extends Component{
             <TouchableOpacity onPress={this._clickFindHelpShadow} style={styles.findHelpShadowView}>
                 <View style={{}}>
                     <Text style={styles.findHelpText}>如需帮助，请使用学习论坛进行发帖，会有专人帮您解答。</Text>
+                    <Text style={styles.findHelpVersion}>当前版本号:{DeviceInfo.getVersion()}</Text>
                 </View>
             </TouchableOpacity>
         )
@@ -2543,6 +2577,13 @@ const styles = StyleSheet.create({
         fontSize: 20,
         width: width*.8,
         marginTop:(height-headerH)*.3
+    },
+    findHelpVersion:{
+        color: 'white',
+        fontSize: 20,
+        width: width*.8,
+        marginTop:30,
+        textAlign:'center'
     },
     // -------------------------------------课程进度
     courseProgressView:{

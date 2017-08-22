@@ -15,6 +15,10 @@ import {
 } from 'react-native';
 import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 
+import Utils from '../utils/Utils.js';
+import BCFetchRequest from '../utils/BCFetchRequest.js';
+import Http from '../utils/Http.js';
+
 const {width, height} = Dimensions.get('window');
 var seeImgs = [require('../assets/Login/see2.png'), require('../assets/Login/see1.png')];
 export default class FindWord extends Component {
@@ -38,23 +42,84 @@ export default class FindWord extends Component {
       canSee: false
     }
   } 
+    // 3.找回密码
+    _fetchFindPassword(){
+        var reg = /^1[0-9]{10}$/;
+        if (!reg.test(this.state.phoneNum)) {
+            alert('手机号不合法');
+            return;
+        }
+        if (!this.state.testCode) {
+            alert('验证码必填');
+            return;
+        }
+        if (!this.state.password) {
+            alert('密码必填');
+            return;
+        }
+        var type = "put",
+            url = Http.findPassword,
+            token = null,
+            data = {
+                telephone:this.state.phoneNum,
+                password:this.state.password,
+                verification_code:this.state.testCode
+            };
+        BCFetchRequest.fetchData(type, url, token, data, (response) => {
+            console.log(response);
+            if (response.token) {
+                //重置密码成功
+                alert("请妥善保管好您的密码");
+                this.props.navigation.goBack();
+            }else{
+                alert("密码修改失败");
+            }
+        }, (err) => {
+            console.log(err);
+            // alert('网络请求失败');
+        });
+    }
   attainCode = () => {
-    if (this.state.textCodeNum === '获取验证码') {
-      var time = 30;
-      var _this = this;
-      this.setTime = setInterval(function() {
-        time --;
-        _this.setState({
-          textCodeNum: time 
-        },()=> {
-          if (time < 0) {
-            _this.setState({
-              textCodeNum: '获取验证码'
-            })
-            _this.setTime && clearInterval(_this.setTime);
-          }
-        })
-      }, 1000);
+    var reg = /^1[0-9]{10}$/;
+    if (this.state.textCodeNum === '获取验证码' && reg.test(this.state.phoneNum)) {
+        var type = "get",
+            url = Http.getPassCode(this.state.phoneNum),
+            token = null,
+            data = null;
+        BCFetchRequest.fetchData(type, url, token, data, (response) => {
+            if (!response) {
+                //请求失败
+            };
+            if (response.status == 0) {
+                var time = 60;
+                var _this = this;
+                this.setTime = setInterval(function() {
+                    --time;
+                    if (time > 0) {
+                        _this.setState({
+                            textCodeNum:time
+                        })
+                    }else{
+                        _this.setState({
+                            textCodeNum:'获取验证码'
+                        }, ()=>{
+                            clearInterval(_this.setTime);
+                        })
+                    }
+                  }, 1000);
+
+            }else if (response.detail) {
+                alert(response.detail);
+            }else if (response.message) {
+                alert(response.message);
+            }
+
+        }, (err) => {
+            // console.log(err);
+            // Utils.showMessage('网络请求失败');
+        });      
+    }else if (!reg.test(this.state.phoneNum)) {
+        alert("手机号不合法")
     }
   }
   see = () => {
@@ -63,7 +128,7 @@ export default class FindWord extends Component {
     })
   }
   goNext = () => {
-    
+    this._fetchFindPassword();
   }
   
   componentWillUnmount() {
@@ -104,7 +169,7 @@ export default class FindWord extends Component {
             style={styles.inputStyle}
             onChangeText={(password) => this.setState({password})}
             value={this.state.password}
-            maxLength={10}
+            // maxLength={10}
             underlineColorAndroid={'transparent'}
             placeholder={'请输入新密码'}
             secureTextEntry={!this.state.canSee}
