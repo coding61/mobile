@@ -93,7 +93,7 @@ export default class ForumDeatilCont extends Component{
                         )
                     })}
                 </View>
-                <Modal visible={this.state.modalVisible} transparent={true} onRequestClose={()=>{alert("Modal has been closed.")}}>
+                <Modal visible={this.state.modalVisible} transparent={true} onRequestClose={()=>{this.setState({modalVisible:false})}}>
                     <ImageViewer imageUrls={this.state.imgurl} onClick={this._setModalVisible.bind(this)}/>
                 </Modal>
             </View>

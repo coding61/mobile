@@ -20,9 +20,6 @@ import {
 var {height, width} = Dimensions.get('window');
 var basePath='https://www.cxy61.com/';
 
-import WebHtml from './WebHtml';
-import AddForum from './AddForum';
-
 import Forum_Details from './Forum_Details';
 
 export default class ForumList extends Component{
@@ -65,7 +62,6 @@ export default class ForumList extends Component{
     componentDidMount(){
         this._loadAlldata()
         this.eventEmtt = DeviceEventEmitter.addListener('addforum', (value)=>{
-            
             this.props.navigation.navigate('ForumAdd',{data:value,token:this.state.token,callback:(msg)=>{
                 this._onRefresh()
             }})
@@ -153,44 +149,44 @@ export default class ForumList extends Component{
                 fetch(this.state.nextPage, {
                     headers: {Authorization: 'Token ' + this.state.token}
                 })
-                    .then(response => {
-                        if (response.status === 200) {
-                            return response.json();
-                        } else {
-                            return '加载失败';
-                        }
-                    })
-                    .then(responseJson=> {
-                        if (responseJson === '加载失败') {
-                            Alert.alert(
-                              '加载失败,请重试',
-                              '',
-                              [
-                                {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
-                              ]
-                            )
-                        } else {
-                            var resultArr;
-                            resultArr = this.state.dataArr.concat();
-                            responseJson.results.map(result=> {
-                                resultArr.push(result);
-                            })
-                            this.setState({
-                                nextPage: responseJson.next,
-                                dataArr: resultArr,
-                                dataSource: resultArr,
-                                isLoading: false,
-                                loadText: responseJson.next?('正在加载...'):('没有更多了')
-                            })
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        this.setState({
-                            isLoading: false,
-                            isRefreshing: false
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        return '加载失败';
+                    }
+                })
+                .then(responseJson=> {
+                    if (responseJson === '加载失败') {
+                        Alert.alert(
+                          '加载失败,请重试',
+                          '',
+                          [
+                            {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
+                          ]
+                        )
+                    } else {
+                        var resultArr;
+                        resultArr = this.state.dataArr.concat();
+                        responseJson.results.map(result=> {
+                            resultArr.push(result);
                         })
+                        this.setState({
+                            nextPage: responseJson.next,
+                            dataArr: resultArr,
+                            dataSource: resultArr,
+                            isLoading: false,
+                            loadText: responseJson.next?('正在加载...'):('没有更多了')
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    this.setState({
+                        isLoading: false,
+                        isRefreshing: false
                     })
+                })
             })
         }
     }
@@ -293,7 +289,6 @@ export default class ForumList extends Component{
                             }
                         >
                         </FlatList>
-                       
                     </View>
               </View>
             )
@@ -312,7 +307,6 @@ class SlideView extends Component {
         this.setState({
             tag: tag
         })
-
     }
     render() {
         return(
