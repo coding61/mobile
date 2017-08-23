@@ -28,6 +28,8 @@ export default class NewsCenter extends Component{
             isLoading: false,
             loadText: '正在加载...',
             isRefreshing: false,
+            page:1,
+            
         }
 
     }
@@ -96,7 +98,7 @@ export default class NewsCenter extends Component{
                         'Content-Type': 'application/json'}
                 })
                 .then((response) =>{
-                    console.log(response)
+                    
                     if (response.status === 200) {
                         return response.json();
                     } else {
@@ -104,11 +106,21 @@ export default class NewsCenter extends Component{
                     }
                 })
                 .then((responseData) => {
-                    console.log(responseData)
+                   
                     var resultArr = new Array();
                     responseData.results.map(result=> {
                         resultArr.push(result);
                     })
+                    if(responseData.next){
+                        let aa=this.state.page+1;
+                        this.setState({
+                            page:aa,
+                        })
+                    }else{
+                        this.setState({
+                            page:1,
+                        })
+                    }
                     this.setState({
                         nextPage: responseData.next,
                         dataArr: resultArr,
@@ -133,8 +145,7 @@ export default class NewsCenter extends Component{
             this.setState({
                 isLoading: true
             },()=> {
-                console.log(this.state.token)
-                fetch(this.state.nextPage,
+               fetch('https://www.cxy61.com/program_girl/message/messages/?types=forum&page='+this.state.page+'',
                 {   
                     method: 'get',
                     headers: {
@@ -142,7 +153,7 @@ export default class NewsCenter extends Component{
                         'Content-Type': 'application/json'}
                 })
                 .then(response => {
-                    console.log(response)
+                    
                     if (response.status === 200) {
                         return response.json();
                     } else {
@@ -155,6 +166,16 @@ export default class NewsCenter extends Component{
                     responseJson.results.map(result=> {
                         resultArr.push(result);
                     })
+                    if(responseJson.next){
+                        let bb=this.state.page+1;
+                        this.setState({
+                            page:bb,
+                        })
+                    }else{
+                        this.setState({
+                            page:1,
+                        })
+                    }
                     this.setState({
                         nextPage: responseJson.next,
                         dataArr: resultArr,
@@ -175,31 +196,33 @@ export default class NewsCenter extends Component{
             })
         }
     }
-    _loadmessage(pk){
-        forum_url='https://www.cxy61.com/program_girl/message/messages/'+pk+'/';
+    
+    forumdetail(data){
+        forum_url='https://www.cxy61.com/program_girl/message/messages/'+data.pk+'/';
         fetch(forum_url,{
             headers: {Authorization: 'Token ' + this.state.token}
         })
-            .then(response=>{
-                if (response.status === 200) {
-                    return response.json();
-                } else {
-                    return '加载失败';
-                }
-            })
-            .then(responseJson=>{
+        .then(response=>{
+            if (response.status === 200) {
+                return response.json();
+            } else if(response.status === 403){
+                return response;
                 
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-    }
-    forumdetail(data){
-        this._loadmessage(data.pk)
-        this.props.navigation.navigate('Forum_Details', { data: data.from_id,token:this.state.token,name:'news',callback:(msg)=>{
-            this._onRefresh()
-        }})
-        
+            }
+        })
+        .then(responseJson=>{
+            if(responseJson.status==403){
+                Alert.alert('该帖子已被删除！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+            }else{
+                this.props.navigation.navigate('Forum_Details', { data: data.from_id,token:this.state.token,name:'news',callback:(msg)=>{
+                    this._onRefresh()
+                    this.setState({page:1})
+                }})
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+        })
     }
     dealWithTime(Time){
         var timeArray = Time.split('.')[0].split('T');
