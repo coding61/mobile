@@ -69,7 +69,7 @@ export default class FindWord extends Component {
             console.log(response);
             if (response.token) {
                 //重置密码成功
-                alert("请妥善保管好您的密码");
+                Utils.showMessage('请妥善保管好您的密码');
                 this.props.navigation.goBack();
             }else{
                 alert("密码修改失败");
