@@ -139,6 +139,28 @@ let Utils = {
 
         return imgWidth * height / width
     },
+    getImgWH:(url, callback)=>{
+        var width = null;
+        var height = null;
+        url = decodeURIComponent(url);
+
+        // 123.jpg-30x30
+        var array = ['.jpg-', '.png-', '.jpeg-', '.JPG-', '.PNG-', '.JPEG-', '.webp-', '.gif-', '.GIF-'];
+        var string = null;
+        for (var i = 0; i < array.length; i++) {
+            var item = array[i]
+            if (url.split(array[i])[1]) {
+                string = array[i];
+                break;
+            }
+        }
+
+        var str = url.split(string)[1]; //45x36
+        width = str.split('x')[0];  //45
+        height = str.split('x')[1];  //36
+        
+        callback(width, height)
+    },
     isLogin:(callback)=>{
         Utils.getValue('token', (err, result)=>{
             if (err) {
