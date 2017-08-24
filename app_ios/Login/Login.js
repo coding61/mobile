@@ -21,6 +21,7 @@ export default class Login extends Component {
     headerStyle: {
       backgroundColor: 'rgb(251, 110, 169)'
     },
+    headerTintColor: "#fff"
   }
   constructor() {
     super();
@@ -29,7 +30,7 @@ export default class Login extends Component {
       passWord: '',
       phoneNum: '',
       phoneWord: '',
-      loginWay: 'right'
+      loginWay: 'left'
     }
   }
   componentWillUnmount() {
@@ -169,6 +170,7 @@ export default class Login extends Component {
           <TouchableOpacity onPress={this.goLogin.bind(this)} style={LoginStyle.loginBtn}>
             <Text style={LoginStyle.loginBtnText}>{'登录'}</Text>
           </TouchableOpacity>
+          <Text style={LoginStyle.promptText}>{'邀请码仅限内测时通过微信公众号分发的邀请码，新用户请用手机号登陆。'}</Text>
             {/* <Text style={{width: 2 * width / 3,fontSize: 13, lineHeight: 25, color: 'white'}}>{"提示:建议您登录后在“首页”的右下角点击“问号”帮助按钮进行手机绑定，以方便您后期的学习。"}</Text> */}
           </TouchableOpacity>
         )}
@@ -196,6 +198,11 @@ const LoginStyle = StyleSheet.create({
     width: width / 2 + 2,
     height: 119 * width / 767,
     marginTop: height / 10
+  },
+  promptText: {
+    width: 2 * width / 3,
+    color: 'white',
+    lineHeight: 20
   },
   loginBtn: {
     width: 2 * width / 3,
