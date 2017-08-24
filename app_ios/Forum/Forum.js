@@ -54,22 +54,25 @@ export default class Forum extends Component{
                     )
         }
     };
-    componentWillUnmount() {
-        this.props.navigation.state.params.callback();
-        this.eventEm.remove();
-    }
-    componentDidMount() {
+    componentWillMount(){
         var self = this;
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){
                 self.setState({token: result},()=>{
                     self._loadData();
+                    self._loadunread()
                 });
             }
         });
-        self.eventEm = DeviceEventEmitter.addListener('newsmore', (value)=>{
-            self.setState({
-                moreshow:!self.state.moreshow,
+    }
+    componentWillUnmount() {
+        this.props.navigation.state.params.callback();
+        this.eventEm.remove();
+    }
+    componentDidMount() {
+        this.eventEm = DeviceEventEmitter.addListener('newsmore', (value)=>{
+            this.setState({
+                moreshow:!this.state.moreshow,
             })
         })
     }
@@ -145,7 +148,9 @@ export default class Forum extends Component{
         })  
     }
     _clickForumList(data){
-        this.props.navigation.navigate('ForumList', { data: data,token:this.state.token })
+        this.props.navigation.navigate('ForumList', { data: data,token:this.state.token ,callback:()=>{
+            this._loadunread()
+        }})
     }
     dealWithTime(Time){
         var timeArray = Time.split('.')[0].split('T');

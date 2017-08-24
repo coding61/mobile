@@ -60,6 +60,7 @@ export default class ForumList extends Component{
         };
     };
     componentWillUnmount(){
+        this.props.navigation.state.params.callback();
         this.eventEmtt.remove();
     }
     componentDidMount(){
