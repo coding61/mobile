@@ -213,7 +213,8 @@ class CourseList extends Component {
     headerTitleStyle: {
       color: 'white',
       fontWeight: '400'
-    }
+    },
+    headerTintColor: "#fff"
     // headerRight: <RightBtn press={()=>navigation.state.params.navigatePress()} />
   })
 

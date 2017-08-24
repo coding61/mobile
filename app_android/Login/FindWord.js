@@ -30,7 +30,8 @@ export default class FindWord extends Component {
     headerTitleStyle: {
       color: 'white',
       fontWeight: '400'
-    }
+    },
+    headerTintColor: "#fff"
   })
   constructor() {
     super()

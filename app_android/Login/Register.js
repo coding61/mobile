@@ -30,7 +30,8 @@ export default class Register extends Component {
     headerTitleStyle: {
       color: 'white',
       fontWeight: '400'
-    }
+    },
+    headerTintColor: "#fff"
   })
   constructor() {
     super()
