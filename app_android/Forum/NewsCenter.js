@@ -187,7 +187,6 @@ export default class NewsCenter extends Component{
                 })
                 .catch((error) => {
                     console.error(error);
-                   
                     this.setState({
                         isLoading: false,
                         isRefreshing: false

@@ -92,50 +92,50 @@ export default class NewsCenter extends Component{
             isLoading: true
         },()=> {
             fetch(this.state.url,
-                {   
-                    headers: {
-                        'Authorization': 'Token ' + this.state.token,
-                        'Content-Type': 'application/json'}
+            {   
+                headers: {
+                    'Authorization': 'Token ' + this.state.token,
+                    'Content-Type': 'application/json'}
+            })
+            .then((response) =>{
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    return response.text();
+                }
+            })
+            .then((responseData) => {
+                var resultArr = new Array();
+                responseData.results.map(result=> {
+                    resultArr.push(result);
                 })
-                .then((response) =>{
-                    if (response.status === 200) {
-                        return response.json();
-                    } else {
-                        return response.text();
-                    }
-                })
-                .then((responseData) => {
-                    var resultArr = new Array();
-                    responseData.results.map(result=> {
-                        resultArr.push(result);
-                    })
-                    if(responseData.next){
-                        let aa=this.state.page+1;
-                        this.setState({
-                            page:aa,
-                        })
-                    }else{
-                        this.setState({
-                            page:1,
-                        })
-                    }
+                if(responseData.next){
+                    let aa=this.state.page+1;
                     this.setState({
-                        nextPage: responseData.next,
-                        dataArr: resultArr,
-                        dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
-                        isLoading: false,
-                        loadText: responseData.next?('正在加载...'):('没有更多了...'),
-                        isRefreshing: false
+                        page:aa,
+                    })
+                }else{
+                    this.setState({
+                        page:1,
+                    })
+                }
+                this.setState({
+                    nextPage: responseData.next,
+                    dataArr: resultArr,
+                    dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
+                    isLoading: false,
+                    loadText: responseData.next?('正在加载...'):('没有更多了...'),
+                    isRefreshing: false
 
-                    });
-                })
-                .catch((error) => {
-                    console.error(error);
-                    this.setState({
-                        isLoading: false,
-                        isRefreshing: false
-                    })
                 });
+            })
+            .catch((error) => {
+                console.error(error);
+                this.setState({
+                    isLoading: false,
+                    isRefreshing: false
+                })
+            });
         })
     }
     _renderNext() {
@@ -295,6 +295,4 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#ffffff',
     },
-
-
 });

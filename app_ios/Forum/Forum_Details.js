@@ -66,11 +66,9 @@ export default class Forum_Details extends Component{
         };
     }
     componentWillUnmount(){
-
         if(this.props.navigation.state.params.name == 'news'){
             this.props.navigation.state.params.callback();
         }
-        
         this.eventEmss.remove();
     }
     componentDidMount() {

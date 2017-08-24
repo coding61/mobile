@@ -36,15 +36,13 @@ export default class CommentText extends Component{
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:15,},
-            
         };
     }
     componentDidMount() {
         var self = this;
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){
-                self.setState({token: result},()=>{
-                });
+                self.setState({token: result});
             }
         });
     }

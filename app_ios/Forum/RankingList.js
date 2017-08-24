@@ -30,7 +30,6 @@ export default class RankingList extends Component{
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:15,},
-            
         };
     }
 

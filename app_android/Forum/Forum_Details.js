@@ -13,7 +13,8 @@ import {
   Alert,
   RefreshControl,
   WebView,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  Button,
 }from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ForumDeatilCont from './ForumDeatilCont';
@@ -282,9 +283,10 @@ export default class Forum_Details extends Component{
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
-                            <TouchableOpacity onPress={this.detele_reply.bind(this,rowData.pk)} style={{width:50,height:30,}}>
-                                <Text  style={{fontSize:14,paddingTop:10,color:'red',}}>删除</Text>
+                            <TouchableOpacity onPress={this.detele_reply.bind(this,rowData.pk)} style={{marginRight:18,borderRadius:5,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center'}}>
+                                <Text  style={{fontSize:12,paddingTop:2,paddingRight:5,paddingLeft:5,paddingBottom:2,color:'#ffffff',}}>删除</Text>
                             </TouchableOpacity>
+                            
                             ):(null)}
                     </View>
                 </View>

@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   ListView,
   Modal,
+  ActivityIndicator,
 }from 'react-native';
 import face from './Content_Rex';
 var {height, width} = Dimensions.get('window');
@@ -21,6 +22,7 @@ export default class ForumDeatilCont extends Component{
         this.state = {
             modalVisible:false,
             imgurl:new Array(),
+            imgindex:'',
         }
     }
     componentDidMount() {
@@ -59,13 +61,10 @@ export default class ForumDeatilCont extends Component{
             .replace(/\n/g, '<br>') //转义换行   
         return content;
     }
-    LoadImg(img){
-        var image = new Array();
-            image.push({url:img})
-
+    LoadImg(index){
         this.setState({
             modalVisible:true,
-            imgurl:image,
+            imgindex:index,
         })
     }
     _setModalVisible(){
@@ -85,14 +84,21 @@ export default class ForumDeatilCont extends Component{
                 <View style={{flexDirection:'row',flexWrap:'wrap'}}>
                     {output.map((result,index)=> {
                         return(
-                            <TouchableOpacity key={index} onPress={this.LoadImg.bind(this,result.url)} style={{margin:10,}}>
+                            <TouchableOpacity key={index} onPress={this.LoadImg.bind(this,index)} style={{margin:10,}}>
                                 <Image style={{width:80,height:80,}} source={{uri:result.url}}/>
                             </TouchableOpacity>
                         )
                     })}
                 </View>
                 <Modal visible={this.state.modalVisible} transparent={true} onRequestClose={()=>{this.setState({modalVisible:false})}}>
-                    <ImageViewer imageUrls={this.state.imgurl} onClick={this._setModalVisible.bind(this)}/>
+                    <ImageViewer 
+                        imageUrls={output} 
+                        onClick={this._setModalVisible.bind(this)}
+                        index={this.state.imgindex} 
+                        onChange={(index)=>{this.setState({imgindex:index})}}
+                        failImageSource={{uri:'../assets/Forum/defaultHeader.png'}}
+                        loadingRender={()=>{return(<ActivityIndicator size='small' color="white" style={{alignItems:'center',justifyContent:'center',}}/>)}}
+                        />
                 </Modal>
             </View>
             )

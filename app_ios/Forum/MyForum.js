@@ -38,7 +38,6 @@ export default class MyForum extends Component{
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
-            
         };
     };
     componentWillUnmount(){
