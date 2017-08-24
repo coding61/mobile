@@ -1749,7 +1749,7 @@ class MessagePage extends Component{
         images.push({url:this.state.bigImgUrl})
         return (
             <Modal visible={this.state.showBigImgView} transparent={true} onRequestClose={this._clickBigImg}>
-                <ImageViewer imageUrls={images} onClick={this._clickBigImg} saveToLocalByLongPress={false} loadingRender={this._renderLoadingBigImage} failImageSource={require('../images/fail1.png')}/>
+                <ImageViewer imageUrls={images} onClick={this._clickBigImg} saveToLocalByLongPress={false} loadingRender={this._renderLoadingBigImage} failImageSource={require('../images/fail2.jpg')}/>
             </Modal>
         )
     }
