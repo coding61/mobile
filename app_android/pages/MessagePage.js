@@ -771,7 +771,7 @@ class MessagePage extends Component{
                     if (!response) {
                         //请求失败
                     };
-                    console.log(response);
+                    // console.log(response);
                     this_.setState({
                         loading:true
                     })
@@ -1146,7 +1146,6 @@ class MessagePage extends Component{
             })
             this.setState({showHelpActions:false})
             */
-
             this._load(); 
             this._fetchUserInfo();
             this._fetchLunTanUnread();
@@ -1750,8 +1749,27 @@ class MessagePage extends Component{
         images.push({url:this.state.bigImgUrl})
         return (
             <Modal visible={this.state.showBigImgView} transparent={true} onRequestClose={this._clickBigImg}>
-                <ImageViewer imageUrls={images} onClick={this._clickBigImg} saveToLocalByLongPress={false}/>
+                <ImageViewer imageUrls={images} onClick={this._clickBigImg} saveToLocalByLongPress={false} loadingRender={this._renderLoadingBigImage} failImageSource={require('../images/fail2.jpg')}/>
             </Modal>
+        )
+    }
+    _renderLoadingBigImage=()=>{
+        
+        var imgW = width;
+        var imgH = 200;
+        Utils.getImgWH(this.state.bigImgUrl, (wid, hei)=>{
+            wid = parseInt(wid)
+            hei = parseInt(hei)
+            imgW = wid < width? wid:width
+            imgH = imgW*hei/wid
+        })
+        return (
+            <View style={{width:imgW, height:imgH, backgroundColor:'#F5FCFF', alignItems:'center', justifyContent:'center'}}>
+                <Image
+                  style={{width:100, height:100}}
+                  source={require('../images/fail1.png')}
+                />
+            </View>
         )
     }
     // 钻石

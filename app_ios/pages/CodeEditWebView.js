@@ -40,7 +40,8 @@ class CodeEditWebView extends Component {
 		const {state, setParams, goBack, navigate} = navigation;
 
 		return {
-			title:'在线编辑'
+			title:'在线编辑',
+			headerTintColor: "#333" 
 		}
 	};	
 	static propTypes = {
