@@ -143,7 +143,7 @@ class CourseItem extends Component {
     return (
         <TouchableOpacity onPress={this.onPress.bind(this)} style={[CourseStyle.itemStyle,this.props.isopen === false?({backgroundColor: 'rgb(230, 230, 230)'}):(this.props.isSelected?({backgroundColor: 'rgb(252, 189, 209)'}):({backgroundColor: 'white'}))]}>
           <Text numberOfLines={1} style={{backgroundColor: 'rgba(255,255,255,0)', fontSize: 11, marginTop: 15}}>{this.props.title}</Text>
-          <Image style={{width: 50, height: 50, marginTop: 15}} source={{uri: this.props.headImg}}/>
+          <Image resizeMode={'contain'} style={{width: 50, height: 50, marginTop: 15}} source={{uri: this.props.headImg}}/>
           <Text numberOfLines={4} style={{marginBottom: 15, letterSpacing: 2, lineHeight: 12, marginTop: 15, width: width / 3 - 20, fontSize: 10, color: 'rgb(150, 151, 152)'}}>{this.props.text}</Text>
           {this.props.isopen === false?(<Image style={CourseStyle.itemImgStyle} source={itemHead['nostart']} />):(this.props.status === 'nostart'?(null):(<Image style={CourseStyle.itemImgStyle} source={itemHead[this.props.status]} />))}
         </TouchableOpacity> 
