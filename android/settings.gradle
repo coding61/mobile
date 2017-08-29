@@ -1,5 +1,5 @@
 rootProject.name = 'ProgramGirl'
-include ':react-native-device-info'
+include ':react-native-device-info', ':library'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
 include ':react-native-sound'
 project(':react-native-sound').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-sound/android')

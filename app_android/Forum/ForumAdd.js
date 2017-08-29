@@ -13,9 +13,14 @@ import {
   DeviceEventEmitter,
   Modal,
   Alert,
+  Button,
+  ActivityIndicator,
 }from 'react-native';
 var basePath='https://www.cxy61.com/';
 var {height, width} = Dimensions.get('window');
+var allAndroid = require('react-native').NativeModules.RongYunRN;
+//var imgArr='';
+var content='';
 export default class ForumAdd extends Component{
     constructor(props) {
         super(props);
@@ -24,6 +29,8 @@ export default class ForumAdd extends Component{
             token:this.props.navigation.state.params.token,
             text:null,
             title:null,
+            show:false,
+            IdCard1:'',//图片
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -48,8 +55,13 @@ export default class ForumAdd extends Component{
 
     componentWillUnmount(){
         this.eventEm.remove();
+
+        this.listenerProgressa.remove();
+        this.listenerProgressb.remove();
+        this.listenerProgressc.remove();
     }
     componentDidMount() {
+        this.progress();
         this.eventEm = DeviceEventEmitter.addListener('publish', (value)=>{
             var data = {};
             data.section = this.state.pk;
@@ -88,7 +100,35 @@ export default class ForumAdd extends Component{
             })
         })
     }
-
+    progress(){
+        var  this_=this;
+        //进度
+        this.listenerProgressa = DeviceEventEmitter.addListener("uploadProgress_listener", function(params) {
+            
+        })
+        //完成
+        this.listenerProgressb = DeviceEventEmitter.addListener("uploadSuccess_listener", function(params) {
+            var imgArr='';
+            imgArr+='img['+ params.imageurl+ '] ';
+            content=this_.state.text+imgArr;
+            this_.setState({
+                //IdCard1:imgArr,
+                show:false,
+                text:content,
+                
+            })
+        });
+        //开始
+        this.listenerProgressc = DeviceEventEmitter.addListener("uploadStrat_listener", function(params) {
+                this_.setState({
+                    show:true,
+            })
+        })
+    }
+    qiniu(){
+        allAndroid.rnQiniu(this.state.token,false,"gallery");
+        //allAndroid.rnCancelUp();
+    }
     render() {
         return(
             <View style={{flex:1,backgroundColor:'#ffffff'}}>
@@ -103,7 +143,7 @@ export default class ForumAdd extends Component{
                     placeholderTextColor='#aaaaaa'
                 />
                 <TextInput
-                    style={{height: 150, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,paddingTop:10,paddingRight:10,}}
+                    style={{height: 280, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,paddingTop:10,paddingRight:10,}}
                     onChangeText={(text) => this.setState({text})}
                     value={this.state.text}
                     multiline={true}
@@ -112,6 +152,24 @@ export default class ForumAdd extends Component{
                     placeholder='尽情提问吧'
                     placeholderTextColor='#aaaaaa'
                 />
+                <View style={{flexDirection:'row',alignItems:'center',width:width,height:40,position:'absolute',bottom:30,left:width*0.8,}}>
+                    <TouchableOpacity onPress={this.qiniu.bind(this)}
+                        style={{width:60,height:36,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',borderRadius:5,}}>
+                        <Text style={{color:'#ffffff',fontSize:14,}}>图片</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {this.state.show?(
+                    <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
+                        <ActivityIndicator 
+                            style={{marginTop: 10}}
+                            color={'white'}
+                            size={'large'}
+                            animating={true}
+                                />
+                        <Text style={{color: 'white'}}>上传中...</Text>
+                    </View>
+                    ):(null)}
             </View>
         )
     }

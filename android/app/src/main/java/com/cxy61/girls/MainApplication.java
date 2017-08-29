@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
+  public static String token;
+  public static Boolean isPrivate;
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
@@ -28,7 +30,9 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RNDeviceInfo(),
-            new RNSoundPackage()
+            new RNSoundPackage(),
+              //new MainReactPackage(),
+              new MyReactPackage()
       );
     }
   };
