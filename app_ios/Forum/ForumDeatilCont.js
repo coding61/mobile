@@ -97,6 +97,7 @@ export default class ForumDeatilCont extends Component{
                         index={this.state.imgindex} 
                         onChange={(index)=>{this.setState({imgindex:index})}}
                         failImageSource={{uri:'../assets/Forum/defaultHeader.png'}}
+                        saveToLocalByLongPress={false}
                         loadingRender={()=>{return(<ActivityIndicator size='small' color="white" style={{alignItems:'center',justifyContent:'center',}}/>)}}
                         />
                 </Modal>
