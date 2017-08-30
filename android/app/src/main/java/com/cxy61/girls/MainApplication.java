@@ -3,6 +3,7 @@ package com.cxy61.girls;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.imagepicker.ImagePickerPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 // import com.zmxv.RNSound.BuildConfig;
 import com.tendcloud.tenddata.TCAgent;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ImagePickerPackage(),
             new RNDeviceInfo(),
             new RNSoundPackage(),
               //new MainReactPackage(),
