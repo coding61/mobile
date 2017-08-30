@@ -44,6 +44,7 @@
 		7425F9741F4AD237002857CB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7425F9731F4AD237002857CB /* SystemConfiguration.framework */; };
 		7425F9761F4AD249002857CB /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7425F9751F4AD249002857CB /* libz.tbd */; };
 		7425F9781F4AD256002857CB /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7425F9771F4AD256002857CB /* libc++.tbd */; };
+		74C31B571F502A6F00F78E6D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74C31B561F502A6F00F78E6D /* CoreFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8650C2B91F565D46007B7678 /* UpLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = 8650C2B81F565D46007B7678 /* UpLoad.m */; };
 		CC7EDC24578B36D85947C187 /* libPods-ProgramGirl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8894901384F47136F38B1DD4 /* libPods-ProgramGirl.a */; };
@@ -248,13 +249,6 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
-		8650C2F51F56697E007B7678 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 54BCC4B7078C4E7DA1DDE327 /* RNImagePicker.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
-			remoteInfo = RNImagePicker;
-		};
 		C30162FE1F3C333400711262 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B77BB5AD22014F398FA16B64 /* RNSound.xcodeproj */;
@@ -329,6 +323,7 @@
 		7425F9731F4AD237002857CB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		7425F9751F4AD249002857CB /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		7425F9771F4AD256002857CB /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		74C31B561F502A6F00F78E6D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8650C2B71F565D46007B7678 /* UpLoad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpLoad.h; sourceTree = "<group>"; };
@@ -352,6 +347,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74C31B571F502A6F00F78E6D /* CoreFoundation.framework in Frameworks */,
 				7425F9781F4AD256002857CB /* libc++.tbd in Frameworks */,
 				7425F9761F4AD249002857CB /* libz.tbd in Frameworks */,
 				7425F9741F4AD237002857CB /* SystemConfiguration.framework in Frameworks */,
@@ -538,6 +534,7 @@
 		7425F96A1F4AD215002857CB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				74C31B561F502A6F00F78E6D /* CoreFoundation.framework */,
 				7425F9771F4AD256002857CB /* libc++.tbd */,
 				7425F9751F4AD249002857CB /* libz.tbd */,
 				7425F9731F4AD237002857CB /* SystemConfiguration.framework */,
@@ -622,6 +619,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+<<<<<<< HEAD
 		8650C2D41F56697E007B7678 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -630,6 +628,8 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+=======
+>>>>>>> a3844bff27b8779d95550efc771daa90127ab42b
 		C30162FB1F3C333400711262 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -727,7 +727,6 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = TPCJ534SQ6;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
@@ -1008,6 +1007,7 @@
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+<<<<<<< HEAD
 		8650C2F61F56697E007B7678 /* libRNImagePicker.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1015,6 +1015,8 @@
 			remoteRef = 8650C2F51F56697E007B7678 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+=======
+>>>>>>> a3844bff27b8779d95550efc771daa90127ab42b
 		C30162FF1F3C333400711262 /* libRNSound.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1234,7 +1236,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = TPCJ534SQ6;
+				DEVELOPMENT_TEAM = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1272,7 +1274,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = TPCJ534SQ6;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
@@ -1308,7 +1310,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = TPCJ534SQ6;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
@@ -1343,7 +1345,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TPCJ534SQ6;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",

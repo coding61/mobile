@@ -13,6 +13,7 @@ import {
   AsyncStorage,
   Alert
 } from 'react-native';
+import Http from '../utils/Http.js';
 import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 import {StackNavigator} from 'react-navigation';
 const {width, height} = Dimensions.get('window');
@@ -40,7 +41,7 @@ export default class SelectHead extends Component {
   goNext = () => {
     var _this = this;
     if (this.state.name !== '') {
-      fetch('https://www.cxy61.com/program_girl/userinfo/telephone_signup/',{
+      fetch(Http.domain + '/userinfo/telephone_signup/',{
                 method: "POST",
                 headers: {
                   'Accept': 'application/json',
