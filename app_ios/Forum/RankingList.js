@@ -13,13 +13,14 @@ import {
     FlatList,
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
-
+import Http from '../utils/Http.js';
+var basePath=Http.domain;
 export default class RankingList extends Component{
     constructor(props) {
         super(props);
         this.state = {
             token:this.props.navigation.state.params.token,
-            url:'https://www.cxy61.com/program_girl/userinfo/userinfo/diamond/ranking/',
+            url:basePath+'/userinfo/userinfo/diamond/ranking/',
             dataSource: '',
         }
     }

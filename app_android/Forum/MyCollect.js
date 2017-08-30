@@ -17,7 +17,8 @@ import {
   FlatList,
   DeviceEventEmitter
 }from 'react-native';
-
+import Http from '../utils/Http.js';
+var basePath=Http.domain;
 var {height, width} = Dimensions.get('window');
 export default class MyCollect extends Component{
     constructor(props) {
@@ -28,7 +29,7 @@ export default class MyCollect extends Component{
             dataSource: '',
             nextPage: null,
             isLoading: false,
-            url:'https://www.cxy61.com/program_girl/collect/collections/',  
+            url:basePath+'/collect/collections/',  
             loadText: '正在加载...',
             isRefreshing: false,
         };

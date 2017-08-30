@@ -16,10 +16,10 @@ import {
   Button,
   ActivityIndicator,
 }from 'react-native';
-var basePath='https://www.cxy61.com/';
+import Http from '../utils/Http.js';
+var basePath=Http.domain;
 var {height, width} = Dimensions.get('window');
 var allAndroid = require('react-native').NativeModules.RongYunRN;
-//var imgArr='';
 var content='';
 export default class ForumAdd extends Component{
     constructor(props) {
@@ -68,7 +68,7 @@ export default class ForumAdd extends Component{
             data.title=this.state.title;
             data.types =2;
             data.content=this.state.text;
-            fetch(basePath+"program_girl/forum/posts_create/",
+            fetch(basePath+"/forum/posts_create/",
             {
                 method:'post',
                 headers: {

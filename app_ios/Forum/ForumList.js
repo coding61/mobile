@@ -18,7 +18,8 @@ import {
   DeviceEventEmitter
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
-var basePath='https://www.cxy61.com/';
+import Http from '../utils/Http.js';
+var basePath=Http.domain;
 
 import Forum_Details from './Forum_Details';
 
@@ -33,7 +34,7 @@ export default class ForumList extends Component{
             tag: 0,
             nextPage: null,
             isLoading: false,
-            url:basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&myposts=false&page=1',  
+            url:basePath+'/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&myposts=false&page=1',  
             loadText: '正在加载...',
             isRefreshing: false,
         };
@@ -98,7 +99,7 @@ export default class ForumList extends Component{
         if (tag === 0 && this.state.isLoading === false) {
             this.setState({
                 tag: tag,
-                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&myposts=false&page=1',
+                url: basePath+'/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&myposts=false&page=1',
                 nextPage: null,
                 dataArr: new Array(),
                 dataSource: null,
@@ -109,7 +110,7 @@ export default class ForumList extends Component{
         } else if (tag === 1 && this.state.isLoading === false) {
             this.setState({
                 tag: tag,
-                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&isessence=true&page=1',
+                url: basePath+'/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&isessence=true&page=1',
                 /*nextPage: null,
                 dataArr: new Array(),
                 dataSource: null,*/
@@ -120,7 +121,7 @@ export default class ForumList extends Component{
         } else if (tag === 2 && this.state.isLoading === false){
             this.setState({
                 tag: tag,
-                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&page=1&status=solved',
+                url: basePath+'/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&page=1&status=solved',
                 /*nextPage: null,
                 dataArr: new Array(),
                 dataSource: null,*/
@@ -131,7 +132,7 @@ export default class ForumList extends Component{
         }else if (tag === 3 && this.state.isLoading === false){
             this.setState({
                 tag: tag,
-                url: basePath+'program_girl/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&page=1&status=unsolved',
+                url: basePath+'/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&page=1&status=unsolved',
                 /*nextPage: null,
                 dataArr: new Array(),
                 dataSource: null,*/

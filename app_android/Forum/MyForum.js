@@ -14,6 +14,8 @@ import {
     FlatList,
     RefreshControl,
 }from 'react-native';
+import Http from '../utils/Http.js';
+var basePath=Http.domain;
 var {height, width} = Dimensions.get('window');
 
 export default class MyForum extends Component{
@@ -25,7 +27,7 @@ export default class MyForum extends Component{
             dataSource: '',
             nextPage: null,
             isLoading: false,
-            url:'https://www.cxy61.com/program_girl/forum/posts/?section=&isessence=&myposts=true&page=1',  
+            url:basePath+'/forum/posts/?section=&isessence=&myposts=true&page=1',  
             loadText: '正在加载...',
             isRefreshing: false,
         };

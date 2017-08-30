@@ -16,7 +16,8 @@ import {
   ActivityIndicator,
 }from 'react-native';
 import face from './Content_Rex';
-var basePath='https://www.cxy61.com/';
+import Http from '../utils/Http.js';
+var basePath=Http.domain;
 var {height, width} = Dimensions.get('window');
 var ImagePicker = require('react-native-image-picker');
 var qiniu = require('react-native').NativeModules.UpLoad;
@@ -63,7 +64,7 @@ export default class ForumAdd extends Component{
             data.title=this.state.title;
             data.types =2;
             data.content=this.state.text;
-            fetch(basePath+"program_girl/forum/posts_create/",
+            fetch(basePath+"/forum/posts_create/",
             {
                 method:'post',
                 headers: {
@@ -119,7 +120,7 @@ export default class ForumAdd extends Component{
 
     // 获取图片对应 token， key
     _getQNToken(filename) {
-        var url = basePath + "program_girl/upload/token/";
+        var url = basePath + "/upload/token/";
         fetch(url, {
           method: "POST",
           headers: {
@@ -160,7 +161,6 @@ export default class ForumAdd extends Component{
                 path: 'images'
             }
         };
-        //console.log(ImagePicker.showImagePicker)
         ImagePicker.showImagePicker(options, (response) => {
           if (response.didCancel) {
             console.log('User cancelled image picker');

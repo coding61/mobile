@@ -16,12 +16,13 @@ import {
     RefreshControl,
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
-var basePath='https://www.cxy61.com/';
+import Http from '../utils/Http.js';
+var basePath=Http.domain;
 export default class NewsCenter extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            url:'https://www.cxy61.com/program_girl/message/messages/?types=forum',
+            url:basePath+'/message/messages/?types=forum',
             dataArr: new Array(),
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
             nextPage: null,
@@ -66,7 +67,7 @@ export default class NewsCenter extends Component{
             }
         });
         self.eventEmss = DeviceEventEmitter.addListener('read', (value)=>{
-            var detemore_url=basePath+'program_girl/message/messages/allread/';
+            var detemore_url=basePath+'/message/messages/allread/';
             fetch(detemore_url,
             {
                 method: 'PUT',
@@ -145,7 +146,7 @@ export default class NewsCenter extends Component{
             this.setState({
                 isLoading: true
             },()=> {
-               fetch('https://www.cxy61.com/program_girl/message/messages/?types=forum&page='+this.state.page+'',
+               fetch(basePath+'/message/messages/?types=forum&page='+this.state.page+'',
                 {   
                     method: 'get',
                     headers: {
@@ -197,7 +198,7 @@ export default class NewsCenter extends Component{
     }
     
     forumdetail(data){
-        forum_url='https://www.cxy61.com/program_girl/message/messages/'+data.pk+'/';
+        forum_url=basePath+'/message/messages/'+data.pk+'/';
         fetch(forum_url,{
             headers: {Authorization: 'Token ' + this.state.token}
         })

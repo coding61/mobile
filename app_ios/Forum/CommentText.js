@@ -15,7 +15,8 @@ import {
     RefreshControl,
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
-var basePath='https://www.cxy61.com/';
+import Http from '../utils/Http.js';
+var basePath=Http.domain;
 export default class CommentText extends Component{
     constructor(props) {
         super(props);
@@ -47,7 +48,7 @@ export default class CommentText extends Component{
         var data = {};
         data.posts = this.state.pk;
         data.content=this.state.content;
-        fetch(basePath+"program_girl/forum/replies_create/",
+        fetch(basePath+"/forum/replies_create/",
         {
             method:'post',
             headers: {
@@ -74,7 +75,7 @@ export default class CommentText extends Component{
         var data = {};
         data.replies = this.state.pk;
         data.content=this.state.content;
-        fetch(basePath+"program_girl/forum/replymore_create/",
+        fetch(basePath+"/forum/replymore_create/",
         {
             method:'post',
             headers: {

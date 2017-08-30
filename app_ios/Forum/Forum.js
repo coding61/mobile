@@ -18,6 +18,8 @@ import {
 import ForumList from './ForumList';
 var {height, width} = Dimensions.get('window');
 import NewsCenter from './NewsCenter';
+import Http from '../utils/Http.js';
+var basePath=Http.domain;
 export default class Forum extends Component{
     constructor(props) {
         super(props);
@@ -27,7 +29,7 @@ export default class Forum extends Component{
             tag: 0,
             nextPage: null,
             isLoading: false,
-            url: 'https://www.cxy61.com/program_girl/forum/sections/',
+            url: basePath+'/forum/sections/',
             loadText: '正在加载...',
             isRefreshing: false,
             token:'',
@@ -77,7 +79,7 @@ export default class Forum extends Component{
         })
     }
     _loadunread(){
-        fetch('https://www.cxy61.com/program_girl/message/messages/?types=forum&status=unread',{
+        fetch(basePath+'/message/messages/?types=forum&status=unread',{
             headers: {Authorization: 'Token ' + this.state.token}
         })
         .then(response=>{

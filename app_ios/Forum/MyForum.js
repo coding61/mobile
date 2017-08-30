@@ -15,7 +15,8 @@ import {
     RefreshControl,
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
-
+import Http from '../utils/Http.js';
+var basePath=Http.domain;
 export default class MyForum extends Component{
     constructor(props) {
         super(props);
@@ -25,7 +26,7 @@ export default class MyForum extends Component{
             dataSource: '',
             nextPage: null,
             isLoading: false,
-            url:'https://www.cxy61.com/program_girl/forum/posts/?section=&isessence=&myposts=true&page=1',  
+            url:basePath+'/forum/posts/?section=&isessence=&myposts=true&page=1',  
             loadText: '正在加载...',
             isRefreshing: false,
         };

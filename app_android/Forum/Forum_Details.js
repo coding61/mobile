@@ -19,7 +19,8 @@ import {
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ForumDeatilCont from './ForumDeatilCont';
 var {height, width} = Dimensions.get('window');
-var basePath='https://www.cxy61.com/';
+import Http from '../utils/Http.js';
+var basePath=Http.domain;
 export default class Forum_Details extends Component{
     constructor(props) {
         super(props);
@@ -29,7 +30,7 @@ export default class Forum_Details extends Component{
             tag: 0,
             nextPage: null,
             isLoading: false,
-            url: 'https://www.cxy61.com/program_girl/forum/replies/?posts='+this.props.navigation.state.params.data+'&page=1',
+            url: basePath+'/forum/replies/?posts='+this.props.navigation.state.params.data+'&page=1',
             loadText: '正在加载...',
             isRefreshing: false,
             token:this.props.navigation.state.params.token,
@@ -76,7 +77,7 @@ export default class Forum_Details extends Component{
             var data = {};
             data.types = "posts";
             data.pk=value;
-            fetch(basePath+"program_girl/collect/collection/",
+            fetch(basePath+"/collect/collection/",
             {
                 method:'put',
                 headers: {
@@ -121,7 +122,7 @@ export default class Forum_Details extends Component{
     }
  
     _loadforum(){
-        forum_url=basePath+'program_girl/forum/posts/'+this.state.pk+'/';
+        forum_url=basePath+'/forum/posts/'+this.state.pk+'/';
         fetch(forum_url,{
             headers: {Authorization: 'Token ' + this.state.token}
         })
@@ -143,7 +144,7 @@ export default class Forum_Details extends Component{
             })
     }
     _loadUserinfo(){
-        info_url=basePath+'program_girl/userinfo/whoami/';
+        info_url=basePath+'/userinfo/whoami/';
         fetch(info_url,{
             headers: {Authorization: 'Token ' + this.state.token}
         })
@@ -311,7 +312,7 @@ export default class Forum_Details extends Component{
             '',
             [
                 {text: '确定', onPress: ()=> {
-                    var detemore_url=basePath+'program_girl/forum/replies/'+pk+'/';
+                    var detemore_url=basePath+'/forum/replies/'+pk+'/';
                     fetch(detemore_url,
                     {
                         method: 'DELETE',
@@ -350,7 +351,7 @@ export default class Forum_Details extends Component{
             '',
             [
                 {text: '确定', onPress: ()=> {
-                    var dete_url=basePath+'program_girl/forum/posts/'+this.state.pk+'/';
+                    var dete_url=basePath+'/forum/posts/'+this.state.pk+'/';
                     fetch(dete_url,
                     {
                         method: 'DELETE',
@@ -380,7 +381,7 @@ export default class Forum_Details extends Component{
         }
         var data = {};
         data.status = statetag;
-        fetch(basePath+"program_girl/forum/posts/"+this.state.pk+"/",
+        fetch(basePath+"/forum/posts/"+this.state.pk+"/",
         {
             method: 'patch',
             headers: {
