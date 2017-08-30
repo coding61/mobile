@@ -19,7 +19,8 @@ import {
     AsyncStorage,
     DeviceEventEmitter,
     ScrollView,
-    Modal
+    Modal,
+    Clipboard
 }from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Sound from 'react-native-sound';
@@ -98,6 +99,10 @@ class MessagePage extends Component{
             courseProgressArray:[],
             showQuitLogin:false,         //是否显示退出登录按钮
             newsCount:0,                 //论坛未读消息
+
+            showCopyBtn:false,           //是否打开复制按钮
+            currentClickIndex:0,         //当前点击要复制的消息的下标
+            currentCopyText:"",          //当前长按文本要复制的内容
 
         };
         this.leftEnterValue = new Animated.Value(0)     //左侧进入动画
@@ -1502,6 +1507,18 @@ class MessagePage extends Component{
     }
     // 退出登录点击
     _clickQuitLogin = ()=>{
+        Utils.showAlert("退出登录", "退出将会清空会话聊天缓存，是否要确定退出？", ()=>{
+            // 确定
+            this._loadQuitLogin();
+            // console.log(1);
+
+        }, ()=>{
+            // 取消
+            this.setState({showHelpActions:false})
+            // console.log(2);
+        }, "确定", "取消")
+    }
+    _loadQuitLogin(){
         const {setParams} = this.props.navigation;
         setParams({userinfo:""})
         this.setState({
@@ -1553,6 +1570,10 @@ class MessagePage extends Component{
             courseProgressArray:[],
             showQuitLogin:false,         //是否显示退出登录按钮
             newsCount:0,                 //论坛未读消息
+
+            showCopyBtn:false,           //是否打开复制按钮
+            currentClickIndex:0,         //当前点击要复制的消息的下标
+            currentCopyText:"",          //当前长按文本要复制的内容
         })
         Utils.clearAllValue()
         this.setState({showHelpActions:false})
@@ -1689,8 +1710,37 @@ class MessagePage extends Component{
     _loadUpdateCourseProgress(courseIndex){
         this.state.courseProgressArray[courseIndex-1]["status"] = true
     }
+    // 剪贴板
+    async _clickMsgCopyText(){
+        this.setState({showCopyBtn:false});
+        Clipboard.setString(this.state.currentCopyText);
+        try {
+            var content = await Clipboard.getString();
+            console.log(content);
+            Utils.showMessage("复制成功");
+        } catch (e) {
+            console.log(e);
+            Utils.showMessage("复制失败");
+        }
+    }
 
     // ----------------------------------------------------------UI 布局
+    // 复制按钮
+    _renderMsgCopyText(){
+        return (
+            <TouchableOpacity onPress={this._clickMsgCopyText.bind(this)} style={{position:'absolute', top:-38, left:5, borderRadius:5, width:60, height:30, backgroundColor:'#292929', alignItems:'center', justifyContent:'center'}}>
+                <Text style={{color:'white'}}>
+                  复制
+                </Text>
+                <Image
+                  style={{position:'absolute', bottom:-8, height:8}}
+                  source={require('../images/arrow-d1.png')}
+                  resizeMode={'contain'}
+                />
+            </TouchableOpacity>
+        )
+    }
+    // 课程进度
     _renderItemCourseProgress(item, index){
         var url = item.status?require('../images/cp1.png'):require("../images/cp2.png")
         return (
@@ -1939,7 +1989,7 @@ class MessagePage extends Component{
     
     // ----------------------------------------无动画消息
     // 文本信息
-    _renderItemTextMessage(item){
+    _renderItemTextMessage(item, index){
         var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
         var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
         return (
@@ -1948,18 +1998,32 @@ class MessagePage extends Component{
                   style={styles.avatar}
                   source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                 />
+                
                 <View style={[styles.msgView, {width:widthMsg2}]}>
                     <View style={styles.messageView}>
-                        <Text style={styles.messageText}>
-                            {item.message}
-                        </Text>
+                        <TouchableOpacity onLongPress={(e)=>{
+                            this.setState({showCopyBtn:true, currentClickIndex:index, currentCopyText:item.message})
+                        }}>
+                            <Text style={styles.messageText}>
+                                {item.message}
+                            </Text>
+                        </TouchableOpacity>
                     </View>
+                    {
+                        this.state.showCopyBtn 
+                            ? 
+                                this.state.currentClickIndex === index?
+                                    this._renderMsgCopyText():null
+                            :
+                                null
+                    }
                 </View>
+                
             </View>
         ) 
     }
     // 图片信息
-    _renderItemImgMessage(item){
+    _renderItemImgMessage(item, index){
         var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
         var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
         var imgH = Utils.getImgWidthHeight(item.img, widthMsg2*0.5)
@@ -1995,7 +2059,7 @@ class MessagePage extends Component{
         )
     }
     // 链接信息
-    _renderItemLinkMessage(item){
+    _renderItemLinkMessage(item, index){
         var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
         var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
         var text = "点击打开新网页"
@@ -2030,7 +2094,7 @@ class MessagePage extends Component{
         )
     }
     // 分割线信息 
-    _renderItemLineMessage(item){
+    _renderItemLineMessage(item, index){
         return (
             <View style={styles.sepLine}>
                 <Image
@@ -2054,7 +2118,7 @@ class MessagePage extends Component{
         )
     }
     // 用户回复信息
-    _renderItemAnswerMessage(item){
+    _renderItemAnswerMessage(item, index){
         var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
         var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
         const {state, setParams, goBack, navigate} = this.props.navigation;
@@ -2093,21 +2157,21 @@ class MessagePage extends Component{
         return (
             item.line == true
             ?
-                this._renderItemLineMessage(item)
+                this._renderItemLineMessage(item, index)
             :
                 item.question == false
                 ?
-                    this._renderItemAnswerMessage(item)
+                    this._renderItemAnswerMessage(item, index)
                 :
                     item.link
                     ?
-                        this._renderItemLinkMessage(item)
+                        this._renderItemLinkMessage(item, index)
                     :
                         item.img
                         ?
-                            this._renderItemImgMessage(item)
+                            this._renderItemImgMessage(item, index)
                         :
-                            this._renderItemTextMessage(item)
+                            this._renderItemTextMessage(item, index)
 
         )
     }
@@ -2581,7 +2645,8 @@ const styles = StyleSheet.create({
         height:30, 
         marginBottom:5,
         marginTop:5, 
-        marginLeft:width-40
+        marginLeft:width-40,
+        marginLeft:10
     },
     actions:{//按钮高度40
         flexDirection:'row', 
@@ -2628,7 +2693,8 @@ const styles = StyleSheet.create({
     helpParentView:{
         position:'absolute',
         bottom:45,
-        right:5
+        // right:5,
+        left:5
     },
     helpActionsView:{
         // position: 'absolute', 
@@ -2655,12 +2721,12 @@ const styles = StyleSheet.create({
     },
     helpActionArrow:{
         position:'absolute', 
-        right:10,
         height:11, 
         width:16, 
-        bottom:-10
-        // backgroundColor:'red'
-        // overflow:'visible'
+        bottom:-10,
+        // right:10,
+        left:10,
+        
     },
 
     // ----------------------------------------消息等待
