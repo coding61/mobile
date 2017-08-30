@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 import {StackNavigator} from 'react-navigation';
+import Http from '../utils/Http.js';
 const {width, height} = Dimensions.get('window');
 var headimgs = [require('../assets/Login/head1.png'),require('../assets/Login/head2.png'),require('../assets/Login/head3.png'),require('../assets/Login/head4.png'),require('../assets/Login/head5.png'),require('../assets/Login/head6.png'),require('../assets/Login/head7.png'),require('../assets/Login/head8.png')];
 export default class SelectHead extends Component {
@@ -40,7 +41,7 @@ export default class SelectHead extends Component {
   goNext = () => {
     var _this = this;
     if (this.state.name !== '') {
-      fetch('https://www.cxy61.com/program_girl/userinfo/telephone_signup/',{
+      fetch(Http.domain + '/userinfo/telephone_signup/',{
                 method: "POST",
                 headers: {
                   'Accept': 'application/json',

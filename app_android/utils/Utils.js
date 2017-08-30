@@ -111,10 +111,12 @@ let Utils = {
     showMessage:(message)=>{
         Alert.alert('提示', message);
     },
-    showAlert:(title, message, cancelEvent, okEvent)=>{
+    showAlert:(title, message, okEvent, cancelEvent, submitText, cancelText)=>{
+        var sText = submitText?submitText:"Ok",
+            cText = cancelText?cancelText:"Cancel";
         Alert.alert(title, message, [
-            {text:'Cancel', onPress:()=>cancelEvent()},
-            {text:'Ok', onPress:()=>okEvent()}
+            {text:cText, onPress:()=>cancelEvent()},
+            {text:sText, onPress:()=>okEvent()}
         ])
     },
     getImgWidthHeight:(url, imgWidth) => {
