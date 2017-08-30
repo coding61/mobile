@@ -12,7 +12,7 @@ import {
   Alert,
   AsyncStorage
 } from 'react-native';
-
+import Http from '../utils/Http.js';
 const {width, height} = Dimensions.get('window');
 import {StackNavigator} from 'react-navigation';
 var itemHead = {nostart: require('../assets/Course/nostart.png'), processing:require('../assets/Course/onstudy.png'), finish: require('../assets/Course/onfinish.png')};
@@ -40,7 +40,7 @@ class CourseItem extends Component {
       var _this = this;
         AsyncStorage.getItem("token", function(errs, results) {
           if (results) {
-            fetch('https://www.cxy61.com/program_girl/userinfo/update_learnextent/',{
+            fetch(Http.domain + '/userinfo/update_learnextent/',{
                       method: "POST",
                       headers: {
                         'Accept': 'application/json',
@@ -75,7 +75,7 @@ class CourseItem extends Component {
         var _this = this;
         AsyncStorage.getItem("token", function(errs, results) {
           if (results) {
-            fetch('https://www.cxy61.com/program_girl/userinfo/update_learnextent/',{
+            fetch(Http.domain + '/userinfo/update_learnextent/',{
                       method: "POST",
                       headers: {
                         'Accept': 'application/json',
@@ -247,7 +247,7 @@ class CourseList extends Component {
     var _this = this;
     AsyncStorage.getItem("token", function(errs, results) {
       if (results) {
-        fetch('https://www.cxy61.com/program_girl/userinfo/update_learnextent/',{
+        fetch(Http.domain + '/userinfo/update_learnextent/',{
                   method: "POST",
                   headers: {
                     'Accept': 'application/json',
@@ -314,7 +314,7 @@ class CourseList extends Component {
   _loadData() {
     var _this = this;
     AsyncStorage.getItem("token", function(errs, results) {
-      fetch('https://www.cxy61.com/program_girl/course/courses/', {headers: {Authorization: 'Token ' + results, 'content-type': 'application/json'}})
+      fetch(Http.domain + '/course/courses/', {headers: {Authorization: 'Token ' + results, 'content-type': 'application/json'}})
         .then(response => {
           if (response.status === 200) {
             return response.json()
