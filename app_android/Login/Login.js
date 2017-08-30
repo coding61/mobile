@@ -14,7 +14,7 @@ import {
   Alert,
   ScrollView
 } from 'react-native';
-
+import Http from '../utils/Http.js';
 const {width, height} = Dimensions.get('window');
 export default class Login extends Component {
   static navigationOptions = {
@@ -42,7 +42,7 @@ export default class Login extends Component {
   }
   phoneLogin() {
     var _this = this;
-    fetch('https://www.cxy61.com/program_girl/userinfo/telephone_login/',{
+    fetch(Http.domain + '/userinfo/telephone_login/',{
               method: "POST",
               headers: {
                 'Accept': 'application/json',
@@ -74,7 +74,7 @@ export default class Login extends Component {
   }
   goLogin() {
     var _this = this;
-    fetch('https://www.cxy61.com/program_girl/userinfo/invitation_code_login/',{
+    fetch(Http.domain + '/userinfo/invitation_code_login/',{
               method: "POST",
               headers: {
                 'Accept': 'application/json',
