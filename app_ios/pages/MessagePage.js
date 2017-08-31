@@ -2645,7 +2645,7 @@ const styles = StyleSheet.create({
         height:30, 
         marginBottom:5,
         marginTop:5, 
-        marginLeft:width-40,
+        // marginLeft:width-40,
         marginLeft:10
     },
     actions:{//按钮高度40
