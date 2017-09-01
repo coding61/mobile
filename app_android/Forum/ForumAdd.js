@@ -147,7 +147,7 @@ export default class ForumAdd extends Component{
                     placeholderTextColor='#aaaaaa'
                 />
                 <TextInput
-                    style={{height: 280, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,paddingTop:10,paddingRight:10,}}
+                    style={{height: 230, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,paddingTop:10,paddingRight:10,}}
                     onChangeText={(text) => this.setState({text})}
                     value={this.state.text}
                     multiline={true}
@@ -156,10 +156,10 @@ export default class ForumAdd extends Component{
                     placeholder='尽情提问吧'
                     placeholderTextColor='#aaaaaa'
                 />
-                <View style={{flexDirection:'row',alignItems:'center',width:width,height:40,position:'absolute',bottom:30,left:width*0.8,}}>
+                <View style={{width:width,marginTop:30,}}>
                     <TouchableOpacity onPress={this.qiniu.bind(this)}
-                        style={{width:60,height:36,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',borderRadius:5,}}>
-                        <Text style={{color:'#ffffff',fontSize:14,}}>图片</Text>
+                        style={{width:width*0.76,height:40,marginLeft:width*0.12,borderRadius:5,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
+                        <Text style={{color:'#ffffff',fontSize:14,}}>添加图片</Text>
                     </TouchableOpacity>
                 </View>
 
