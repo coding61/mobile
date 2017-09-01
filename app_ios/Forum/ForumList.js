@@ -21,8 +21,6 @@ var {height, width} = Dimensions.get('window');
 import Http from '../utils/Http.js';
 var basePath=Http.domain;
 
-import Forum_Details from './Forum_Details';
-
 export default class ForumList extends Component{
     constructor(props) {
         super(props);
@@ -47,19 +45,29 @@ export default class ForumList extends Component{
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
+            headerBackTitle:null,
             headerRight:
                 (
-                <TouchableOpacity  onPress={()=>{
+                <View style={{flexDirection:'row',marginRight:10,}}>
+                    <TouchableOpacity  onPress={()=>{
+                        DeviceEventEmitter.emit('search', state.params.data)
+                    }} style={{alignItems:'center',justifyContent:'center',marginRight:15,}}>
+                        {/*<Text style={{color:'#ffffff',}}>搜索</Text>*/}
+                        <Image style={{width:20,height:20,}} source={require('../assets/Forum/sousuo-b.png')}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>{
                         DeviceEventEmitter.emit('addforum', state.params.data)
-                    }} style={{width:40,height:40,marginTop:20,}}>
-                    <Image style={{width:20,height:20,}} source={require('../assets/Forum/add.png')}/>
-                </TouchableOpacity>
+                    }} style={{width:26,height:26,alignItems:'center',justifyContent:'center',}}>
+                        <Image style={{width:20,height:20,}} source={require('../assets/Forum/add.png')}/>
+                    </TouchableOpacity>
+                </View>
                 )
         };
     };
     componentWillUnmount(){
         this.props.navigation.state.params.callback();
         this.eventEmtt.remove();
+        this.eventEmttsea.remove();
     }
     componentDidMount(){
         this._loadAlldata()
@@ -68,6 +76,11 @@ export default class ForumList extends Component{
                 this._onRefresh()
             }})
         }) 
+        this.eventEmttsea = DeviceEventEmitter.addListener('search', (value)=>{
+            this.props.navigation.navigate('Search',{data:value,token:this.state.token,keyword:'',auto:true,callback:(msg)=>{
+                
+            }})
+        })  
     }
 
     _loadAlldata() {

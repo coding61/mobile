@@ -27,8 +27,8 @@ export default class ForumAdd extends Component{
         this.state = {
             pk:this.props.navigation.state.params.data.pk,
             token:this.props.navigation.state.params.token,
-            text:null,
-            title:null,
+            text:'',
+            title:'',
             show:false,
             IdCard1:'',//图片
         }
@@ -68,36 +68,40 @@ export default class ForumAdd extends Component{
             data.title=this.state.title;
             data.types =2;
             data.content=this.state.text;
-            fetch(basePath+"/forum/posts_create/",
-            {
-                method:'post',
-                headers: {
-                    'Authorization': 'Token ' + this.state.token,
-                    'Content-Type': 'application/json'},
-                body: JSON.stringify(data),  
-            })
-            .then((response)=>{
-                return response.json();
-            })
-            .then((result)=>{
-                if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
-                    Alert.alert(
-                        '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',
-                        '',
-                        [
-                            {text: '确定', onPress: ()=> {}, style: 'destructive'},
-                            {text: '取消', onPress: () => {}, style: 'destructive'},
-                         ]
-                    )
-                }else{
-                    this.props.navigation.state.params.callback();
-                    this.props.navigation.goBack();
-                }
-                
-            })
-            .catch((error) => {
-                console.error(error);
-            })
+            if (data.content=='') {
+                Alert.alert('请输入帖子内容！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+            }else{
+                fetch(basePath+"/forum/posts_create/",
+                {
+                    method:'post',
+                    headers: {
+                        'Authorization': 'Token ' + this.state.token,
+                        'Content-Type': 'application/json'},
+                    body: JSON.stringify(data),  
+                })
+                .then((response)=>{
+                    return response.json();
+                })
+                .then((result)=>{
+                    if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
+                        Alert.alert(
+                            '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',
+                            '',
+                            [
+                                {text: '确定', onPress: ()=> {}, style: 'destructive'},
+                                {text: '取消', onPress: () => {}, style: 'destructive'},
+                             ]
+                        )
+                    }else{
+                        this.props.navigation.state.params.callback();
+                        this.props.navigation.goBack();
+                    }
+                    
+                })
+                .catch((error) => {
+                    console.error(error);
+                })
+            }
         })
     }
     progress(){

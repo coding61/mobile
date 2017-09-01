@@ -49,7 +49,12 @@ export default class ForumList extends Component{
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
             headerRight:
                 (
-                <View style={{flexDirection:'row',marginRight:20,}}>
+                <View style={{flexDirection:'row',marginRight:15,}}>
+                    <TouchableOpacity  onPress={()=>{
+                        DeviceEventEmitter.emit('search', state.params.data)
+                    }} style={{alignItems:'center',justifyContent:'center',marginRight:20,}}>
+                       <Image style={{width:20,height:20,}} source={require('../assets/Forum/sousuo-b.png')}/>
+                    </TouchableOpacity>
                     <TouchableOpacity  onPress={()=>{
                         DeviceEventEmitter.emit('addforum', state.params.data)
                     }} style={{width:26,height:26,alignItems:'center',justifyContent:'center',}}>
@@ -62,6 +67,7 @@ export default class ForumList extends Component{
     componentWillUnmount(){
         this.props.navigation.state.params.callback();
         this.eventEmtt.remove();
+        this.eventEmttsea.remove();
     }
     componentDidMount(){
         this._loadAlldata()
@@ -69,7 +75,12 @@ export default class ForumList extends Component{
             this.props.navigation.navigate('ForumAdd',{data:value,token:this.state.token,callback:(msg)=>{
                 this._onRefresh()
             }})
-        }) 
+        })
+        this.eventEmttsea = DeviceEventEmitter.addListener('search', (value)=>{
+            this.props.navigation.navigate('Search',{token:this.state.token,keyword:'',callback:(msg)=>{
+                this._onRefresh()
+            }})
+        })  
     }
     _loadAlldata() {
         this.setState({

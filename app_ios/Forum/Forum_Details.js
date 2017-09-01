@@ -40,9 +40,9 @@ export default class Forum_Details extends Component{
             commentshow:false,
             Maincommentshow:false,
             content:'',
-            reply_pk:'',
+            //reply_pk:'',
         } 
-        
+        console.log(this.props.navigation.state.params)
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
@@ -183,7 +183,7 @@ export default class Forum_Details extends Component{
             .then(responseJson=> {
                 if (responseJson === '加载失败') {
                     Alert.alert(
-                        '加载失败,请重试',
+                        '加载失败,请重试1',
                         '',
                         [
                             {text: '确定', onPress: ()=> {this.setState({isLoading: false, isRefreshing: false})}, style: 'destructive'},
@@ -206,7 +206,7 @@ export default class Forum_Details extends Component{
             })
             .catch((error) => {
                 Alert.alert(
-                      '加载失败,请重试',
+                      '加载失败,请重试2',
                       '',
                       [
                         {text: '确定', onPress: ()=> {}, style: 'destructive'},
@@ -235,7 +235,7 @@ export default class Forum_Details extends Component{
                 .then(responseJson=> {
                     if (responseJson === '加载失败') {
                         Alert.alert(
-                          '加载失败,请重试',
+                          '加载失败,请重试3',
                           '',
                           [
                             {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
@@ -404,9 +404,48 @@ export default class Forum_Details extends Component{
             console.error(error);  
         })
     }
+    manager(index){
+        if(index==0){
+            fetch(basePath+"/forum/posts_essence/cancel/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
+            .then(response=>{return response.json()})
+            .then(responseJson=>{
+                this._loadforum()
+            })
+            .catch((error) => {
+                console.error(error);  
+            })
+        }else if(index==1){
+            fetch(basePath+"/forum/posts_essence/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
+            .then(response=>{return response.json()})
+            .then(responseJson=>{
+                this._loadforum()
+            })
+            .catch((error) => {
+                console.error(error);  
+            })
+        }else if(index==2){
+            fetch(basePath+"/forum/posts_top/cancel/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
+            .then(response=>{return response.json()})
+            .then(responseJson=>{
+                this._loadforum()
+            })
+            .catch((error) => {
+                console.error(error);  
+            })
+        }else{
+            fetch(basePath+"/forum/posts_top/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
+            .then(response=>{return response.json()})
+            .then(responseJson=>{
+                this._loadforum()
+            })
+            .catch((error) => {
+                console.error(error);  
+            })
+        }
+    }
     render() {
         var data=this.state.data;
-        if(!data){
+        if(!data||!this.state.UserInfo){
             return(<Text>加载中...</Text>)
         }else{
             return(
@@ -426,19 +465,27 @@ export default class Forum_Details extends Component{
                         </View>
                         <View style={{marginBottom:10,}}>
                             <ForumDeatilCont data={this.state.data.content} ></ForumDeatilCont>
-                            {data.userinfo.pk==this.state.UserPk?(
-                                    <View style={{flexDirection:'row',marginLeft:30,}}>
-                                        {data.status=='unsolved'?(
-                                            <View style={{flexDirection:'row'}}>
-                                                <Text onPress={this.forum_tag.bind(this,0)} style={{color:'#ff6b94',marginRight:30,}}>标记为已解决</Text>
-                                                <Text onPress={this.forum_tag.bind(this,1)} style={{color:'#ff6b94',marginRight:30,}}>关闭问题</Text>    
-                                            </View>
-                                        ):(
-                                            <Text onPress={this.forum_tag.bind(this,2)} style={{color:'#ff6b94',marginRight:30,}}>标记为未解决</Text> 
-                                        )}
-                                        <Text onPress={this.detele_main.bind(this)} style={{color:'#ff6b94',marginRight:30,fontSize:16,}}>删除此贴</Text>
+                            <View style={{flexDirection:'row'}}>
+                                {data.userinfo.pk==this.state.UserPk?(
+                                        <View style={{flexDirection:'row',marginLeft:30,}}>
+                                            {data.status=='unsolved'?(
+                                                <View style={{flexDirection:'row'}}>
+                                                    <Text onPress={this.forum_tag.bind(this,0)} style={{color:'#ff6b94',marginRight:30,}}>标记为已解决</Text>
+                                                    <Text onPress={this.forum_tag.bind(this,1)} style={{color:'#ff6b94',marginRight:30,}}>关闭问题</Text>    
+                                                </View>
+                                            ):(
+                                                <Text onPress={this.forum_tag.bind(this,2)} style={{color:'#ff6b94',marginRight:30,}}>标记为未解决</Text> 
+                                            )}
+                                        </View>
+                                    ):(null)}
+                                {(this.state.UserInfo.is_staff||data.userinfo.pk==this.state.UserPk)?(<Text onPress={this.detele_main.bind(this)} style={{color:'#ff6b94',marginLeft:30,fontSize:16,}}>删除此贴</Text>):(null)}
+                            </View>
+                                {this.state.UserInfo.is_staff?(
+                                    <View style={{flexDirection:'row',paddingLeft:30,marginTop:10,}}>
+                                        {data.isessence?(<Text style={{color:'#FF6A6A',marginRight:20,}} onPress={this.manager.bind(this,0)}>取消加精</Text>):(<Text style={{color:'#FF6A6A',marginRight:20,}} onPress={this.manager.bind(this,1)}>加精</Text>)}
+                                        {data.istop?(<Text style={{color:'#FF6A6A'}} onPress={this.manager.bind(this,2)}>取消置顶</Text>):(<Text style={{color:'#FF6A6A'}} onPress={this.manager.bind(this,3)}>置顶</Text>)}
                                     </View>
-                                ):(null)}
+                                    ):(null)}
                             <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,marginTop:10,}}>回帖数量({data.reply_count})</Text>
                         </View>
                         <FlatList

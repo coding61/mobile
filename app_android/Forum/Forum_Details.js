@@ -67,6 +67,7 @@ export default class Forum_Details extends Component{
             this.props.navigation.state.params.callback();
         }
         this.eventEmss.remove();
+        this.eventEm.remove();
     }
     componentDidMount() {
         this._loadforum()
@@ -403,9 +404,48 @@ export default class Forum_Details extends Component{
             console.error(error);  
         })
     }
+    manager(index){
+        if(index==0){
+            fetch(basePath+"/forum/posts_essence/cancel/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
+            .then(response=>{return response.json()})
+            .then(responseJson=>{
+                this._loadforum()
+            })
+            .catch((error) => {
+                console.error(error);  
+            })
+        }else if(index==1){
+            fetch(basePath+"/forum/posts_essence/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
+            .then(response=>{return response.json()})
+            .then(responseJson=>{
+                this._loadforum()
+            })
+            .catch((error) => {
+                console.error(error);  
+            })
+        }else if(index==2){
+            fetch(basePath+"/forum/posts_top/cancel/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
+            .then(response=>{return response.json()})
+            .then(responseJson=>{
+                this._loadforum()
+            })
+            .catch((error) => {
+                console.error(error);  
+            })
+        }else{
+            fetch(basePath+"/forum/posts_top/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
+            .then(response=>{return response.json()})
+            .then(responseJson=>{
+                this._loadforum()
+            })
+            .catch((error) => {
+                console.error(error);  
+            })
+        }
+    }
     render() {
         var data=this.state.data;
-        if(!data){
+        if(!data||!this.state.UserInfo){
             return(<Text style={{alignItems:'center',justifyContent:'center',paddingTop:20,}}>加载中...</Text>)
         }else{
             return(
@@ -422,41 +462,50 @@ export default class Forum_Details extends Component{
                                 <Text style={{paddingBottom:5,color:'#858585'}}>{data.create_time.slice(0, 16).replace("T", " ")}</Text>
                                 <Text style={{color:'#FF6A6A'}}>[{data.types.name}]</Text>
                             </View>
+
                         </View>
                         <View style={{marginBottom:10,}}>
                             <ForumDeatilCont data={this.state.data.content} ></ForumDeatilCont>
-                            {data.userinfo.pk==this.state.UserPk?(
-                                    <View style={{flexDirection:'row',marginLeft:30,}}>
-                                        {data.status=='unsolved'?(
-                                            <View style={{flexDirection:'row'}}>
-                                                <Text onPress={this.forum_tag.bind(this,0)} style={{color:'#ff6b94',marginRight:30,}}>标记为已解决</Text>
-                                                <Text onPress={this.forum_tag.bind(this,1)} style={{color:'#ff6b94',marginRight:30,}}>关闭问题</Text>    
-                                            </View>
-                                        ):(
-                                            <Text onPress={this.forum_tag.bind(this,2)} style={{color:'#ff6b94',marginRight:30,}}>标记为未解决</Text> 
-                                        )}
-                                        <Text onPress={this.detele_main.bind(this)} style={{color:'#ff6b94',marginRight:30,fontSize:16,}}>删除此贴</Text>
+                            <View style={{flexDirection:'row'}}>
+                                {data.userinfo.pk==this.state.UserPk?(
+                                        <View style={{flexDirection:'row',marginLeft:30,}}>
+                                            {data.status=='unsolved'?(
+                                                <View style={{flexDirection:'row'}}>
+                                                    <Text onPress={this.forum_tag.bind(this,0)} style={{color:'#ff6b94',marginRight:30,}}>标记为已解决</Text>
+                                                    <Text onPress={this.forum_tag.bind(this,1)} style={{color:'#ff6b94',marginRight:30,}}>关闭问题</Text>    
+                                                </View>
+                                            ):(
+                                                <Text onPress={this.forum_tag.bind(this,2)} style={{color:'#ff6b94',marginRight:30,}}>标记为未解决</Text> 
+                                            )}
+                                        </View>
+                                    ):(null)}
+                                {(this.state.UserInfo.is_staff||data.userinfo.pk==this.state.UserPk)?(<Text onPress={this.detele_main.bind(this)} style={{color:'#ff6b94',marginLeft:30,fontSize:16,}}>删除此贴</Text>):(null)}
+                            </View>
+                                {this.state.UserInfo.is_staff?(
+                                    <View style={{flexDirection:'row',paddingLeft:30,marginTop:10,}}>
+                                        {data.isessence?(<Text style={{color:'#FF6A6A',marginRight:20,}} onPress={this.manager.bind(this,0)}>取消加精</Text>):(<Text style={{color:'#FF6A6A',marginRight:20,}} onPress={this.manager.bind(this,1)}>加精</Text>)}
+                                        {data.istop?(<Text style={{color:'#FF6A6A'}} onPress={this.manager.bind(this,2)}>取消置顶</Text>):(<Text style={{color:'#FF6A6A'}} onPress={this.manager.bind(this,3)}>置顶</Text>)}
                                     </View>
-                                ):(null)}
-                            <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,marginTop:10,}}>回帖数量({data.reply_count})</Text>
+                                    ):(null)}
+                                <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,marginTop:10,}}>回帖数量({data.reply_count})</Text>
                         </View>
                         <FlatList
-                                horizontal={false}
-                                data={this.state.dataSource}
-                                renderItem={this.renderForumRow.bind(this)}
-                                keyExtractor={this._keyExtractor}
-                                onEndReached={this._renderNext.bind(this)}
-                                onEndReachedThreshold={3}
-                                ListFooterComponent={this._renderFooter.bind(this)}
-                                refreshControl={
-                                    <RefreshControl
-                                        refreshing={this.state.isRefreshing}
-                                        onRefresh={this._onRefresh.bind(this)}
-                                        tintColor='#cccccc'
-                                        title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
-                                        titleColor='#cccccc' />
-                                }
-                            >
+                            horizontal={false}
+                            data={this.state.dataSource}
+                            renderItem={this.renderForumRow.bind(this)}
+                            keyExtractor={this._keyExtractor}
+                            onEndReached={this._renderNext.bind(this)}
+                            onEndReachedThreshold={3}
+                            ListFooterComponent={this._renderFooter.bind(this)}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.isRefreshing}
+                                    onRefresh={this._onRefresh.bind(this)}
+                                    tintColor='#cccccc'
+                                    title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
+                                    titleColor='#cccccc' />
+                            }
+                        >
                         </FlatList>
                     </ScrollView>
                 </View>
