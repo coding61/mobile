@@ -619,17 +619,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-<<<<<<< HEAD
-		8650C2D41F56697E007B7678 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				8650C2F61F56697E007B7678 /* libRNImagePicker.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-=======
->>>>>>> a3844bff27b8779d95550efc771daa90127ab42b
 		C30162FB1F3C333400711262 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1007,16 +996,7 @@
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-<<<<<<< HEAD
-		8650C2F61F56697E007B7678 /* libRNImagePicker.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNImagePicker.a;
-			remoteRef = 8650C2F51F56697E007B7678 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-=======
->>>>>>> a3844bff27b8779d95550efc771daa90127ab42b
+
 		C30162FF1F3C333400711262 /* libRNSound.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;

@@ -31,6 +31,7 @@ import ForumAdd from './Forum/ForumAdd.js';
 import MyCollect from './Forum/MyCollect.js';
 import MyForum from './Forum/MyForum.js';
 import CommentText from './Forum/CommentText.js';
+import Search from './Forum/Search.js';
 
 import Login from './Login/Login.js';
 import CourseList from './CourseList/CourseList.js';
@@ -79,6 +80,7 @@ const app = StackNavigator({
     MyCollect:{screen:MyCollect},
     MyForum:{screen:MyForum},
     CommentText:{screen:CommentText},
+    Search:{screen:Search},
     
     MessagePage:{screen: MessagePage},
     MessagePage1:{screen:MessagePage1},

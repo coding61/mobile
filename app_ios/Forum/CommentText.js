@@ -48,55 +48,63 @@ export default class CommentText extends Component{
         var data = {};
         data.posts = this.state.pk;
         data.content=this.state.content;
-        fetch(basePath+"/forum/replies_create/",
-        {
-            method:'post',
-            headers: {
-                'Authorization': 'Token ' + this.state.token,
-                'Content-Type': 'application/json'},
-            body: JSON.stringify(data),  
-        })
-        .then((response)=>{
-            return response.json();
-        })
-        .then((result)=>{
-            this.setState({
-                content:'',
-            },()=>{
-                this.props.navigation.state.params.callback();
-                this.props.navigation.goBack();
+        if (data.content=='') {
+            Alert.alert('请填写评论！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+        }else{
+            fetch(basePath+"/forum/replies_create/",
+            {
+                method:'post',
+                headers: {
+                    'Authorization': 'Token ' + this.state.token,
+                    'Content-Type': 'application/json'},
+                body: JSON.stringify(data),  
             })
-        })
-        .catch((error) => {
-            console.error(error);
-        })
+            .then((response)=>{
+                return response.json();
+            })
+            .then((result)=>{
+                this.setState({
+                    content:'',
+                },()=>{
+                    this.props.navigation.state.params.callback();
+                    this.props.navigation.goBack();
+                })
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+        }
     }
     Comment(){
         var data = {};
         data.replies = this.state.pk;
         data.content=this.state.content;
-        fetch(basePath+"/forum/replymore_create/",
-        {
-            method:'post',
-            headers: {
-                'Authorization': 'Token ' + this.state.token,
-                'Content-Type': 'application/json'},
-            body: JSON.stringify(data),  
-        })
-        .then((response)=>{
-            return response.json();
-        })
-        .then((result)=>{
-            this.setState({
-                content:'', 
-            },()=>{
-                this.props.navigation.state.params.callback();
-                this.props.navigation.goBack();
+        if (data.content=='') {
+            Alert.alert('请填写评论！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+        }else{
+            fetch(basePath+"/forum/replymore_create/",
+            {
+                method:'post',
+                headers: {
+                    'Authorization': 'Token ' + this.state.token,
+                    'Content-Type': 'application/json'},
+                body: JSON.stringify(data),  
             })
-        })
-        .catch((error) => {
-            console.error(error);
-        })
+            .then((response)=>{
+                return response.json();
+            })
+            .then((result)=>{
+                this.setState({
+                    content:'', 
+                },()=>{
+                    this.props.navigation.state.params.callback();
+                    this.props.navigation.goBack();
+                })
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+        }
     }
     postcomment(){
         if(this.props.navigation.state.params.name=='reply'){

@@ -29,7 +29,7 @@ export default class ForumAdd extends Component{
             pk:this.props.navigation.state.params.data.pk,
             token:this.props.navigation.state.params.token,
             text:'',
-            title:null,
+            title:'',
             show:false,
             IdCard1:'',//图片
         }
@@ -64,35 +64,39 @@ export default class ForumAdd extends Component{
             data.title=this.state.title;
             data.types =2;
             data.content=this.state.text;
-            fetch(basePath+"/forum/posts_create/",
-            {
-                method:'post',
-                headers: {
-                    'Authorization': 'Token ' + this.state.token,
-                    'Content-Type': 'application/json'},
-                body: JSON.stringify(data),  
-            })
-            .then((response)=>{
-                return response.json();
-            })
-            .then((result)=>{
-                if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
-                    Alert.alert(
-                        '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',
-                        '',
-                        [
-                            {text: '确定', onPress: ()=> {}, style: 'destructive'},
-                            {text: '取消', onPress: () => {}, style: 'destructive'},
-                         ]
-                    )
-                }else{
-                    this.props.navigation.state.params.callback();
-                    this.props.navigation.goBack();
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            })
+            if (data.content=='') {
+                Alert.alert('请输入帖子内容！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+            }else{
+                fetch(basePath+"/forum/posts_create/",
+                {
+                    method:'post',
+                    headers: {
+                        'Authorization': 'Token ' + this.state.token,
+                        'Content-Type': 'application/json'},
+                    body: JSON.stringify(data),  
+                })
+                .then((response)=>{
+                    return response.json();
+                })
+                .then((result)=>{
+                    if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
+                        Alert.alert(
+                            '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',
+                            '',
+                            [
+                                {text: '确定', onPress: ()=> {}, style: 'destructive'},
+                                {text: '取消', onPress: () => {}, style: 'destructive'},
+                             ]
+                        )
+                    }else{
+                        this.props.navigation.state.params.callback();
+                        this.props.navigation.goBack();
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                })
+            }
         })
     }
     componentWillUpdate(){
@@ -193,8 +197,14 @@ export default class ForumAdd extends Component{
                     enablesReturnKeyAutomatically={true}
                     placeholderTextColor='#aaaaaa'
                 />
+                <View style={{flexDirection:'row',alignItems:'center',width:width,height:40,paddingLeft:20,marginTop:10,marginBottom:10,}}>
+                    <TouchableOpacity onPress={this._changeIcon.bind(this)}
+                        style={{width:60,height:30,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',borderRadius:5,}}>
+                        <Text style={{color:'#ffffff',fontSize:14,}}>图片</Text>
+                    </TouchableOpacity>
+                </View>
                 <TextInput
-                    style={{height: 170, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,paddingTop:10,fontSize:14,paddingRight:10,}}
+                    style={{height: 280, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,paddingTop:10,fontSize:14,paddingRight:10,}}
                     onChangeText={(text) => this.setState({text})}
                     value={this.state.text}
                     multiline={true}
@@ -204,12 +214,7 @@ export default class ForumAdd extends Component{
                     enablesReturnKeyAutomatically={true}
                     placeholderTextColor='#aaaaaa'
                 />
-                <View style={{flexDirection:'row',alignItems:'center',width:width,height:40,position:'absolute',bottom:30,left:width*0.8,}}>
-                    <TouchableOpacity onPress={this._changeIcon.bind(this)}
-                        style={{width:60,height:36,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',borderRadius:5,}}>
-                        <Text style={{color:'#ffffff',fontSize:14,}}>图片</Text>
-                    </TouchableOpacity>
-                </View>
+                
 
                 {this.state.show?(
                     <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
