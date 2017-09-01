@@ -32,11 +32,12 @@ import Utils from '../utils/Utils.js';
 import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Http from '../utils/Http.js';
 
-const actionChooseCourseTag = 1;    //点击选择课程
-const actionBeginStudyTag = 2;      //开始学习
-const actionRestartStudyTag = 3;    //重新学习
-const actionRecordTag = 4;          //打卡
-const actionCommonTag = 0;          //普通按钮
+const actionChooseCourseTag = 1;       //点击选择课程
+const actionBeginStudyTag = 2;         //开始学习
+const actionRestartStudyTag = 3;       //重新学习
+const actionRecordTag = 4;             //打卡
+const actionCatalogBeginStudyTag = 5;  //点了目录的的开始学习
+const actionCommonTag = 0;             //普通按钮
 
 const GrowAniTime = 2000;           //经验动画时间
 const ZuanAniTime = 1000;           //钻石动画时间
@@ -89,6 +90,7 @@ class MessagePage extends Component{
 
             scrollTop:false,             //是否要向上滚动
             scrollTopLastItem:false,     //向上滚动，最后一个元素
+            scrollAuto:true,             //滚动是否是自动滚动,默认是
 
             itemHeight:0,                //item的高度
             bigImgUrl:"",                //放大图片的 url
@@ -103,6 +105,11 @@ class MessagePage extends Component{
             showCopyBtn:false,           //是否打开复制按钮
             currentClickIndex:0,         //当前点击要复制的消息的下标
             currentCopyText:"",          //当前长按文本要复制的内容
+
+            showCatalogsMenu:false,      //帮助组中是否显示当前课程目录选项
+            showCatalogsView:false,      //是否显示课程目录列表
+            currentCatalogIndex:0,       //当前目录选中项，即用户正在学习第几节课，默认0
+            catalogs:[],                 //当前课程的目录列表数据组
 
         };
         this.leftEnterValue = new Animated.Value(0)     //左侧进入动画
@@ -165,12 +172,6 @@ class MessagePage extends Component{
         }
         
     };
-    static propTypes = {
-      // prop: React.PropTypes.Type
-    };
-    static defaultProps = {
-      // prop: 'value'
-    }
     componentWillMount() {
 
         // var chatArray = [];
@@ -572,7 +573,7 @@ class MessagePage extends Component{
                 if (this.state.data.length == this.state.index+1) {
                     //请求当前课程的，下一节数据
                     // TODO:
-                    this._fetchCourseInfoWithPk(this.state.course);
+                    this._fetchCourseInfoWithPk(this.state.course, false);
                 } else{
                     this._loadMessage(this.state.data, this.state.index+1, false);
                 }
@@ -709,7 +710,7 @@ class MessagePage extends Component{
         ).start(()=>{})
     }
     // ------------------------------------------网络请求
-    _fetchCourseInfoWithPk(course){
+    _fetchCourseInfoWithPk(course, catalogChange){
         var this_ = this;
         Utils.isLogin((token)=>{
             if (token) {
@@ -736,20 +737,31 @@ class MessagePage extends Component{
                         Utils.showMessage("数据格式有问题");
                         return
                     }
-                    // this_._loadCourseProgress(response.total_lesson, response.learn_extent.last_lesson);  //加载课程进度信息
 
+                    // this_._loadCourseProgress(response.total_lesson, response.learn_extent.last_lesson);  //加载课程进度信息
+                    var courseIndex = catalogChange==true?this_.state.currentCatalogIndex:response.learn_extent.last_lesson
                     this_.setState({
-                        courseIndex:response.learn_extent.last_lesson    //记录进度
+                        courseIndex:courseIndex
                     }, ()=>{
-                        // 存储课程进度下标
+                        if (catalogChange == true) {
+                            // 更新目录
+                            this_.setState({
+                                catalogs:array["catalogs"]   
+                            })
+                            // 更新服务器进度
+                            this_._fetchUpdateExtentWithCatalog(this.state.course, courseIndex);
+                        }
+                        // 更新存储进度下标
                         Utils.setValue("currentCourseIndex", JSON.stringify(this.state.courseIndex));
-                        var courseIndex = this_.state.courseIndex;  //进度
+                        courseIndex = this_.state.courseIndex;  //进度
+                        // 更新会话列表数据
                         this_.setState({
                             totalData:array
                         }, ()=>{
                             this_._loadMessages(courseIndex+1)
                         })
                     })
+                    
                 }, (err) => {
                     console.log(2);
                     // console.log(err);
@@ -772,7 +784,6 @@ class MessagePage extends Component{
                         return;
                     }
 
-
                     if (!response) {
                         //请求失败
                     };
@@ -788,9 +799,20 @@ class MessagePage extends Component{
                         Utils.showMessage("数据格式有问题!");
                         return;
                     }
-
+                    
+                    if (array["catalogs"]) {
+                        this.setState({
+                            catalogs:array["catalogs"],                          // 记录当前课程的目录数据
+                            currentCatalogIndex:this.state.courseIndex,   // 记录当前目录下标
+                            showCatalogsMenu:true,                               // 打开课程目录选项按钮
+                        }, ()=>{console.log(this.state.currentCatalogIndex)})
+                    } else{
+                        this.setState({
+                            showCatalogsMenu:false,                              // 关闭课程目录选项按钮
+                        })
+                    }
                     this.setState({
-                        courseTotal:response.total_lesson
+                        courseTotal:response.total_lesson,                  //记录总课节数, 展示进度用
                     })
 
                     // this_._loadCourseProgress(response.total_lesson, this.state.courseIndex);  //加载课程进度信息
@@ -983,6 +1005,25 @@ class MessagePage extends Component{
         })
         
     }
+    _fetchUpdateExtentWithCatalog(course, courseIndex){
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "post",
+                    url = Http.updateExtent,
+                    token = token,
+                    data = {
+                        course:course,
+                        lesson:courseIndex
+                    };
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    
+                }, (err) => {
+                    // console.log(err);
+                    // Utils.showMessage('网络请求失败');
+                });
+            } 
+        }) 
+    }
     _fetchUpdateExtent(course, courseIndex){
         var this_ = this;
         Utils.isLogin((token)=>{
@@ -1083,6 +1124,7 @@ class MessagePage extends Component{
 
             scrollTop:false,             //是否要向上滚动
             scrollTopLastItem:false,     //向上滚动，最后一个元素
+            scrollAuto:true,             //滚动是否是自动滚动,默认是
 
             itemHeight:0,                //item的高度
             bigImgUrl:"",                //放大图片的 url
@@ -1096,61 +1138,7 @@ class MessagePage extends Component{
         this.setState({showHelpActions:false})
 
         this.props.navigation.navigate('Login', {callback:()=>{
-            /*
-            const {setParams} = this.props.navigation;
-            setParams({userinfo:""})
-            this.setState({
-                loading:false,
-                totalData:[],                //某课程总数据
-                chatData:[],                 //缓存数据
-                data:null,                   //节数据
-                index:0,                     //节下标
-                currentItem:null,            //当前消息
-                number:0,                    //记录加载数据的个数
-                dataSource:[],               //页面加载的所有数据源
-                loadingChat:true,            //等待符号
-                
-                optionData:[],               //选项数据
-                optionIndex:0,               //选项下标
-                options:[],                  //用户做出的选择
-                actionTag:actionCommonTag,   //默认是普通按钮
-                showAction:false,
-                contentHeight:0,
-
-                course:null,                 //当前课程的 pk
-                courseTotal:0,               //当前课程的总节数
-                courseIndex:0,               //当前课程的进度
-
-                chooseCourse:null,           //选择课程的 pk
-                chooseCourseTotal:0,         //选择课程的总节数
-                chooseCourseIndex:0,         //选择课程的进度
-
-                showGradeAni:false,          //是否显示升级动画
-                showZuanAni:false,           //是否显示钻石动画
-                showGrowAni:false,           //是否显示经验动画
-                growNum:0,                   //经验值
-
-                userinfo:null,               //用户信息
-                count:10,                    //缓存数据一次加载的个数
-
-                showHelpActions:false,       //是否显示帮助组按钮
-                showHeaderComponent:false,   //是否显示头部的组件（加载更多）
-                headerLoadTag:LoadMore,      //默认是点击加载更多
-
-                scrollTop:false,             //是否要向上滚动
-                scrollTopLastItem:false,     //向上滚动，最后一个元素
-
-                itemHeight:0,                //item的高度
-                bigImgUrl:"",                //放大图片的 url
-                showBigImgView:false,        //是否显示大图组件
-                showFindHelpView:false,      //是否显示查找帮助组件
-
-                courseProgressArray:[],
-                showQuitLogin:false,         //是否显示退出登录按钮
-                newsCount:0,                 //论坛未读消息
-            })
-            this.setState({showHelpActions:false})
-            */
+            
             this._load(); 
             this._fetchUserInfo();
             this._fetchLunTanUnread();
@@ -1168,7 +1156,8 @@ class MessagePage extends Component{
     _clickBtnActionEvent(){
         //向下滚动
         this.setState({
-            scrollTop: false
+            scrollTop: false,
+            scrollAuto:true
         }) 
 
         this.setState({
@@ -1176,7 +1165,7 @@ class MessagePage extends Component{
         })
         
         var actionText = this.state.currentItem.action
-        if (this.state.actionTag == actionBeginStudyTag){
+        if (this.state.actionTag == actionBeginStudyTag || this.state.actionTag == actionCatalogBeginStudyTag){
             actionText = "开始学习"
         }else if (this.state.actionTag == actionRestartStudyTag) {
             actionText = "重新学习"
@@ -1205,24 +1194,12 @@ class MessagePage extends Component{
             // 选择课程
             
             this._loadChooseCourse(false);
-            
-            /*
+        }else if(this.state.actionTag == actionCatalogBeginStudyTag){
+            // 目录的点击，开始学习
             this.setState({
-                chooseCourse:2,
-                chooseCourseIndex:0
-            }, ()=>{
-                if (this.state.chooseCourse != this.state.course) {
-                    // 按钮由选择课程-->开始学习
-                    this.setState({
-                        actionTag:actionBeginStudyTag,
-                        showAction:true
-                    })
-                }else{
-
-                }
+                actionTag:actionCommonTag
             })
-            */
-            
+            this._fetchCourseInfoWithPk(this.state.course, true);
         }else if (this.state.actionTag == actionBeginStudyTag || this.state.actionTag == actionRestartStudyTag) {
             // 开始学习
             this.setState({
@@ -1230,12 +1207,13 @@ class MessagePage extends Component{
                 courseIndex:this.state.chooseCourseIndex,
                 courseTotal:this.state.chooseCourseTotal,
                 actionTag:actionCommonTag,
-                loadingChat:true
+                loadingChat:true,
+                currentCatalogIndex:this.state.chooseCourseIndex
             }, ()=>{
                 Utils.setValue("currentCourse", JSON.stringify(this.state.course))
                 Utils.setValue("currentCourseIndex", JSON.stringify(this.state.courseIndex))
                 Utils.setValue("currentCourseTotal", JSON.stringify(this.state.courseTotal))
-                this._fetchCourseInfoWithPk(this.state.course);
+                this._fetchCourseInfoWithPk(this.state.course, false);
             })
         }else if(this.state.actionTag == actionRecordTag){
             //打卡
@@ -1383,7 +1361,7 @@ class MessagePage extends Component{
             if (!this.state.data[this.state.index+1] || this.state.data.length == this.state.index+1) {
                 // 请求当前课程的下一节课程
                 //TODO:
-                this._fetchCourseInfoWithPk(this.state.course);
+                this._fetchCourseInfoWithPk(this.state.course, false);
             }else{
                 this._loadMessage(this.state.data, this.state.index+1, false);
             }
@@ -1393,7 +1371,8 @@ class MessagePage extends Component{
     _clickOptionSubmitEvent(){
         //向下滚动
         this.setState({
-            scrollTop:false
+            scrollTop:false,
+            scrollAuto:true
         }) 
 
         if (!this.state.options || this.state.options.length == 0) {
@@ -1457,6 +1436,22 @@ class MessagePage extends Component{
     _clickChooseCourse = ()=>{
         this.setState({showHelpActions:false})
         this._loadChooseCourse(true);
+    }
+    // 课程目录按钮点击
+    _clickCourseCatalog = () => {
+        this.setState({
+            showHelpActions:false,
+            showCatalogsView:true
+        })
+    }
+    // 目录列表每个 item 点击事件
+    _clickCatalog(i){
+        if (i == this.state.currentCatalogIndex) return;
+        this.setState({
+            actionTag:actionCatalogBeginStudyTag,       //按钮编程开始学习
+            showCatalogsView:false,                     //关闭目录列表
+            currentCatalogIndex:i,                      //记录当前选的那一项目录
+        })
     }
     // 寻找帮助点击
     _clickFindHelp = ()=>{
@@ -1561,6 +1556,7 @@ class MessagePage extends Component{
 
             scrollTop:false,             //是否要向上滚动
             scrollTopLastItem:false,     //向上滚动，最后一个元素
+            scrollAuto:true,             //滚动是否是自动滚动,默认是
 
             itemHeight:0,                //item的高度
             bigImgUrl:"",                //放大图片的 url
@@ -1632,6 +1628,7 @@ class MessagePage extends Component{
                         //向上滚动
                         this.setState({
                             scrollTop:true,
+                            scrollAuto:true,
                             headerLoadTag:LoadMoreIng
                         }) 
                         this._loadStorageMessage(array, 0, array.length, true);
@@ -1874,6 +1871,31 @@ class MessagePage extends Component{
             
         )
     }
+    // 课程目录
+    _renderCourseCatalogs(){
+        return (
+            <View style={styles.catalogsView}>
+                <ScrollView style={styles.catalogsList}>
+                    {
+                        this.state.catalogs.map((item, i)=>{
+                            return (
+                                <TouchableOpacity key={i} style={[styles.catalog, i != 0?{borderTopColor:'#d2d2d2', borderTopWidth:1}:null]} onPress={this._clickCatalog.bind(this, i)}>
+                                    <Text style={i == this.state.currentCatalogIndex?styles.catalogTextSelect:styles.catalogTextUnselect} numberOfLines={1}>
+                                      {i+1}.{item.title}
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })
+                    }
+                </ScrollView>
+                <Image
+                  style={styles.catalogsArrow}
+                  source={require('../images/arrow-w.png')}
+                  resizeMode={"contain"}
+                />
+            </View>
+        )
+    }
     // 帮助
     _renderHelpActions(){
         return (
@@ -1882,6 +1904,14 @@ class MessagePage extends Component{
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickChooseCourse}>
                             <Text style={styles.helpActionText}>{"选择课程"}</Text>
                         </TouchableOpacity>
+                        
+                        {
+                            this.state.showCatalogsMenu?
+                            <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickCourseCatalog}>
+                                <Text style={styles.helpActionText}>{"当前课程目录"}</Text>
+                            </TouchableOpacity>
+                            : null
+                        }
 
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickStudyLuntan}>
                             <Text style={styles.helpActionText}>{"学习论坛"}</Text>
@@ -1955,7 +1985,7 @@ class MessagePage extends Component{
         var item = this.state.data[this.state.index];
         item = this.state.currentItem;
         return (
-            this.state.actionTag == actionBeginStudyTag
+            this.state.actionTag == actionBeginStudyTag || this.state.actionTag == actionCatalogBeginStudyTag
             ?
                 this._renderBtnAction("开始学习")
             :
@@ -1976,7 +2006,7 @@ class MessagePage extends Component{
                 {
                     this.state.showAction? this._renderBtnActions() : null
                 }
-                <TouchableOpacity onPress={()=>{this.setState({showHelpActions:!this.state.showHelpActions})}}>
+                <TouchableOpacity onPress={()=>{this.setState({showHelpActions:!this.state.showHelpActions, showCatalogsView:false})}}>
                     <Image
                       style={styles.help}
                       source={require('../images/help.png')}
@@ -2043,16 +2073,18 @@ class MessagePage extends Component{
                     <View style={[styles.msgView, {width:widthMsg2}]}>
                         {/*
                         <Image
-                          style={{width:(widthMsg2)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg2)*0.5)}}
+                          style={{width:(widthMsg2)*0.5, height:imgH}}
                           source={{uri: item.img}}
                         />
                         */}
+                        
                         <ImageLoad
                             style={{width:(widthMsg2)*0.5, height:imgH}}
                             source={{uri: item.img}}
                             resizeMode={'contain'}
                             customImagePlaceholderDefaultStyle={imgDePlaSty}
                         />
+                        
                     </View>
                 </View>
             </TouchableOpacity>
@@ -2383,6 +2415,11 @@ class MessagePage extends Component{
                                 this.setState({
                                     contentHeight:contentHeight
                                 })
+                                
+                                if (!this.state.scrollAuto) {
+                                    console.log('user is scrolling');
+                                    return;
+                                }
 
                                 if (this.state.scrollTop == true) {
                                     this._flatList.scrollToOffset({animated: true, offset: 0});
@@ -2397,6 +2434,8 @@ class MessagePage extends Component{
                                     } 
                                 } 
                             }}
+                            onScrollBeginDrag={this.onScrollBeginDrag}
+                            onScrollEndDrag={this.onScrollEndDrag}
                         />
                         {
                             this.state.loadingChat?this._renderLoadingChat():null
@@ -2424,8 +2463,20 @@ class MessagePage extends Component{
                 {
                     this.state.showFindHelpView? this._renderFindHelp() : null
                 }
+                {
+                    this.state.showCatalogsView? this._renderCourseCatalogs() : null
+                }
             </View>
         )
+    }
+    onScrollBeginDrag=(e)=>{
+        this.setState({
+            scrollAuto:false
+        })
+        console.log('onScrollBeginDrag');
+    }
+    onScrollEndDrag=(e)=>{
+        console.log('onScrollEndDrag');
     }
     // 页面加载中...
     _renderLoadingView(){
@@ -2712,7 +2763,7 @@ const styles = StyleSheet.create({
         height:40
     },
     helpActionText:{
-        width:80,
+        // width:80,
         // height: 30, 
         // lineHeight: 30, 
         textAlign:'center',
@@ -2727,6 +2778,41 @@ const styles = StyleSheet.create({
         // right:10,
         left:10,
         
+    },
+    // ---------------课程目录组
+    catalogsView:{
+        position:'absolute',
+        bottom:45,
+        // right:5,
+        left:5
+    },
+    catalogsList:{
+        backgroundColor: 'white', 
+        borderWidth:1,
+        borderColor:'#d2d2d2',
+        borderRadius: 5,
+        paddingHorizontal:10,
+        maxHeight:180,
+    },
+    catalog:{
+        // alignItems:'center', 
+        justifyContent:'center', 
+        height:40,
+        maxWidth:120,
+    },
+    catalogTextSelect:{
+        color:pinkColor
+    },
+    catalogTextUnselect:{
+        color:'#333'
+    },
+    catalogsArrow:{
+        position:'absolute', 
+        height:11, 
+        width:16, 
+        bottom:-10,
+        // right:10,
+        left:10,
     },
 
     // ----------------------------------------消息等待

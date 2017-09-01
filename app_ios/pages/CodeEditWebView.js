@@ -44,12 +44,6 @@ class CodeEditWebView extends Component {
 			headerTintColor: "#333" 
 		}
 	};	
-	static propTypes = {
-	  // prop: React.PropTypes.Type
-	};
-	static defaultProps = {
-	  // prop: 'value'
-	}
 	componentWillMount() {
 		// const {state} = this.props.navigation;
 		// this.setState({

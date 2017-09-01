@@ -36,12 +36,7 @@ class MessagePage1 extends Component{
         };
         this.leftEnterValue = new Animated.Value(0)   //左侧进入动画
     };
-    static propTypes = {
-      // prop: React.PropTypes.Type
-    };
-    static defaultProps = {
-      // prop: 'value'
-    }
+    
     componentWillMount() {
         this._loadMessages();
     }

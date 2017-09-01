@@ -37,12 +37,7 @@ class ThirdSiteWebView extends Component {
 			title:'程序媛'
 		}
 	};	
-	static propTypes = {
-	  // prop: React.PropTypes.Type
-	};
-	static defaultProps = {
-	  // prop: 'value'
-	}
+	
 	componentWillMount() {
 		// const {state} = this.props.navigation;
 		// this.setState({

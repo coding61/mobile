@@ -37,12 +37,6 @@ class CodeCompileWebView extends Component {
 			title:'在线编译'
 		}
 	};	
-	static propTypes = {
-	  // prop: React.PropTypes.Type
-	};
-	static defaultProps = {
-	  // prop: 'value'
-	}
 	componentWillMount() {
 		// const {state} = this.props.navigation;
 		// this.setState({
