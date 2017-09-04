@@ -11,13 +11,16 @@ import {
   TextInput,
   Keyboard,
   AsyncStorage,
-  Alert
+  Alert,
+  Modal,
+  FlatList
 } from 'react-native';
 import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 import {StackNavigator} from 'react-navigation';
 import Utils from '../utils/Utils.js';
 import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Http from '../utils/Http.js';
+import City from '../country.json';
 
 const {width, height} = Dimensions.get('window');
 var seeImgs = [require('../assets/Login/see2.png'), require('../assets/Login/see1.png')];
@@ -40,14 +43,21 @@ export default class Register extends Component {
       textCode: '',
       password: '',
       textCodeNum: '获取验证码',
-      canSee: false
+      canSee: false,
+      modalVisible: false,
+      cityCode: '+86'
     }
   } 
   attainCode = () => {
-    var reg = /^1[0-9]{10}$/;
-    if (this.state.textCodeNum === '获取验证码' && reg.test(this.state.phoneNum)) {
+    var number;
+    if (this.state.cityCode === '+86') {
+      number = this.state.phoneNum;
+    } else {
+      number = encodeURI(this.state.cityCode + this.state.phoneNum).replace(/\+/g,'%2B');
+    }
+    if (this.state.textCodeNum === '获取验证码') {
         var type = "get",
-            url = Http.getRegCode(this.state.phoneNum),
+            url = Http.getRegCode(number),
             token = null,
             data = null;
         BCFetchRequest.fetchData(type, url, token, data, (response) => {
@@ -82,8 +92,6 @@ export default class Register extends Component {
             // console.log(err);
             // Utils.showMessage('网络请求失败');
         });      
-    }else if (!reg.test(this.state.phoneNum)) {
-        alert("手机号不合法")
     }
   }
   see = () => {
@@ -92,7 +100,12 @@ export default class Register extends Component {
     })
   }
   goNext = () => {
-    this.props.navigation.navigate('SelectHead', {phoneNum: this.state.phoneNum, textCode: this.state.textCode, passWord: this.state.password, gogoback: this.gogoback.bind(this)})
+    if (this.state.phoneNum !== '' && this.state.textCode !== '' && this.state.password != '' ) {
+      this.props.navigation.navigate('SelectHead', {cityCode: this.state.cityCode, phoneNum: this.state.phoneNum, textCode: this.state.textCode, passWord: this.state.password, gogoback: this.gogoback.bind(this)})  
+    } else {
+      alert("不要忘记填写信息呀！")
+    }
+    
   }
   gogoback() {
     this.props.navigation.goBack();
@@ -101,20 +114,34 @@ export default class Register extends Component {
   componentWillUnmount() {
     this.setTime && clearInterval(this.setTime);
   }
+  onSelectedCity(code) {
+    this.setState({
+      cityCode: code,
+      modalVisible: false
+    })
+  }
+  _keyExtractor = (item, index) => index
+  _renderItem = ({item}) => {
+    return  (<TouchableOpacity onPress={this.onSelectedCity.bind(this, item.code)} style={{width: width - 20, marginLeft: 30, height: 30, marginTop: 15, justifyContent: 'center'}}><Text style={{color: 'white', fontSize: 17}}>{item.country}</Text></TouchableOpacity>)
+  }
   render() {
     return (
       <View style={{flex: 1, backgroundColor: 'rgb(244,245,246)'}}>
         <View style={{marginTop: 25, width: width, height: 45, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', borderBottomColor: 'rgb(235, 236, 237)', borderBottomWidth: 1}}>
           <Text style={{marginLeft: 20, color: '#3e3e3e', fontWeight: '100'}}>{'手机号'}</Text>
+          <TouchableOpacity onPress={()=> this.setState({modalVisible: true})} style={{marginLeft: 20, width: 50, height: 25, borderColor: 'rgb(251, 110, 169)', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderRadius: 2}}>
+            <Text style={{color: 'rgb(251, 110, 169)'}}>{this.state.cityCode}</Text>
+          </TouchableOpacity>
           <TextInput
             style={styles.inputStyle}
             onChangeText={(phoneNum) => this.setState({phoneNum})}
             value={this.state.phoneNum}
             keyboardType={'numeric'}
-            maxLength={11}
+            maxLength={20}
             underlineColorAndroid={'transparent'}
             placeholder={'请输入手机号'}
             />
+          
         </View>
         <View style={{width: width, height: 45, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', borderBottomColor: 'rgb(235, 236, 237)', borderBottomWidth: 1}}>
           <Text style={{marginLeft: 20, color: '#3e3e3e', fontWeight: '100'}}>{'验证码'}</Text>
@@ -151,6 +178,25 @@ export default class Register extends Component {
         {/* <View style={{position: 'absolute', width: width, height: height, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
           <Bars size={15} color="rgb(240, 105, 153)" />
         </View> */}
+        <Modal 
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {}}>
+          <View style={{width: width, height: height, backgroundColor: 'rgb(251, 110, 169)'}}>
+            <Text style={{color: 'white', fontSize: 18, marginTop: 40, marginLeft: 30}}>{'国家和地区'}</Text>
+            <FlatList 
+              style={{width: width, height: height - 90, marginTop: 30}}
+              extraData={this.state}
+              data={City}
+              renderItem={this._renderItem}
+              keyExtractor={this._keyExtractor}
+            />
+            <TouchableOpacity onPress={()=> this.setState({modalVisible: false})} style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 30, top: 20}}>
+              <Image source={require('../assets/Login/close.png')}/>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </View>
     )
   }

@@ -41,6 +41,12 @@ export default class SelectHead extends Component {
   goNext = () => {
     var _this = this;
     if (this.state.name !== '') {
+      var number;
+      if (this.props.navigation.state.params.cityCode === '+86') {
+        number = this.props.navigation.state.params.phoneNum;
+      } else {
+        number = encodeURI(this.props.navigation.state.params.cityCode + this.props.navigation.state.params.phoneNum).replace(/\+/g,'%2B');
+      }
       fetch(Http.domain + '/userinfo/telephone_signup/',{
                 method: "POST",
                 headers: {
@@ -48,7 +54,7 @@ export default class SelectHead extends Component {
                   'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                  telephone:this.props.navigation.state.params.phoneNum,
+                  telephone:number,
                   password:this.props.navigation.state.params.passWord,
                   verification_code:this.props.navigation.state.params.textCode,
                   name:this.state.name,

@@ -11,13 +11,16 @@ import {
   TextInput,
   Keyboard,
   AsyncStorage,
-  Alert
+  Alert,
+  Modal,
+  FlatList
 } from 'react-native';
 import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 
 import Utils from '../utils/Utils.js';
 import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Http from '../utils/Http.js';
+import City from '../country.json';
 
 const {width, height} = Dimensions.get('window');
 var seeImgs = [require('../assets/Login/see2.png'), require('../assets/Login/see1.png')];
@@ -40,16 +43,34 @@ export default class FindWord extends Component {
       textCode: '',
       password: '',
       textCodeNum: '获取验证码',
-      canSee: false
+      canSee: false,
+      modalVisible: false,
+      cityCode: '+86'
     }
+  }
+  onSelectedCity(code) {
+    this.setState({
+      cityCode: code,
+      modalVisible: false
+    })
+  }
+  _keyExtractor = (item, index) => index
+  _renderItem = ({item}) => {
+    return  (<TouchableOpacity onPress={this.onSelectedCity.bind(this, item.code)} style={{width: width - 20, marginLeft: 30, height: 30, marginTop: 15, justifyContent: 'center'}}><Text style={{color: 'white', fontSize: 17}}>{item.country}</Text></TouchableOpacity>)
   } 
     // 3.找回密码
     _fetchFindPassword(){
-        var reg = /^1[0-9]{10}$/;
-        if (!reg.test(this.state.phoneNum)) {
-            alert('手机号不合法');
-            return;
-        }
+      var number;
+      if (this.state.cityCode === '+86') {
+        number = this.state.phoneNum;
+      } else {
+        number = encodeURI(this.state.cityCode + this.state.phoneNum).replace(/\+/g,'%2B');
+      }
+        // var reg = /^1[0-9]{10}$/;
+        // if (!reg.test(this.state.phoneNum)) {
+        //     alert('手机号不合法');
+        //     return;
+        // }
         if (!this.state.testCode) {
             alert('验证码必填');
             return;
@@ -62,7 +83,7 @@ export default class FindWord extends Component {
             url = Http.findPassword,
             token = null,
             data = {
-                telephone:this.state.phoneNum,
+                telephone:number,
                 password:this.state.password,
                 verification_code:this.state.testCode
             };
@@ -81,10 +102,16 @@ export default class FindWord extends Component {
         });
     }
   attainCode = () => {
-    var reg = /^1[0-9]{10}$/;
-    if (this.state.textCodeNum === '获取验证码' && reg.test(this.state.phoneNum)) {
+    // var reg = /^1[0-9]{10}$/;
+    var number;
+    if (this.state.cityCode === '+86') {
+        number = this.state.phoneNum;
+      } else {
+        number = encodeURI(this.state.cityCode + this.state.phoneNum).replace(/\+/g,'%2B');
+      }
+    if (this.state.textCodeNum === '获取验证码') {
         var type = "get",
-            url = Http.getPassCode(this.state.phoneNum),
+            url = Http.getPassCode(number),
             token = null,
             data = null;
         BCFetchRequest.fetchData(type, url, token, data, (response) => {
@@ -119,9 +146,10 @@ export default class FindWord extends Component {
             // console.log(err);
             // Utils.showMessage('网络请求失败');
         });      
-    }else if (!reg.test(this.state.phoneNum)) {
-        alert("手机号不合法")
     }
+    // else if (!reg.test(this.state.phoneNum)) {
+    //     alert("手机号不合法")
+    // }
   }
   see = () => {
     this.setState({
@@ -140,6 +168,9 @@ export default class FindWord extends Component {
       <View style={{flex: 1, backgroundColor: 'rgb(244,245,246)'}}>
         <View style={{width: width, height: 45, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', borderBottomColor: 'rgb(235, 236, 237)', borderBottomWidth: 1}}>
           <Text style={{marginLeft: 20, color: '#3e3e3e', fontWeight: '100'}}>{'手机号'}</Text>
+          <TouchableOpacity onPress={()=> this.setState({modalVisible: true})} style={{marginLeft: 20, width: 50, height: 25, borderColor: 'rgb(251, 110, 169)', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderRadius: 2}}>
+            <Text style={{color: 'rgb(251, 110, 169)'}}>{this.state.cityCode}</Text>
+          </TouchableOpacity>
           <TextInput
             style={styles.inputStyle}
             onChangeText={(phoneNum) => this.setState({phoneNum})}
@@ -185,6 +216,25 @@ export default class FindWord extends Component {
         {/* <View style={{position: 'absolute', width: width, height: height, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
           <Bars size={15} color="rgb(240, 105, 153)" />
         </View> */}
+        <Modal 
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {}}>
+          <View style={{width: width, height: height, backgroundColor: 'rgb(251, 110, 169)'}}>
+            <Text style={{color: 'white', fontSize: 18, marginTop: 40, marginLeft: 30}}>{'国家和地区'}</Text>
+            <FlatList 
+              style={{width: width, height: height - 90, marginTop: 30}}
+              extraData={this.state}
+              data={City}
+              renderItem={this._renderItem}
+              keyExtractor={this._keyExtractor}
+            />
+            <TouchableOpacity onPress={()=> this.setState({modalVisible: false})} style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 30, top: 20}}>
+              <Image source={require('../assets/Login/close.png')}/>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </View>
     )
   }

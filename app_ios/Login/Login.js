@@ -12,9 +12,11 @@ import {
   Keyboard,
   AsyncStorage,
   Alert,
-  ScrollView
+  Modal,
+  FlatList
 } from 'react-native';
 import Http from '../utils/Http.js';
+import City from '../country.json';
 const {width, height} = Dimensions.get('window');
 export default class Login extends Component {
   static navigationOptions = {
@@ -30,9 +32,12 @@ export default class Login extends Component {
       passWord: '',
       phoneNum: '',
       phoneWord: '',
-      loginWay: 'left'
+      loginWay: 'left',
+      modalVisible: false,
+      cityCode: '+86'
     }
   }
+
   componentWillUnmount() {
     this.props.navigation.state.params.callback();
   }
@@ -41,33 +46,64 @@ export default class Login extends Component {
   }
   phoneLogin() {
     var _this = this;
-    fetch(Http.domain + '/userinfo/telephone_login/',{
-              method: "POST",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                telephone: this.state.phoneNum,
-                password: this.state.phoneWord,
-              }),
-            })
-            .then(response=> {
-              if (response.status === 200) {
-                return response.json();
-              } else {
-                return 'fail';
-              }
-            })
-            .then(responseJson => {
-              if (responseJson !== 'fail') {
-                AsyncStorage.setItem('token', responseJson.token, () => {
-                  _this.props.navigation.goBack();
-                })
-              } else {
-                alert('登陆失败，请重新登陆');
-              }
-            })
+    if (this.state.cityCode === '+86') {
+      fetch(Http.domain + '/userinfo/telephone_login/',{
+                method: "POST",
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  telephone: this.state.phoneNum,
+                  password: this.state.phoneWord,
+                }),
+              })
+              .then(response=> {
+                if (response.status === 200) {
+                  return response.json();
+                } else {
+                  return 'fail';
+                }
+              })
+              .then(responseJson => {
+                if (responseJson !== 'fail') {
+                  AsyncStorage.setItem('token', responseJson.token, () => {
+                    _this.props.navigation.goBack();
+                  })
+                } else {
+                  alert('登陆失败，请重新登陆');
+                }
+              })
+    } else {
+      var number = encodeURI(this.state.cityCode + this.state.phoneNum).replace(/\+/g,'%2B');
+      fetch(Http.domain + '/userinfo/telephone_login/',{
+                method: "POST",
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  telephone: number,
+                  password: this.state.phoneWord,
+                }),
+              })
+              .then(response=> {
+                if (response.status === 200) {
+                  return response.json();
+                } else {
+                  return 'fail';
+                }
+              })
+              .then(responseJson => {
+                if (responseJson !== 'fail') {
+                  AsyncStorage.setItem('token', responseJson.token, () => {
+                    _this.props.navigation.goBack();
+                  })
+                } else {
+                  alert('登陆失败，请重新登陆');
+                }
+              })
+    }
   }
   goLogin() {
     var _this = this;
@@ -100,6 +136,17 @@ export default class Login extends Component {
             })
 
   }
+  onSelectedCity(code) {
+    this.setState({
+      cityCode: code,
+      modalVisible: false
+    })
+  }
+  _keyExtractor = (item, index) => index
+  _renderItem = ({item}) => {
+    return  (<TouchableOpacity onPress={this.onSelectedCity.bind(this, item.code)} style={{width: width - 20, marginLeft: 30, height: 30, marginTop: 15, justifyContent: 'center'}}><Text style={{color: 'white', fontSize: 17}}>{item.country}</Text></TouchableOpacity>)
+  }
+
   render() {
     return (
       <View style={{flex: 1}}>
@@ -107,23 +154,25 @@ export default class Login extends Component {
         <TouchableOpacity onPress={() => this._cancelkeyboard()} activeOpacity={1} style={LoginStyle.container}>
           <Image style={LoginStyle.titleStyle} source={require('../assets/Login/chengxuyuanjihua.png')} />
           <View>
-            <View style={LoginStyle.inputViewStyle}>
+            <View style={LoginStyle.leftinputViewStyle}>
               <Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'手机号'}</Text>
               <TextInput
-                style={LoginStyle.inputStyle}
+                style={LoginStyle.leftinput}
                 onChangeText={(phoneNum) => this.setState({phoneNum:phoneNum})}
                 value={this.state.phoneNum}
                 keyboardType={'numeric'}
-                maxLength={11}
+                maxLength={20}
               />
+              <TouchableOpacity onPress={()=> this.setState({modalVisible: true})} style={{position: 'absolute', bottom: 10, left: 5, width: 50, height: 25, backgroundColor: 'white', borderRadius: 2, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={{color: 'rgb(251, 110, 169)', textAlign: 'center'}}>{this.state.cityCode}</Text>
+              </TouchableOpacity>
             </View>
-            <View style={LoginStyle.inputViewStyle}>
+            <View style={LoginStyle.leftinputViewStyle}>
               <Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'密    码'}</Text>
               <TextInput
-                style={LoginStyle.inputStyle}
+                style={LoginStyle.leftinput}
                 onChangeText={(phoneWord) => this.setState({phoneWord:phoneWord})}
                 value={this.state.phoneWord}
-                // maxLength={10}
                 secureTextEntry={true}
               />
             </View>
@@ -182,6 +231,25 @@ export default class Login extends Component {
             <Text style={{color:'white', backgroundColor: 'rgba(0,0,0,0)'}}>邀请码登陆</Text>
           </TouchableOpacity>
         </View>
+        <Modal 
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {}}>
+          <View style={{width: width, height: height, backgroundColor: 'rgb(251, 110, 169)'}}>
+            <Text style={{color: 'white', fontSize: 18, marginTop: 40, marginLeft: 30}}>{'国家和地区'}</Text>
+            <FlatList 
+              style={{width: width, height: height - 90, marginTop: 30}}
+              extraData={this.state}
+              data={City}
+              renderItem={this._renderItem}
+              keyExtractor={this._keyExtractor}
+            />
+            <TouchableOpacity onPress={()=> this.setState({modalVisible: false})} style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 30, top: 20}}>
+              <Image source={require('../assets/Login/close.png')}/>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </View>
     )
   }
@@ -217,6 +285,20 @@ const LoginStyle = StyleSheet.create({
     color: 'rgb(248, 74, 135)',
     fontSize: 16,
     fontWeight: 'bold'
+  },
+  leftinputViewStyle: {
+    width: 2 * width / 3,
+    marginTop:15
+  },
+  leftinput: {
+    textAlign: 'center',
+    fontSize: 15,
+    marginLeft: 5,
+    height:40,
+    width: width * 2 / 3,
+    borderBottomWidth: 1,
+    borderBottomColor: 'white',
+    color: 'white'
   },
   inputViewStyle: {
     width: 2 * width / 3,
