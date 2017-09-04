@@ -288,11 +288,10 @@ export default class Forum_Details extends Component{
                             <TouchableOpacity onPress={this.detele_reply.bind(this,rowData.pk)} style={{marginRight:18,borderRadius:5,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center'}}>
                                 <Text  style={{fontSize:12,paddingTop:2,paddingRight:5,paddingLeft:5,paddingBottom:2,color:'#ffffff',}}>删除</Text>
                             </TouchableOpacity>
-                            
                             ):(null)}
                     </View>
                 </View>
-                <ForumDeatilCont data={rowData.content}></ForumDeatilCont>
+                {rowData.content?(<ForumDeatilCont data={rowData.content}></ForumDeatilCont>):(null)}
                 {rowData.replymore.map((result,index)=> {
                     return(
                         <View key={index} style={{backgroundColor:'#f1f1f1',width:width*0.9,marginLeft:width*0.05,marginRight:width*0.05,borderBottomColor:'#D3D3D3',borderBottomWidth:0.5,}}>
@@ -300,7 +299,7 @@ export default class Forum_Details extends Component{
                                 <Text style={{paddingBottom:10,color:'#4f99cf',marginRight:30,}}>{result.userinfo.name}</Text>
                                 <Text style={{paddingBottom:10,color:'#858585'}}>{result.create_time.slice(0, 16).replace("T", " ")}</Text>
                             </View>
-                            <ForumDeatilCont data={result.content}></ForumDeatilCont>
+                            {result.content?(<ForumDeatilCont data={result.content}></ForumDeatilCont>):(null)}
                         </View>
                     )
                 })}
@@ -465,7 +464,7 @@ export default class Forum_Details extends Component{
 
                         </View>
                         <View style={{marginBottom:10,}}>
-                            <ForumDeatilCont data={this.state.data.content} ></ForumDeatilCont>
+                            {this.state.data.content?(<ForumDeatilCont data={this.state.data.content} ></ForumDeatilCont>):(null)}
                             <View style={{flexDirection:'row'}}>
                                 {data.userinfo.pk==this.state.UserPk?(
                                         <View style={{flexDirection:'row',marginLeft:30,}}>

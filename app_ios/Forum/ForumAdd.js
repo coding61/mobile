@@ -158,7 +158,7 @@ export default class ForumAdd extends Component{
             takePhotoButtonTitle:'拍照',
             chooseFromLibraryButtonTitle:'选择相册',
             quality:0.3,
-            allowsEditing:true,
+            allowsEditing:false,
             noData:false,
             storageOptions: {
                 skipBackup: true,
@@ -176,6 +176,7 @@ export default class ForumAdd extends Component{
             console.log('User tapped custom button: ', response.customButton);
           }
           else {
+                console.log(response)
               this.setState({show: true});
               let source = { uri: response.uri };
               var filename = response.uri.replace('file://', '');
