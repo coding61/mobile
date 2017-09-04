@@ -111,6 +111,9 @@ class MessagePage extends Component{
             currentCatalogIndex:0,       //当前目录选中项，即用户正在学习第几节课，默认0
             catalogs:[],                 //当前课程的目录列表数据组
 
+            showEditorsView:false,       //是否显示编辑器组
+            currentEditorType:"html",    //当前选中的编辑器类型， 默认 HTML
+
         };
         this.leftEnterValue = new Animated.Value(0)     //左侧进入动画
         this.growAniValue = new Animated.Value(0)       //经验动画
@@ -744,13 +747,21 @@ class MessagePage extends Component{
                         courseIndex:courseIndex
                     }, ()=>{
                         if (catalogChange == true) {
-                            // 更新目录
-                            this_.setState({
-                                catalogs:array["catalogs"]   
-                            })
                             // 更新服务器进度
                             this_._fetchUpdateExtentWithCatalog(this.state.course, courseIndex);
                         }
+                        // 更新目录
+                        if (array["catalogs"]) {
+                            this_.setState({
+                                catalogs:array["catalogs"],
+                                showCatalogsMenu:true 
+                            })
+                        }else{
+                            this_.setState({
+                                showCatalogsMenu:false
+                            })
+                        }
+
                         // 更新存储进度下标
                         Utils.setValue("currentCourseIndex", JSON.stringify(this.state.courseIndex));
                         courseIndex = this_.state.courseIndex;  //进度
@@ -1444,6 +1455,13 @@ class MessagePage extends Component{
             showCatalogsView:true
         })
     }
+    // 编辑器按钮选项点击 
+    _clickChooseEditor = () =>{
+        this.setState({
+            showHelpActions:false,
+            showEditorsView:true
+        })
+    }
     // 目录列表每个 item 点击事件
     _clickCatalog(i){
         if (i == this.state.currentCatalogIndex) return;
@@ -1452,6 +1470,16 @@ class MessagePage extends Component{
             showCatalogsView:false,                     //关闭目录列表
             currentCatalogIndex:i,                      //记录当前选的那一项目录
         })
+    }
+    // 编辑器组每个 item 点击事件
+    _clickEditor(item){
+        this.setState({
+            showEditorsView:false,
+            currentEditorType:item.type
+        })
+
+        Utils.openURL(item.link)
+
     }
     // 寻找帮助点击
     _clickFindHelp = ()=>{
@@ -1570,6 +1598,14 @@ class MessagePage extends Component{
             showCopyBtn:false,           //是否打开复制按钮
             currentClickIndex:0,         //当前点击要复制的消息的下标
             currentCopyText:"",          //当前长按文本要复制的内容
+
+            showCatalogsMenu:false,      //帮助组中是否显示当前课程目录选项
+            showCatalogsView:false,      //是否显示课程目录列表
+            currentCatalogIndex:0,       //当前目录选中项，即用户正在学习第几节课，默认0
+            catalogs:[],                 //当前课程的目录列表数据组
+
+            showEditorsView:false,       //是否显示编辑器组
+            currentEditorType:"html",    //当前选中的编辑器类型， 默认 HTML
         })
         Utils.clearAllValue()
         this.setState({showHelpActions:false})
@@ -1725,15 +1761,17 @@ class MessagePage extends Component{
     // 复制按钮
     _renderMsgCopyText(){
         return (
-            <TouchableOpacity onPress={this._clickMsgCopyText.bind(this)} style={{position:'absolute', top:-38, left:5, borderRadius:5, width:60, height:30, backgroundColor:'#292929', alignItems:'center', justifyContent:'center'}}>
-                <Text style={{color:'white'}}>
-                  复制
-                </Text>
+            <TouchableOpacity onPress={this._clickMsgCopyText.bind(this)} style={{width:60, height:38, alignItems:'center', justifyContent:'center'}}>
                 <Image
-                  style={{position:'absolute', bottom:-8, height:8}}
+                  style={{height:8}}
                   source={require('../images/arrow-d1.png')}
                   resizeMode={'contain'}
                 />
+                <View style={{borderRadius:5,width:60, height:30, backgroundColor:'#292929', alignItems:'center', justifyContent:'center'}}>
+                    <Text style={{color:'white'}}>
+                      {"复制"}
+                    </Text>
+                </View>
             </TouchableOpacity>
         )
     }
@@ -1896,6 +1934,37 @@ class MessagePage extends Component{
             </View>
         )
     }
+    // 编辑器组
+    _renderEditors(){
+        var array = [
+            {"type":"html", "name":"html 编辑器", link:Http.domainPage+"/app/home/codeEditRN.html"}, 
+            {"type":"c", "name":"C语言编辑器", link:Http.domainPage+"/app/home/compileRN.html?lang=c"}, 
+            {"type":"python", "name":"Python编辑器", link:Http.domainPage+"/app/home/compileRN.html?lang=python"}, 
+            {"type":"java", "name":"Java 编辑器", link:Http.domainPage+"/app/home/compileRN.html?lang=java"}
+        ]
+        return (
+            <View style={styles.editorsView}>
+                <ScrollView style={styles.editorsList}>
+                    {
+                        array.map((item, i)=>{
+                            return (
+                                <TouchableOpacity key={i} style={[styles.editor, i != 0?{borderTopColor:'#d2d2d2', borderTopWidth:1}:null]} onPress={this._clickEditor.bind(this, item)}>
+                                    <Text numberOfLines={1}>
+                                      {i+1}.{item.name}
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })
+                    }
+                </ScrollView>
+                <Image
+                  style={styles.editorsArrow}
+                  source={require('../images/arrow-w.png')}
+                  resizeMode={"contain"}
+                />
+            </View>
+        )
+    }
     // 帮助
     _renderHelpActions(){
         return (
@@ -1916,7 +1985,11 @@ class MessagePage extends Component{
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickStudyLuntan}>
                             <Text style={styles.helpActionText}>{"学习论坛"}</Text>
                         </TouchableOpacity>
-                
+                        
+                        <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickChooseEditor}>
+                            <Text style={styles.helpActionText}>{"在线编辑器"}</Text>
+                        </TouchableOpacity>
+
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickFindHelp} >
                             <Text style={styles.helpActionText}>{"寻找帮助"}</Text>
                         </TouchableOpacity>
@@ -2006,7 +2079,7 @@ class MessagePage extends Component{
                 {
                     this.state.showAction? this._renderBtnActions() : null
                 }
-                <TouchableOpacity onPress={()=>{this.setState({showHelpActions:!this.state.showHelpActions, showCatalogsView:false})}}>
+                <TouchableOpacity onPress={()=>{this.setState({showHelpActions:!this.state.showHelpActions, showCatalogsView:false, showEditorsView:false})}}>
                     <Image
                       style={styles.help}
                       source={require('../images/help.png')}
@@ -2029,15 +2102,18 @@ class MessagePage extends Component{
                   source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                 />
                 
-                <View style={[styles.msgView, {width:widthMsg2}]}>
-                    <View style={styles.messageView}>
-                        <TouchableOpacity onLongPress={(e)=>{
-                            this.setState({showCopyBtn:true, currentClickIndex:index, currentCopyText:item.message})
-                        }}>
-                            <Text style={styles.messageText}>
-                                {item.message}
-                            </Text>
-                        </TouchableOpacity>
+                <View style={{width:widthMsg2}}
+                    pointerEvents={'box-none'}>
+                    <View style={[styles.msgView, {width:widthMsg2}]}>
+                        <View style={styles.messageView}>
+                            <TouchableOpacity onLongPress={(e)=>{
+                                this.setState({showCopyBtn:true, currentClickIndex:index, currentCopyText:item.message})
+                            }}>
+                                <Text style={styles.messageText}>
+                                    {item.message}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                     {
                         this.state.showCopyBtn 
@@ -2048,7 +2124,6 @@ class MessagePage extends Component{
                                 null
                     }
                 </View>
-                
             </View>
         ) 
     }
@@ -2466,6 +2541,9 @@ class MessagePage extends Component{
                 {
                     this.state.showCatalogsView? this._renderCourseCatalogs() : null
                 }
+                {
+                    this.state.showEditorsView? this._renderEditors() : null
+                }
             </View>
         )
     }
@@ -2792,13 +2870,13 @@ const styles = StyleSheet.create({
         borderColor:'#d2d2d2',
         borderRadius: 5,
         paddingHorizontal:10,
-        maxHeight:180,
+        maxHeight:360,
     },
     catalog:{
         // alignItems:'center', 
         justifyContent:'center', 
         height:40,
-        maxWidth:120,
+        maxWidth:160,
     },
     catalogTextSelect:{
         color:pinkColor
@@ -2812,6 +2890,39 @@ const styles = StyleSheet.create({
         width:16, 
         bottom:-10,
         // right:10,
+        left:10,
+    },
+    // -------------编辑器组
+    editorsView:{
+        position:'absolute',
+        bottom:45,
+        left:5
+    },
+    editorsList:{
+        backgroundColor: 'white', 
+        borderWidth:1,
+        borderColor:'#d2d2d2',
+        borderRadius: 5,
+        paddingHorizontal:10,
+        maxHeight:360,
+    },
+    editor:{
+        // alignItems:'center', 
+        justifyContent:'center', 
+        height:40,
+        maxWidth:160,
+    },
+    editorTextSelect:{
+        color:pinkColor
+    },
+    editorTextUnselect:{
+        color:'#333'
+    },
+    editorsArrow:{
+        position:'absolute', 
+        height:11, 
+        width:16, 
+        bottom:-10,
         left:10,
     },
 
