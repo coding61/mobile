@@ -200,7 +200,7 @@ export default class ForumAdd extends Component{
                 />
                 
                 <TextInput
-                    style={{height: 230, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,paddingTop:10,fontSize:14,paddingRight:10,}}
+                    style={{height: 200, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,paddingTop:10,fontSize:14,paddingRight:10,}}
                     onChangeText={(text) => this.setState({text})}
                     value={this.state.text}
                     multiline={true}
@@ -210,7 +210,7 @@ export default class ForumAdd extends Component{
                     enablesReturnKeyAutomatically={true}
                     placeholderTextColor='#aaaaaa'
                 />
-                <View style={{width:width,marginTop:30,}}>
+                <View style={{width:width,marginTop:10,}}>
                     <TouchableOpacity onPress={this._changeIcon.bind(this)}
                         style={{width:width*0.76,height:40,marginLeft:width*0.12,borderRadius:5,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
                         <Text style={{color:'#ffffff',fontSize:14,}}>添加图片</Text>

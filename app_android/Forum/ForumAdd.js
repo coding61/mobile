@@ -146,6 +146,12 @@ export default class ForumAdd extends Component{
                     placeholder='标题'
                     placeholderTextColor='#aaaaaa'
                 />
+                <View style={{width:width,marginTop:10,marginBottom:10,}}>
+                    <TouchableOpacity onPress={this.qiniu.bind(this)}
+                        style={{width:width*0.2,height:40,marginLeft:20,borderRadius:5,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
+                        <Text style={{color:'#ffffff',fontSize:14,}}>添加图片</Text>
+                    </TouchableOpacity>
+                </View>
                 <TextInput
                     style={{height: 230, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,paddingTop:10,paddingRight:10,}}
                     onChangeText={(text) => this.setState({text})}
@@ -156,12 +162,7 @@ export default class ForumAdd extends Component{
                     placeholder='尽情提问吧'
                     placeholderTextColor='#aaaaaa'
                 />
-                <View style={{width:width,marginTop:30,}}>
-                    <TouchableOpacity onPress={this.qiniu.bind(this)}
-                        style={{width:width*0.76,height:40,marginLeft:width*0.12,borderRadius:5,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
-                        <Text style={{color:'#ffffff',fontSize:14,}}>添加图片</Text>
-                    </TouchableOpacity>
-                </View>
+                
 
                 {this.state.show?(
                     <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
