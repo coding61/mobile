@@ -1937,9 +1937,9 @@ class MessagePage extends Component{
     // 编辑器组
     _renderEditors(){
         var array = [
-            {"type":"html", "name":"html 编辑器", link:Http.domainPage+"/app/home/codeEditRN.html"}, 
-            {"type":"c", "name":"C语言编辑器", link:Http.domainPage+"/app/home/compileRN.html?lang=c"}, 
-            {"type":"python", "name":"Python编辑器", link:Http.domainPage+"/app/home/compileRN.html?lang=python"}, 
+            {"type":"html", "name":"HTML 编辑器", link:Http.domainPage+"/app/home/codeEditRN.html"}, 
+            {"type":"c", "name":"C 语言编辑器", link:Http.domainPage+"/app/home/compileRN.html?lang=c"}, 
+            {"type":"python", "name":"Python 编辑器", link:Http.domainPage+"/app/home/compileRN.html?lang=python"}, 
             {"type":"java", "name":"Java 编辑器", link:Http.domainPage+"/app/home/compileRN.html?lang=java"}
         ]
         return (
