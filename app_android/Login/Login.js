@@ -208,7 +208,7 @@ export default class Login extends Component {
                     onChangeText={(inviteCode) => this.setState({inviteCode:inviteCode})}
                     value={this.state.inviteCode}
                     keyboardType={'numeric'}
-                    maxLength={8}
+
                     underlineColorAndroid={'transparent'}
                 />
             </View>
@@ -219,7 +219,7 @@ export default class Login extends Component {
                 onChangeText={(passWord) => this.setState({passWord:passWord})}
                 value={this.state.passWord}
                 keyboardType={'numeric'}
-                maxLength={4}
+
                 secureTextEntry={false}
                 underlineColorAndroid={'transparent'}
               />

@@ -140,7 +140,7 @@ export default class Register extends Component {
             onChangeText={(phoneNum) => this.setState({phoneNum})}
             value={this.state.phoneNum}
             keyboardType={'numeric'}
-            maxLength={11}
+
             underlineColorAndroid={'transparent'}
             placeholder={'请输入手机号'}
             />
@@ -151,7 +151,7 @@ export default class Register extends Component {
             style={styles.inputStyle}
             onChangeText={(textCode) => this.setState({textCode})}
             value={this.state.textCode}
-            maxLength={6}
+
             underlineColorAndroid={'transparent'}
             placeholder={'请输入验证码'}
             />
@@ -165,7 +165,7 @@ export default class Register extends Component {
             style={styles.inputStyle}
             onChangeText={(password) => this.setState({password})}
             value={this.state.password}
-            maxLength={10}
+
             underlineColorAndroid={'transparent'}
             placeholder={'请输入密码'}
             secureTextEntry={!this.state.canSee}

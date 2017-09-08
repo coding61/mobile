@@ -161,7 +161,7 @@ export default class Login extends Component {
                 onChangeText={(phoneNum) => this.setState({phoneNum:phoneNum})}
                 value={this.state.phoneNum}
                 keyboardType={'numeric'}
-                maxLength={20}
+
               />
               <TouchableOpacity onPress={()=> this.setState({modalVisible: true})} style={{position: 'absolute', bottom: 10, left: 5, width: 50, height: 25, backgroundColor: 'white', borderRadius: 2, alignItems: 'center', justifyContent: 'center'}}>
                 <Text style={{color: 'rgb(251, 110, 169)', textAlign: 'center'}}>{this.state.cityCode}</Text>
@@ -201,7 +201,7 @@ export default class Login extends Component {
                 onChangeText={(inviteCode) => this.setState({inviteCode:inviteCode})}
                 value={this.state.inviteCode}
                 keyboardType={'numeric'}
-                maxLength={8}
+
               />
             </View>
             <View style={LoginStyle.inputViewStyle}>
@@ -211,7 +211,7 @@ export default class Login extends Component {
                 onChangeText={(passWord) => this.setState({passWord:passWord})}
                 value={this.state.passWord}
                 keyboardType={'numeric'}
-                maxLength={4}
+
                 secureTextEntry={true}
               />
             </View>

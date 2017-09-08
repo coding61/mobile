@@ -174,7 +174,7 @@ export default class FindWord extends Component {
             onChangeText={(phoneNum) => this.setState({phoneNum})}
             value={this.state.phoneNum}
             keyboardType={'numeric'}
-            maxLength={11}
+
             underlineColorAndroid={'transparent'}
             placeholder={'请输入手机号'}
             />
@@ -185,7 +185,7 @@ export default class FindWord extends Component {
             style={styles.inputStyle}
             onChangeText={(testCode) => this.setState({testCode})}
             value={this.state.testCode}
-            maxLength={6}
+
             underlineColorAndroid={'transparent'}
             placeholder={'请输入验证码'}
             />
