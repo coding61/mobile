@@ -148,7 +148,7 @@ export default class ForumAdd extends Component{
                 />
                 <View style={{width:width,marginTop:10,marginBottom:10,}}>
                     <TouchableOpacity onPress={this.qiniu.bind(this)}
-                        style={{width:width*0.2,height:40,marginLeft:20,borderRadius:5,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
+                        style={{width:width*0.2,height:40,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
                         <Text style={{color:'#ffffff',fontSize:14,}}>添加图片</Text>
                     </TouchableOpacity>
                 </View>

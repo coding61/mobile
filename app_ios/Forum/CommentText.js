@@ -13,18 +13,26 @@ import {
     Alert,
     FlatList,
     RefreshControl,
+    ActivityIndicator,
+    DeviceEventEmitter,
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
 import Http from '../utils/Http.js';
 var basePath=Http.domain;
+var ImagePicker = require('react-native-image-picker');
+var qiniu = require('react-native').NativeModules.UpLoad;
+var content='';
 export default class CommentText extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            content:'',
+            //content:'',
             pk:this.props.navigation.state.params.data,
             token:'',
             isDisable:false,
+            text:'',
+            show:false,
+            IdCard1:'',//图片
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -47,7 +55,7 @@ export default class CommentText extends Component{
     Comment_Main(){
         var data = {};
         data.posts = this.state.pk;
-        data.content=this.state.content;
+        data.content=this.state.text;
         if (data.content=='') {
             Alert.alert('请填写评论！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
         }else{
@@ -78,7 +86,7 @@ export default class CommentText extends Component{
     Comment(){
         var data = {};
         data.replies = this.state.pk;
-        data.content=this.state.content;
+        data.content=this.state.text;
         if (data.content=='') {
             Alert.alert('请填写评论！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
         }else{
@@ -119,13 +127,95 @@ export default class CommentText extends Component{
             })
         }
     }
+            // 上传图片方法
+    _upload(filename, token, key) {
+        qiniu.uploadImage(filename, token, key,(error, callBackEvents)=>{
+          if(error) {
+
+          } else {
+                if (callBackEvents.url) {
+                    var imgArr='';
+                    imgArr+='img['+ callBackEvents.url+ '] ';
+                    content=this.state.text+imgArr;
+                    this.setState({text:content,show: false})
+                    //this._renewIcon(callBackEvents.url);
+                } else {
+                    //this.setState({show: false});
+                    AlertIOS.alert('上传失败');
+                }
+            }
+        })
+    }
+
+    // 获取图片对应 token， key
+    _getQNToken(filename) {
+        var url = basePath + "/upload/token/";
+        fetch(url, {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + this.state.token,
+          },
+          body: JSON.stringify({
+            filename: filename,
+            private: false,
+          }),
+        })
+        .then((response)=> response.json())
+        .then((responseJson) => {
+            if (responseJson.token) {
+
+                this._upload(filename, responseJson.token, responseJson.key);
+            } else {
+                this.setState({show: false});
+                AlertIOS.alert("获取令牌失败，请重新选择上传");
+            }
+        })
+        .catch((error) => {console.log(error)});
+    }
+
+    // 调相册相机
+    _changeIcon() {
+        var options = {
+            title: '选择照片',
+            cancelButtonTitle:'取消',
+            takePhotoButtonTitle:'拍照',
+            chooseFromLibraryButtonTitle:'选择相册',
+            quality:0.3,
+            allowsEditing:false,
+            noData:false,
+            storageOptions: {
+                skipBackup: true,
+                path: 'images'
+            }
+        };
+        ImagePicker.showImagePicker(options, (response) => {
+          if (response.didCancel) {
+            console.log('User cancelled image picker');
+          }
+          else if (response.error) {
+            console.log('ImagePicker Error: ', response.error);
+          }
+          else if (response.customButton) {
+            console.log('User tapped custom button: ', response.customButton);
+          }
+          else {
+                console.log(response)
+              this.setState({show: true});
+              let source = { uri: response.uri };
+              var filename = response.uri.replace('file://', '');
+              this._getQNToken(filename);
+          }
+        });
+    }
     render() {
         return (
             <View style={{flex: 1,backgroundColor: '#ffffff',}}>
                <TextInput
-                    style={{width:width*0.9,height: 150, borderColor: '#f1f1f1',paddingTop:10,fontSize:14, borderWidth: 1,paddingLeft:20,marginTop:20,marginBottom:20,marginLeft:width*0.05,}}
-                    onChangeText={(content) => this.setState({content})}
-                    value={this.state.content}
+                    style={{width:width*0.9,height: 150, borderColor: '#f1f1f1',paddingTop:10,fontSize:14, borderWidth: 1,paddingLeft:20,marginTop:20,marginLeft:width*0.05,}}
+                    onChangeText={(text) => this.setState({text})}
+                    value={this.state.text}
                     placeholder='输入评论内容'
                     multiline={true}
                     autoCapitalize='none'
@@ -134,9 +224,27 @@ export default class CommentText extends Component{
                     keyboardType='default'
                     placeholderTextColor='#aaaaaa'
                 />
+                 <View style={{width:width,marginTop:10,marginBottom:20,}}>
+                    <TouchableOpacity onPress={this._changeIcon.bind(this)}
+                        style={{width:width*0.2,height:30,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
+                        <Text style={{color:'#ffffff',fontSize:14,}}>添加图片</Text>
+                    </TouchableOpacity>
+                </View>
                 <TouchableOpacity onPress={this.postcomment.bind(this)} disabled={this.state.isDisable} style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#ff6b94',}}>
                     <Text style={{color:'#ffffff',fontSize:16,}}>提交评论</Text>
                 </TouchableOpacity>
+
+                {this.state.show?(
+                    <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
+                        <ActivityIndicator 
+                            style={{marginTop: 10}}
+                            color={'white'}
+                            size={'large'}
+                            animating={true}
+                                />
+                        <Text style={{color: 'white'}}>上传中...</Text>
+                    </View>
+                    ):(null)}
             </View>
         )
     }
