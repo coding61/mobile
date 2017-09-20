@@ -303,6 +303,11 @@ class MessagePage extends Component{
 
         if (!this.state.totalData[courseIndex]) {
             Utils.showMessage("恭喜，您已经完成本课程的学习。您可以选择其它课程，再继续");
+            this.setState({
+                actionTag:actionRecordTag,
+                showAction:true,
+                loadingChat:false
+            })
             return
         }
 
@@ -754,7 +759,8 @@ class MessagePage extends Component{
                         if (array["catalogs"]) {
                             this_.setState({
                                 catalogs:array["catalogs"],
-                                showCatalogsMenu:true 
+                                showCatalogsMenu:true,
+                                currentCatalogIndex:this.state.courseIndex    // 更新当前目录下标 
                             })
                         }else{
                             this_.setState({
@@ -814,7 +820,7 @@ class MessagePage extends Component{
                     if (array["catalogs"]) {
                         this.setState({
                             catalogs:array["catalogs"],                          // 记录当前课程的目录数据
-                            currentCatalogIndex:this.state.courseIndex,   // 记录当前目录下标
+                            currentCatalogIndex:this.state.courseIndex,          // 记录当前目录下标
                             showCatalogsMenu:true,                               // 打开课程目录选项按钮
                         }, ()=>{console.log(this.state.currentCatalogIndex)})
                     } else{
@@ -837,34 +843,35 @@ class MessagePage extends Component{
                             optionIndex:0
                         }, ()=>{
                             this_._storeDataIndex();
+                        })
+                    }
 
-                            if (way == "way1") {
-                                // 方法1
+                    // 加载缓存会话
+                    if (way == "way1") {
+                        // 方法1
+                        this_.setState({
+                            dataSource:this_.state.chatData
+                        }, ()=>{
+                            if (this_.state.currentItem.action) {
+                                // this._bottomAnimate();
                                 this_.setState({
-                                    dataSource:this_.state.chatData
-                                }, ()=>{
-                                    if (this_.state.currentItem.action) {
-                                        // this._bottomAnimate();
-                                        this_.setState({
-                                            showAction:true
-                                        })
-                                    }else{
-                                        this_._loadStorageLastItem();
-                                    }
+                                    showAction:true
                                 })
                             }else{
-                                // 方法2
-                                // 加载存储数据中所有的数据（最新10个数据）
-                                var array = [];
-                                for (var i = this_.state.chatData.length - 1; i > this_.state.chatData.length-1-this_.state.count; i--) {
-                                    if(this_.state.chatData[i]){
-                                        array.push(this_.state.chatData[i]);
-                                    }
-                                }
-                                array = array.reverse();
-                                this_._loadStorageMessage(array, 0, array.length);
+                                this_._loadStorageLastItem();
                             }
                         })
+                    }else{
+                        // 方法2
+                        // 加载存储数据中所有的数据（最新10个数据）
+                        var array = [];
+                        for (var i = this_.state.chatData.length - 1; i > this_.state.chatData.length-1-this_.state.count; i--) {
+                            if(this_.state.chatData[i]){
+                                array.push(this_.state.chatData[i]);
+                            }
+                        }
+                        array = array.reverse();
+                        this_._loadStorageMessage(array, 0, array.length);
                     }
 
                 }, (err) => {
@@ -1192,12 +1199,21 @@ class MessagePage extends Component{
                 this_.setState({
                     showAction:true
                 })
+            }else if(this.state.actionTag == actionRecordTag && this.state.courseIndex+1 >= this.state.courseTotal){
+                //打卡时，最后一节课，不存回复
+                this_._loadAnswer(actionText, false)
             }else{
                 // 去掉点选择课程登录的时候，不打印选择课程
-                this_._loadAnswer(actionText)    //界面显示人工回复
+                this_._loadAnswer(actionText, true)    //界面显示人工回复
             }
+
+            //判断按钮的行为
+            this_._loadBtnActionEvent();
         })
 
+        
+    }
+    _loadBtnActionEvent(){
         //判断按钮的行为
         if (this.state.actionTag == actionChooseCourseTag) {
             // TODO:前后课程是否一致, 一致不改，不一致改
@@ -1228,11 +1244,21 @@ class MessagePage extends Component{
             })
         }else if(this.state.actionTag == actionRecordTag){
             //打卡
-            this.setState({
-                actionTag:actionCommonTag,
-                loadingChat:true
-            })
-            this._fetchUpdateExtent(this.state.course, this.state.courseIndex+1);
+            if(this.state.courseIndex > this.state.courseTotal){
+                //不打卡
+                Utils.showMessage("本课程已结束，选择其它课程，再继续");
+                this.setState({
+                    actionTag:actionRecordTag,
+                    showAction:true,
+                    loadingChat:false
+                })
+            }else{
+                this.setState({
+                    actionTag:actionCommonTag,
+                    loadingChat:true
+                })
+                this._fetchUpdateExtent(this.state.course, this.state.courseIndex+1);
+            }
         }else{
             // 普通按钮
             var item = this.state.currentItem;
@@ -1391,7 +1417,7 @@ class MessagePage extends Component{
             return
         }
         var actionText = this.state.options.join(',')
-        this._loadAnswer(actionText)    //界面显示人工回复
+        this._loadAnswer(actionText, true)    //界面显示人工回复
         
         // var item = this.state.data[this.state.index];
         var item = this.state.currentItem
@@ -1702,7 +1728,7 @@ class MessagePage extends Component{
 
         // TODO:存储数据
     }
-    _loadAnswer(actionText){
+    _loadAnswer(actionText, isStore){
         //人工回复，更改数据源，刷新 UI
         var array = this.state.dataSource;
         var dic = {
@@ -1716,8 +1742,9 @@ class MessagePage extends Component{
             dataSource:array,
         }, ()=>{
             // this._leftAnimate();
-
-            this._storeChatData(dic, "answer");
+            if (isStore) {
+                this._storeChatData(dic, "answer");
+            }
         })
 
         // TODO:存储数据
