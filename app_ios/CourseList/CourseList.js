@@ -7,10 +7,12 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  SectionList,
   FlatList,
   Alert,
-  AsyncStorage
+  AsyncStorage,
+  Modal,
+  ScrollView,
+  TextInput
 } from 'react-native';
 import Http from '../utils/Http.js';
 const {width, height} = Dimensions.get('window');
@@ -36,101 +38,121 @@ class CourseItem extends Component {
     super();
   }
   onPress() {
-    function toReset() {
-      var _this = this;
-        AsyncStorage.getItem("token", function(errs, results) {
-          if (results) {
-            fetch(Http.domain + '/userinfo/update_learnextent/',{
-                      method: "POST",
-                      headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Token ' + results
-                      },
-                      body: JSON.stringify({
-                        course: _this.props.pk,
-                        lesson: "0",
-                      }),
-                    })
-                    .then(response=> {
-                      if (response.status === 200) {
-                        return response.json()
-                      } else {
-                        return 'fail'
-                      }
-                    })
-                    .then(responseJson=> {
-                      if (responseJson !== 'fail') {
-                        _this.props.navigation.state.params.callback(_this.props.pk, 0, true, _this.props.total_lesson);
-                        _this.props.navigation.goBack();
-                      } else {
-                        alert('失败，请重试');
-                      }
-                    })
-          }
-        })
-    }
-    function toBack() {
-      if (this.props.status === 'finish') {
-        var _this = this;
-        AsyncStorage.getItem("token", function(errs, results) {
-          if (results) {
-            fetch(Http.domain + '/userinfo/update_learnextent/',{
-                      method: "POST",
-                      headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Token ' + results
-                      },
-                      body: JSON.stringify({
-                        course: _this.props.pk,
-                        lesson: "0",
-                      }),
-                    })
-                    .then(response=> {
-                      if (response.status === 200) {
-                        return response.json()
-                      } else {
-                        return 'fail'
-                      }
-                    })
-                    .then(responseJson=> {
-                      if (responseJson !== 'fail') {
-                        _this.props.navigation.state.params.callback(_this.props.pk, 0, true, _this.props.total_lesson);
-                        _this.props.navigation.goBack();
-                      } else {
-                        alert('失败，请重试');
-                      }
-                    })
-          }
-        })
-      } else if (this.props.status === 'processing'){
-        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, false, this.props.total_lesson);
-        this.props.navigation.goBack();
-      } else {
-        this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, false, this.props.total_lesson);
-        this.props.navigation.goBack();
+    var _this = this;
+    AsyncStorage.getItem('token', function(errs, results) {
+      if (results) {
+        fetch(Http.domain + '/course/courses/' + _this.props.pk + '/',{headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'}})
+          .then(response => {
+            if (response.ok === true) {
+              return response.json();
+            } else {
+              return '失败'
+            }
+          })
+          .then(responseJson => {
+            if (responseJson !== '失败') {
+              _this.props.refreshItem(responseJson)
+            } else {
+              alert('获取课程失败，请重新选择');  
+            }
+          })
       }
-    }
-    if (this.props.isopen === true) {
-      if (this.props.status === 'nostart') {
-        toBack.bind(this)();
-      } else if (this.props.status === 'processing') {
-        Alert.alert('','此课程已经开始学习，请选择重新开始学习还是继续上次学习？',
-        [{text: '继续上次', onPress: () => toBack.bind(this)(), style: 'cancel'},
-        {text: '重新开始', onPress: () => toReset.bind(this)()}
-        ],{ cancelable: false })
-      } else if (this.props.status === 'finish') {
-        Alert.alert('','你是否确定要再学一遍？',
-        [{text: '是', onPress: () => toBack.bind(this)(), style: 'cancel'},
-        {text: '否', onPress: () => {}}
-        ],{ cancelable: false })
-      } else {}
-    } else {
-      Alert.alert('','此课程尚未开放',
-      [{text: '确认', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
-      ],{ cancelable: false })
-    }
+    })
+    // function toReset() {
+    //   var _this = this;
+    //     AsyncStorage.getItem("token", function(errs, results) {
+    //       if (results) {
+    //         fetch(Http.domain + '/userinfo/update_learnextent/',{
+    //                   method: "POST",
+    //                   headers: {
+    //                     'Accept': 'application/json',
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': 'Token ' + results
+    //                   },
+    //                   body: JSON.stringify({
+    //                     course: _this.props.pk,
+    //                     lesson: "0",
+    //                   }),
+    //                 })
+    //                 .then(response=> {
+    //                   if (response.status === 200) {
+    //                     return response.json()
+    //                   } else {
+    //                     return 'fail'
+    //                   }
+    //                 })
+    //                 .then(responseJson=> {
+    //                   if (responseJson !== 'fail') {
+    //                     _this.props.navigation.state.params.callback(_this.props.pk, 0, true, _this.props.total_lesson);
+    //                     _this.props.navigation.goBack();
+    //                   } else {
+    //                     alert('失败，请重试');
+    //                   }
+    //                 })
+    //       }
+    //     })
+    // }
+    // function toBack() {
+    //   if (this.props.status === 'finish') {
+    //     var _this = this;
+    //     AsyncStorage.getItem("token", function(errs, results) {
+    //       if (results) {
+    //         fetch(Http.domain + '/userinfo/update_learnextent/',{
+    //                   method: "POST",
+    //                   headers: {
+    //                     'Accept': 'application/json',
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': 'Token ' + results
+    //                   },
+    //                   body: JSON.stringify({
+    //                     course: _this.props.pk,
+    //                     lesson: "0",
+    //                   }),
+    //                 })
+    //                 .then(response=> {
+    //                   if (response.status === 200) {
+    //                     return response.json()
+    //                   } else {
+    //                     return 'fail'
+    //                   }
+    //                 })
+    //                 .then(responseJson=> {
+    //                   if (responseJson !== 'fail') {
+    //                     _this.props.navigation.state.params.callback(_this.props.pk, 0, true, _this.props.total_lesson);
+    //                     _this.props.navigation.goBack();
+    //                   } else {
+    //                     alert('失败，请重试');
+    //                   }
+    //                 })
+    //       }
+    //     })
+    //   } else if (this.props.status === 'processing'){
+    //     this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, false, this.props.total_lesson);
+    //     this.props.navigation.goBack();
+    //   } else {
+    //     this.props.navigation.state.params.callback(this.props.pk, this.props.last_lesson, false, this.props.total_lesson);
+    //     this.props.navigation.goBack();
+    //   }
+    // }
+    // if (this.props.isopen === true) {
+    //   if (this.props.status === 'nostart') {
+    //     toBack.bind(this)();
+    //   } else if (this.props.status === 'processing') {
+    //     Alert.alert('','此课程已经开始学习，请选择重新开始学习还是继续上次学习？',
+    //     [{text: '继续上次', onPress: () => toBack.bind(this)(), style: 'cancel'},
+    //     {text: '重新开始', onPress: () => toReset.bind(this)()}
+    //     ],{ cancelable: false })
+    //   } else if (this.props.status === 'finish') {
+    //     Alert.alert('','你是否确定要再学一遍？',
+    //     [{text: '是', onPress: () => toBack.bind(this)(), style: 'cancel'},
+    //     {text: '否', onPress: () => {}}
+    //     ],{ cancelable: false })
+    //   } else {}
+    // } else {
+    //   Alert.alert('','此课程尚未开放',
+    //   [{text: '确认', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
+    //   ],{ cancelable: false })
+    // }
 
     // if (this.props.isopen === false) {
     //   alert('课程未开放');
@@ -141,7 +163,7 @@ class CourseItem extends Component {
   render() {
 
     return (
-        <TouchableOpacity onPress={this.onPress.bind(this)} style={[CourseStyle.itemStyle,this.props.isopen === false?({backgroundColor: 'rgb(230, 230, 230)'}):(this.props.isSelected?({backgroundColor: 'rgb(252, 189, 209)'}):({backgroundColor: 'white'}))]}>
+        <TouchableOpacity onPress={this.onPress.bind(this)} style={[CourseStyle.itemStyle,this.props.isopen === false?({backgroundColor: 'rgb(230, 230, 230)'}):({backgroundColor: 'white'})]}>
           <Text numberOfLines={1} style={{backgroundColor: 'rgba(255,255,255,0)', fontSize: 11, marginTop: 15}}>{this.props.title}</Text>
           <Image resizeMode={'contain'} style={{width: 50, height: 50, marginTop: 15}} source={{uri: this.props.headImg}}/>
           <Text numberOfLines={4} style={{marginBottom: 15, letterSpacing: 2, lineHeight: 12, marginTop: 15, width: width / 3 - 20, fontSize: 10, color: 'rgb(150, 151, 152)'}}>{this.props.text}</Text>
@@ -180,7 +202,7 @@ class CourseFlat extends Component {
 
   _keyExtractor = (item, index) => index
   _renderItem = ({item}) => {
-    return  (<CourseItem total_lesson={item.total_lesson} navigation={this.props.navigation} last_lesson={item.learn_extent.last_lesson} isSelected={item.isSelected} changeAll={this.props.changeAll} pk={item.pk} isopen={item.isopen} status={item.learn_extent.status} title={item.name} headImg={item.images} text={item.content} />)
+    return  (<CourseItem refreshItem={this.props.refreshItem} total_lesson={item.total_lesson} navigation={this.props.navigation} last_lesson={item.learn_extent.last_lesson} changeAll={this.props.changeAll} pk={item.pk} isopen={item.isopen} status={item.learn_extent.status} title={item.name} headImg={item.images} text={item.content} />)
   }
   render() {
     return (
@@ -223,9 +245,39 @@ class CourseList extends Component {
     let dataArr = new Array();
     this.state = {
       data: dataArr,
-      selectData: null
+      selectData: null,
+      modalVisible: false,
+      tab: 'left',
+      item: null,
+      catalogs: [],
+      startText: '',
+      modalVisible2: false,
+      searchText: '',
+      searchArr: []
     }
 
+  }
+  refreshItem(item) {
+    if (item.isopen === true) {
+      this.setState({
+        startText: item.learn_extent.status
+      })
+    } else {
+      this.setState({
+        startText: ''
+      })
+    }
+    if (item.json && JSON.parse(item.json).catalogs) {
+      var arr = JSON.parse(item.json).catalogs;
+    } else {
+      var arr = [{title: '无目录'}]
+    }
+    this.setState({
+      item: item,
+      catalogs: arr,
+      modalVisible: true,
+      modalVisible2: false
+    })
   }
   // navigatePress = () => {
   //   if (this.state.selectData !== null) {
@@ -243,41 +295,40 @@ class CourseList extends Component {
   //   }
   // }
   
-  goReset() {
-    var _this = this;
-    AsyncStorage.getItem("token", function(errs, results) {
-      if (results) {
-        fetch(Http.domain + '/userinfo/update_learnextent/',{
-                  method: "POST",
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Token ' + results
-                  },
-                  body: JSON.stringify({
-                    course: _this.state.selectData.pk,
-                    lesson: "0",
-                  }),
-                })
-                .then(response=> {
-                  if (response.status === 200) {
-                    return response.json()
-                  } else {
-                    return 'fail'
-                  }
-                })
-                .then(responseJson=> {
-                  if (responseJson !== 'fail') {
-                    _this.props.navigation.state.params.callback(_this.state.selectData.pk, 0);
-                    _this.props.navigation.goBack();
-                  } else {
-                    alert('失败，请重试');
-                  }
-                })
-      }
-    })
-
-  }
+  // goReset() {
+  //   var _this = this;
+  //   AsyncStorage.getItem("token", function(errs, results) {
+  //     if (results) {
+  //       fetch(Http.domain + '/userinfo/update_learnextent/',{
+  //                 method: "POST",
+  //                 headers: {
+  //                   'Accept': 'application/json',
+  //                   'Content-Type': 'application/json',
+  //                   'Authorization': 'Token ' + results
+  //                 },
+  //                 body: JSON.stringify({
+  //                   course: _this.state.selectData.pk,
+  //                   lesson: "0",
+  //                 }),
+  //               })
+  //               .then(response=> {
+  //                 if (response.status === 200) {
+  //                   return response.json()
+  //                 } else {
+  //                   return 'fail'
+  //                 }
+  //               })
+  //               .then(responseJson=> {
+  //                 if (responseJson !== 'fail') {
+  //                   _this.props.navigation.state.params.callback(_this.state.selectData.pk, 0);
+  //                   _this.props.navigation.goBack();
+  //                 } else {
+  //                   alert('失败，请重试');
+  //                 }
+  //               })
+  //     }
+  //   })
+  // }
   changeAll(selected, pk) {
     var data = this.state.data;
     if (selected === false) {
@@ -345,7 +396,6 @@ class CourseList extends Component {
             _this.setState({
               data: dataSource
             })
-            console.log(dataSource);
           } else {
             
           }
@@ -361,17 +411,238 @@ class CourseList extends Component {
   }
   _keyExtractor = (item, index) => index
   _renderItem = ({item}) => {
-    return  (<CourseFlat navigation={this.props.navigation} changeAll={this.changeAll.bind(this)} data={item} />)
+    return  (<CourseFlat refreshItem={this.refreshItem.bind(this)} navigation={this.props.navigation} changeAll={this.changeAll.bind(this)} data={item} />)
+  }
+  tabLeft() {
+    this.setState({
+      tab: 'left'
+    })
+  }
+  tabRight() {
+    this.setState({
+      tab: 'right'
+    })
+  }
+  touchBack(to) {
+    var _this = this;
+    switch (to)
+      {
+        case 0:
+        {
+          this.props.navigation.state.params.callback(this.state.item.pk, this.state.item.learn_extent.last_lesson, false, this.state.item.total_lesson);
+          this.props.navigation.goBack();
+          break;
+        }
+        case 1:
+        {
+          AsyncStorage.getItem("token", function(errs, results) {
+          if (results) {
+            fetch(Http.domain + '/userinfo/update_learnextent/',{
+              method: "POST",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + results
+              },
+              body: JSON.stringify({
+                course: _this.state.item.pk,
+                lesson: "0",
+              }),
+            })
+            .then(response=> {
+              if (response.status === 200) {
+                return response.json()
+              } else {
+                return 'fail'
+              }
+            })
+            .then(responseJson=> {
+              if (responseJson !== 'fail') {
+                _this.props.navigation.state.params.callback(_this.state.item.pk, 0, true, _this.state.item.total_lesson);
+                _this.props.navigation.goBack();
+              } else {
+                alert('失败，请重试');
+              }
+            })
+          }
+        })
+          break;
+        }
+        case 2:
+        {
+          this.props.navigation.state.params.callback(this.state.item.pk, this.state.item.learn_extent.last_lesson, false, this.state.item.total_lesson);
+          this.props.navigation.goBack();
+          break;
+        }
+        case 3:
+        {
+          AsyncStorage.getItem("token", function(errs, results) {
+          if (results) {
+            fetch(Http.domain + '/userinfo/update_learnextent/',{
+              method: "POST",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + results
+              },
+              body: JSON.stringify({
+                course: _this.state.item.pk,
+                lesson: "0",
+              }),
+            })
+            .then(response=> {
+              if (response.status === 200) {
+                return response.json()
+              } else {
+                return 'fail'
+              }
+            })
+            .then(responseJson=> {
+              if (responseJson !== 'fail') {
+                _this.props.navigation.state.params.callback(_this.state.item.pk, 0, true, _this.props.total_lesson);
+                _this.props.navigation.goBack();
+              } else {
+                alert('失败，请重试');
+              }
+            })
+          }
+        })
+          break;
+        }
+        default :
+        break;
+      }
+  }
+  renderBottomBtn() {
+    if (this.state.startText === '') {
+      return <View style={{width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}><Text style={{color: 'white'}}>此课程尚未开放</Text></View>
+    } else if (this.state.startText === 'nostart') {
+      return (<TouchableOpacity onPress={this.touchBack.bind(this, 0)} style={{width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={{color: 'white'}}>{'开始学习'}</Text>
+              </TouchableOpacity>)
+    } else if (this.state.startText === 'finish') {
+      return (<TouchableOpacity onPress={this.touchBack.bind(this, 1)} style={{width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={{color: 'white'}}>{'重新学习'}</Text>
+              </TouchableOpacity>)
+    } else if (this.state.startText === 'processing') {
+      return (<View style={{width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', flexDirection: 'row'}}>
+                <TouchableOpacity onPress={this.touchBack.bind(this, 2)} style={{width: width / 2, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+                  <Text style={{color: 'white'}}>{'继续学习'}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.touchBack.bind(this, 3)} style={{width: width / 2, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+                  <Text style={{color: 'white'}}>{'重新开始'}</Text>
+                </TouchableOpacity>
+              </View>)
+    } else {
+      return ;
+    }
+  }
+  searchCourse() {
+    var _this = this;
+    AsyncStorage.getItem("token", function(errs, results) {
+      fetch(Http.domain + '/course/courses/?name=' + _this.state.searchText, {headers: {Authorization: 'Token ' + results, 'content-type': 'application/json'}})
+        .then(response => {
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            return 'fail';
+          }
+        })
+        .then(responseJson => {
+          if (responseJson !== 'fail') {
+            _this.setState({
+              searchArr: responseJson
+            })
+          } else {
+            
+          }
+        })
+    })
   }
   render() {
     return (
       <View style={CourseStyle.container}>
+          <View style={{width: width, height: 40, alignItems: 'center', justifyContent: 'center'}}>
+            <TouchableOpacity onPress={() => this.setState({modalVisible2: true})} style={{width: width - 30, height: 30, backgroundColor: 'white',flexDirection: 'row', alignItems: 'center'}}>
+              <Image style={{marginLeft: 10, width: 18, height: 18}} source={require('../assets/Forum/sousuo.png')}/>
+              <Text style={{marginLeft: 10, fontSize: 13, color: 'gray'}}>搜索课程</Text>
+            </TouchableOpacity>
+          </View>
          <FlatList 
           data={this.state.data}
           extraData={this.state}
           renderItem={this._renderItem}
           keyExtractor={this._keyExtractor}
-        /> 
+        />
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.modalVisible2}
+          onRequestClose={() => {}}>
+          <View style={{width: width, height: height, backgroundColor: 'rgb(242, 243, 244)'}}>
+            <View style={{width: width, height: 64, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
+              <TouchableOpacity onPress={() => this.setState({modalVisible2: false})} style={{position: 'absolute', left: 0, bottom: 0, width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+                <Image source={require('../assets/Login/close.png')}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.searchCourse.bind(this)} style={{position: 'absolute', right: 0, bottom: 0, width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={{color: 'white', fontSize: 14}}>搜索</Text>
+              </TouchableOpacity>
+              <Text style={{color: 'white', fontSize: 17, marginTop: 10}}>搜索课程</Text>
+            </View>
+            <TextInput
+              style={{width: width - 30, marginTop: 15, marginBottom: 15, marginLeft: 15, height: 30, fontSize: 13, backgroundColor: 'white', paddingLeft: 10}}
+              onChangeText={(searchText) => this.setState({searchText})}
+              value={this.state.searchText}
+              placeholder={'请输入搜索的课程'}
+            />
+            <ScrollView>
+              <View style={{width: width, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around'}}>
+                {this.state.searchArr.map((item, index) => {
+                  return <CourseItem key={index} refreshItem={this.refreshItem.bind(this)} total_lesson={item.total_lesson} navigation={this.props.navigation} last_lesson={item.learn_extent.last_lesson} pk={item.pk} isopen={item.isopen} status={item.learn_extent.status} title={item.name} headImg={item.images} text={item.content} />
+                })}
+              </View>
+            </ScrollView>
+          </View>
+        </Modal>
+        <Modal 
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {}}>
+          <View style={{width: width, height: height, backgroundColor: 'white'}}>
+            <View style={{width: width, height: 64, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
+              <TouchableOpacity onPress={() => this.setState({modalVisible: false})} style={{position: 'absolute', left: 0, bottom: 0, width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+                <Image source={require('../assets/Login/close.png')}/>
+              </TouchableOpacity>
+              <Text style={{color: 'white', fontSize: 17, marginTop: 10}}>{this.state.item?(this.state.item.name):(null)}</Text>
+            </View>
+            <View style={{width: width, height: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomColor: 'rgb(239, 238, 239)', borderBottomWidth: 1}}>
+              <TouchableOpacity onPress={this.tabLeft.bind(this)} style={[{width: width / 2, height: 43, alignItems: 'center', justifyContent: 'center'}, this.state.tab === 'left'?({borderBottomWidth: 1, borderBottomColor: 'rgb(253, 109, 156)'}):(null)]}>
+                <Text style={this.state.tab === 'left'?({color: 'rgb(253, 109, 156)'}):(null)}>简介</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.tabRight.bind(this)} style={[{width: width / 2, height: 43, alignItems: 'center', justifyContent: 'center'}, this.state.tab === 'right'?({borderBottomWidth: 1, borderBottomColor: 'rgb(253, 109, 156)'}):(null)]}>
+                <Text style={this.state.tab === 'right'?({color: 'rgb(253, 109, 156)'}):(null)}>目录</Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView>
+              {this.state.tab === 'left'?(
+                <View style={{marginLeft: 25, width: width - 50, alignItems: 'center'}}>
+                  <Image resizeMode={'contain'} style={{width: 50, height: 50, marginTop: 30}} source={{uri: this.state.item?(this.state.item.images):(null)}}/>
+                  <Text style={{width: width - 50, marginTop: 30, fontSize: 14, color: 'gray', lineHeight: 20}}>{this.state.item?(this.state.item.content):(null)}</Text>
+                </View>
+                ):
+                <View style={{width: width - 50, marginLeft: 25}}>
+                  {
+                    this.state.catalogs.map((item, index) => {
+                      return <Text key={index} numberOfLines={1} style={{marginTop: 30, width: width - 50, fontSize: 15}}>{(1+index).toString() + '.' + item.title}</Text>
+                    })
+                  }
+                </View>
+                }
+            </ScrollView>
+            {this.renderBottomBtn()}
+          </View>
+        </Modal> 
       </View>
     )
   }
