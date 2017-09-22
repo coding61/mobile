@@ -26,8 +26,9 @@ let Http = {
 	},
 	getRegCode:(phone)=>{
 		return Http_Domain + "/userinfo/telephone_signup_request/?telephone=" + phone    //获取手机注册验证码
+	},
+	getNewsList:(lastId)=>{
+		return Http_Domain + "/news/news/?current_id=" + lastId                          //获取新闻推送列表
 	}
-
-
 }
 export default Http;

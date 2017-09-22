@@ -54,7 +54,7 @@ class MessagePage extends Component{
             loading:false,
             totalData:[],                //某课程总数据
             chatData:[],                 //缓存数据
-            data:null,                   //节数据
+            data:[],                     //节数据
             index:0,                     //节下标
             currentItem:null,            //当前消息
             number:0,                    //记录加载数据的个数
@@ -113,6 +113,11 @@ class MessagePage extends Component{
 
             showEditorsView:false,       //是否显示编辑器组
             currentEditorType:"html",    //当前选中的编辑器类型， 默认 HTML
+
+            newsData:[],                 //新闻数据
+            newsIndex:0,                 //新闻下标
+
+            hasChatData:false,           //区分程序第一次进入，有没有缓存信息
 
         };
         this.leftEnterValue = new Animated.Value(0)     //左侧进入动画
@@ -182,10 +187,10 @@ class MessagePage extends Component{
         // Utils.setValue("token", null);
         // Utils.clearAllValue();
         this._load(); 
+
         this._fetchUserInfo();
         this._fetchLunTanUnread();
         this._getDeviceInfo();
-
     }
     componentDidMount() {
     
@@ -241,6 +246,11 @@ class MessagePage extends Component{
         Utils.getValue("chatData", (err, result)=>{
             var chatData = JSON.parse(result);
             if (chatData && chatData.length) {
+                // 有缓存信息
+                this.setState({
+                    hasChatData:true
+                })
+
                 this_._loadStorageMessages();
                 Utils.isLogin((token)=>{
                     if (token) {
@@ -251,22 +261,44 @@ class MessagePage extends Component{
                 })
                 
             }else{
-                this_.setState({
-                    showHeaderComponent:false
+                /*
+                // 没有缓存信息，
+                this.setState({
+                    hasChatData:false
                 })
-                this_._loadDefaultMessages();
-                Utils.isLogin((token)=>{
-                    if (token) {
-                        this.setState({
-                            showQuitLogin:true
-                        })
-                    }else{
-                        this.setState({
-                            showQuitLogin:false
-                        })
-                    }
+                this._loadNews("default");  //先加载新闻信息
+                */
+
+                this._loadDefault();   //加载默认信息
+            }
+        })
+    }
+    _loadDefault(){
+        this.setState({
+            showHeaderComponent:false
+        })
+        this._loadDefaultMessages();
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.setState({
+                    showQuitLogin:true
+                })
+            }else{
+                this.setState({
+                    showQuitLogin:false
                 })
             }
+        })
+    }
+    _loadNews(flag){
+        // Utils.removeValue("lastNewsId");
+        Utils.getValue("lastNewsId", (err, value)=>{
+            console.log(value);
+            var lastNewsId = 0
+            if (value) {
+                lastNewsId = value
+            }
+            this._fetchNews(lastNewsId, false, flag);
         })
     }
     // -------------------------------------------默认数据&新数据相关
@@ -488,7 +520,7 @@ class MessagePage extends Component{
                 if (currentCourse) {
                     // 先更改数据源，后加载缓存数据
                     this_.setState({
-                        loading:false
+                        // loading:false
                     }, ()=>{
                         this_._fetchCourseInfoForInit(currentCourse, "way2");
                     })
@@ -523,7 +555,16 @@ class MessagePage extends Component{
                     })
                 }
             }else{
-                this._loadStorageLastItem();
+                Utils.isLogin((token)=>{
+                    if (token) {
+                        this.setState({
+                            loadingChat:true
+                        })
+                        this._loadNews("chat");        //加载新闻信息
+                    }else{
+                        this._loadStorageLastItem();   //加载最后一条信息
+                    }
+                }) 
             }
             return;
         }
@@ -558,8 +599,38 @@ class MessagePage extends Component{
                 headerLoadTag:LoadNoMore
             })
         }
+        
+        if (this.state.currentItem.news) {
+            // 最后一条信息是新闻的话，找到他的前一条 action
+            var array = this.state.chatData;
+            array = array.reverse();
+            for (var i = 0; i < array.length; i++) {
+                if(array[i].action){
+                    this.setState({
+                        currentItem:array[i]
+                    }, ()=>{
+                        if (this.state.currentItem.action == "点击选择课程") {
+                            this.setState({
+                                actionTag:actionChooseCourseTag,
+                                showAction:true
+                            })
+                        }else if (this.state.currentItem.record == true) {
+                            this.setState({
+                                actionTag:actionRecordTag,
+                                showAction:true
+                            })
+                        }else{
+                            this.setState({
+                                showAction:true
+                            })
+                        }
+                    })
+                    break;
+                }
+            }
+        }
 
-        if (this.state.currentItem.action) {
+        else if (this.state.currentItem.action) {
             // this._bottomAnimate();
             if (this.state.currentItem.action == "点击选择课程") {
                 this.setState({
@@ -590,6 +661,60 @@ class MessagePage extends Component{
                 this._loadMessage(this.state.optionData, this.state.optionIndex+1, true);
             }
         }
+    }
+    _loadNewsMessage(arr, i){
+        //显示等待符号
+        this.setState({
+            loadingChat:true
+        }, ()=>{
+            this.timer = setTimeout(()=>{
+                
+                var array = this.state.dataSource;
+                var item = arr[i];
+                array.push(item);
+
+                this.setState({
+                    number:this.state.number+1,
+                    dataSource:array,
+                    currentItem:item
+                },()=>{
+                    // this._leftAnimate();
+
+                    // 1.存储消息
+                    this._storeChatData(item, "message");
+                    // this._storeNewsData(item);
+
+                    // 2.存储下标
+                    // 判断点的是普通消息按钮还是问题按钮
+                    this.setState({
+                        lastNewsId:item.pk,
+                        newsIndex:i
+                    }, ()=>{
+                        Utils.setValue("lastNewsId", String(this.state.lastNewsId));
+                    })
+            
+                    //隐藏等待符号
+                    this.setState({
+                        loadingChat:false
+                    })
+                    
+                    if (item.hasAction) {
+                        this.timer = setTimeout(()=>{
+                            // this._bottomAnimate();
+                            this.setState({
+                                showAction:true
+                            })
+                        }, 1000)
+                    }else{
+                        //新闻没加载完，继续加载
+                        this.timer = setTimeout(()=>{
+                            this._loadNewsMessage(arr, i+1)
+                        }, 1000)
+                    }
+                })
+            }, 1000);
+
+        })
     }
     // -------------------------------------------数据存储
     _storeChatData(item, tag){
@@ -1096,6 +1221,89 @@ class MessagePage extends Component{
             } 
         }) 
     }
+    _fetchNews(lastId, isClickNext, flag){
+        var this_ = this
+        var type = "get",
+            url = Http.getNewsList(lastId),
+            token = null,
+            data = null;
+        BCFetchRequest.fetchData(type, url, token, data, (response) => {
+            if (!response) {
+                //请求失败
+            };
+            // console.log(response);
+            var array = [];
+            for (var i = 0; i < response.results.length; i++) {
+                response.results[i]["news"] = true;     //是否是新闻消息
+                var item = response.results[i];
+                var dic1 = {"pk":item.pk, "news":true}, dic2 = {"pk":item.pk, "news":true};
+                if (item.content) {
+                    dic1["message"] = item.content
+                }
+                if (item.link) {
+                    dic1["link"] = item.link
+                }
+                if (item.images) {
+                    dic2["img"] = item.images
+                    dic2["hasAction"] = true     //图片后紧跟新闻双按钮
+                    array.push(dic1);
+                    array.push(dic2);
+                }else{
+                    dic1["hasAction"] = true     //摘要后紧跟新闻双按钮
+                    array.push(dic1);
+                }
+            }
+            function compare(property){
+                return function(a,b){
+                    var value1 = a[property];
+                    var value2 = b[property];
+                    return value1 - value2;
+                }
+            }
+
+            // response.results.sort(compare('pk'));
+            // console.log(response.results);
+            array.sort(compare('pk'));
+            console.log(array);
+            
+            this.setState({
+                newsData:array,
+                newsIndex:0
+            }, ()=>{
+                if (!this.state.newsData.length) {
+                    
+                    if (!isClickNext) {
+                        // 进到页面加载的新闻
+                        // if (flag == "default") {
+                            // this._loadDefault();    // 无新增新闻， 加载默认数据
+                        // }else if (flag == "chat") {
+                            this._clickNotLook();   // 无新增新闻， 加载最后一条数据
+                        // }
+                    }else{
+                        // 点击下一条加载的新闻
+                        // 新闻没有更多的时候, 询问是否加载学习内容
+                        Utils.showAlert("推送新闻", "今日新闻推送已经完了，是否要开始学习？", ()=>{
+                            this._clickNotLook();
+                        }, ()=>{
+                            this.setState({
+                                loadingChat:false,
+                                showAction:true
+                            })
+                        }, "确定", "取消")
+                    }
+                    
+                }else{
+                    this.setState({loading:true})
+                    this._loadNewsMessage(this.state.newsData, this.state.newsIndex);
+                }
+            })
+            
+
+        }, (err) => {
+            // console.log(err);
+            // Utils.showMessage('网络请求失败');
+        });    
+    }
     _goLogin(){
         // 未登录
         // Utils.setValue("token", "");
@@ -1152,6 +1360,11 @@ class MessagePage extends Component{
             courseProgressArray:[],
             showQuitLogin:false,         //是否显示退出登录按钮
             newsCount:0,                 //论坛未读消息
+
+            newsData:[],                 //新闻数据
+            newsIndex:0,                 //新闻下标
+
+            hasChatData:false,           //区分程序第一次进入，有没有缓存信息
         })
         this.setState({showHelpActions:false})
 
@@ -1211,8 +1424,8 @@ class MessagePage extends Component{
             this_._loadBtnActionEvent();
         })
         
-        
     }
+    // 判断按钮行为
     _loadBtnActionEvent(){
         //判断按钮的行为
         if (this.state.actionTag == actionChooseCourseTag) {
@@ -1275,6 +1488,65 @@ class MessagePage extends Component{
             }
         }
     }
+    // 暂时不看(新闻)
+    _clickNotLook(){
+        /*
+        if (this.state.hasChatData) {
+            this.setState({
+                loadingChat:false,
+                scrollTop: false,
+                scrollAuto:true
+            })
+            // 一开始有缓存信息，加载缓存信息的最后一个 action
+            this._loadStorageLastItem();
+        }else{
+            this.setState({
+                showAction:false,
+                loadingChat:true,
+                scrollTop: false,
+                scrollAuto:true
+            })
+            // 加载默认信息
+            this._loadDefault();
+        }
+        */
+
+        this.setState({
+            loadingChat:false,
+            scrollTop: false,
+            scrollAuto:true
+        })
+        // 一开始有缓存信息，加载缓存信息的最后一个 action
+        this._loadStorageLastItem();
+        
+    }
+    // 下一条
+    _clickNextNews(){
+        // 请求下一条新闻
+        if (this.state.newsData[this.state.newsIndex+1]) {
+            this.setState({
+                newsIndex:this.state.newsIndex+1,
+                showAction:false,
+                loadingChat:true,
+                scrollTop: false,
+                scrollAuto:true
+            }, ()=>{
+                this._loadNewsMessage(this.state.newsData, this.state.newsIndex);
+            })
+        }else{
+            this.setState({
+                showAction:false,
+                loadingChat:true,
+                scrollTop: false,
+                scrollAuto:true
+            })
+            Utils.getValue("lastNewsId", (err, value)=>{
+                if (err) return;
+                this._fetchNews(value, true, "next");
+            })
+        }
+    }
+    // 点击选择课程
     _loadChooseCourse(help){
         var this_ = this;
         Utils.isLogin((token)=>{
@@ -1371,7 +1643,7 @@ class MessagePage extends Component{
             }
         })
     }
-    // action 按钮
+    // 下一条action 按钮
     _loadClickBtnAction(){
         if (this.state.optionData && this.state.optionData.length) {
             // 问题下的普通按钮
@@ -1633,6 +1905,11 @@ class MessagePage extends Component{
             showEditorsView:false,       //是否显示编辑器组
             currentEditorType:"html",    //当前选中的编辑器类型， 默认 HTML
 
+            newsData:[],                 //新闻数据
+            newsIndex:0,                 //新闻下标
+
+            hasChatData:false,           //区分程序第一次进入，有没有缓存信息
+
         })
         Utils.clearAllValue()
         this.setState({showHelpActions:false})
@@ -1869,10 +2146,12 @@ class MessagePage extends Component{
         var imgW = width;
         var imgH = 200;
         Utils.getImgWH(this.state.bigImgUrl, (wid, hei)=>{
-            wid = parseInt(wid)
-            hei = parseInt(hei)
-            imgW = wid < width? wid:width
-            imgH = imgW*hei/wid
+            if (wid && hei){
+                wid = parseInt(wid)
+                hei = parseInt(hei)
+                imgW = wid < width? wid:width
+                imgH = imgW*hei/wid
+            }
         })
         return (
             <View style={{width:imgW, height:imgH, backgroundColor:'#F5FCFF', alignItems:'center', justifyContent:'center'}}>
@@ -2039,6 +2318,7 @@ class MessagePage extends Component{
         )
     }
     // ----------------------------------------action 按钮数据加载
+    // 单个按钮
     _renderBtnAction(text){
         return (
             <View style={{}}>
@@ -2054,6 +2334,7 @@ class MessagePage extends Component{
             </View>
         )
     }
+    // 选项按钮
     _renderBtnActionOption(item){
         return (
             <View style={{}}>
@@ -2080,9 +2361,32 @@ class MessagePage extends Component{
             </View>
         )
     }
+    // 多个按钮
+    _renderBtnTwoAction(){
+        return (
+            <View style={{}}>
+                <View style={styles.actions}>
+                    <TouchableOpacity onPress={this._clickNotLook.bind(this)}>
+                    <View style={styles.btnSubmit}>
+                        <Text style={{color:'white', fontSize:13}}>
+                        {"暂时不看"}
+                        </Text>
+                    </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this._clickNextNews.bind(this)}>
+                    <View style={styles.btnSubmit}>
+                        <Text style={{color:'white', fontSize:13}}>
+                        {"下一条"}
+                        </Text>
+                    </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+    }
     _renderBtnActions(){
-        var item = this.state.data[this.state.index];
-        item = this.state.currentItem;
+        // var item = this.state.data[this.state.index];
+        var item = this.state.currentItem;
         return (
             this.state.actionTag == actionBeginStudyTag || this.state.actionTag == actionCatalogBeginStudyTag
             ?
@@ -2092,11 +2396,15 @@ class MessagePage extends Component{
                 ?
                     this._renderBtnAction("重新学习")
                 :
-                    item.exercises
+                    item.news
                     ?
-                        this._renderBtnActionOption(item)
-                    : 
-                        this._renderBtnAction(item.action)
+                        this._renderBtnTwoAction()
+                    :
+                        item.exercises
+                        ?
+                            this._renderBtnActionOption(item)
+                        : 
+                            this._renderBtnAction(item.action)
         )
     }
     _renderBottomBtns(){
@@ -2155,7 +2463,7 @@ class MessagePage extends Component{
     _renderItemImgMessage(item, index){
         var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
         var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
-        var imgH = Utils.getImgWidthHeight(item.img, widthMsg2*0.5)
+        var imgH = Utils.getImgWidthHeight(item.img, widthMsg2*0.5)?Utils.getImgWidthHeight(item.img, widthMsg2*0.5):100
         var imgDePlaSty;
         if (widthMsg2*0.5>imgH) {
             imgDePlaSty = {height:imgH-5}
@@ -2222,6 +2530,77 @@ class MessagePage extends Component{
                     </View>
                 </View>
             </TouchableOpacity>
+        )
+    }
+    // 新闻消息(不分开的)
+    _renderItemNewsMessage(item, index){
+        var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
+        var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
+        var uri = item.images;
+        var imgH = Utils.getImgWidthHeight(uri, widthMsg2*0.5)?Utils.getImgWidthHeight(uri, widthMsg2*0.5):100
+        var imgDePlaSty;
+        if (widthMsg2*0.5>imgH) {
+            imgDePlaSty = {height:imgH-5}
+        }else{
+            imgDePlaSty = {width:widthMsg2*0.5-10}
+        }
+        return (
+            <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
+                <View style={[styles.message, {width:widthMsg1}]}>
+                    <Image
+                      style={styles.avatar}
+                      source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                    />
+                    <View style={[styles.msgView, {width:widthMsg2}]}>  
+                        <View style={[styles.messageView, {flex:1}]}>
+                            {
+                                item.content?
+                                <Text style={styles.messageText}>
+                                  {item.content}
+                                </Text>
+                                :null
+                            }
+                            {
+                                item.images?
+                                <TouchableOpacity onPress={this._clickMessageImg.bind(this, uri)}>
+                                    <ImageLoad
+                                        style={{width:(widthMsg2)*0.5, height:imgH}}
+                                        source={{uri: uri}}
+                                        resizeMode={'contain'}
+                                        customImagePlaceholderDefaultStyle={imgDePlaSty}
+                                    />
+                                </TouchableOpacity>
+                                :null
+                            }
+                            {
+                                item.link?
+                                <Text style={{color:'rgb(84, 180, 225)'}}>
+                                  {item.link}
+                                </Text>
+                                :null
+                            }
+                        </View> 
+                        <Image
+                          style={{width:15, height:15, marginHorizontal:10}}
+                          source={require('../images/arrow.png')}
+                        />
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+    // 新闻消息(内容，图片分开)
+    _renderItemNewsSplitMessage(item, index){
+        return (
+            item.content
+            ?
+                this._renderItemNewsMessage(item, index)
+            :
+                item.img
+                ?
+                    this._renderItemImgMessage(item, index)
+                :
+                    this._renderItemLinkMessage(item, index)
         )
     }
     // 分割线信息 
@@ -2294,15 +2673,19 @@ class MessagePage extends Component{
                 ?
                     this._renderItemAnswerMessage(item, index)
                 :
-                    item.link
+                    item.news
                     ?
-                        this._renderItemLinkMessage(item, index)
+                        this._renderItemNewsSplitMessage(item, index)
                     :
-                        item.img
+                        item.link
                         ?
-                            this._renderItemImgMessage(item, index)
+                            this._renderItemLinkMessage(item, index)
                         :
-                            this._renderItemTextMessage(item, index)
+                            item.img
+                            ?
+                                this._renderItemImgMessage(item, index)
+                            :
+                                this._renderItemTextMessage(item, index)
 
         )
     }
@@ -2341,7 +2724,7 @@ class MessagePage extends Component{
             inputRange:[0, 1],
             outputRange:[-2000, 0]
         })
-        var imgH = Utils.getImgWidthHeight(item.img, widthMsg2*0.5)
+        var imgH = Utils.getImgWidthHeight(item.img, widthMsg2*0.5)?Utils.getImgWidthHeight(item.img, widthMsg2*0.5):100
         var imgDePlaSty;
         if (widthMsg2*0.5>imgH) {
             imgDePlaSty = {height:imgH-5}
@@ -2358,7 +2741,7 @@ class MessagePage extends Component{
                     <View style={[styles.msgView, {width:widthMsg2}]}>
                         {/*
                         <Image
-                          style={{width:(widthMsg2)*0.5, height:Utils.getImgWidthHeight(item.img, (widthMsg2)*0.5)}}
+                          style={{width:(widthMsg2)*0.5, height:imgH}}
                           source={{uri: item.img}}
                         />
                         */}
