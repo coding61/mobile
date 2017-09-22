@@ -502,7 +502,7 @@ class CourseList extends Component {
             })
             .then(responseJson=> {
               if (responseJson !== 'fail') {
-                _this.props.navigation.state.params.callback(_this.state.item.pk, 0, true, _this.props.total_lesson);
+                _this.props.navigation.state.params.callback(_this.state.item.pk, 0, true, _this.state.item.total_lesson);
                 _this.props.navigation.goBack();
               } else {
                 alert('失败，请重试');
