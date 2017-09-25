@@ -543,7 +543,7 @@ class CourseList extends Component {
   searchCourse() {
     var _this = this;
     AsyncStorage.getItem("token", function(errs, results) {
-      fetch(Http.domain + '/course/courses/?name=' + _this.state.searchText, {headers: {Authorization: 'Token ' + results, 'content-type': 'application/json'}})
+      fetch(Http.domain + '/course/courses/?name=' + encodeURI(_this.state.searchText).replace(/\+/g,'%2B'), {headers: {Authorization: 'Token ' + results, 'content-type': 'application/json'}})
         .then(response => {
           if (response.status === 200) {
             return response.json()
