@@ -20,7 +20,8 @@ import {
     DeviceEventEmitter,
     ScrollView,
     Modal,
-    Clipboard
+    Clipboard,
+    AppState
 }from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Sound from 'react-native-sound';
@@ -191,6 +192,9 @@ class MessagePage extends Component{
         this._fetchUserInfo();
         this._fetchLunTanUnread();
         this._getDeviceInfo();
+
+        //监听状态改变事件
+        AppState.addEventListener('change', this.handleAppStateChange.bind(this));
     }
     componentDidMount() {
     
@@ -209,6 +213,37 @@ class MessagePage extends Component{
     componentWillUnmount() {
         // this.props.navigation.setParams({userinfo:""})
         this.timer && clearTimeout(this.timer);
+        //删除状态改变事件监听
+        AppState.removeEventListener('change', this.handleAppStateChange.bind(this));
+    }
+    //状态改变响应
+    handleAppStateChange(appState) {
+        console.log('当前状态为:', appState);
+        // alert('当前状态为:'+appState);
+        if (appState == "active") {
+            Utils.getValue("newsTime", (err, result)=>{
+                if (result) {
+                    var oldTime = parseInt(result);
+                    var nowTime = (new Date()).valueOf();
+                    var times = nowTime - oldTime;
+                    var leave1=times%(24*3600*1000)
+                    var hours=Math.floor(leave1/(3600*1000))
+                    if (hours < 1) {
+                        // 不到1小时,不推送新闻
+                        return
+                    }
+                }
+
+                console.log('进到前台加载新闻');
+                this.setState({
+                    scrollTop: false,
+                    scrollAuto:true,
+                    showAction:false
+                })
+                this._loadNews("chat");        //加载新闻信息
+            })
+            
+        }
     }
     _getDeviceInfo(){
         console.log("Device Unique ID", DeviceInfo.getUniqueID());  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9
@@ -557,10 +592,26 @@ class MessagePage extends Component{
             }else{
                 Utils.isLogin((token)=>{
                     if (token) {
-                        this.setState({
-                            loadingChat:true
+                        Utils.getValue("newsTime", (err, result)=>{
+                            if (result) {
+                                var oldTime = parseInt(result);
+                                var nowTime = (new Date()).valueOf();
+                                var times = nowTime - oldTime;
+                                var leave1=times%(24*3600*1000)
+                                var hours=Math.floor(leave1/(3600*1000))
+                                if (hours < 1) {
+                                    // 不到1小时,不推送新闻
+                                    this._loadStorageLastItem();   //加载最后一条信息
+                                    return
+                                }
+                            }
+                            this.setState({
+                                loadingChat:true
+                            })
+                            console.log("第一次进入加载");
+                            this._loadNews("chat");        //加载新闻信息
                         })
-                        this._loadNews("chat");        //加载新闻信息
+
                     }else{
                         this._loadStorageLastItem();   //加载最后一条信息
                     }
@@ -1222,87 +1273,93 @@ class MessagePage extends Component{
         }) 
     }
     _fetchNews(lastId, isClickNext, flag){
-        var this_ = this
-        var type = "get",
-            url = Http.getNewsList(lastId),
-            token = null,
-            data = null;
-        BCFetchRequest.fetchData(type, url, token, data, (response) => {
-            if (!response) {
-                //请求失败
-            };
-            // console.log(response);
-            var array = [];
-            for (var i = 0; i < response.results.length; i++) {
-                response.results[i]["news"] = true;     //是否是新闻消息
-                var item = response.results[i];
-                var dic1 = {"pk":item.pk, "news":true}, dic2 = {"pk":item.pk, "news":true};
-                if (item.content) {
-                    dic1["message"] = item.content
-                }
-                if (item.link) {
-                    dic1["link"] = item.link
-                }
-                if (item.images) {
-                    dic2["img"] = item.images
-                    dic2["hasAction"] = true     //图片后紧跟新闻双按钮
-                    array.push(dic1);
-                    array.push(dic2);
-                }else{
-                    dic1["hasAction"] = true     //摘要后紧跟新闻双按钮
-                    array.push(dic1);
-                }
-            }
-            function compare(property){
-                return function(a,b){
-                    var value1 = a[property];
-                    var value2 = b[property];
-                    return value1 - value2;
-                }
-            }
-
-            // response.results.sort(compare('pk'));
-            // console.log(response.results);
-            array.sort(compare('pk'));
-            console.log(array);
-            
-            this.setState({
-                newsData:array,
-                newsIndex:0
-            }, ()=>{
-                if (!this.state.newsData.length) {
-                    
-                    if (!isClickNext) {
-                        // 进到页面加载的新闻
-                        // if (flag == "default") {
-                            // this._loadDefault();    // 无新增新闻， 加载默认数据
-                        // }else if (flag == "chat") {
-                            this._clickNotLook();   // 无新增新闻， 加载最后一条数据
-                        // }
-                    }else{
-                        // 点击下一条加载的新闻
-                        // 新闻没有更多的时候, 询问是否加载学习内容
-                        Utils.showAlert("推送新闻", "今日新闻推送已经完了，是否要开始学习？", ()=>{
-                            this._clickNotLook();
-                        }, ()=>{
-                            this.setState({
-                                loadingChat:false,
-                                showAction:true
-                            })
-                        }, "确定", "取消")
+        Utils.isLogin((token)=>{
+            if (token) {
+                var this_ = this
+                var type = "get",
+                    url = Http.getNewsList(lastId),
+                    token = null,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (!response) {
+                        //请求失败
+                    };
+                    // console.log(response);
+                    var array = [];
+                    for (var i = 0; i < response.results.length; i++) {
+                        response.results[i]["news"] = true;     //是否是新闻消息
+                        var item = response.results[i];
+                        var dic1 = {"pk":item.pk, "news":true}, dic2 = {"pk":item.pk, "news":true};
+                        if (item.content) {
+                            dic1["message"] = item.content
+                        }
+                        if (item.link) {
+                            dic1["link"] = item.link
+                        }
+                        if (item.images) {
+                            dic2["img"] = item.images
+                            dic2["hasAction"] = true     //图片后紧跟新闻双按钮
+                            array.push(dic1);
+                            array.push(dic2);
+                        }else{
+                            dic1["hasAction"] = true     //摘要后紧跟新闻双按钮
+                            array.push(dic1);
+                        }
                     }
-                    
-                }else{
-                    this.setState({loading:true})
-                    this._loadNewsMessage(this.state.newsData, this.state.newsIndex);
-                }
-            })
-            
+                    function compare(property){
+                        return function(a,b){
+                            var value1 = a[property];
+                            var value2 = b[property];
+                            return value1 - value2;
+                        }
+                    }
 
-        }, (err) => {
-            // console.log(err);
-            // Utils.showMessage('网络请求失败');
-        });    
+                    // response.results.sort(compare('pk'));
+                    // console.log(response.results);
+                    array.sort(compare('pk'));
+                    console.log(array);
+                    
+                    this.setState({
+                        newsData:array,
+                        newsIndex:0
+                    }, ()=>{
+                        if (!this.state.newsData.length) {
+                            
+                            if (!isClickNext) {
+                                // 进到页面加载的新闻
+                                // if (flag == "default") {
+                                    // this._loadDefault();    // 无新增新闻， 加载默认数据
+                                // }else if (flag == "chat") {
+                                    this._clickNotLook();   // 无新增新闻， 加载最后一条数据
+                                // }
+                            }else{
+                                // 点击下一条加载的新闻
+                                // 新闻没有更多的时候, 询问是否加载学习内容
+                                Utils.showAlert("推送新闻", "今日新闻推送已经完了，是否要开始学习？", ()=>{
+                                    this._clickNotLook();
+                                }, ()=>{
+                                    this.setState({
+                                        loadingChat:false,
+                                        showAction:true
+                                    })
+                                }, "确定", "取消")
+                            }
+                            
+                        }else{
+                            this.setState({loading:true})
+                            this._loadNewsMessage(this.state.newsData, this.state.newsIndex);
+                        }
+                    })
+                    
+
+                }, (err) => {
+                    // console.log(err);
+                    // Utils.showMessage('网络请求失败');
+                }); 
+            }else{
+                console.log("token 为空，不加载新闻");
+            }
+        })   
     }
     _goLogin(){
         // 未登录
@@ -1510,7 +1567,9 @@ class MessagePage extends Component{
             this._loadDefault();
         }
         */
-
+        // 存储当前时间
+        var nowTime = (new Date()).valueOf();
+        Utils.setValue("newsTime", String(nowTime));
         this.setState({
             loadingChat:false,
             scrollTop: false,
@@ -1926,7 +1985,8 @@ class MessagePage extends Component{
         })
     }
     // 消息链接点击
-    _clickMessageLink(link){
+    _clickMessageLink(item){
+        var link = item.link
         var language = link.split("/")[1]?link.split("/")[1]:"python";
         
         link == "www.code.com"
@@ -1939,8 +1999,12 @@ class MessagePage extends Component{
                 //编译器
                 this.props.navigation.navigate("CodeCompileWebView", {"language":language})
             :
-                Utils.openURL(link)
-                // this.props.navigation.navigate('ThirdSiteWebView', {url:link})
+                item.news
+                ?
+                    this.props.navigation.navigate('ThirdSiteWebView', {url:link})
+                :
+                    Utils.openURL(link)
+                    // this.props.navigation.navigate('ThirdSiteWebView', {url:link})
     }
     // 大图点击事件
     _clickBigImg = ()=>{
@@ -2506,9 +2570,11 @@ class MessagePage extends Component{
             text = "点击打开编辑器"
         }else if (item.link.indexOf("www.compile.com") > -1) {
             text = "点击打开编译器"
+        }else if (item.news) {
+            text = "点击打开新闻"
         }
         return (
-            <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
+            <TouchableOpacity onPress={this._clickMessageLink.bind(this, item)}>
                 <View style={[styles.message, {width:widthMsg1}]}>
                     <Image
                       style={styles.avatar}
@@ -2545,7 +2611,7 @@ class MessagePage extends Component{
             imgDePlaSty = {width:widthMsg2*0.5-10}
         }
         return (
-            <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
+            <TouchableOpacity onPress={this._clickMessageLink.bind(this, item)}>
                 <View style={[styles.message, {width:widthMsg1}]}>
                     <Image
                       style={styles.avatar}
@@ -2575,7 +2641,7 @@ class MessagePage extends Component{
                             {
                                 item.link?
                                 <Text style={{color:'rgb(84, 180, 225)'}}>
-                                  {item.link}
+                                  {"点击打开新闻"}
                                 </Text>
                                 :null
                             }
@@ -2765,6 +2831,8 @@ class MessagePage extends Component{
             text = "点击打开编辑器"
         }else if (item.link.indexOf("www.compile.com") > -1) {
             text = "点击打开编译器"
+        }else if (item.news) {
+            text = "点击打开新闻"
         }
 
         const translateX = this.leftEnterValue.interpolate({
@@ -2773,7 +2841,7 @@ class MessagePage extends Component{
         })
 
         return (
-            <TouchableOpacity onPress={this._clickMessageLink.bind(this, item.link)}>
+            <TouchableOpacity onPress={this._clickMessageLink.bind(this, item)}>
                 <Animated.View style={[styles.message, {transform:[{translateX:translateX}], width:widthMsg1}]}>
                     <Image
                       style={styles.avatar}
