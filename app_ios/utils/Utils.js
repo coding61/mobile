@@ -134,7 +134,11 @@ let Utils = {
                 break;
             }
         }
-
+        
+        if (url.split(string).length == 1) {
+            // 图片格式非法，
+            return 0;
+        }
         var str = url.split(string)[1]; //45x36
         width = str.split('x')[0];  //45
         height = str.split('x')[1];  //36
@@ -156,12 +160,16 @@ let Utils = {
                 break;
             }
         }
-
-        var str = url.split(string)[1]; //45x36
-        width = str.split('x')[0];  //45
-        height = str.split('x')[1];  //36
-        
-        callback(width, height)
+        if (url.split(string).length == 1) {
+            // 图片格式非法，
+            callback(0, 0)
+        }else{
+            var str = url.split(string)[1]; //45x36
+            width = str.split('x')[0];  //45
+            height = str.split('x')[1];  //36
+            
+            callback(width, height)
+        }
     },
     isLogin:(callback)=>{
         Utils.getValue('token', (err, result)=>{
@@ -230,7 +238,5 @@ let Utils = {
             Utils.showMessage('一个错误被发现' + err);
         })
     }
-    
-
 }
 export default Utils;

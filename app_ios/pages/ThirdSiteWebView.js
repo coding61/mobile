@@ -34,7 +34,9 @@ class ThirdSiteWebView extends Component {
 	static navigationOptions = ({navigation}) => {
 		const {state, setParams, goBack, navigate} = navigation;
 		return {
-			title:'程序媛'
+			title:'程序媛',
+			headerTintColor: "#fff",   
+            headerStyle: { backgroundColor: pinkColor}
 		}
 	};	
 	
@@ -107,6 +109,7 @@ class ThirdSiteWebView extends Component {
 }
 const HEIGHT = Dimensions.get('window').height
 const WIDTH = Dimensions.get('window').width
+const pinkColor = Utils.btnBgColor;
 
 const styles = StyleSheet.create({
 	// ---------------------预加载视图
