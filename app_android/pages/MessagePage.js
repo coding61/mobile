@@ -1281,6 +1281,7 @@ class MessagePage extends Component{
                         //请求失败
                     };
                     // console.log(response);
+                    response.results.sort(compare('pk'));
                     var array = [];
                     for (var i = 0; i < response.results.length; i++) {
                         response.results[i]["news"] = true;     //是否是新闻消息
@@ -1310,9 +1311,7 @@ class MessagePage extends Component{
                         }
                     }
 
-                    // response.results.sort(compare('pk'));
-                    // console.log(response.results);
-                    array.sort(compare('pk'));
+                    // array.sort(compare('pk'));
                     console.log(array);
                     
                     this.setState({
