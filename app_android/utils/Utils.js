@@ -47,7 +47,7 @@ function SectionToChinese(section){
     }
     return chnStr;
 }
-
+// 数字转中文
 function NumberToChinese(num){
     var unitPos = 0;
     var strIns = '', chnStr = '';
@@ -68,6 +68,11 @@ function NumberToChinese(num){
         needZero = (section < 1000) && (section > 0);
         num = Math.floor(num / 10000);
         unitPos++;
+    }
+
+    // 将一十一这种变成十一
+    if (chnStr.indexOf("一十") != -1) {
+        chnStr = "十"+chnStr.split("一十")[1];
     }
 
     return chnStr;
