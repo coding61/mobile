@@ -14,7 +14,7 @@ const TopStatusBarAndroid = 25
 const TopNavBarHeight = 48
 const BottomStatusBarAndroid = 48
 const HeaderH = isIOS ? 64 : TopNavBarHeight+TopStatusBarAndroid
-const BottomH = isIOS ? 0 : BottomStatusBarAndroid
+const BottomH = isIOS ? 40 : BottomStatusBarAndroid
 
 const deviceH = Dimensions.get('window').height
 const deviceW = Dimensions.get('window').width
@@ -81,14 +81,17 @@ let Utils = {
 	width:Dimensions.get('window').width,
 	height:Dimensions.get('window').height,
     headerHeight:HeaderH,
+    bottomHeight:BottomH,
 	navBarBgColor:'rgb(250, 80, 131)',
 	tabBarBgColor:'rgb(255,255,255)',
     tabBarIconUnSColor:'rgb(124,124,124)',
     tabbarIconSColor:'rgb(253,202,24)',
 
 	bodyBgColor:'rgb(250, 80, 131)',
-    btnBgColor:'rgb(250, 80, 131)',      //app 主题颜色粉色
-    btnBgColorS:'white',                 //app 第二主题色是白色
+    btnBgColor:'rgb(250, 80, 131)',         //app 主题颜色粉色
+    btnBgColorS:'white',                    //app 第二主题色是白色
+    tabBarSelectColor:'rgb(250, 80, 131)',  //底部 tab 按钮选中颜色
+    tabBarUnselectColor:'rgb(109,110,111)', //底部 tab 按钮未选中颜色
 	px2dp:(px)=>{
 		return px * deviceW/basePx
 	},

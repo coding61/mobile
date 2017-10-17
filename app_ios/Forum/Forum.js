@@ -36,7 +36,7 @@ export default class Forum extends Component{
             moreshow:false,
         }
     }
-
+    
     static navigationOptions = ({ navigation })=>{
         const {state, setParams} = navigation;
         return {
@@ -50,13 +50,19 @@ export default class Forum extends Component{
                         <TouchableOpacity style={{width:30,height:25,}} onPress={()=>{
                             DeviceEventEmitter.emit('newsmore',1 )
                         }}>
-                            {state.params.newscount==0?(<Image style={{width:18,height:3,marginTop:10,}} source={require('../assets/Forum/news.png')}/>):(<Image style={{width:26,height:13,}} source={require('../assets/Forum/hasnews.png')}/>)}
+                            {!state.params || state.params.newscount==0?(<Image style={{width:18,height:3,marginTop:10,}} source={require('../assets/Forum/news.png')}/>):(<Image style={{width:26,height:13,}} source={require('../assets/Forum/hasnews.png')}/>)}
                         </TouchableOpacity>
                     </View>
                     )
         }
     };
+    
     componentWillMount(){
+        //给当前页面设置默认参数
+        this.props.navigation.setParams({
+            newscount: '',
+        });
+        
         var self = this;
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){

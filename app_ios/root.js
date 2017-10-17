@@ -15,6 +15,8 @@ import {
 }from 'react-native'
 import {StackNavigator} from 'react-navigation';
 
+import TabBar from './TabBar.js';
+
 import MessagePage from './pages/MessagePage.js';
 import MessagePage1 from './pages/MessagePage1.js';
 import CodeEditWebView from './pages/CodeEditWebView.js';
@@ -70,7 +72,8 @@ const styles = StyleSheet.create({
 
 const app = StackNavigator({
     RootApp:{screen: RootApp},
-    
+    TabBar: {screen: TabBar},
+
     Forum:{screen: Forum},
     ForumList:{screen:ForumList},
     Forum_Details:{screen:Forum_Details},
@@ -95,9 +98,8 @@ const app = StackNavigator({
     FindWord: {screen: FindWord},
     SelectHead: {screen: SelectHead}
 }, {
-    //initialRouteName: 'Forum',             //配置初始路由的名称
-    initialRouteName: 'MessagePage',             //配置初始路由的名称
-    initialRouteParams:{userinfo:''}   //配置初始路由的参数    
+    initialRouteName: 'TabBar',             //配置初始路由的名称
+    initialRouteParams:{userinfo:''}        //配置初始路由的参数    
 });
 
 

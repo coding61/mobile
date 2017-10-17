@@ -10,6 +10,9 @@ import {
   AsyncStorage,
   Button
 }from 'react-native';
+import {StackNavigator} from 'react-navigation';
+
+import TabBar from './TabBar.js';
 
 import MessagePage from './pages/MessagePage.js';
 import MessagePage1 from './pages/MessagePage1.js';
@@ -29,7 +32,6 @@ import MyCollect from './Forum/MyCollect.js';
 import MyForum from './Forum/MyForum.js';
 import CommentText from './Forum/CommentText.js';
 import Search from './Forum/Search.js';
-import {StackNavigator} from 'react-navigation';
 
 import Login from './Login/Login.js';
 import CourseList from './CourseList/CourseList.js';
@@ -73,6 +75,7 @@ const styles = StyleSheet.create({
 
 const app = StackNavigator({
     RootApp:{screen: RootApp},
+    TabBar: {screen: TabBar},
     
     Forum:{screen: Forum},
     ForumList:{screen:ForumList},
@@ -99,9 +102,8 @@ const app = StackNavigator({
     FindWord: {screen: FindWord},
     SelectHead: {screen: SelectHead}
 }, {
-    //initialRouteName: 'Forum',             //配置初始路由的名称
-    initialRouteName: 'MessagePage',             //配置初始路由的名称
-    initialRouteParams:{userinfo:''}   //配置初始路由的参数    
+    initialRouteName: 'TabBar',             //配置初始路由的名称
+    initialRouteParams:{userinfo:''}        //配置初始路由的参数   
 });
 
 export default app;

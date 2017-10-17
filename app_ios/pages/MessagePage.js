@@ -125,10 +125,11 @@ class MessagePage extends Component{
         this.growAniValue = new Animated.Value(0)       //经验动画
         this.bottomEnterValue = new Animated.Value(0)   //底部进入动画
     };
+    
     // -----导航栏自定制
     static navigationOptions = ({navigation}) => {
         const {state, setParams, goBack, navigate} = navigation;
-        var json = state.params.userinfo?state.params.userinfo:"";
+        var json = state.params?state.params.userinfo:"";
         if (json && json != "") {
             var pw = 0;
             if (json.grade.current_all_experience != json.grade.next_all_experience) {
@@ -164,24 +165,40 @@ class MessagePage extends Component{
                             />
                         </View>
                     </View>
+
+                    <View style={styles.headerLeftZuanView}>
+                        <Image
+                          style={styles.headerLeftZuanImg}
+                          source={require('../images/zuan.png')}
+                          resizeMode={'contain'}
+                        />
+                        <Text style={styles.headerLeftZuanText}>
+                          x{json.diamond}
+                        </Text>
+                    </View>
                 </View>
             ):null,
             headerRight:json?(
-                <View style={styles.headerRightView}>
-                    <Image
-                      style={styles.headerRightImg}
-                      source={require('../images/zuan.png')}
-                      resizeMode={'contain'}
-                    />
-                    <Text style={styles.headerRightText}>
-                      x{json.diamond}
-                    </Text>
-                </View>
+                <TouchableOpacity onPress={()=>{DeviceEventEmitter.emit('help',1 )}}>
+                    <View style={styles.headerRightView}>
+                        <Image
+                          style={styles.headerRightImg}
+                          source={require('../images/more.png')}
+                          resizeMode={'contain'}
+                        />
+                    </View>
+                </TouchableOpacity>  
             ):null
         }
-        
     };
+    
     componentWillMount() {
+        //给当前页面设置默认参数
+        this.props.navigation.setParams({
+            userinfo: '',
+        });
+        console.log(this.props.navigation.state);
+        console.log(this.props.navigation.setParams);
 
         // var chatArray = [];
         // Utils.setValue("chatData", JSON.stringify(chatArray));
@@ -197,7 +214,9 @@ class MessagePage extends Component{
         AppState.addEventListener('change', this.handleAppStateChange.bind(this));
     }
     componentDidMount() {
-    
+        this.eventEm = DeviceEventEmitter.addListener('help', (value)=>{
+            this._clickHelp();
+        })
     }
     componentDidUpdate(prevProps, prevState) {
         /*
@@ -213,8 +232,12 @@ class MessagePage extends Component{
     componentWillUnmount() {
         // this.props.navigation.setParams({userinfo:""})
         this.timer && clearTimeout(this.timer);
+
         //删除状态改变事件监听
         AppState.removeEventListener('change', this.handleAppStateChange.bind(this));
+        
+        //移除监听
+        this.eventEm.remove();
     }
     //状态改变响应
     handleAppStateChange(appState) {
@@ -1800,6 +1823,14 @@ class MessagePage extends Component{
             currentItem:item
         }) 
     }
+    //帮助/更多点击
+    _clickHelp = ()=>{
+        this.setState({
+            showHelpActions:!this.state.showHelpActions, 
+            showCatalogsView:false, 
+            showEditorsView:false
+        })
+    }
     // 选择课程点击
     _clickChooseCourse = ()=>{
         this.setState({showHelpActions:false})
@@ -2378,7 +2409,6 @@ class MessagePage extends Component{
                       resizeMode={"contain"}
                     />
                 </View>
-                
         )
     }
     // ----------------------------------------action 按钮数据加载
@@ -2477,6 +2507,7 @@ class MessagePage extends Component{
                 {
                     this.state.showAction? this._renderBtnActions() : null
                 }
+                {/*
                 <TouchableOpacity onPress={()=>{this.setState({showHelpActions:!this.state.showHelpActions, showCatalogsView:false, showEditorsView:false})}}>
                     <Image
                       style={styles.help}
@@ -2484,6 +2515,7 @@ class MessagePage extends Component{
                       resizeMode={'contain'}
                     />
                 </TouchableOpacity>
+                */}
             </View>
         )
     }
@@ -2943,10 +2975,10 @@ class MessagePage extends Component{
                     {/*this.state.courseProgressArray.length? this._renderCourseProgress():null*/}
                     
                     {/******会话消息******/}
-                    <View style={{width:MessageWidth1, maxHeight:height-headerH-80-10}}>
+                    <View style={{width:MessageWidth1, maxHeight:height-headerH-bottomH-50-10}}>
                         <FlatList 
                             ref={(flatlist)=>this._flatList=flatlist}
-                            style={{maxHeight:height-headerH-80-10}}
+                            style={{maxHeight:height-headerH-bottomH-50-10}}
                             data={this.state.dataSource}
                             renderItem={this._renderItem}
                             ListHeaderComponent={this.state.showHeaderComponent?this._renderHeader:null}
@@ -2976,9 +3008,9 @@ class MessagePage extends Component{
                                     // this._flatList.scrollToIndex({viewPosition: 0, index: 0}); 
                                     // console.log("-----scrollTop");
                                 }else{
-                                    if (contentHeight > height-headerH-80-10) {
+                                    if (contentHeight > height-headerH-bottomH-50-10) {
                                         // this._flatList.scrollToIndex({viewPosition: 1, index: this.state.number-1});
-                                        this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-80-10)});
+                                        this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-bottomH-50-10)});
                                         // console.log("-----scrollEnd");
                                         // this._flatList.scrollToEnd();  //与getItemLayout配合使用
                                     } 
@@ -3060,9 +3092,12 @@ class MessagePage extends Component{
         )
     }
 }
+
+const headerH = Utils.headerHeight;                 //导航栏的高度
+const bottomH = Utils.bottomHeight;                 //tabbar 高度
+
 const width = Utils.width;                          //屏幕的总宽
 const height = Utils.height;                        //屏幕的总高
-const headerH = Utils.headerHeight;                 //导航栏的高度
 
 const CourseProgressMarginVer = 10;                 //左侧课程进度上下边距
 const CourseProgressHeight = height-CourseProgressMarginVer*2;                //左侧课程进度的总高, 
@@ -3118,12 +3153,25 @@ const styles = StyleSheet.create({
         top: 0, 
         height:3
     },
+    headerLeftZuanView:{
+        flexDirection:'row', 
+        justifyContent:'center', 
+        alignItems:'center', 
+        marginLeft:5,
+    },
+    headerLeftZuanImg:{
+        height:20
+    },
+    headerLeftZuanText:{
+        color:'white', 
+        fontSize:11
+    },
     // -----------导航栏右部分
     headerRightView:{
         flexDirection:'row', 
         justifyContent:'center', 
         alignItems:'center', 
-        marginRight:5
+        marginRight:10
     },
     headerRightImg:{
         height:20
@@ -3238,11 +3286,12 @@ const styles = StyleSheet.create({
         top: 19.5
     },
     // ------------------------------------------底部按钮
-    btns:{//底部按钮高度80
+    btns:{//底部按钮高度80, 50(去除帮助按钮)
         // height:60, 
         width:width,
         position:'absolute',
-        bottom:0
+        // bottom:0,
+        bottom:10,
     },
     help:{//帮助按钮总高40
         width:30, 
@@ -3296,9 +3345,12 @@ const styles = StyleSheet.create({
     // ----------------帮助按钮组
     helpParentView:{
         position:'absolute',
-        bottom:45,
-        // right:5,
-        left:5
+        // bottom:45,
+        // left:5,
+        top:0,
+        // top:headerH,
+        right:5,
+        
     },
     helpActionsView:{
         // position: 'absolute', 
@@ -3327,16 +3379,18 @@ const styles = StyleSheet.create({
         position:'absolute', 
         height:11, 
         width:16, 
-        bottom:-10,
-        // right:10,
-        left:10, 
+        // bottom:-10,
+        // left:10,
+        top:-11,
+        right:10,  
     },
     // ---------------课程目录组
     catalogsView:{
         position:'absolute',
-        bottom:45,
-        // right:5,
-        left:5
+        // bottom:45,
+        // left:5,
+        right:5,
+        top:0
     },
     catalogsList:{
         backgroundColor: 'white', 
@@ -3362,15 +3416,18 @@ const styles = StyleSheet.create({
         position:'absolute', 
         height:11, 
         width:16, 
-        bottom:-10,
-        // right:10,
-        left:10,
+        // bottom:-10,
+        // left:10,
+        top:-11,
+        right:10,
     },
     // -------------编辑器组
     editorsView:{
         position:'absolute',
-        bottom:45,
-        left:5
+        // bottom:45,
+        // left:5,
+        top:0,
+        right:5,
     },
     editorsList:{
         backgroundColor: 'white', 
@@ -3396,8 +3453,10 @@ const styles = StyleSheet.create({
         position:'absolute', 
         height:11, 
         width:16, 
-        bottom:-10,
-        left:10,
+        // bottom:-10,
+        // left:10,
+        top:-11,
+        right:10,
     },
 
     // ----------------------------------------消息等待
