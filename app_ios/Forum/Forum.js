@@ -67,10 +67,10 @@ export default class Forum extends Component{
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){
                 self.setState({token: result},()=>{
-                    self._loadData();
                     self._loadunread()
                 });
             }
+            self._loadData();
         });
     }
     componentWillUnmount() {
@@ -130,7 +130,7 @@ export default class Forum extends Component{
                         resultArr.push(result);
                     })
                     this.setState({
-                        nextPage: responseJson.next,
+                        nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
                         dataArr: resultArr,
                         dataSource: resultArr,
                         isLoading: false,
@@ -201,7 +201,7 @@ export default class Forum extends Component{
                 </TouchableOpacity>
             )
         }else{
-            var time_last=this.dealWithTime(rowData.newposts.last_replied)
+            var time_last=this.dealWithTime(rowData.newposts.last_replied?rowData.newposts.last_replied:rowData.newposts.create_time)
             return (
                 <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
                     style={{width: width,flex:1, backgroundColor: 'white',alignItems:'center',marginTop:8,marginBottom:8,paddingLeft:10,paddingRight:10,}}>
@@ -224,9 +224,9 @@ export default class Forum extends Component{
                     isLoading: true
             },()=> {
                 fetch(this.state.nextPage, {
-                    headers: {
-                        Authorization: 'Token '+ this.state.token
-                    }
+                    // headers: {
+                    //     Authorization: 'Token '+ this.state.token
+                    // }
                 })
                 .then(response => {
                     if (response.status === 200) {
@@ -251,7 +251,7 @@ export default class Forum extends Component{
                             resultArr.push(result);
                         })
                         this.setState({
-                            nextPage: responseJson.next,
+                            nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
                             dataArr: resultArr,
                             dataSource: resultArr,
                             isLoading: false,
@@ -339,7 +339,7 @@ export default class Forum extends Component{
                         <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa',paddingRight:5,paddingLeft:8,}}>
                             <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}>
                                 <Text onPress={this._newscenter.bind(this)} style={{padding:15,}}>消息中心</Text>
-                                {this.props.navigation.state.params.newscount!=0?(<View style={{position:'absolute',top:12,right:10,width:8,height:8,borderRadius:4,backgroundColor:'red'}}></View>):(null)}
+                                {this.props.navigation.state.params && this.props.navigation.state.params.newscount!=0?(<View style={{position:'absolute',top:12,right:10,width:8,height:8,borderRadius:4,backgroundColor:'red'}}></View>):(null)}
                             </View>
                             <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this.MyCollect.bind(this)} style={{padding:15,}}>我的收藏</Text></View>
                             <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this.MyForum.bind(this)} style={{padding:15,}}>我的帖子</Text></View>
