@@ -41,6 +41,10 @@ import Register from './Login/Register.js';
 import FindWord from './Login/FindWord.js';
 import SelectHead from './Login/SelectHead.js';
 
+import AddActivity from './Activity/AddActivity.js';
+import AlterActivity from './Activity/AlterActivity.js';
+import ManageMember from './Activity/ManageMember.js';
+
 class RootApp extends Component{
     constructor(props) {
       super(props);
