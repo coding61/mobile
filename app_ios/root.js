@@ -41,6 +41,10 @@ import Register from './Login/Register.js';
 import FindWord from './Login/FindWord.js';
 import SelectHead from './Login/SelectHead.js';
 
+import Activity from './Activity/Activity.js';
+import ActivityDetail from './Activity/ActivityDetail.js';
+import MyActivity from './Activity/MyActivity.js';
+
 class RootApp extends Component{
     constructor(props) {
       super(props);
@@ -96,7 +100,11 @@ const app = StackNavigator({
     CourseList:{screen: CourseList},
     Register:{screen: Register},
     FindWord: {screen: FindWord},
-    SelectHead: {screen: SelectHead}
+    SelectHead: {screen: SelectHead},
+
+    Activity:{screen:Activity},
+    ActivityDetail:{screen:ActivityDetail},
+    MyActivity:{screen:MyActivity},
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称
     initialRouteParams:{userinfo:''}        //配置初始路由的参数    

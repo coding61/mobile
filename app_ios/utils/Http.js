@@ -3,10 +3,10 @@
  * @description: 接口地址
  * @time: 2017-03-15
  */
-const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
-const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
-// const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
-// const Page_Domain = "https://app.bcjiaoyu.com/girl";
+// const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
+// const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
+const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
+const Page_Domain = "https://app.bcjiaoyu.com/girl";
 let Http = {
 	domainPage:Page_Domain,    //网站页面地址的域名
 	domain:Http_Domain,        //接口域名
@@ -29,6 +29,33 @@ let Http = {
 	},
 	getNewsList:(lastId)=>{
 		return Http_Domain + "/news/news/?current_id=" + lastId                          //获取新闻推送列表
+	},
+
+	addActivity:Http_Domain + "/club/club_create/",                                      //添加活动
+	activityList:(pagenum)=>{
+		return Http_Domain + "/club/clubs/?page=" + pagenum                              //活动列表
+	},
+	myAcitivitys:(pagenum, type)=>{
+		return Http_Domain + "/club/myclub/?types="+type              //我的活动
+	},
+	updateActivity:(pk)=>{           
+		return Http_Domain + "/club/clubs/" + pk + "/"                                   //修改活动
+	},
+	getActivityDetail:(pk)=>{
+		return Http_Domain + "/club/club_detail/"+ pk +"/"                               //活动详情
+	},
+	quitActivity:(pk)=>{
+		return Http_Domain + "/club/clubs/"+pk+"/"                                       //解散活动
+	}, 
+	joinActivity:(pk)=>{
+		return Http_Domain + "/club/join_club/"+pk+"/"                                   //加入活动
+	},
+	removeActivityMember:(pk)=>{
+		return Http_Domain + "/club/delete_clubmember/"+pk+"/"                           //移除活动成员
+	},
+	leaveActivity:(pk)=>{
+		return Http_Domain + "/club/quit_club/"+pk+"/"                                   //退出活动
 	}
+
 }
 export default Http;

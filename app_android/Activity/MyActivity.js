@@ -23,8 +23,10 @@ import Http from '../utils/Http.js';
 const LoadMore = 1;           //点击加载更多
 const LoadNoMore = 0;         //已经到尾了
 const LoadMoreIng = -1;       //加载中
+const JoinActivityTab = 1;    //加入活动的选项
+const CreateActivityTab = 0;  //发布活动的选项
 
-class Activity extends Component {
+class MyActivity extends Component {
 	constructor(props) {
 	  	super(props);
 	
@@ -34,29 +36,20 @@ class Activity extends Component {
             footerLoadTag:LoadMore,      //默认是点击加载更多, FlatList，列表底部
             isRefresh:false,             //FlatList，头部是否处于下拉刷新
             pagenum:1,                   //活动列表第几页。默认1
+            tab:JoinActivityTab,         //当前看到的是参加的活动选项内容
 	  	};
 	}
 	// -----导航栏自定制
     static navigationOptions = ({navigation}) => {
         const {state, setParams, goBack, navigate} = navigation;
         return {
-        	headerTitle:"活动",
+        	headerTitle:"我的活动",
         	headerTintColor: "#fff",
             headerStyle: styles.headerStyle,
-            headerRight:(
-            	<TouchableOpacity onPress={state.params?state.params.addActivityEvent:null}>
-                    <View style={styles.headerRightView}>
-                        <Image
-                          style={styles.headerRightImg}
-                          source={require('../images/add.png')}
-                          resizeMode={'contain'}
-                        />
-                    </View>
-                </TouchableOpacity>)
         }
     };
     componentWillMount() {
-        this._fetchActivityList(1);
+        this._fetchMyActivity(1);
     }
     componentDidMount() {
         this.props.navigation.setParams({
@@ -68,7 +61,15 @@ class Activity extends Component {
     }
     // ------------------------------------------网络请求
     //获取活动列表
-    _fetchActivityList(pagenum){
+    _fetchMyActivity(pagenum){
+        // 区分是参加的还是发布的活动
+        var type = "join";
+        if (this.state.tab == JoinActivityTab) {
+            type = "join"
+        }else{
+            type = "create"
+        }
+
         var dic = {
               "pk": 4,
               "name": "北京大学现场讲座",
@@ -110,7 +111,7 @@ class Activity extends Component {
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "get",
-                    url = Http.activityList(pagenum),
+                    url = Http.myAcitivitys(pagenum, type),
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
@@ -146,23 +147,27 @@ class Activity extends Component {
         */
     }
     // ------------------------------------------帮助方法
-    // 添加活动点击
-    _clickAddActivity = () => {
-        Utils.isLogin((token)=>{
-            Utils.showMessage("点击了加号");
-            if (token) {
-                // this.props.navigation.navigate("AddActivity");
-            }else{
-                // this._goLogin();
-            }
-        })
-        
-    }
     // 去登录
     _goLogin(){
         this.props.navigation.navigate('Login', {callback:()=>{
             
         }})
+    }
+    // 参加的活动点击
+    _clickJoinTab(){
+        this.setState({
+            tab:JoinActivityTab,
+            pagenum:1
+        })
+        this._fetchMyActivity(1);
+    }
+    // 发布的活动点击
+    _clickCreateTab(){
+        this.setState({
+            tab:CreateActivityTab,
+            pagenum:1
+        })
+        this._fetchMyActivity(1);
     }
     // 点击加载更多
     _clickLoadMore(){
@@ -179,7 +184,7 @@ class Activity extends Component {
             this.setState({
                 pagenum:this.state.pagenum+1
             }, ()=>{
-                this._fetchActivityList(this.state.pagenum);
+                this._fetchMyActivity(this.state.pagenum);
             }) 
         }, 500);
     }
@@ -190,7 +195,7 @@ class Activity extends Component {
             this.setState({
                 pagenum:1
             }, ()=>{
-                this._fetchActivityList(this.state.pagenum);
+                this._fetchMyActivity(this.state.pagenum);
             }) 
         }, 500);
     }
@@ -254,6 +259,15 @@ class Activity extends Component {
     _renderTableView(){
         return (
             <View style={{flex:1}}>
+            {/*******选项切换*******/}
+                <View style={styles.tabs}>
+                    <TouchableOpacity onPress={this._clickJoinTab.bind(this)} style={[styles.tab, this.state.tab===JoinActivityTab?styles.tabSelectView:styles.tab]}>
+                    <View><Text style={this.state.tab===JoinActivityTab?styles.tabSelectText:styles.tabText}>参加的活动</Text></View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this._clickCreateTab.bind(this)} style={[styles.tab, this.state.tab===CreateActivityTab?styles.tabSelectView:styles.tab]}>
+                    <View><Text style={this.state.tab===CreateActivityTab?styles.tabSelectText:styles.tabText}>发布的活动</Text></View>
+                    </TouchableOpacity>
+                </View>
             {/******会话消息******/}
                 <FlatList 
                     ref={(flatlist)=>this._flatList=flatlist}
@@ -347,6 +361,30 @@ const styles = StyleSheet.create({
         fontSize:18,
         height:44,
     },
+    // ------------------------------------------tab 选项卡
+    tabs:{
+        height:40, 
+        flexDirection:'row', 
+        alignItems:'center', 
+        justifyContent:'center', 
+        backgroundColor:'white'
+    },
+    tab:{
+        flex:1, 
+        height:40, 
+        alignItems:'center', 
+        justifyContent:'center'
+    },
+    tabSelectView:{
+        borderBottomColor:pinkColor, 
+        borderBottomWidth:1.5, 
+    },
+    tabText:{
+        color:fontBColor
+    },
+    tabSelectText:{
+        color:pinkColor
+    },
 
     // ------------------------------------------活动列表
     // --------------FlatList 的尾部
@@ -418,4 +456,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default Activity;
+export default MyActivity;

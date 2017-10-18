@@ -29,6 +29,32 @@ let Http = {
 	},
 	getNewsList:(lastId)=>{
 		return Http_Domain + "/news/news/?current_id=" + lastId                          //获取新闻推送列表
+	},
+
+	addActivity:Http_Domain + "/club/club_create/",                                      //添加活动
+	activityList:(pagenum)=>{
+		return Http_Domain + "/club/clubs/?page=" + pagenum                              //活动列表
+	},
+	myAcitivitys:(pagenum, type)=>{
+		return Http_Domain + "/club/myclub/?types="+type+"&page=" + pagenum              //我的活动
+	},
+	updateActivity:(pk)=>{           
+		return Http_Domain + "/club/clubs/" + pk + "/"                                   //修改活动
+	},
+	getActivityDetail:(pk)=>{
+		return Http_Domain + "/club/club_detail/"+ pk +"/"                               //活动详情
+	},
+	quitActivity:(pk)=>{
+		return Http_Domain + "/club/clubs/"+pk+"/"                                       //解散活动
+	}, 
+	joinActivity:(pk)=>{
+		return Http_Domain + "/club/join_club/"+pk+"/"                                   //加入活动
+	},
+	removeActivityMember:(pk)=>{
+		return Http_Domain + "/club/delete_clubmember/"+pk+"/"                           //移除活动成员
+	},
+	leaveActivity:(pk)=>{
+		return Http_Domain + "/club/quit_club/"+pk+"/"                                   //退出活动
 	}
 }
 export default Http;
