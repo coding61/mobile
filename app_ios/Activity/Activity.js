@@ -149,11 +149,15 @@ class Activity extends Component {
     // 添加活动点击
     _clickAddActivity = () => {
         Utils.isLogin((token)=>{
-            Utils.showMessage("点击了加号");
+            // Utils.showMessage("点击了加号");
             if (token) {
-                // this.props.navigation.navigate("AddActivity");
+                this.props.navigation.navigate("AddActivity", {callback:(isCreate)=>{
+                    if (isCreate) {
+                        
+                    }
+                }});
             }else{
-                // this._goLogin();
+                this._goLogin();
             }
         })
         

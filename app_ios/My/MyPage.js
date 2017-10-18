@@ -18,7 +18,6 @@ const {width, height} = Dimensions.get('window');
 import Http from '../utils/Http.js';
 class MyPage extends Component {
 	static navigationOptions  = ({ navigation, screenProps }) => ({
-    title: '',
     header: null
   })
   constructor() {
@@ -100,6 +99,7 @@ class MyPage extends Component {
   		case 2:
   			{
   				//我的活动
+          this.props.navigation.navigate("MyActivity");
   				break;
   			}
   		case 3:

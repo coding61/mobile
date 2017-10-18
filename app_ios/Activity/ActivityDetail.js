@@ -60,7 +60,7 @@ class ActivityDetail extends Component {
               "member_number": 1,
               "club_member": [],
               "isjoin": false,
-              "isLeader":false,
+              "isLeader":true,
               "create_time": "2017-10-18T10:06:21.129728"
         }
         var dic1 = {
@@ -218,15 +218,14 @@ class ActivityDetail extends Component {
                 // TODO:去聊天
             }else{
                 //去登录
-                // this._goLogin();
-                this.props.navigation.navigate("MyActivity");
+                this._goLogin();
             }
         })
 
     }
     // 修改活动信息
     _updateActivityInfo(){
-        this.props.navigation.navigate("UpdateActivity", {pk:this.props.navigation.state.params.pk, callback:(isUpdate)=>{
+        this.props.navigation.navigate("AlterActivity", {pk:this.props.navigation.state.params.pk, callback:(isUpdate)=>{
             if (isUpdate) {
                 // 更新当前内容
                 this._fetchActivityDetail(this.props.navigation.state.params.pk);
@@ -321,7 +320,7 @@ class ActivityDetail extends Component {
                           发布者:{this.state.data.leaderName}
                         </Text>
                         {
-                            this.state.isLeader?
+                            this.state.data.isLeader?
                                 /******修改活动*******/
                                 <TouchableOpacity onPress={this._updateActivityInfo.bind(this)}>
                                 <View style={styles.item2View}>
