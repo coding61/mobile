@@ -20,6 +20,7 @@ var {height, width} = Dimensions.get('window');
 
 import NewsCenter from './NewsCenter';
 import Http from '../utils/Http.js';
+import Utils from '../utils/Utils.js';
 var basePath=Http.domain;
 export default class Forum extends Component{
     constructor(props) {
@@ -67,15 +68,17 @@ export default class Forum extends Component{
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){
                 self.setState({token: result},()=>{
-                    self._loadData();
                     self._loadunread()
                 });
             }
+            self._loadData();
         });
     }
     componentWillUnmount() {
         this.props.navigation.state.params.callback();
         this.eventEm.remove();
+        this.listenLogin.remove();
+        this.listenlogout.remove();
     }
     componentDidMount() {
         this.eventEm = DeviceEventEmitter.addListener('newsmore', (value)=>{
@@ -83,6 +86,23 @@ export default class Forum extends Component{
                 moreshow:!this.state.moreshow,
             })
         })
+        this.listenLogin = DeviceEventEmitter.addListener('listenLogin',() => {
+            this._reloadPage();
+        })
+        this.listenlogout = DeviceEventEmitter.addListener('logout', () => {
+            
+        })
+    }
+    _reloadPage(){
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    self._loadunread()
+                });
+            }
+            self._loadData();
+        });
     }
     _loadunread(){
         fetch(basePath+'/message/messages/?types=forum&status=unread',{
@@ -130,7 +150,7 @@ export default class Forum extends Component{
                         resultArr.push(result);
                     })
                     this.setState({
-                        nextPage: responseJson.next,
+                        nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
                         dataArr: resultArr,
                         dataSource: resultArr,
                         isLoading: false,
@@ -201,7 +221,7 @@ export default class Forum extends Component{
                 </TouchableOpacity>
             )
         }else{
-            var time_last=this.dealWithTime(rowData.newposts.last_replied)
+            var time_last=this.dealWithTime(rowData.newposts.last_replied?rowData.newposts.last_replied:rowData.newposts.create_time)
             return (
                 <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
                     style={{width: width,flex:1, backgroundColor: 'white',alignItems:'center',marginTop:8,marginBottom:8,paddingLeft:10,paddingRight:10,}}>
@@ -224,9 +244,9 @@ export default class Forum extends Component{
                     isLoading: true
             },()=> {
                 fetch(this.state.nextPage, {
-                    headers: {
-                        Authorization: 'Token '+ this.state.token
-                    }
+                    // headers: {
+                    //     Authorization: 'Token '+ this.state.token
+                    // }
                 })
                 .then(response => {
                     if (response.status === 200) {
@@ -251,7 +271,7 @@ export default class Forum extends Component{
                             resultArr.push(result);
                         })
                         this.setState({
-                            nextPage: responseJson.next,
+                            nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
                             dataArr: resultArr,
                             dataSource: resultArr,
                             isLoading: false,
@@ -287,29 +307,61 @@ export default class Forum extends Component{
         })
     }
     _newscenter(){
-        this.props.navigation.navigate('NewsCenter',{callback:()=>{
-            this._loadunread()
-        }});
-        this.setState({
-            moreshow:false
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('NewsCenter',{callback:()=>{
+                    this._loadunread()
+                }});
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
         })
     }
     ranklist(){
-        this.props.navigation.navigate('RankingList', { token:this.state.token });
-        this.setState({
-            moreshow:false
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('RankingList', { token:this.state.token });
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
         })
     }
     MyCollect(){
-        this.props.navigation.navigate('MyCollect', );
-        this.setState({
-            moreshow:false
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('MyCollect', );
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
         })
     }
     MyForum(){
-        this.props.navigation.navigate('MyForum', );
-        this.setState({
-            moreshow:false
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('MyForum', );
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
         })
     }
     _keyExtractor = (item, index) => index;
@@ -339,7 +391,7 @@ export default class Forum extends Component{
                         <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa',paddingLeft:5,paddingRight:5,}}>
                             <View style={{borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>
                                 <Text onPress={this._newscenter.bind(this)} style={{padding:15,}}>消息中心</Text>
-                                {this.props.navigation.state.params.newscount!=0?(<View style={{position:'absolute',top:13,right:12,width:8,height:8,borderRadius:4,backgroundColor:'red'}}></View>):(null)}
+                                {this.props.navigation.state.params && this.props.navigation.state.params.newscount!=0?(<View style={{position:'absolute',top:13,right:12,width:8,height:8,borderRadius:4,backgroundColor:'red'}}></View>):(null)}
                             </View>
                             <Text onPress={this.MyCollect.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>我的收藏</Text>
                             <Text onPress={this.MyForum.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>我的帖子</Text>

@@ -217,6 +217,20 @@ class MessagePage extends Component{
         this.eventEm = DeviceEventEmitter.addListener('help', (value)=>{
             this._clickHelp();
         })
+        this.listenLogin = DeviceEventEmitter.addListener('listenLogin',() => {
+            this._fetchUserInfo();
+            this._fetchLunTanUnread();
+            Utils.isLogin((token)=>{
+                if (token) {
+                    this.setState({
+                        showQuitLogin:true
+                    })
+                }
+            })
+        })
+        this.listenlogout = DeviceEventEmitter.addListener('logout', () => {
+            this._loadQuitLogin();
+        })
     }
     componentDidUpdate(prevProps, prevState) {
         /*
@@ -238,6 +252,8 @@ class MessagePage extends Component{
         
         //移除监听
         this.eventEm.remove();
+        this.listenLogin.remove();
+        this.listenlogout.remove();
     }
     //状态改变响应
     handleAppStateChange(appState) {

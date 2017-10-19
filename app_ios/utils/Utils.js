@@ -92,6 +92,15 @@ let Utils = {
     btnBgColorS:'white',                    //app 第二主题色是白色
     tabBarSelectColor:'rgb(250, 80, 131)',  //底部 tab 按钮选中颜色
     tabBarUnselectColor:'rgb(109,110,111)', //底部 tab 按钮未选中颜色
+    fontBColor:'#373737',
+    fontSColor:'#848484',
+    underLineColor:'#ebebeb',
+    bgColor:'#f3f3f3',
+    bgSecondColor:'rgb(239,240,241)',
+    btnCancelColor:'rgb(154,155,156)',
+    alertViewBgColor:'rgb(240, 241, 242)',
+    alertLineColor:'rgb(231,232,233)',
+
 	px2dp:(px)=>{
 		return px * deviceW/basePx
 	},

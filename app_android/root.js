@@ -21,7 +21,6 @@ import CodeEditWebView1 from './pages/CodeEditWebView1.js';
 import ThirdSiteWebView from './pages/ThirdSiteWebView.js';
 import CodeCompileWebView from './pages/CodeCompileWebView.js';
 
-
 import Forum from './Forum/Forum.js';
 import ForumList from './Forum/ForumList.js';
 import Forum_Details from './Forum/Forum_Details.js';
@@ -38,6 +37,10 @@ import CourseList from './CourseList/CourseList.js';
 import Register from './Login/Register.js';
 import FindWord from './Login/FindWord.js';
 import SelectHead from './Login/SelectHead.js';
+
+import Activity from './Activity/Activity.js';
+import ActivityDetail from './Activity/ActivityDetail.js';
+import MyActivity from './Activity/MyActivity.js';
 
 class RootApp extends Component{
     constructor(props) {
@@ -88,7 +91,6 @@ const app = StackNavigator({
     CommentText:{screen:CommentText},
     Search:{screen:Search},
 
-    
     MessagePage:{screen: MessagePage},
     MessagePage1:{screen:MessagePage1},
     CodeEditWebView:{screen:CodeEditWebView},
@@ -100,7 +102,11 @@ const app = StackNavigator({
     CourseList:{screen: CourseList},
     Register:{screen: Register},
     FindWord: {screen: FindWord},
-    SelectHead: {screen: SelectHead}
+    SelectHead: {screen: SelectHead},
+
+    Activity:{screen:Activity},
+    ActivityDetail:{screen:ActivityDetail},
+    MyActivity:{screen:MyActivity},
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称
     initialRouteParams:{userinfo:''}        //配置初始路由的参数   
