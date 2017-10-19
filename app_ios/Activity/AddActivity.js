@@ -55,17 +55,14 @@ class AddActivity extends Component {
     var _this = this;
     if (this.state.titleText === '') {
       Utils.showMessage('活动标题不能为空！')
-    }
-    if (this.state.contentText === '') {
+    } else if (this.state.contentText === '') {
       Utils.showMessage('活动简介不能为空！')
-    }
-    if (this.state.password === '') {
+    } else if (this.state.password === '') {
       Utils.showMessage('活动密码不能为空！')
     }
+    
+    
     if (this.state.titleText !== '' || this.state.contentText !== '' || this.state.password !== '') {
-      console.log(this.state.titleText)
-      console.log(this.state.contentText)
-      console.log(this.state.password)
       AsyncStorage.getItem("token", function(errs, results) {
          fetch(Http.domain + '/club/club_create/',{method: 'post', headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'},body: JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText})})
           .then(response => {
@@ -80,6 +77,8 @@ class AddActivity extends Component {
               Utils.showMessage('添加成功！');
               _this.setState({
                 isUp: true
+              },() => {
+                _this.props.navigation.goBack();
               })
             } else {
               if (res.message) {

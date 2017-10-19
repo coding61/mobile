@@ -19,6 +19,7 @@ import {
 import Http from '../utils/Http.js';
 import City from '../country.json';
 const {width, height} = Dimensions.get('window');
+var RN = require('react-native').NativeModules.RNBridgeModule;
 export default class Login extends Component {
   static navigationOptions = {
     headerStyle: {

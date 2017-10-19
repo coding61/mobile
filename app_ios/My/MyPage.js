@@ -12,12 +12,14 @@ import {
   Text,
   AsyncStorage,
   Alert,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  NativeModules  
 } from 'react-native';
 const {width, height} = Dimensions.get('window');
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 import Prompt from 'react-native-prompt';
+var RNBridgeModule = NativeModules.RNBridgeModule;
 class MyPage extends Component {
 	static navigationOptions  = ({ navigation, screenProps }) => ({
     header: null
@@ -44,6 +46,19 @@ class MyPage extends Component {
   					}
   				})
   				.then(responseJSON => {
+            fetch(Http.domain + '/im/user_get_token/',{headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'}})
+              .then(response => {
+                if (response.ok === true) {
+                  return response.json();
+                } else {
+                  return '失败'
+                }
+              })
+              .then(res => {
+                if (res !== '失败') {
+                  RNBridgeModule.RNConnectRongIM(res.token, results);
+                }
+              })
   					_this.setState({
   						isLogin: true,
   						name: responseJSON.name,
@@ -54,7 +69,7 @@ class MyPage extends Component {
   	})
   }
   componentDidMount() {
-  	var _this =this;
+  	var _this = this;
   	this.listenLogin = DeviceEventEmitter.addListener('listenLogin', (token) => {
   		fetch(Http.domain + '/userinfo/whoami/',{headers: {'Authorization': 'Token ' + token, 'content-type': 'application/json'}})
 				.then(response => {
@@ -65,6 +80,19 @@ class MyPage extends Component {
 					}
 				})
 				.then(responseJSON => {
+          fetch(Http.domain + '/im/user_get_token/',{headers: {'Authorization': 'Token ' + token, 'content-type': 'application/json'}})
+              .then(response => {
+                if (response.ok === true) {
+                  return response.json();
+                } else {
+                  return '失败'
+                }
+              })
+              .then(res => {
+                if (res !== '失败') {
+                  RNBridgeModule.RNConnectRongIM(res.token, token);
+                }
+              })
 					_this.setState({
 						isLogin: true,
 						name: responseJSON.name,
@@ -97,6 +125,7 @@ class MyPage extends Component {
   		case 1:
   			{
   				//我的对话
+          RNBridgeModule.RNEnterChatListView();
   				break;
   			}
   		case 2:

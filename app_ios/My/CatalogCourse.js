@@ -21,7 +21,7 @@ class CatalogCourse extends Component {
   static navigationOptions  = ({ navigation, screenProps }) => ({
     title: navigation.state.params.switch,
     headerStyle: {
-      backgroundColor: 'rgb(251, 109, 150)'
+      backgroundColor: 'rgb(250, 80, 131)'
     },
     headerTitleStyle: {
       color: 'white',
@@ -92,7 +92,6 @@ class CatalogCourse extends Component {
     return (<TouchableOpacity onPress={()=> this.setState({selected: index})} style={{paddingLeft: 10, paddingRight: 10, alignItems: 'center', height: 50, justifyContent: 'center'}}><Text style={[index === this.state.selected?({color: 'rgb(251, 103, 151)'}):(null),{fontSize: 14}]}>{item.profession}</Text></TouchableOpacity>)
   }
   _renderItemBottom = ({item, index}) => {
-    console.log(item);
     return (<View style={{borderRadius: 3, marginTop: 20, marginLeft: 20, backgroundColor: 'rgb(234, 235, 236)', width: width - 40, height: 80}}>
               <Image style={{width: 60, height: 60, position: 'absolute', left: 10, top: 10}} resizeMode={'contain'} source={{uri: item.images}}/>
               <View style={{marginLeft: 80, justifyContent: 'space-around', height: 80}}>
