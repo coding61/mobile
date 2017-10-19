@@ -36,7 +36,7 @@ let Http = {
 		return Http_Domain + "/club/clubs/?page=" + pagenum                              //活动列表
 	},
 	myAcitivitys:(pagenum, type)=>{
-		return Http_Domain + "/club/myclub/?types="+type              //我的活动
+		return Http_Domain + "/club/myclub/?types="+type+"&page=" + pagenum              //我的活动
 	},
 	updateActivity:(pk)=>{           
 		return Http_Domain + "/club/clubs/" + pk + "/"                                   //修改活动

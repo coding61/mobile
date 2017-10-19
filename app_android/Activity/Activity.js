@@ -69,6 +69,7 @@ class Activity extends Component {
     // ------------------------------------------网络请求
     //获取活动列表
     _fetchActivityList(pagenum){
+        /*
         var dic = {
               "pk": 4,
               "name": "北京大学现场讲座",
@@ -105,8 +106,8 @@ class Activity extends Component {
             loading:true,
             dataSource:array,
         });
+        */
         
-        /*
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "get",
@@ -143,7 +144,6 @@ class Activity extends Component {
                 });
             }
         })
-        */
     }
     // ------------------------------------------帮助方法
     // 添加活动点击

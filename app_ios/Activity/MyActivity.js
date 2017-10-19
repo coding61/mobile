@@ -20,6 +20,8 @@ import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 
+import EmptyView from '../Component/EmptyView.js';
+
 const LoadMore = 1;           //点击加载更多
 const LoadNoMore = 0;         //已经到尾了
 const LoadMoreIng = -1;       //加载中
@@ -111,7 +113,7 @@ class MyActivity extends Component {
         
         
         Utils.isLogin((token)=>{
-            // if (token) {
+            if (token) {
                 var type = "get",
                     url = Http.myAcitivitys(pagenum, tab),
                     token = token,
@@ -144,7 +146,7 @@ class MyActivity extends Component {
                     console.log(2);
                     // Utils.showMessage('网络请求失败');
                 });
-            // }
+            }
         })
         
     }
@@ -203,18 +205,6 @@ class MyActivity extends Component {
     }
 
 	// ------------------------------------------活动列表
-    // 空数据视图
-    _renderEmptyDataActivity(){
-        return (
-            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                <Image
-                  style={{width:50, height:50}}
-                  source={require('../images/default.jpg')}
-                  resizeMode={'contain'}
-                /> 
-            </View>
-        )
-    }
     //活动 item
     _renderItemActivity(item, index){
         return (
@@ -298,7 +288,7 @@ class MyActivity extends Component {
                         refreshing={this.state.isRefresh}
                     />
                 :
-                    this._renderEmptyDataActivity()
+                    <EmptyView />
             }
             
                 

@@ -52,6 +52,7 @@ class ActivityDetail extends Component {
     // ------------------------------------------网络请求
     //获取活动详情
     _fetchActivityDetail(pk){
+        /*
         var dic = {
               "pk": 4,
               "name": "北京大学现场讲座",
@@ -107,8 +108,9 @@ class ActivityDetail extends Component {
             loading:true,
             data:dic,
         });
+        */
         
-        /*
+        
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "get",
@@ -132,7 +134,6 @@ class ActivityDetail extends Component {
                 });
             }
         })
-        */
     }
     //加入活动
     _fetchJoinActivity(pk){
