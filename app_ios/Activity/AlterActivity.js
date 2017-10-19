@@ -38,7 +38,9 @@ class AlterActivity extends Component {
   	super();
   	this.state = {
   		titleText: '',
-  		contentText: ''
+  		contentText: '',
+      password: '',
+      isUp: false
   	}
   }
   render() {
@@ -51,6 +53,12 @@ class AlterActivity extends Component {
 		        placeholder={'标题'}
 		        value={this.state.titleText}
 	      	/>
+          <TextInput
+            style={{fontSize: 16, paddingLeft: 10, height: 40, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)'}}
+            onChangeText={(password) => this.setState({password})}
+            placeholder={'密码'}
+            value={this.state.password}
+          />
 	      	<TextInput
 		        style={{fontSize: 14, paddingLeft: 10, height: height / 3, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)'}}
 		        onChangeText={(contentText) => this.setState({contentText})}
