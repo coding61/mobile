@@ -40,6 +40,8 @@
   self.nav=[[UINavigationController alloc]initWithRootViewController:rootViewController];
   self.nav.navigationBarHidden = YES;
   self.window.rootViewController = self.nav;
+  
+  [[UIApplication sharedApplication] setStatusBarHidden:YES];  //隐藏状态栏
   [self.window makeKeyAndVisible];
   
 #pragma mark - RongIM
@@ -54,9 +56,12 @@
 
   //注册RN 连接融云监听者
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(RNConnectRongIMNotification:) name:@"RNConnectRongIMNotification" object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(RNConnectRongIMTokenNotification:) name:@"RNConnectRongIMTokenNotification" object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(RNEnterRongChatViewNotification:) name:@"RNEnterRongChatViewNotification" object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(RNEnterRongChatListViewNotification:) name:@"RNEnterRongChatListViewNotification" object:nil];
   
+  //已经登录的用户
+  [[RCIM sharedRCIM] setConnectionStatusDelegate:self];
   
   return YES;
 }
@@ -69,6 +74,20 @@
   int failTimes = 0;
   
   [self loginRongWithToken:token userInfo:info failTimes:failTimes];
+}
+//连接融云通知实现,融token，用户 token
+-(void)RNConnectRongIMTokenNotification:(NSNotification *)noti{
+  NSDictionary  *dic = noti.userInfo;
+  
+  NSString *token = dic[RongToken];
+  NSString *userToken = dic[UserToken];
+  int failTimes = 0;
+  
+  
+  [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:UserToken];   //用户 token
+  [[NSUserDefaults standardUserDefaults] setObject:token forKey:RongToken];       //融云 token
+  
+  [self loginRongWithToken:token userInfo:nil failTimes:failTimes];
 }
 //进入聊天界面
 - (void)RNEnterRongChatViewNotification:(NSNotification *)noti{
@@ -110,11 +129,14 @@
     if (ConnectStatus == ConnectSuccess) {
       
       //连接融云成功
+      /*
       RCUserInfo *user = [[RCUserInfo alloc] initWithUserId:info[UserId]
                                                        name:info[NickName]
                                                    portrait:info[PortraitUri]];
       [RCIM sharedRCIM].currentUserInfo = user;
+       
       [[RCIM sharedRCIM] refreshUserInfoCache:user withUserId:info[UserId]];
+       */
       
     }else if(ConnectStatus == ConnectFail){
       //连接融云失败
@@ -148,6 +170,7 @@
  *  @param status 网络状态。
  */
 - (void)onRCIMConnectionStatusChanged:(RCConnectionStatus)status {
+  NSLog(@"status:%ld", (long)status);
   if (status == ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT) {
     UIAlertView *alert = [[UIAlertView alloc]
                           initWithTitle:@"提示"
@@ -160,6 +183,7 @@
     [alert show];
     //让用户去登录
   } else if (status == ConnectionStatus_TOKEN_INCORRECT) {
+    NSLog(@"重新请求去连接");
     //重新请求去连接
     [BCAFRequest getRongTokenWithURL:RongTokenUrl WithParams:nil WithBlock:^(id obj, NSError *error) {
       NSString *token = obj[RongToken];

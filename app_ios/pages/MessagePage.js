@@ -21,7 +21,8 @@ import {
     ScrollView,
     Modal,
     Clipboard,
-    AppState
+    AppState,
+    StatusBar 
 }from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Sound from 'react-native-sound';
@@ -2986,6 +2987,7 @@ class MessagePage extends Component{
         var MessageWidth1 = this.state.courseProgressArray.length?MessageWidth:MessageWidth+CourseProgressWidth
         return (
             <View style={{flex:1}}>
+                <StatusBar hidden={false} />
                 <View style={{flexDirection:'row'}}>
                     {/*******课程进度********/}
                     {/*this.state.courseProgressArray.length? this._renderCourseProgress():null*/}
