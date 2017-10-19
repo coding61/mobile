@@ -12,7 +12,10 @@
 
 //获取融云 token
 + (NSURLSessionDataTask *)getRongTokenWithURL:(NSString *)url WithParams:(NSDictionary *)param WithBlock:(void (^)(id, NSError *))block{
+  NSString *string = [NSString stringWithFormat:@"Token %@",[[NSUserDefaults standardUserDefaults] objectForKey:UserToken]];
+  [[[AFAppNetAPIClient shareClient] requestSerializer] setValue:string forHTTPHeaderField:@"Authorization"];
 
+  
     return [[AFAppNetAPIClient shareClient] GET:url parameters:param progress:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         if (block) {
             block(responseObject, nil);
@@ -25,7 +28,9 @@
 }
 //获取个人信息
 + (NSURLSessionDataTask *)getOwnInfo:(NSString *)url WithBlock:(void (^)(id, NSError *))block{
-    
+  NSString *string = [NSString stringWithFormat:@"Token %@",[[NSUserDefaults standardUserDefaults] objectForKey:UserToken]];
+  [[[AFAppNetAPIClient shareClient] requestSerializer] setValue:string forHTTPHeaderField:@"Authorization"];
+  
     return [[AFAppNetAPIClient shareClient] GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         if (block) {
             block(responseObject, nil);
@@ -38,6 +43,8 @@
 }
 //获取他人信息
 + (NSURLSessionDataTask *)getOtherInfo:(NSString *)url WithBlock:(void (^)(id, NSError *))block{
+  NSString *string = [NSString stringWithFormat:@"Token %@",[[NSUserDefaults standardUserDefaults] objectForKey:UserToken]];
+  [[[AFAppNetAPIClient shareClient] requestSerializer] setValue:string forHTTPHeaderField:@"Authorization"];
     return [[AFAppNetAPIClient shareClient] GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         if (block) {
             block(responseObject, nil);
