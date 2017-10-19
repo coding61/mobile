@@ -32,6 +32,8 @@ class ActivityDetail extends Component {
 	  		loading:false,
             data:{},                             //页面加载的所有数据源
             showJoinActivityAlertView:false,     //是否显示输入密码弹框
+            activityPsd:"",                      //活动密码
+            isChange:false,                      //是否增加成员或者改变成员,修改信息，移除成员
 	  	};
 	}
 	// -----导航栏自定制
@@ -49,9 +51,13 @@ class ActivityDetail extends Component {
     componentDidMount() {
         
     }
+    componentWillUnmount() {
+       this.props.navigation.state.params.callback(this.state.isChange);
+    }
     // ------------------------------------------网络请求
     //获取活动详情
     _fetchActivityDetail(pk){
+        /*
         var dic = {
               "pk": 4,
               "name": "北京大学现场讲座",
@@ -107,8 +113,9 @@ class ActivityDetail extends Component {
             loading:true,
             data:dic,
         });
+        */
         
-        /*
+        
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "get",
@@ -132,14 +139,13 @@ class ActivityDetail extends Component {
                 });
             }
         })
-        */
     }
     //加入活动
-    _fetchJoinActivity(pk){
+    _fetchJoinActivity(pk, password){
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "get",
-                    url = Http.joinActivity(pk),
+                    url = Http.joinActivity(pk, password),
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
@@ -151,7 +157,9 @@ class ActivityDetail extends Component {
                     if (!response) {
                         //请求失败
                     };
-                    
+                    this.setState({
+                        isChange:true
+                    })
                     this._adjustActivityInfo(response);
                 }, (err) => {
                     console.log(2);
@@ -164,7 +172,7 @@ class ActivityDetail extends Component {
     }
     //退出活动
     _fetchLeaveActivity(pk){        
-        /*
+        
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "get",
@@ -180,6 +188,9 @@ class ActivityDetail extends Component {
                     if (!response) {
                         //请求失败
                     };
+                    this.setState({
+                        isChange:true
+                    })
                     this._adjustActivityInfo(response);
                 }, (err) => {
                     console.log(2);
@@ -187,7 +198,7 @@ class ActivityDetail extends Component {
                 });
             }
         })
-        */
+        
     }
     // ------------------------------------------帮助方法
     // 去登录
@@ -228,6 +239,9 @@ class ActivityDetail extends Component {
         this.props.navigation.navigate("AlterActivity", {pk:this.props.navigation.state.params.pk, callback:(isUpdate)=>{
             if (isUpdate) {
                 // 更新当前内容
+                this.setState({
+                    isChange:true
+                })
                 this._fetchActivityDetail(this.props.navigation.state.params.pk);
             }
         }});
@@ -236,6 +250,9 @@ class ActivityDetail extends Component {
     _managerMembers(){
         this.props.navigation.navigate("ManageMember", {pk:this.props.navigation.state.params.pk, callback:(isDelete)=>{
             if (isDelete) {
+                this.setState({
+                    isChange:true
+                })
                 // 更新当前内容
                 this._fetchActivityDetail(this.props.navigation.state.params.pk); 
             }
@@ -243,16 +260,25 @@ class ActivityDetail extends Component {
     }
     // 加入活动
     _joinActivity(){
-        this.setState({
-            showJoinActivityAlertView:true
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.setState({
+                    showJoinActivityAlertView:true
+                })
+            }else{
+                this._goLogin();
+            }
         })
+        
     }
     // 确定加入活动
     _submitJoinActivity(){
         this.setState({
             showJoinActivityAlertView:false
+        }, ()=>{
+            this._fetchJoinActivity(this.props.navigation.state.params.pk, this.state.activityPsd);
         })
-        this._fetchJoinActivity(this.props.navigation.state.params.pk);
+        
     }
     // 关闭加入活动的弹框
     _closeJoinActivityAlertView(){
@@ -274,7 +300,8 @@ class ActivityDetail extends Component {
                         <View style={styles.AlertInputView}>
                             <TextInput
                                 style={styles.AlertInput}
-                                onChangeText={(text) => {}}
+                                onChangeText={(text) => {this.setState({activityPsd:text})}}
+                                value={this.state.activityPsd}
                                 placeholder={"请输入密码"}
                               />
                         </View>
@@ -384,7 +411,7 @@ class ActivityDetail extends Component {
                                               style={styles.item3Img}
                                               source={{uri: item.owner?item.owner.avatar:"https://static1.bcjiaoyu.com/binshu.jpg"}}
                                             />
-                                            <Text style={styles.itemBottomText}>
+                                            <Text style={[styles.itemBottomText, {maxWidth:40, height:20, lineHeight:20, textAlign:'center'}]}>
                                               {item.owner?item.owner.name:"管理员"}
                                             </Text>
                                         </View>:null

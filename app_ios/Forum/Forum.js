@@ -19,6 +19,7 @@ import ForumList from './ForumList';
 var {height, width} = Dimensions.get('window');
 import NewsCenter from './NewsCenter';
 import Http from '../utils/Http.js';
+import Utils from '../utils/Utils.js';
 var basePath=Http.domain;
 export default class Forum extends Component{
     constructor(props) {
@@ -76,6 +77,8 @@ export default class Forum extends Component{
     componentWillUnmount() {
         this.props.navigation.state.params.callback();
         this.eventEm.remove();
+        this.listenLogin.remove();
+        this.listenlogout.remove();
     }
     componentDidMount() {
         this.eventEm = DeviceEventEmitter.addListener('newsmore', (value)=>{
@@ -83,6 +86,23 @@ export default class Forum extends Component{
                 moreshow:!this.state.moreshow,
             })
         })
+        this.listenLogin = DeviceEventEmitter.addListener('listenLogin',() => {
+            this._reloadPage();
+        })
+        this.listenlogout = DeviceEventEmitter.addListener('logout', () => {
+            
+        })
+    }
+    _reloadPage(){
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    self._loadunread()
+                });
+            }
+            self._loadData();
+        });
     }
     _loadunread(){
         fetch(basePath+'/message/messages/?types=forum&status=unread',{
@@ -287,30 +307,66 @@ export default class Forum extends Component{
         })
     }
     _newscenter(){
-        this.props.navigation.navigate('NewsCenter',{callback:()=>{
-            this._loadunread()
-        }});
-        this.setState({
-            moreshow:false
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('NewsCenter',{callback:()=>{
+                    this._loadunread()
+                }});
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
         })
+        
     }
     ranklist(){
-        this.props.navigation.navigate('RankingList', { token:this.state.token });
-        this.setState({
-            moreshow:false
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('RankingList', { token:this.state.token });
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
         })
+        
     }
     MyCollect(){
-        this.props.navigation.navigate('MyCollect', );
-        this.setState({
-            moreshow:false
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('MyCollect', );
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
         })
+        
     }
     MyForum(){
-        this.props.navigation.navigate('MyForum', );
-        this.setState({
-            moreshow:false
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('MyForum', );
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
         })
+        
     }
     _keyExtractor = (item, index) => index;
     render() {

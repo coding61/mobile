@@ -20,6 +20,8 @@ import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 
+import EmptyView from '../Component/EmptyView.js';
+
 const LoadMore = 1;           //点击加载更多
 const LoadNoMore = 0;         //已经到尾了
 const LoadMoreIng = -1;       //加载中
@@ -69,6 +71,7 @@ class Activity extends Component {
     // ------------------------------------------网络请求
     //获取活动列表
     _fetchActivityList(pagenum){
+        /*
         var dic = {
               "pk": 4,
               "name": "北京大学现场讲座",
@@ -105,8 +108,8 @@ class Activity extends Component {
             loading:true,
             dataSource:array,
         });
+        */
         
-        /*
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "get",
@@ -143,7 +146,105 @@ class Activity extends Component {
                 });
             }
         })
+        
+    }
+    //获取活动详情
+    _fetchActivityDetail(pk){
+        /*
+        var dic = {
+              "pk": 4,
+              "name": "北京大学现场讲座",
+              "password": "123456",
+              "introduction": "通告，北京大学现场讲座，通告，北京大学现场讲座通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座。",
+              "member_number": 1,
+              "club_member": [],
+              "isjoin": false,
+              "isLeader":true,
+              "create_time": "2017-10-18T10:06:21.129728"
+        }
+        var dic1 = {
+            "pk": 5,
+            "owner": {
+                "pk": 2,
+                "name": "三十三",
+                "avatar": "http://wx.qlogo.cn/mmopen/Q3auHgzwzM6n2icNq7G9jdaqwcaeiaianPDPOZVdmDiaxpoOPzicEzDlR6Picqx2lzBlCic3pqYIzJesgLW8fjTE9icxIEybx5YjpTVnEnKHkR2ZKyU/0",
+                "experience": 120,
+                "diamond": 17,
+                "remark": "",
+                "olduser": true,
+                "grade": {
+                    "next_name": "青铜3",
+                    "current_name": "青铜4",
+                    "current_all_experience": 90,
+                    "next_all_experience": 188
+                },
+                "is_staff": false,
+                "isactive": false
+            },
+            "leader": true
+        }
+        var dic2 = {
+          "pk": 1,
+          "owner": null,
+          "leader": true
+        }
+        var array = [];
+        for (var i = 0; i < 12; i++) {
+            array.push(dic2);
+        }
+        for (var i = 0; i < array.length; i++) {
+            if(array[i].leader == true){
+                dic["leaderName"] = array[i].owner?array[i].owner.name:"管理员";
+                dic["leaderAvatar"] = array[i].owner?array[i].owner.avatar:"https://static1.bcjiaoyu.com/binshu.jpg";
+                break;
+            }
+        }
+        dic["club_member"] = array; 
+        
+        
+        this.setState({
+            loading:true,
+            data:dic,
+        });
         */
+        
+        
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "get",
+                    url = Http.getActivityDetail(pk),
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response == 401) {
+                        //去登录
+                        this._goLogin();
+                        return;
+                    }
+                    if (!response) {
+                        //请求失败
+                    };
+                    var array = this.state.dataSource;
+                    for (var i = 0; i < array.length; i++) {
+                        if(array[i].pk == response.pk){
+                            // 替换数据
+                            array[i].name = response.name;
+                            array[i].introduction = response.introduction;
+                            array[i].password = response.password;
+                            array[i].member_number = response.member_number;
+                            break;
+                        }
+                    }
+                    this.setState({
+                        dataSource:array
+                    })
+
+                }, (err) => {
+                    console.log(2);
+                    // Utils.showMessage('网络请求失败');
+                });
+            }
+        })
     }
     // ------------------------------------------帮助方法
     // 添加活动点击
@@ -198,11 +299,24 @@ class Activity extends Component {
             }) 
         }, 500);
     }
+    // 活动详情
+    _pushActivityDetail(pk){
+        this.props.navigation.navigate("ActivityDetail", {pk:pk, callback:(isChange)=>{
+            if (isChange) {
+                this._reloadPage(pk);
+            }
+        }})
+    }
+    // 刷新页面
+    _reloadPage(pk){
+        // this._fetchActivityList(1);
+        this._fetchActivityDetail(pk)
+    }
 
 	// ------------------------------------------活动列表
     _renderItemActivity(item, index){
         return (
-        	<TouchableOpacity onPress={()=>{this.props.navigation.navigate("ActivityDetail", {pk:item.pk})}}>
+        	<TouchableOpacity onPress={this._pushActivityDetail.bind(this, item.pk)}>
             <View style={styles.item}>
             	<View style={styles.itemHeader}>
             		<Image
@@ -258,18 +372,23 @@ class Activity extends Component {
     _renderTableView(){
         return (
             <View style={{flex:1}}>
-            {/******会话消息******/}
-                <FlatList 
-                    ref={(flatlist)=>this._flatList=flatlist}
-                    style={{flex:1}}
-                    data={this.state.dataSource}
-                    renderItem={this._renderItem}
-                    extraData={this.state.loading}
-                    keyExtractor={this._keyExtractor}
-                    ListFooterComponent={this._renderFooter}
-                    onRefresh={this._pullToRefresh.bind(this)}
-                    refreshing={this.state.isRefresh}
-                />
+            {
+                this.state.dataSource.length?
+                    /******会话消息******/
+                    <FlatList 
+                        ref={(flatlist)=>this._flatList=flatlist}
+                        style={{flex:1}}
+                        data={this.state.dataSource}
+                        renderItem={this._renderItem}
+                        extraData={this.state}
+                        keyExtractor={this._keyExtractor}
+                        ListFooterComponent={this._renderFooter}
+                        onRefresh={this._pullToRefresh.bind(this)}
+                        refreshing={this.state.isRefresh}
+                    />
+                :
+                    <EmptyView />
+            }
                 
             </View>
         )

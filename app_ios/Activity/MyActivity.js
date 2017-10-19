@@ -20,6 +20,8 @@ import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 
+import EmptyView from '../Component/EmptyView.js';
+
 const LoadMore = 1;           //点击加载更多
 const LoadNoMore = 0;         //已经到尾了
 const LoadMoreIng = -1;       //加载中
@@ -111,7 +113,7 @@ class MyActivity extends Component {
         
         
         Utils.isLogin((token)=>{
-            // if (token) {
+            if (token) {
                 var type = "get",
                     url = Http.myAcitivitys(pagenum, tab),
                     token = token,
@@ -133,8 +135,13 @@ class MyActivity extends Component {
                         // 还有数据，可以加载
                         this.setState({footerLoadTag:LoadMore});
                     }
+                    var array = [];
+                    if (pagenum > 1) {
+                        array = this.state.dataSource.concat(response.results);
+                    }else{
+                        array = response.results;
+                    }
 
-                    var array = this.state.dataSource.concat(response.results);
                     this.setState({
                         loading:true,
                         dataSource:array,
@@ -144,7 +151,7 @@ class MyActivity extends Component {
                     console.log(2);
                     // Utils.showMessage('网络请求失败');
                 });
-            // }
+            }
         })
         
     }
@@ -159,17 +166,19 @@ class MyActivity extends Component {
     _clickJoinTab(){
         this.setState({
             tab:JoinActivityTab,
-            pagenum:1
+            pagenum:1,
+        }, ()=>{
+            this._fetchMyActivity(1);
         })
-        this._fetchMyActivity(1);
     }
     // 发布的活动点击
     _clickCreateTab(){
         this.setState({
             tab:CreateActivityTab,
-            pagenum:1
+            pagenum:1,
+        }, ()=>{
+            this._fetchMyActivity(1);
         })
-        this._fetchMyActivity(1);
     }
     // 点击加载更多
     _clickLoadMore(){
@@ -203,18 +212,6 @@ class MyActivity extends Component {
     }
 
 	// ------------------------------------------活动列表
-    // 空数据视图
-    _renderEmptyDataActivity(){
-        return (
-            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                <Image
-                  style={{width:50, height:50}}
-                  source={require('../images/default.jpg')}
-                  resizeMode={'contain'}
-                /> 
-            </View>
-        )
-    }
     //活动 item
     _renderItemActivity(item, index){
         return (
@@ -291,14 +288,14 @@ class MyActivity extends Component {
                         style={{flex:1}}
                         data={this.state.dataSource}
                         renderItem={this._renderItem}
-                        extraData={this.state.loading}
+                        extraData={this.state}
                         keyExtractor={this._keyExtractor}
                         ListFooterComponent={this._renderFooter}
                         onRefresh={this._pullToRefresh.bind(this)}
                         refreshing={this.state.isRefresh}
                     />
                 :
-                    this._renderEmptyDataActivity()
+                    <EmptyView />
             }
             
                 

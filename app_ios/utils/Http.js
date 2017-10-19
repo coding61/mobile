@@ -36,7 +36,7 @@ let Http = {
 		return Http_Domain + "/club/clubs/?page=" + pagenum                              //活动列表
 	},
 	myAcitivitys:(pagenum, type)=>{
-		return Http_Domain + "/club/myclub/?types="+type              //我的活动
+		return Http_Domain + "/club/myclub/?types="+type+"&page=" + pagenum              //我的活动
 	},
 	updateActivity:(pk)=>{           
 		return Http_Domain + "/club/clubs/" + pk + "/"                                   //修改活动
@@ -47,8 +47,8 @@ let Http = {
 	quitActivity:(pk)=>{
 		return Http_Domain + "/club/clubs/"+pk+"/"                                       //解散活动
 	}, 
-	joinActivity:(pk)=>{
-		return Http_Domain + "/club/join_club/"+pk+"/"                                   //加入活动
+	joinActivity:(pk, password)=>{
+		return Http_Domain + "/club/join_club/"+pk+"/?password=" + password              //加入活动
 	},
 	removeActivityMember:(pk)=>{
 		return Http_Domain + "/club/delete_clubmember/"+pk+"/"                           //移除活动成员

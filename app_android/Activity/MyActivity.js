@@ -20,6 +20,8 @@ import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 
+import EmptyView from '../Component/EmptyView.js';
+
 const LoadMore = 1;           //点击加载更多
 const LoadNoMore = 0;         //已经到尾了
 const LoadMoreIng = -1;       //加载中
@@ -62,14 +64,15 @@ class MyActivity extends Component {
     // ------------------------------------------网络请求
     //获取活动列表
     _fetchMyActivity(pagenum){
+        
         // 区分是参加的还是发布的活动
-        var type = "join";
+        var tab = "join";
         if (this.state.tab == JoinActivityTab) {
-            type = "join"
+            tab = "join"
         }else{
-            type = "create"
+            tab = "create"
         }
-
+        /*
         var dic = {
               "pk": 4,
               "name": "北京大学现场讲座",
@@ -106,12 +109,12 @@ class MyActivity extends Component {
             loading:true,
             dataSource:array,
         });
+        */
         
-        /*
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "get",
-                    url = Http.myAcitivitys(pagenum, type),
+                    url = Http.myAcitivitys(pagenum, tab),
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
@@ -131,8 +134,13 @@ class MyActivity extends Component {
                         // 还有数据，可以加载
                         this.setState({footerLoadTag:LoadMore});
                     }
+                    var array = [];
+                    if (pagenum > 1) {
+                        array = this.state.dataSource.concat(response.results);
+                    }else{
+                        array = response.results;
+                    }
 
-                    var array = this.state.dataSource.concat(response.results);
                     this.setState({
                         loading:true,
                         dataSource:array,
@@ -144,7 +152,6 @@ class MyActivity extends Component {
                 });
             }
         })
-        */
     }
     // ------------------------------------------帮助方法
     // 去登录
@@ -157,17 +164,21 @@ class MyActivity extends Component {
     _clickJoinTab(){
         this.setState({
             tab:JoinActivityTab,
-            pagenum:1
+            pagenum:1,
+        }, ()=>{
+            this._fetchMyActivity(1);
         })
-        this._fetchMyActivity(1);
+        
     }
     // 发布的活动点击
     _clickCreateTab(){
         this.setState({
             tab:CreateActivityTab,
-            pagenum:1
+            pagenum:1,
+        }, ()=>{
+            this._fetchMyActivity(1);
         })
-        this._fetchMyActivity(1);
+        
     }
     // 点击加载更多
     _clickLoadMore(){
@@ -268,18 +279,23 @@ class MyActivity extends Component {
                     <View><Text style={this.state.tab===CreateActivityTab?styles.tabSelectText:styles.tabText}>发布的活动</Text></View>
                     </TouchableOpacity>
                 </View>
-            {/******会话消息******/}
-                <FlatList 
-                    ref={(flatlist)=>this._flatList=flatlist}
-                    style={{flex:1}}
-                    data={this.state.dataSource}
-                    renderItem={this._renderItem}
-                    extraData={this.state.loading}
-                    keyExtractor={this._keyExtractor}
-                    ListFooterComponent={this._renderFooter}
-                    onRefresh={this._pullToRefresh.bind(this)}
-                    refreshing={this.state.isRefresh}
-                />
+            {
+                this.state.dataSource.length?
+                    /******会话消息******/
+                    <FlatList 
+                        ref={(flatlist)=>this._flatList=flatlist}
+                        style={{flex:1}}
+                        data={this.state.dataSource}
+                        renderItem={this._renderItem}
+                        extraData={this.state}
+                        keyExtractor={this._keyExtractor}
+                        ListFooterComponent={this._renderFooter}
+                        onRefresh={this._pullToRefresh.bind(this)}
+                        refreshing={this.state.isRefresh}
+                    />
+                :
+                    <EmptyView />
+            }
                 
             </View>
         )
