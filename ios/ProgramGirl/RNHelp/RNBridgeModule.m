@@ -20,6 +20,12 @@ RCT_EXPORT_METHOD(RNConnectRongIM:(NSString *)rongToken userInfo:(NSDictionary *
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RNConnectRongIMNotification" object:nil userInfo:dic];
   });
 }
+RCT_EXPORT_METHOD(RNConnectRongIM:(NSString *)rongToken userToken:(NSString *)token failTimes:(int)times){
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NSDictionary *dic = @{RongToken:rongToken, UserToken:token};
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RNConnectRongIMTokenNotification" object:nil userInfo:dic];
+  });
+}
 //开始聊天,单聊，群组等
 RCT_EXPORT_METHOD(RNEnterChatView:(NSString *)targetId name:(NSString *)name tag:(NSString *)tag){
   

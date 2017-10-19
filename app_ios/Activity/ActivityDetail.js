@@ -121,7 +121,7 @@ class ActivityDetail extends Component {
         
         
         Utils.isLogin((token)=>{
-            if (token) {
+            // if (token) {
                 var type = "get",
                     url = Http.getActivityDetail(pk),
                     token = token,
@@ -141,7 +141,7 @@ class ActivityDetail extends Component {
                     console.log(2);
                     // Utils.showMessage('网络请求失败');
                 });
-            }
+            // }
         })
     }
     //加入活动
@@ -212,7 +212,8 @@ class ActivityDetail extends Component {
     // 去登录
     _goLogin(){
         this.props.navigation.navigate('Login', {callback:()=>{
-            
+            // 刷新页面
+            this._fetchActivityDetail(this.props.navigation.state.params.pk);
         }})
     }
     // 调整请求到的活动信息内容

@@ -14,6 +14,7 @@
 
 #import <RongIMKit/RongIMKit.h>
 #import <RongIMLib/RongIMLib.h>
+#import "AppDelegate.h"
 #import "BCAFRequest.h"
 #import "BCRCIMDataSource.h"
 #import "BCRongCHelp.h"
@@ -38,6 +39,7 @@
 #define NickName @"name"
 #define PortraitUri @"avatar"
 #define RongToken @"token"
+#define UserToken @"userToken"
 #define Info @"info"
 #define SingleTag @"single"
 #define GroupTag @"group"

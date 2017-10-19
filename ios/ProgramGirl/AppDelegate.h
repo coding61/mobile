@@ -9,6 +9,8 @@
 
 #import <UIKit/UIKit.h>
 
+#define CXYAppDelegate ((AppDelegate *)[[UIApplication sharedApplication] delegate])
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate, RCIMConnectionStatusDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
