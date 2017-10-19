@@ -20,6 +20,8 @@ import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 
+import EmptyView from '../Component/EmptyView.js';
+
 const LoadMore = 1;           //点击加载更多
 const LoadNoMore = 0;         //已经到尾了
 const LoadMoreIng = -1;       //加载中
@@ -259,18 +261,23 @@ class Activity extends Component {
     _renderTableView(){
         return (
             <View style={{flex:1}}>
-            {/******会话消息******/}
-                <FlatList 
-                    ref={(flatlist)=>this._flatList=flatlist}
-                    style={{flex:1}}
-                    data={this.state.dataSource}
-                    renderItem={this._renderItem}
-                    extraData={this.state.loading}
-                    keyExtractor={this._keyExtractor}
-                    ListFooterComponent={this._renderFooter}
-                    onRefresh={this._pullToRefresh.bind(this)}
-                    refreshing={this.state.isRefresh}
-                />
+            {
+                this.state.dataSource.length?
+                    /******会话消息******/
+                    <FlatList 
+                        ref={(flatlist)=>this._flatList=flatlist}
+                        style={{flex:1}}
+                        data={this.state.dataSource}
+                        renderItem={this._renderItem}
+                        extraData={this.state.loading}
+                        keyExtractor={this._keyExtractor}
+                        ListFooterComponent={this._renderFooter}
+                        onRefresh={this._pullToRefresh.bind(this)}
+                        refreshing={this.state.isRefresh}
+                    />
+                :
+                    <EmptyView />
+            }
                 
             </View>
         )

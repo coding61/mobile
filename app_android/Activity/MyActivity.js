@@ -159,7 +159,8 @@ class MyActivity extends Component {
     _clickJoinTab(){
         this.setState({
             tab:JoinActivityTab,
-            pagenum:1
+            pagenum:1,
+            dataSource:[]
         })
         this._fetchMyActivity(1);
     }
@@ -167,7 +168,8 @@ class MyActivity extends Component {
     _clickCreateTab(){
         this.setState({
             tab:CreateActivityTab,
-            pagenum:1
+            pagenum:1,
+            dataSource:[]
         })
         this._fetchMyActivity(1);
     }
