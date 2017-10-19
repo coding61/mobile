@@ -301,7 +301,7 @@ class Activity extends Component {
     }
     // 活动详情
     _pushActivityDetail(pk){
-        this.props.navigation.navigate("ActivityDetail", {pk:pk, callback:(isChange)=>{
+        this.props.navigation.navigate("ActivityDetail", {pk:pk, fromPage:"list", callback:(isChange)=>{
             if (isChange) {
                 this._reloadPage(pk);
             }
