@@ -263,7 +263,7 @@ class ActivityDetail extends Component {
     }
     // 管理成员
     _managerMembers(){
-        this.props.navigation.navigate("ManageMember", {pk:this.props.navigation.state.params.pk, callback:(isDelete)=>{
+        this.props.navigation.navigate("ManageMember", {pk:this.props.navigation.state.params.pk, data:this.state.data, callback:(isDelete)=>{
             if (isDelete) {
                 this.setState({
                     isChange:true
