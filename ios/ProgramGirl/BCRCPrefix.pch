@@ -1,0 +1,71 @@
+//
+//  BCRCPrefix.pch
+//  BCRongCloud
+//
+//  Created by chen on 2017/10/13.
+//  Copyright © 2017年 chen. All rights reserved.
+//
+
+#ifndef BCRCPrefix_pch
+#define BCRCPrefix_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#import <RongIMKit/RongIMKit.h>
+#import <RongIMLib/RongIMLib.h>
+#import "BCAFRequest.h"
+#import "BCRCIMDataSource.h"
+#import "BCRongCHelp.h"
+#import "BCRCConversationViewVC.h"
+#import "BCRCConversationListViewVC.h"
+
+//融云
+#define Rong_Key @"y745wfm8483kv"
+#define Rong_Key_Test @"8w7jv4qb7eqty"
+#define Rong_Kefu_ID @"KEFU150839650061098"
+#define Rong_Token @"P8kGrgqKuySdvVshtjtF5AEPC4d+0eUUDgdKJ06NjR35ezRlr6DHhJU9MOlclh8Gl95+aN8qiYPai2zrBwW66w=="
+
+
+
+//连接融云的回调状态
+#define ConnectSuccess 1
+#define ConnectFail 2
+#define TokenInCorrect 3
+
+//用户的唯一标识，昵称，头像, 融 token
+#define UserId @"username"
+#define NickName @"name"
+#define PortraitUri @"avatar"
+#define RongToken @"token"
+#define Info @"info"
+#define SingleTag @"single"
+#define GroupTag @"group"
+#define KefuTag @"kefu"
+#define TargetTag @"tag"
+#define TargetID @"targetId"
+#define TargetName @"targetName"
+
+//群组信息
+#define GroupId @"pk"
+#define GroupName @"name"
+#define GroupPortraitUri @"groupThumb"
+#define GroupThumb @"https://static1.bcjiaoyu.com/binshu.jpg"
+
+#define Domain @"https://app.bcjiaoyu.com/program_girl"
+
+#define RongTokenUrl @"https://app.bcjiaoyu.com/program_girl/im/user_get_token/"
+#define OwnInfoUrl   @"https://app.bcjiaoyu.com/program_girl/userinfo/whoami/"
+#define OtherInfoUrl @"https://app.bcjiaoyu.com/program_girl/userinfo/username_userinfo/?username=%@"
+#define GroupInfoUrl @"https://app.bcjiaoyu.com/program_girl/club/club_detail/%@/"
+
+#define user1 @{UserId:@"01", NickName:@"小一", PortraitUri:@"https://wx.qlogo.cn/mmopen/Miayzv8oDnvAkFvJ5EyYKh6iaG4uXEIkna1YduZ48Ok66SU5ewJkK5gzqkdMJDHicGE8VJ1Qf8pcibAXPjtZUlRotxcSrEEszUbY/0"}
+#define user2 @{UserId:@"02", NickName:@"小二", PortraitUri:@"https://wx.qlogo.cn/mmopen/Miayzv8oDnvAkFvJ5EyYKh6iaG4uXEIkna1YduZ48Ok66SU5ewJkK5gzqkdMJDHicGE8VJ1Qf8pcibAXPjtZUlRotxcSrEEszUbY/0"}
+#define user3 @{UserId:@"03", NickName:@"小三", PortraitUri:@"https://wx.qlogo.cn/mmopen/Miayzv8oDnvAkFvJ5EyYKh6iaG4uXEIkna1YduZ48Ok66SU5ewJkK5gzqkdMJDHicGE8VJ1Qf8pcibAXPjtZUlRotxcSrEEszUbY/0"};
+#define group1 @{GroupId:@"001", GroupName:@"01建的群组", GroupPortraitUri:@"https://static1.bcjiaoyu.com/binshu.jpg"}
+
+#endif /* BCRCPrefix_pch */
+
+
+
+

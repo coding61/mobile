@@ -9,8 +9,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, RCIMConnectionStatusDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
+@property (nonatomic, strong) UINavigationController *nav;   // RN 跳 OC 必须拿到 Nav
 
 @end
