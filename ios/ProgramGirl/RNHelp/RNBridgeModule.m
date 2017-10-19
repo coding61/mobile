@@ -20,7 +20,8 @@ RCT_EXPORT_METHOD(RNConnectRongIM:(NSString *)rongToken userInfo:(NSDictionary *
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RNConnectRongIMNotification" object:nil userInfo:dic];
   });
 }
-RCT_EXPORT_METHOD(RNConnectRongIM:(NSString *)rongToken userToken:(NSString *)token failTimes:(int)times){
+//连接融云2
+RCT_EXPORT_METHOD(RNConnectRongIM:(NSString *)rongToken userToken:(NSString *)token){
   dispatch_async(dispatch_get_main_queue(), ^{
     NSDictionary *dic = @{RongToken:rongToken, UserToken:token};
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RNConnectRongIMTokenNotification" object:nil userInfo:dic];
