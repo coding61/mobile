@@ -52,7 +52,9 @@ class ActivityDetail extends Component {
         
     }
     componentWillUnmount() {
-       this.props.navigation.state.params.callback(this.state.isChange);
+        if (this.props.navigation.state.params.callback) {
+           this.props.navigation.state.params.callback(this.state.isChange);
+        }
     }
     // ------------------------------------------网络请求
     //获取活动详情
@@ -193,6 +195,11 @@ class ActivityDetail extends Component {
                         isChange:true
                     })
                     this._adjustActivityInfo(response);
+
+                    if (this.props.navigation.state.params.fromPage == "my") {
+                        // 从我的活动进来的，退出之后直接返回
+                        this.props.navigation.goBack();
+                    }
                 }, (err) => {
                     console.log(2);
                     // Utils.showMessage('网络请求失败');
@@ -215,6 +222,7 @@ class ActivityDetail extends Component {
             if(array[i].leader == true){
                 response["leaderName"] = array[i].owner?array[i].owner.name:"管理员";
                 response["leaderAvatar"] = array[i].owner?array[i].owner.avatar:"https://static1.bcjiaoyu.com/binshu.jpg";
+                response["leaderUsername"] = array[i].owner.owner;
                 break;
             }
         }
@@ -228,6 +236,12 @@ class ActivityDetail extends Component {
         Utils.isLogin((token)=>{
             if (token) {
                 // TODO:去聊天
+                var username = this.state.data.leaderUsername,
+                    name = this.state.data.leaderName,
+                    avatar = this.state.data.leaderAvatar,
+                    tag = "single";
+
+                // RNBridgeModule.RNEnterChatView(username, name, tag);
             }else{
                 //去登录
                 // this._goLogin();
@@ -348,7 +362,7 @@ class ActivityDetail extends Component {
                           发布者:{this.state.data.leaderName}
                         </Text>
                         {
-                            this.state.isLeader?
+                            this.state.isleader?
                                 /******修改活动*******/
                                 <TouchableOpacity onPress={this._updateActivityInfo.bind(this)}>
                                 <View style={styles.item2View}>
@@ -386,7 +400,7 @@ class ActivityDetail extends Component {
                                已报名:{this.state.data.member_number}人
                             </Text>
                             {
-                                this.state.data.isLeader?
+                                this.state.data.isleader?
                                     <TouchableOpacity onPress={this._managerMembers.bind(this)}>
                                     <View style={styles.item2View}>
                                         <Text style={styles.itemBottomText}>
@@ -424,7 +438,7 @@ class ActivityDetail extends Component {
 
                     {/*******提示，参加活动,退出活动********/}
                     {
-                        !this.state.data.isLeader?
+                        !this.state.data.isleader?
                             <View style={styles.bottomView}>
                                 <Text style={styles.tips}>提示：如果活动发布者未公布参加密码，您可以联系发布者，向发布者获取参加密码。</Text>
                                 {
