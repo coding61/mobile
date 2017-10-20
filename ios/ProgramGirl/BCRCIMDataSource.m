@@ -48,11 +48,12 @@
         if (error) {
             NSLog(@"获取他人信息失败");
             NSDictionary *info = user2;
-            RCUserInfo *user = [[RCUserInfo alloc] initWithUserId:info[UserId]
+            RCUserInfo *user = [[RCUserInfo alloc] initWithUserId:userId
                                                              name:info[NickName]
                                                          portrait:info[PortraitUri]];
             callback(user);
         }else{
+            NSLog(@"获取他人信息成功%@", userId);
             RCUserInfo *userinfo = [[RCUserInfo alloc] init];
             userinfo.userId = obj[UserId];
             userinfo.name = obj[NickName];
@@ -68,12 +69,12 @@
         if (error) {
             NSLog(@"获取自己信息失败");
             NSDictionary *info = user1;
-            RCUserInfo *user = [[RCUserInfo alloc] initWithUserId:info[UserId]
+            RCUserInfo *user = [[RCUserInfo alloc] initWithUserId:userId
                                                              name:info[NickName]
                                                          portrait:info[PortraitUri]];
             callback(user);
         }else{
-        
+            NSLog(@"获取自己信息成功%@", userId);
             RCUserInfo *userinfo = [[RCUserInfo alloc] init];
             userinfo.userId = obj[UserId];
             userinfo.name = obj[NickName];
@@ -101,9 +102,7 @@
     //调用服务器接口，根据 groupId获取群组信息
     [[BCRCIMDataSource shareInstance] getGroupInfo:groupId callback:^(RCGroup *groupInfo) {
         [[RCIM sharedRCIM] refreshGroupInfoCache:groupInfo withGroupId:groupId];
-        RCGroup *groupI = [[RCIM sharedRCIM] getGroupInfoCache:groupId];
-        NSLog(@"groupId:%@, groupName:%@, groupThumb:%@", groupI.groupId, groupI.groupName, groupI.portraitUri);
-        completion(groupI);
+        completion(groupInfo);
     }];
 }
 //获取群组信息，根据 groupId
@@ -117,8 +116,9 @@
             
             callback(group);
         }else{
+            NSLog(@"获取群组信息成功%@", groupId);
             RCGroup *group = [[RCGroup alloc] init];
-            group.groupId =  obj[GroupId];
+            group.groupId =  [NSString stringWithFormat:@"%@", obj[GroupId]];
             group.groupName = obj[GroupName];
             group.portraitUri = obj[GroupPortraitUri]?obj[GroupPortraitUri]:GroupThumb;
           
