@@ -280,7 +280,7 @@ class MessagePage extends Component{
                     scrollAuto:true,
                     showAction:false
                 })
-                this._loadNews("chat");        //加载新闻信息
+                // this._loadNews("chat");        //加载新闻信息
             })
             
         }
@@ -631,6 +631,7 @@ class MessagePage extends Component{
                 }
             }else{
                 Utils.isLogin((token)=>{
+                    /*
                     if (token) {
                         Utils.getValue("newsTime", (err, result)=>{
                             if (result) {
@@ -655,6 +656,8 @@ class MessagePage extends Component{
                     }else{
                         this._loadStorageLastItem();   //加载最后一条信息
                     }
+                    */
+                    this._loadStorageLastItem();   //加载最后一条信息
                 }) 
             }
             return;
