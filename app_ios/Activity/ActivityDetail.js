@@ -164,7 +164,7 @@ class ActivityDetail extends Component {
                         //请求失败
                     };
                     if (response.status == -4) {
-                        Utils.showMessage(response.message);
+                        Utils.showMessage(response.message?response.message:response.detail);
                         return;
                     }
                     this.setState({
@@ -199,7 +199,7 @@ class ActivityDetail extends Component {
                         //请求失败
                     };
                     if (response.status == -4) {
-                        Utils.showMessage(response.message);
+                        Utils.showMessage(response.message?response.message:response.detail);
                         return;
                     }
                     this.setState({
@@ -258,7 +258,15 @@ class ActivityDetail extends Component {
                 this._goLogin();
             }
         })
+    }
+    // 进入群聊
+    _enterGroupChat(){
+        var username = String(this.state.data.pk),
+            name = this.state.data.name,
+            avatar = "",
+            tag = "group";
 
+        RNBridgeModule.RNEnterChatView(username, name, tag);
     }
     // 修改活动信息
     _updateActivityInfo(){
@@ -458,11 +466,19 @@ class ActivityDetail extends Component {
                                 <Text style={styles.tips}>提示：如果活动发布者未公布参加密码，您可以联系发布者，向发布者获取参加密码。</Text>
                                 {
                                     this.state.data.isjoin?
+                                        <View>
+                                        <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
+                                        <View style={styles.btnJoin}>
+                                            <Text style={styles.btnText}>进入群聊</Text>
+                                        </View>
+                                        </TouchableOpacity>
+
                                         <TouchableOpacity onPress={this._leaveActivity.bind(this)}>
                                         <View style={styles.btnQuit}>
                                             <Text style={styles.btnText}>退出活动</Text>
                                         </View>
                                         </TouchableOpacity>
+                                        </View>
                                     :
                                         <TouchableOpacity onPress={this._joinActivity.bind(this)}>
                                         <View style={styles.btnJoin}>
@@ -668,7 +684,8 @@ const styles = StyleSheet.create({
         height:40,
         alignItems:'center',
         justifyContent:'center',
-        borderRadius:5
+        borderRadius:5,
+        marginBottom:15
     },
     btnText:{
         color:'white'
