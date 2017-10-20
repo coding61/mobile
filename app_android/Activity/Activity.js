@@ -111,7 +111,7 @@ class Activity extends Component {
         */
         
         Utils.isLogin((token)=>{
-            if (token) {
+            // if (token) {
                 var type = "get",
                     url = Http.activityList(pagenum),
                     token = token,
@@ -149,7 +149,7 @@ class Activity extends Component {
                     console.log(2);
                     // Utils.showMessage('网络请求失败');
                 });
-            }
+            // }
         })
     }
     //获取活动详情
@@ -214,7 +214,7 @@ class Activity extends Component {
         
         
         Utils.isLogin((token)=>{
-            if (token) {
+            // if (token) {
                 var type = "get",
                     url = Http.getActivityDetail(pk),
                     token = token,
@@ -247,7 +247,7 @@ class Activity extends Component {
                     console.log(2);
                     // Utils.showMessage('网络请求失败');
                 });
-            }
+            // }
         })
     }
     // ------------------------------------------帮助方法

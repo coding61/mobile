@@ -122,7 +122,7 @@ class ActivityDetail extends Component {
         */
         
         Utils.isLogin((token)=>{
-            if (token) {
+            // if (token) {
                 var type = "get",
                     url = Http.getActivityDetail(pk),
                     token = token,
@@ -142,7 +142,7 @@ class ActivityDetail extends Component {
                     console.log(2);
                     // Utils.showMessage('网络请求失败');
                 });
-            }
+            // }
         })
 
     }
