@@ -94,7 +94,7 @@ class ManageMember extends Component {
   }
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}>
       	<FlatList 
           extraData={this.state}
           data={this.state.data}

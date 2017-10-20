@@ -113,6 +113,7 @@ class MyPage extends Component {
   }
   Logout() {
   	AsyncStorage.removeItem('token', () => {})
+    RNBridgeModule.disconnect();
   	DeviceEventEmitter.emit('logout', 'success');
   }
   onPress(num) {
@@ -188,7 +189,7 @@ class MyPage extends Component {
   }
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}>
       	<ScrollView>
       		{this.state.isLogin === true?(
       			<View style={{backgroundColor: 'rgb(250, 80, 131)', width: width, height: height / 3, alignItems: 'center', justifyContent: 'center'}}>
@@ -239,6 +240,7 @@ class MyPage extends Component {
       			</View>
       			):(null)}
       	</ScrollView>
+
         <Prompt
           title="修改昵称"
           placeholder={'昵称'}
