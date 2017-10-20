@@ -685,7 +685,8 @@ const styles = StyleSheet.create({
         height:40,
         alignItems:'center',
         justifyContent:'center',
-        borderRadius:5
+        borderRadius:5,
+        marginBottom:15
     },
     btnText:{
         color:'white'

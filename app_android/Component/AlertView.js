@@ -72,12 +72,13 @@ class AlertView extends Component {
 		                    <View style={styles.middleView}>
                                 {
                                     this.props.type === "input"?
-        		                        <TextInput
-        		                            style={styles.input}
-        		                            onChangeText={(text)=>this.props.setValueText(text)}
-        		                            value={this.props.valueText}
-        		                            placeholder={this.props.inputPlaceHolderText}
-        		                          />
+                                        <TextInput
+                                            style={styles.input}
+                                            onChangeText={(text)=>this.props.setValueText(text)}
+                                            value={this.props.valueText}
+                                            placeholder={this.props.inputPlaceHolderText}
+                                            underlineColorAndroid={'transparent'}
+                                          />
                                     :
                                         <Text style={styles.msgText}>{this.props.messageText}</Text>
                                 }
@@ -158,7 +159,9 @@ const styles = StyleSheet.create({
         borderColor:alertLineColor, 
         borderWidth:1, 
         backgroundColor:'white', 
-        textAlign:'center'
+        textAlign:'center',
+        padding:0,
+        paddingHorizontal:5,
     },
     msgText:{
         width:width-170, 
