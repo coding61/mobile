@@ -14,7 +14,8 @@ import {
   Alert,
   ScrollView,
   Modal,
-  FlatList
+  FlatList,
+  DeviceEventEmitter
 } from 'react-native';
 import Http from '../utils/Http.js';
 import City from '../country.json';
@@ -39,7 +40,11 @@ export default class Login extends Component {
     }
   }
   componentWillUnmount() {
-    this.props.navigation.state.params.callback();
+    if (typeof(this.props.navigation.state.params) !== 'undefined') {
+      if (typeof(this.props.navigation.state.params.callback) !== 'undefined') {
+        this.props.navigation.state.params.callback(); 
+      }
+    }
   }
   _cancelkeyboard() {
     Keyboard.dismiss();
@@ -68,6 +73,8 @@ export default class Login extends Component {
               .then(responseJson => {
                 if (responseJson !== 'fail') {
                   AsyncStorage.setItem('token', responseJson.token, () => {
+                    DeviceEventEmitter.emit('listenLogin', responseJson.token);
+                    DeviceEventEmitter.emit('login', 'success');
                     _this.props.navigation.goBack();
                   })
                 } else {
@@ -99,6 +106,8 @@ export default class Login extends Component {
               .then(responseJson => {
                 if (responseJson !== 'fail') {
                   AsyncStorage.setItem('token', responseJson.token, () => {
+                    DeviceEventEmitter.emit('listenLogin', responseJson.token);
+                    DeviceEventEmitter.emit('login', 'success');
                     _this.props.navigation.goBack();
                   })
                 } else {
@@ -133,6 +142,8 @@ export default class Login extends Component {
             .then(responseJson => {
               if (responseJson !== 'fail') {
                 AsyncStorage.setItem('token', responseJson.token, () => {
+                  DeviceEventEmitter.emit('listenLogin', responseJson.token);
+                  DeviceEventEmitter.emit('login', 'success');
                   _this.props.navigation.goBack();
                 })
               } else {

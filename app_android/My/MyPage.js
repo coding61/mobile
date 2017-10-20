@@ -19,7 +19,7 @@ const {width, height} = Dimensions.get('window');
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 import Prompt from 'react-native-prompt';
-// var RNBridgeModule = NativeModules.RNBridgeModule;
+var RnTest = NativeModules.RongYunRN;
 class MyPage extends Component {
 	static navigationOptions  = ({ navigation, screenProps }) => ({
     header: null
@@ -56,7 +56,9 @@ class MyPage extends Component {
               })
               .then(res => {
                 if (res !== '失败') {
-                  // RNBridgeModule.RNConnectRongIM(res.token, results);
+                  RnTest.rnIMConnect(res.token, function() {
+
+                  });
                 }
               })
   					_this.setState({
@@ -90,7 +92,9 @@ class MyPage extends Component {
               })
               .then(res => {
                 if (res !== '失败') {
-                  // RNBridgeModule.RNConnectRongIM(res.token, token);
+                  RnTest.rnIMConnect(res.token, function() {
+
+                  });
                 }
               })
 					_this.setState({
@@ -113,7 +117,7 @@ class MyPage extends Component {
   }
   Logout() {
   	AsyncStorage.removeItem('token', () => {})
-    // RNBridgeModule.disconnect();
+    RnTest.rnIMDisconnect();
   	DeviceEventEmitter.emit('logout', 'success');
   }
   onPress(num) {
@@ -126,7 +130,7 @@ class MyPage extends Component {
   		case 1:
   			{
   				//我的对话
-          // RNBridgeModule.RNEnterChatListView();
+          RnTest.rnIMStart();
   				break;
   			}
   		case 2:
