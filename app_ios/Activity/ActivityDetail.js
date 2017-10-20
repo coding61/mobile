@@ -163,6 +163,10 @@ class ActivityDetail extends Component {
                     if (!response) {
                         //请求失败
                     };
+                    if (response.status == -4) {
+                        Utils.showMessage(response.message);
+                        return;
+                    }
                     this.setState({
                         isChange:true
                     })
@@ -194,6 +198,10 @@ class ActivityDetail extends Component {
                     if (!response) {
                         //请求失败
                     };
+                    if (response.status == -4) {
+                        Utils.showMessage(response.message);
+                        return;
+                    }
                     this.setState({
                         isChange:true
                     })
@@ -281,7 +289,8 @@ class ActivityDetail extends Component {
         Utils.isLogin((token)=>{
             if (token) {
                 this.setState({
-                    showJoinActivityAlertView:true
+                    showJoinActivityAlertView:true,
+                    activityPsd:""
                 })
             }else{
                 this._goLogin();
@@ -308,12 +317,8 @@ class ActivityDetail extends Component {
     _leaveActivity(){
         this._fetchLeaveActivity(this.props.navigation.state.params.pk);
     }
-    _OkPressEvent(value){
-        this.setState({
-            showJoinActivityAlertView:false
-        }, ()=>{
-            Utils.showMessage(value);
-        })
+    _OkPressEvent(){
+        this._submitJoinActivity();
     }
 	// ---------------------------------------活动详情 UI
     // 加入活动弹框
@@ -501,12 +506,16 @@ class ActivityDetail extends Component {
         		{this._renderRootView()}
                 {/*
                     this.state.showJoinActivityAlertView?this._renderJoinActivity():null
-                */}
                 
+                */}
                 <AlertView 
+                    type="input"
                     showAlertView={this.state.showJoinActivityAlertView}
                     hideAlertView={this._closeJoinActivityAlertView.bind(this)}
-                    OkPressEvent={this._OkPressEvent.bind(this, "")}
+                    inputPlaceHolderText={"请输入密码"}
+                    valueText={this.state.activityPsd}
+                    setValueText={(text)=>{this.setState({activityPsd:text})}}
+                    OkPressEvent={this._OkPressEvent.bind(this)}
                 />
                 
         	</View>
