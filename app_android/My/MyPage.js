@@ -19,7 +19,7 @@ const {width, height} = Dimensions.get('window');
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 import Prompt from 'react-native-prompt';
-var RnTest = NativeModules.RnTest;
+var RnTest = NativeModules.RongYunRN;
 class MyPage extends Component {
 	static navigationOptions  = ({ navigation, screenProps }) => ({
     header: null
