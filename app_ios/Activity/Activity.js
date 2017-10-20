@@ -133,8 +133,12 @@ class Activity extends Component {
                         // 还有数据，可以加载
                         this.setState({footerLoadTag:LoadMore});
                     }
-
-                    var array = this.state.dataSource.concat(response.results);
+                    var array = [];
+                    if (pagenum > 1) {
+                        array = this.state.dataSource.concat(response.results);
+                    }else{
+                        array = response.results;
+                    }
                     this.setState({
                         loading:true,
                         dataSource:array,
@@ -254,7 +258,8 @@ class Activity extends Component {
             if (token) {
                 this.props.navigation.navigate("AddActivity", {callback:(isCreate)=>{
                     if (isCreate) {
-                        
+                        // 回来，请求新的数据
+                        this._pullToRefresh();
                     }
                 }});
             }else{
