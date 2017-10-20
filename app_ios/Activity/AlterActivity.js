@@ -54,7 +54,7 @@ class AlterActivity extends Component {
       Utils.showMessage('活动简介不能为空！')
     }
     
-    if (this.state.titleText !== '' || this.state.contentText !== '') {
+    if (this.state.titleText !== '' && this.state.contentText !== '') {
       var body;
       if (this.state.password === '') {
         body = JSON.stringfy({name:_this.state.titleText,introduction:_this.state.contentText});

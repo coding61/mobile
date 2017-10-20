@@ -103,22 +103,23 @@ class CatalogCourse extends Component {
   render() {
     return (
       <View style={{flex: 1, backgroundColor: 'rgb(244, 245, 246)'}}>
-        <View style={{width: width, height: 50, borderBottomColor: 'rgb(236, 237, 238)', borderBottomWidth: 1, backgroundColor: 'white'}}>
-          <FlatList 
-            horizontal={true}
-            extraData={this.state}
-            data={this.state.dataSource}
-            renderItem={this._renderItem}
-            keyExtractor={this._keyExtractor}
-          />
-        </View>
-        {this.state.dataSource?(
+        {this.state.dataSource && this.state.dataSource[this.state.selected]?(
+          <View style={{width: width, height: 50, borderBottomColor: 'rgb(236, 237, 238)', borderBottomWidth: 1, backgroundColor: 'white'}}>
+            <FlatList 
+              horizontal={true}
+              extraData={this.state}
+              data={this.state.dataSource}
+              renderItem={this._renderItem}
+              keyExtractor={this._keyExtractor}
+            />
+          </View>):(null)}
+        {this.state.dataSource && this.state.dataSource[this.state.selected]?(
           <FlatList 
             extraData={this.state}
             data={this.state.dataSource[this.state.selected].dataArr}
             renderItem={this._renderItemBottom}
             keyExtractor={this._keyExtractor_}
-          />):(null)}
+          />):(<View style={{width: width, height: height, alignItems: 'center', justifyContent: 'center'}}><Text style={{fontSize: 16}}>{'暂无课程'}</Text></View>)}
       </View>
     )
   }
