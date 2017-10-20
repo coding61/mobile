@@ -26,7 +26,7 @@ import Http from '../utils/Http.js';
 
 import AlertView from '../Component/AlertView.js'
 
-var RnTest = NativeModules.RnTest;
+var RongYunRN = NativeModules.RongYunRN;
 
 class ActivityDetail extends Component {
 	constructor(props) {
@@ -253,7 +253,7 @@ class ActivityDetail extends Component {
                     avatar = this.state.data.leaderAvatar,
                     tag = "private";
 
-                RnTest.rnIMChat(username, tag);
+                RongYunRN.rnIMChat(username, tag);
             }else{
                 //去登录
                 this._goLogin();
@@ -268,7 +268,7 @@ class ActivityDetail extends Component {
             avatar = "",
             tag = "group";
 
-        RnTest.rnIMChat(username, tag);
+        RongYunRN.rnIMChat(username, tag);
     }
     // 修改活动信息
     _updateActivityInfo(){
