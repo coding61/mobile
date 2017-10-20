@@ -113,6 +113,7 @@ class MyPage extends Component {
   }
   Logout() {
   	AsyncStorage.removeItem('token', () => {})
+    RNBridgeModule.disconnect();
   	DeviceEventEmitter.emit('logout', 'success');
   }
   onPress(num) {
@@ -239,6 +240,7 @@ class MyPage extends Component {
       			</View>
       			):(null)}
       	</ScrollView>
+        
         <Prompt
           title="修改昵称"
           placeholder={'昵称'}
