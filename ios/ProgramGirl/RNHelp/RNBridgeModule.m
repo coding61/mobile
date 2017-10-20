@@ -14,7 +14,7 @@
 RCT_EXPORT_MODULE()   //RNBridgeModule实现模块协议方法
 
 //连接融云，并设置当前用户信息
-RCT_EXPORT_METHOD(RNConnectRongIM:(NSString *)rongToken userInfo:(NSDictionary *)info failTimes:(int)times){
+RCT_EXPORT_METHOD(RNConnectRongIM:(NSString *)rongToken userInfo:(NSDictionary *)info){
   dispatch_async(dispatch_get_main_queue(), ^{
     NSDictionary *dic = @{RongToken:rongToken, Info:info};
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RNConnectRongIMNotification" object:nil userInfo:dic];
