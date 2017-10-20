@@ -41,6 +41,10 @@ import SelectHead from './Login/SelectHead.js';
 import Activity from './Activity/Activity.js';
 import ActivityDetail from './Activity/ActivityDetail.js';
 import MyActivity from './Activity/MyActivity.js';
+import AddActivity from './Activity/AddActivity.js';
+import AlterActivity from './Activity/AlterActivity.js';
+import ManageMember from './Activity/ManageMember.js';
+import CatalogCourse from './My/CatalogCourse.js';
 
 class RootApp extends Component{
     constructor(props) {
@@ -107,6 +111,10 @@ const app = StackNavigator({
     Activity:{screen:Activity},
     ActivityDetail:{screen:ActivityDetail},
     MyActivity:{screen:MyActivity},
+    AddActivity:{screen:AddActivity},
+    AlterActivity:{screen:AlterActivity},
+    ManageMember:{screen:ManageMember},
+    CatalogCourse:{screen:CatalogCourse}
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称
     initialRouteParams:{userinfo:''}        //配置初始路由的参数   
