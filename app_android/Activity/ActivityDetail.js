@@ -17,7 +17,7 @@ import {
   ScrollView,
   Modal,
   TextInput,
-  // NativeModules    //RN 调 oc 模块
+  NativeModules    //RN 调 oc 模块
 } from 'react-native';
 
 import BCFetchRequest from '../utils/BCFetchRequest.js';
@@ -26,7 +26,7 @@ import Http from '../utils/Http.js';
 
 import AlertView from '../Component/AlertView.js'
 
-var RNBridgeModule = NativeModules.RNBridgeModule;
+// var RnTest = NativeModules.RnTest;
 
 class ActivityDetail extends Component {
 	constructor(props) {
