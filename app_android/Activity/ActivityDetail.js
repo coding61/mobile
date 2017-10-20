@@ -253,7 +253,7 @@ class ActivityDetail extends Component {
                     avatar = this.state.data.leaderAvatar,
                     tag = "private";
 
-                RongYunRN.rnIMChat(username, tag);
+                RongYunRN.rnIMChat(username, tag, name);
             }else{
                 //去登录
                 this._goLogin();
@@ -268,7 +268,7 @@ class ActivityDetail extends Component {
             avatar = "",
             tag = "group";
 
-        RongYunRN.rnIMChat(username, tag);
+        RongYunRN.rnIMChat(username, tag, name);
     }
     // 修改活动信息
     _updateActivityInfo(){
