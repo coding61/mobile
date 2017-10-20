@@ -30,6 +30,7 @@
 //                                          @(ConversationType_GROUP)]];
   
   self.emptyConversationView = [[UIView alloc] init];
+  self.title = @"会话列表";
     
 }
 //重写RCConversationListViewController的onSelectedTableRow事件

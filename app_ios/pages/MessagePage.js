@@ -2402,9 +2402,11 @@ class MessagePage extends Component{
                             : null
                         }
 
+                        {/*
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickStudyLuntan}>
                             <Text style={styles.helpActionText}>{"学习论坛"}</Text>
                         </TouchableOpacity>
+                        */}
                         
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickChooseEditor}>
                             <Text style={styles.helpActionText}>{"在线编辑器"}</Text>
@@ -2414,13 +2416,13 @@ class MessagePage extends Component{
                             <Text style={styles.helpActionText}>{"寻找帮助"}</Text>
                         </TouchableOpacity>
 
-                        {
+                        {/*
                             this.state.showQuitLogin?
                             <TouchableOpacity style={[styles.helpActionTextParent]} onPress={this._clickQuitLogin}>
                                 <Text style={[styles.helpActionText, {color:'red'}]}>{"退出登录"}</Text>
                             </TouchableOpacity>
                             : null
-                        }
+                        */}
 
                     </View>
                     <Image

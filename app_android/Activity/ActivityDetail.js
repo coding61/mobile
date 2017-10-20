@@ -26,7 +26,7 @@ import Http from '../utils/Http.js';
 
 import AlertView from '../Component/AlertView.js'
 
-var RnTest = NativeModules.RnTest;
+var RongYunRN = NativeModules.RongYunRN;
 
 class ActivityDetail extends Component {
 	constructor(props) {
@@ -253,7 +253,7 @@ class ActivityDetail extends Component {
                     avatar = this.state.data.leaderAvatar,
                     tag = "private";
 
-                RnTest.rnIMChat(username, tag);
+                RongYunRN.rnIMChat(username, tag, name);
             }else{
                 //去登录
                 this._goLogin();
@@ -263,12 +263,12 @@ class ActivityDetail extends Component {
     }
     // 进入群聊
     _enterGroupChat(){
-        var username = this.state.data.pk,
+        var username = String(this.state.data.pk),
             name = this.state.data.name,
             avatar = "",
             tag = "group";
 
-        RnTest.rnIMChat(username, tag);
+        RongYunRN.rnIMChat(username, tag, name);
     }
     // 修改活动信息
     _updateActivityInfo(){
@@ -488,7 +488,14 @@ class ActivityDetail extends Component {
                                         </TouchableOpacity>
                                 }
                             </View>
-                        :   null
+                        :   
+                            <View style={styles.bottomView}>
+                            <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
+                            <View style={styles.btnJoin}>
+                                <Text style={styles.btnText}>进入群聊</Text>
+                            </View>
+                            </TouchableOpacity>
+                            </View>
                     }
                     
                 </View>
