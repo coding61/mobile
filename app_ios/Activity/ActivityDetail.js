@@ -24,6 +24,8 @@ import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 
+import AlertView from '../Component/AlertView.js'
+
 var RNBridgeModule = NativeModules.RNBridgeModule;
 
 class ActivityDetail extends Component {
@@ -306,6 +308,13 @@ class ActivityDetail extends Component {
     _leaveActivity(){
         this._fetchLeaveActivity(this.props.navigation.state.params.pk);
     }
+    _OkPressEvent(value){
+        this.setState({
+            showJoinActivityAlertView:false
+        }, ()=>{
+            Utils.showMessage(value);
+        })
+    }
 	// ---------------------------------------活动详情 UI
     // 加入活动弹框
     _renderJoinActivity(){
@@ -490,9 +499,16 @@ class ActivityDetail extends Component {
     	return (
         	<View style={styles.container}>
         		{this._renderRootView()}
-                {
+                {/*
                     this.state.showJoinActivityAlertView?this._renderJoinActivity():null
-                }
+                */}
+                
+                <AlertView 
+                    showAlertView={this.state.showJoinActivityAlertView}
+                    hideAlertView={this._closeJoinActivityAlertView.bind(this)}
+                    OkPressEvent={this._OkPressEvent.bind(this, "")}
+                />
+                
         	</View>
     	);
   	}
