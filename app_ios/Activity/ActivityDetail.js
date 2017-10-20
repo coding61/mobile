@@ -580,15 +580,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
     },
-
     container:{
         flex:1,
         backgroundColor:bgColor
-    },
-    item:{
-        padding:10,
-        fontSize:18,
-        height:44,
     },
 
     // ------------------------------------------活动列表
