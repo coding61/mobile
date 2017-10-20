@@ -488,7 +488,14 @@ class ActivityDetail extends Component {
                                         </TouchableOpacity>
                                 }
                             </View>
-                        :   null
+                        :   
+                            <View style={styles.bottomView}>
+                            <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
+                            <View style={styles.btnJoin}>
+                                <Text style={styles.btnText}>进入群聊</Text>
+                            </View>
+                            </TouchableOpacity>
+                            </View>
                     }
                     
                 </View>
