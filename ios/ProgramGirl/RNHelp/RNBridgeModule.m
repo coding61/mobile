@@ -13,14 +13,14 @@
 
 RCT_EXPORT_MODULE()   //RNBridgeModule实现模块协议方法
 
-//连接融云
+//连接融云，并设置当前用户信息
 RCT_EXPORT_METHOD(RNConnectRongIM:(NSString *)rongToken userInfo:(NSDictionary *)info failTimes:(int)times){
   dispatch_async(dispatch_get_main_queue(), ^{
     NSDictionary *dic = @{RongToken:rongToken, Info:info};
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RNConnectRongIMNotification" object:nil userInfo:dic];
   });
 }
-//连接融云2
+//连接融云，并存储用户 token，融云 token
 RCT_EXPORT_METHOD(RNConnectRongIM:(NSString *)rongToken userToken:(NSString *)token){
   dispatch_async(dispatch_get_main_queue(), ^{
     NSDictionary *dic = @{RongToken:rongToken, UserToken:token};
@@ -42,5 +42,8 @@ RCT_EXPORT_METHOD(RNEnterChatListView){
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RNEnterRongChatListViewNotification" object:nil userInfo:nil];
   });
 }
-
+//退出融云，即断开与融云的连接
+RCT_EXPORT_METHOD(disconnect) {
+  [[RCIM sharedRCIM] logout];
+}
 @end
