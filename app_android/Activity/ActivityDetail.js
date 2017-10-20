@@ -263,7 +263,7 @@ class ActivityDetail extends Component {
     }
     // 进入群聊
     _enterGroupChat(){
-        var username = this.state.data.pk,
+        var username = String(this.state.data.pk),
             name = this.state.data.name,
             avatar = "",
             tag = "group";
