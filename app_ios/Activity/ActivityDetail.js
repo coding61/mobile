@@ -270,7 +270,7 @@ class ActivityDetail extends Component {
     }
     // 修改活动信息
     _updateActivityInfo(){
-        this.props.navigation.navigate("AlterActivity", {pk:this.props.navigation.state.params.pk, callback:(isUpdate)=>{
+        this.props.navigation.navigate("AlterActivity", {pk:this.props.navigation.state.params.pk, data:this.state.data, callback:(isUpdate)=>{
             if (isUpdate) {
                 // 更新当前内容
                 this.setState({

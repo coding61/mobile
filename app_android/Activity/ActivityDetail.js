@@ -272,7 +272,7 @@ class ActivityDetail extends Component {
     }
     // 修改活动信息
     _updateActivityInfo(){
-        this.props.navigation.navigate("UpdateActivity", {pk:this.props.navigation.state.params.pk, callback:(isUpdate)=>{
+        this.props.navigation.navigate("UpdateActivity", {pk:this.props.navigation.state.params.pk, data:this.state.data, callback:(isUpdate)=>{
             if (isUpdate) {
                 this.setState({
                     isChange:true
@@ -284,7 +284,7 @@ class ActivityDetail extends Component {
     }
     // 管理成员
     _managerMembers(){
-        this.props.navigation.navigate("ManageMember", {pk:this.props.navigation.state.params.pk, callback:(isDelete)=>{
+        this.props.navigation.navigate("ManageMember", {pk:this.props.navigation.state.params.pk, data:this.state.data, callback:(isDelete)=>{
             if (isDelete) {
                 this.setState({
                     isChange:true
