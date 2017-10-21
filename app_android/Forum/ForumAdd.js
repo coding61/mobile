@@ -82,9 +82,11 @@ export default class ForumAdd extends Component{
                     body: JSON.stringify(data),  
                 })
                 .then((response)=>{
+                    console.log(response)
                     return response.json();
                 })
                 .then((result)=>{
+                    console.log(result)
                     if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
                         Alert.alert(
                             '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',
@@ -157,7 +159,7 @@ export default class ForumAdd extends Component{
                     placeholder='标题'
                     placeholderTextColor='#aaaaaa'
                 />
-                <View style={{width:width,marginTop:10,marginBottom:10,}}>
+                <View style={{width:width,marginTop:10,marginBottom:10,flexDirection:'row',alignItems:'center'}}>
                     <TouchableOpacity onPress={this.chooseclass.bind(this)}
                         style={{width:width*0.2,height:40,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
                         <Text style={{color:'#ffffff',fontSize:14,}}>选择专区</Text>

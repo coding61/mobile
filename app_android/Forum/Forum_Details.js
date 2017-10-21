@@ -193,7 +193,7 @@ export default class Forum_Details extends Component{
                         resultArr.push(result);
                     })
                     this.setState({
-                        nextPage: responseJson.next,
+                        nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
                         dataArr: resultArr,
                         dataSource: resultArr,
                         isLoading: false,
@@ -246,7 +246,7 @@ export default class Forum_Details extends Component{
                             resultArr.push(result);
                         })
                         this.setState({
-                            nextPage: responseJson.next,
+                            nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
                             dataArr: resultArr,
                             dataSource: resultArr,
                             isLoading: false,

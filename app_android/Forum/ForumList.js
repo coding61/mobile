@@ -43,7 +43,7 @@ export default class ForumList extends Component{
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
         return {
-            title: state.params.data.name,
+            title: '',
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
@@ -76,6 +76,7 @@ export default class ForumList extends Component{
     componentWillUnmount(){
         this.eventEmtt.remove();
         this.eventEmttsea.remove();
+        this.eventEm.remove();
     }
     componentWillMount(){
         var self = this;
@@ -98,6 +99,11 @@ export default class ForumList extends Component{
             }
         });
         this._loadAlldata()
+        this.eventEm = DeviceEventEmitter.addListener('newsmore', (value)=>{
+            this.setState({
+                moreshow:!this.state.moreshow,
+            })
+        })
         this.eventEmtt = DeviceEventEmitter.addListener('addforum', (value)=>{
             this.props.navigation.navigate('ForumAdd',{data:value,token:this.state.token,callback:(msg)=>{
                 this._onRefresh()
@@ -124,7 +130,7 @@ export default class ForumList extends Component{
         this.setState({
             isLoading: true
         },()=> {
-            fetch(this.state.url,{headers: {Authorization: 'Token ' + this.state.token}})
+            fetch(this.state.url)
             .then((response) =>response.json())
             .then((responseData) => {
                 var resultArr = new Array();
@@ -205,9 +211,7 @@ export default class ForumList extends Component{
             this.setState({
                 isLoading: true
             },()=> {
-                fetch(this.state.nextPage, {
-                    headers: {Authorization: 'Token ' + this.state.token}
-                })
+                fetch(this.state.nextPage)
                     .then(response => {
                         if (response.status === 200) {
                             return response.json();

@@ -78,7 +78,7 @@ export default class Login extends Component {
                     _this.props.navigation.goBack();
                   })
                 } else {
-                  Alert.alert('','登陆失败，请检查手机号和密码是否正确',
+                  Alert.alert('','登录失败，请检查手机号和密码是否正确',
                   [{text: '确定', onPress: () => {}}
                   ],{ cancelable: false })
                 }
@@ -111,7 +111,7 @@ export default class Login extends Component {
                     _this.props.navigation.goBack();
                   })
                 } else {
-                  Alert.alert('','登陆失败，请检查手机号和密码是否正确',
+                  Alert.alert('','登录失败，请检查手机号和密码是否正确',
                   [{text: '确定', onPress: () => {}}
                   ],{ cancelable: false })
                 }
@@ -147,7 +147,7 @@ export default class Login extends Component {
                   _this.props.navigation.goBack();
                 })
               } else {
-                Alert.alert('','登陆失败，请检查邀请码是否正确',
+                Alert.alert('','登录失败，请检查邀请码是否正确',
                 [{text: '确定', onPress: () => {}}
                 ],{ cancelable: false })
               }
@@ -239,16 +239,16 @@ export default class Login extends Component {
           <TouchableOpacity onPress={this.goLogin.bind(this)} style={LoginStyle.loginBtn}>
             <Text style={LoginStyle.loginBtnText}>{'登录'}</Text>
           </TouchableOpacity>
-          <Text style={LoginStyle.promptText}>{'邀请码仅限内测时通过微信公众号分发的邀请码，新用户请用手机号登陆。'}</Text>
+          <Text style={LoginStyle.promptText}>{'邀请码仅限内测时通过微信公众号分发的邀请码，新用户请用手机号登录。'}</Text>
             {/* <Text style={{width: 2 * width / 3,fontSize: 13, lineHeight: 25, color: 'white'}}>{"提示:建议您登录后在“首页”的右下角点击“问号”帮助按钮进行手机绑定，以方便您后期的学习。"}</Text> */}
           </TouchableOpacity>
         )}
         <View style={{position: 'absolute', left: 0, top: 0, width: width, height: 40, flexDirection: 'row'}}>
           <TouchableOpacity onPress={()=> this.setState({loginWay: 'left', passWord:"", inviteCode:""})} style={[{width: width / 2, height: 40, alignItems: 'center', justifyContent: 'center'},this.state.loginWay === 'left'?({borderBottomColor: 'white', borderBottomWidth: 1}):(null)]}>
-            <Text style={{color:'white'}}>手机号登陆</Text>
+            <Text style={{color:'white'}}>手机号登录</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=> this.setState({loginWay: 'right', phoneNum:"", phoneWord:""})} style={[{width: width / 2, height: 40, alignItems: 'center', justifyContent: 'center'},this.state.loginWay === 'right'?({borderBottomColor: 'white', borderBottomWidth: 1}):(null)]}>
-            <Text style={{color:'white'}}>邀请码登陆</Text>
+            <Text style={{color:'white'}}>邀请码登录</Text>
           </TouchableOpacity>
         </View>
         <Modal 

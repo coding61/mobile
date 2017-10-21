@@ -4,7 +4,7 @@
  * @time: 2017-03-15
  */
 // const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
-// const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
+ //const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
 const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
 const Page_Domain = "https://app.bcjiaoyu.com/girl";
 let Http = {
