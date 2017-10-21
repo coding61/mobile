@@ -141,6 +141,7 @@ class Activity extends Component {
                         array = response.results;
                     }
                     this.setState({
+                        isRefresh:false,
                         loading:true,
                         dataSource:array,
                     });
@@ -295,7 +296,7 @@ class Activity extends Component {
     }
     // 下拉刷新
     _pullToRefresh(){
-        this.setState({isRefreshing:true});
+        this.setState({isRefresh:true});
         this.timer = setTimeout(() => {
             this.setState({
                 pagenum:1
