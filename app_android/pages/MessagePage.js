@@ -276,7 +276,7 @@ class MessagePage extends Component{
                     scrollAuto:true,
                     showAction:false
                 })
-                this._loadNews("chat");        //加载新闻信息
+                // this._loadNews("chat");        //加载新闻信息
             })
             
         }
@@ -627,6 +627,7 @@ class MessagePage extends Component{
                 }
             }else{
                 Utils.isLogin((token)=>{
+                    /*
                     if (token) {
                         Utils.getValue("newsTime", (err, result)=>{
                             if (result) {
@@ -650,6 +651,8 @@ class MessagePage extends Component{
                     }else{
                         this._loadStorageLastItem();   //加载最后一条信息
                     }
+                    */
+                    this._loadStorageLastItem();   //加载最后一条信息
                 }) 
             }
             return;
@@ -2391,10 +2394,12 @@ class MessagePage extends Component{
                             </TouchableOpacity>
                             : null
                         }
-
+                        
+                        {/*
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickStudyLuntan}>
                             <Text style={styles.helpActionText}>{"学习论坛"}</Text>
                         </TouchableOpacity>
+                        */}
                         
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickChooseEditor}>
                             <Text style={styles.helpActionText}>{"在线编辑器"}</Text>
@@ -2404,13 +2409,13 @@ class MessagePage extends Component{
                             <Text style={styles.helpActionText}>{"寻找帮助"}</Text>
                         </TouchableOpacity>
 
-                        {
+                        {/*
                             this.state.showQuitLogin?
                             <TouchableOpacity style={[styles.helpActionTextParent]} onPress={this._clickQuitLogin}>
                                 <Text style={[styles.helpActionText, {color:'red'}]}>{"退出登录"}</Text>
                             </TouchableOpacity>
                             : null
-                        }
+                        */}
 
                     </View>
                     <Image

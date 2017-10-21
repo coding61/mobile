@@ -24,6 +24,8 @@ import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 
+import AlertView from '../Component/AlertView.js'
+
 var RNBridgeModule = NativeModules.RNBridgeModule;
 
 class ActivityDetail extends Component {
@@ -161,6 +163,10 @@ class ActivityDetail extends Component {
                     if (!response) {
                         //请求失败
                     };
+                    if (response.status == -4) {
+                        Utils.showMessage(response.message?response.message:response.detail);
+                        return;
+                    }
                     this.setState({
                         isChange:true
                     })
@@ -192,6 +198,10 @@ class ActivityDetail extends Component {
                     if (!response) {
                         //请求失败
                     };
+                    if (response.status == -4) {
+                        Utils.showMessage(response.message?response.message:response.detail);
+                        return;
+                    }
                     this.setState({
                         isChange:true
                     })
@@ -248,7 +258,15 @@ class ActivityDetail extends Component {
                 this._goLogin();
             }
         })
+    }
+    // 进入群聊
+    _enterGroupChat(){
+        var username = String(this.state.data.pk),
+            name = this.state.data.name,
+            avatar = "",
+            tag = "group";
 
+        RNBridgeModule.RNEnterChatView(username, name, tag);
     }
     // 修改活动信息
     _updateActivityInfo(){
@@ -279,7 +297,8 @@ class ActivityDetail extends Component {
         Utils.isLogin((token)=>{
             if (token) {
                 this.setState({
-                    showJoinActivityAlertView:true
+                    showJoinActivityAlertView:true,
+                    activityPsd:""
                 })
             }else{
                 this._goLogin();
@@ -305,6 +324,9 @@ class ActivityDetail extends Component {
     // 退出活动
     _leaveActivity(){
         this._fetchLeaveActivity(this.props.navigation.state.params.pk);
+    }
+    _OkPressEvent(){
+        this._submitJoinActivity();
     }
 	// ---------------------------------------活动详情 UI
     // 加入活动弹框
@@ -444,11 +466,19 @@ class ActivityDetail extends Component {
                                 <Text style={styles.tips}>提示：如果活动发布者未公布参加密码，您可以联系发布者，向发布者获取参加密码。</Text>
                                 {
                                     this.state.data.isjoin?
+                                        <View>
+                                        <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
+                                        <View style={styles.btnJoin}>
+                                            <Text style={styles.btnText}>进入群聊</Text>
+                                        </View>
+                                        </TouchableOpacity>
+
                                         <TouchableOpacity onPress={this._leaveActivity.bind(this)}>
                                         <View style={styles.btnQuit}>
                                             <Text style={styles.btnText}>退出活动</Text>
                                         </View>
                                         </TouchableOpacity>
+                                        </View>
                                     :
                                         <TouchableOpacity onPress={this._joinActivity.bind(this)}>
                                         <View style={styles.btnJoin}>
@@ -457,7 +487,14 @@ class ActivityDetail extends Component {
                                         </TouchableOpacity>
                                 }
                             </View>
-                        :   null
+                        :   
+                            <View style={styles.bottomView}>
+                            <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
+                            <View style={styles.btnJoin}>
+                                <Text style={styles.btnText}>进入群聊</Text>
+                            </View>
+                            </TouchableOpacity>
+                            </View>
                     }
                     
                 </View>
@@ -490,9 +527,20 @@ class ActivityDetail extends Component {
     	return (
         	<View style={styles.container}>
         		{this._renderRootView()}
-                {
+                {/*
                     this.state.showJoinActivityAlertView?this._renderJoinActivity():null
-                }
+                
+                */}
+                <AlertView 
+                    type="input"
+                    showAlertView={this.state.showJoinActivityAlertView}
+                    hideAlertView={this._closeJoinActivityAlertView.bind(this)}
+                    inputPlaceHolderText={"请输入密码"}
+                    valueText={this.state.activityPsd}
+                    setValueText={(text)=>{this.setState({activityPsd:text})}}
+                    OkPressEvent={this._OkPressEvent.bind(this)}
+                />
+                
         	</View>
     	);
   	}
@@ -539,15 +587,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
     },
-
     container:{
         flex:1,
         backgroundColor:bgColor
-    },
-    item:{
-        padding:10,
-        fontSize:18,
-        height:44,
     },
 
     // ------------------------------------------活动列表
@@ -643,7 +685,8 @@ const styles = StyleSheet.create({
         height:40,
         alignItems:'center',
         justifyContent:'center',
-        borderRadius:5
+        borderRadius:5,
+        marginBottom:15
     },
     btnText:{
         color:'white'
