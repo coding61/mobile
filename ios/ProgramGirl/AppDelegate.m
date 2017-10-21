@@ -51,7 +51,7 @@
   [RCIM sharedRCIM].groupInfoDataSource = BCRCDataSource;
   
   //设置Log级别，开发阶段打印详细log
-  [RCIMClient sharedRCIMClient].logLevel = RC_Log_Level_Info;
+//  [RCIMClient sharedRCIMClient].logLevel = RC_Log_Level_Info;
   
 
   //注册RN 连接融云监听者
