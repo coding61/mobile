@@ -34,7 +34,7 @@ export default class ForumClass extends Component{
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
         return {
-            title: ' 选择论坛专区',
+            title: ' 选择新帖发布专区',
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:14},

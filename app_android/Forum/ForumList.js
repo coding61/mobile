@@ -308,6 +308,7 @@ export default class ForumList extends Component{
                     </View>
                     <View style={{paddingLeft:16,paddingRight:20,paddingTop:10,width:width*0.86,}}>
                         <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10,fontWeight: '100',fontFamily:'Noto SansCJK'}}>{rowData.status=='unsolved'?(<Text style={{color:'red'}}>[未解决]</Text>):(<Text style={{color:'#cccccc'}}>[{rowData.status_display}]</Text>)}  {rowData.title}</Text>
+                        <Text style={{fontSize:14,paddingBottom:10,color:'#aaaaaa',}}>所属专区：{rowData.section.name}</Text>
                         <Text style={{paddingBottom:10,color:'#858585'}} numberOfLines={1}>{rowData.content}</Text>
                         <View style={{flexDirection:'row',alignItems:'center',flexWrap:'wrap'}}>
                             <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.userinfo.name}</Text>

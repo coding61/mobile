@@ -200,7 +200,7 @@ class MyPage extends Component {
       			<View style={{backgroundColor: 'rgb(253, 109, 149)', width: width, height: height / 3, alignItems: 'center', justifyContent: 'center'}}>
 	      			<Image resizeMode={'contain'} style={{width: height / 9, height: height / 9}} source={require('../assets/Login/head1.png')}/>
 	      			<TouchableOpacity onPress={this.onPress.bind(this, 6)}>
-	      				<Text style={{color: 'white', fontSize: 18, marginTop: 20}}>{'未登录/去登陆'}</Text>
+	      				<Text style={{color: 'white', fontSize: 18, marginTop: 20}}>{'未登录/去登录'}</Text>
 	      			</TouchableOpacity>
       			</View>
       			)}
