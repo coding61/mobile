@@ -21,8 +21,6 @@ import face from './Content_Rex';
 import Http from '../utils/Http.js';
 var basePath=Http.domain;
 var {height, width} = Dimensions.get('window');
-import ModalDropdown from 'react-native-modal-dropdown';
-import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 var ImagePicker = require('react-native-image-picker');
 var qiniu = require('react-native').NativeModules.UpLoad;
 var content='';
@@ -159,14 +157,6 @@ export default class ForumAdd extends Component{
             }
         })
         .catch((error) => {console.log(error)});
-    }
-
-    sectionRowdata(data){
-        return(
-            <MenuOption pk={data.pk}>
-                <Text>{data.name}</Text>
-            </MenuOption>
-                    )
     }
 
     // 调相册相机

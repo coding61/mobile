@@ -17,7 +17,6 @@ import {
   ActivityIndicator,
 }from 'react-native';
 import Http from '../utils/Http.js';
-import ModalDropdown from 'react-native-modal-dropdown';
 var basePath=Http.domain;
 var {height, width} = Dimensions.get('window');
 var allAndroid = require('react-native').NativeModules.RongYunRN;
