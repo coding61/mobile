@@ -45,7 +45,7 @@
   [self.window makeKeyAndVisible];
   
 #pragma mark - RongIM
-  [[RCIM sharedRCIM] initWithAppKey:Rong_Key_Test];  //初始化融云环境
+  [[RCIM sharedRCIM] initWithAppKey:Rong_Key];  //初始化融云环境
   //设置用户信息源和群组信息源
   [RCIM sharedRCIM].userInfoDataSource = BCRCDataSource;
   [RCIM sharedRCIM].groupInfoDataSource = BCRCDataSource;
