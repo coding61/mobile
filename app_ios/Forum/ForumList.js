@@ -20,57 +20,85 @@ import {
 var {height, width} = Dimensions.get('window');
 import Http from '../utils/Http.js';
 var basePath=Http.domain;
+import Utils from '../utils/Utils.js';
 
 export default class ForumList extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            data:this.props.navigation.state.params.data,
-            token:this.props.navigation.state.params.token,
             dataArr: new Array(),
             dataSource: '',
             tag: 0,
             nextPage: null,
             isLoading: false,
-            url:basePath+'/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&myposts=false&page=1',  
+            url:basePath+'/forum/posts/?myposts=false&page=1',  
             loadText: '正在加载...',
             isRefreshing: false,
+            moreshow:false,
         };
     }
  
     static navigationOptions = ({ navigation }) => {
         const {state, setParams,navigate} = navigation;
         return {
-            title: state.params.data.name,
+            title: "",
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
             headerBackTitle:null,
+            headerLeft:(
+                <View>
+                    <TouchableOpacity  onPress={()=>{
+                        DeviceEventEmitter.emit('addforum',2)
+                    }} style={{width:80,height:30,marginLeft:20,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
+                        <Text style={{color:'#ffffff',fontSize:16}}>发布新帖</Text>
+                    </TouchableOpacity>
+                </View>
+                ),
             headerRight:
                 (
-                <View style={{flexDirection:'row',marginRight:10,}}>
+                <View style={{flexDirection:'row',marginRight:20,}}>
                     <TouchableOpacity  onPress={()=>{
-                        DeviceEventEmitter.emit('search', state.params.data)
-                    }} style={{alignItems:'center',justifyContent:'center',marginRight:15,}}>
-                        {/*<Text style={{color:'#ffffff',}}>搜索</Text>*/}
+                        DeviceEventEmitter.emit('search', 1)
+                    }} style={{alignItems:'center',justifyContent:'center',marginRight:25,}}>
+                        
                         <Image style={{width:20,height:20,}} source={require('../assets/Forum/sousuo-b.png')}/>
                     </TouchableOpacity>
-                    <TouchableOpacity  onPress={()=>{
-                        DeviceEventEmitter.emit('addforum', state.params.data)
-                    }} style={{width:26,height:26,alignItems:'center',justifyContent:'center',}}>
-                        <Image style={{width:20,height:20,}} source={require('../assets/Forum/add.png')}/>
+                    
+                    <TouchableOpacity style={{width:30,height:25,marginTop:2,}} onPress={()=>{
+                        DeviceEventEmitter.emit('newsmore',1 )
+                    }}>
+                        {!state.params || state.params.newscount==0?(<Image style={{width:18,height:3,marginTop:10,}} source={require('../assets/Forum/news.png')}/>):(<Image style={{width:26,height:13,}} source={require('../assets/Forum/hasnews.png')}/>)}
                     </TouchableOpacity>
                 </View>
                 )
         };
     };
     componentWillUnmount(){
-        this.props.navigation.state.params.callback();
         this.eventEmtt.remove();
         this.eventEmttsea.remove();
     }
+    componentWillMount(){
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},(result)=>{
+                    self._loadunread()
+                });
+            }
+            
+        });
+    }
     componentDidMount(){
         this._loadAlldata()
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},(result)=>{
+                });
+            }
+            self._loadunread()
+        });
         this.eventEmtt = DeviceEventEmitter.addListener('addforum', (value)=>{
             this.props.navigation.navigate('ForumAdd',{data:value,token:this.state.token,callback:(msg)=>{
                 this._onRefresh()
@@ -80,14 +108,39 @@ export default class ForumList extends Component{
             this.props.navigation.navigate('Search',{data:value,token:this.state.token,keyword:'',auto:true,callback:(msg)=>{
                 
             }})
+        })
+        this.eventEm = DeviceEventEmitter.addListener('newsmore', (value)=>{
+            this.setState({
+                moreshow:!this.state.moreshow,
+            })
         })  
+    }
+
+    _loadunread(){
+        fetch(basePath+'/message/messages/?types=forum&status=unread',{
+            headers: {Authorization: 'Token ' + this.state.token}
+        })
+        .then(response=>{
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                return '加载失败';
+            }
+        })
+        .then(responseJson=>{
+            const {setParams,state} = this.props.navigation;
+            setParams({newscount:responseJson.count})
+        })
+        .catch((error) => {
+            console.error(error);
+        })
     }
 
     _loadAlldata() {
         this.setState({
             isLoading: true
         },()=> {
-            fetch(this.state.url,{headers: {Authorization: 'Token ' + this.state.token}})
+            fetch(this.state.url)
             .then((response) =>response.json())
             .then((responseData) => {
                 var resultArr = new Array();
@@ -95,7 +148,7 @@ export default class ForumList extends Component{
                         resultArr.push(result);
                 })
                 this.setState({
-                    nextPage: responseData.next,
+                    nextPage: responseData.next?responseData.next.replace("http://", "https://"):null,
                     dataArr: resultArr,
                     dataSource: resultArr,
                     isLoading: false,
@@ -108,63 +161,88 @@ export default class ForumList extends Component{
             }); 
         })
     }
-    _changeTag(tag) {
-        if (tag === 0 && this.state.isLoading === false) {
-            this.setState({
-                tag: tag,
-                url: basePath+'/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&myposts=false&page=1',
-                nextPage: null,
-                dataArr: new Array(),
-                dataSource: null,
-                loadText: '正在加载...',
-            },()=> {
-                this._loadAlldata();
-            })
-        } else if (tag === 1 && this.state.isLoading === false) {
-            this.setState({
-                tag: tag,
-                url: basePath+'/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&isessence=true&page=1',
-                /*nextPage: null,
-                dataArr: new Array(),
-                dataSource: null,*/
-                loadText: '正在加载...',
-            },()=> {
-                this._loadAlldata();
-            })
-        } else if (tag === 2 && this.state.isLoading === false){
-            this.setState({
-                tag: tag,
-                url: basePath+'/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&page=1&status=solved',
-                /*nextPage: null,
-                dataArr: new Array(),
-                dataSource: null,*/
-                loadText: '正在加载...',
-            },()=> {
-                this._loadAlldata();
-            })
-        }else if (tag === 3 && this.state.isLoading === false){
-            this.setState({
-                tag: tag,
-                url: basePath+'/forum/posts/?section='+this.props.navigation.state.params.data.pk+'&page=1&status=unsolved',
-                /*nextPage: null,
-                dataArr: new Array(),
-                dataSource: null,*/
-                loadText: '正在加载...',
-            },()=> {
-                this._loadAlldata();
-            })
-        }
+    _newscenter(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('NewsCenter',{callback:()=>{
+                    this._loadunread()
+                }});
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
+        })
+        
     }
-
+    ranklist(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('RankingList', { token:this.state.token });
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
+        })
+        
+    }
+    _reloadPage(){
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    self._loadunread()
+                });
+            }
+        });
+    }
+    MyCollect(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('MyCollect', );
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
+        })
+    }
+    MyForum(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('MyForum', );
+                this.setState({
+                    moreshow:false
+                })
+            }else{
+                this.props.navigation.navigate("Login", {callback:()=>{
+                    this._reloadPage();
+                }})
+            }
+        })
+        
+    }
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
             this.setState({
                 isLoading: true
             },()=> {
-                fetch(this.state.nextPage, {
+                /*fetch(this.state.nextPage, {
                     headers: {Authorization: 'Token ' + this.state.token}
-                })
+                })*/
+                fetch(this.state.nextPage)
                 .then(response => {
+                    console.log(response)
                     if (response.status === 200) {
                         return response.json();
                     } else {
@@ -172,9 +250,10 @@ export default class ForumList extends Component{
                     }
                 })
                 .then(responseJson=> {
+                    console.log(responseJson)
                     if (responseJson === '加载失败') {
                         Alert.alert(
-                          '加载失败,请重试',
+                          '加载失败,请重试1',
                           '',
                           [
                             {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
@@ -187,7 +266,7 @@ export default class ForumList extends Component{
                             resultArr.push(result);
                         })
                         this.setState({
-                            nextPage: responseJson.next,
+                            nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
                             dataArr: resultArr,
                             dataSource: resultArr,
                             isLoading: false,
@@ -245,21 +324,22 @@ export default class ForumList extends Component{
             time = Time.slice(0, 10).replace('T', ' ');
         }
         return time;
-
     }
     renderForumRow(item){
         var rowData=item.item;
-        var time_last=this.dealWithTime(rowData.last_replied)
+        /*rowData.newposts.last_replied?rowData.newposts.last_replied:rowData.newposts.create_time*/
+        var time_last=this.dealWithTime(rowData.last_replied?rowData.last_replied:rowData.create_time)
         return (
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
                 style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
                 <View style={{flexDirection:'row',}}>
                     <View style={{alignItems:'center'}}>
                         {!rowData.userinfo.avatar?(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>)}
-                        <Text style={{paddingTop:10,fontSize:12,color:'#aaaaaa'}}>{rowData.userinfo.grade.current_name}</Text>
+                        <Text style={{paddingTop:10,fontSize:12,color:'#6E7B8B'}}>{rowData.userinfo.grade.current_name}</Text>
                     </View>
                     <View style={{paddingLeft:16,paddingRight:20,paddingTop:10,width:width*0.86,}}>
                         <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10,fontWeight: '500',}}>{rowData.status=='unsolved'?(<Text style={{color:'red'}}>[未解决]</Text>):(<Text style={{color:'#cccccc'}}>[{rowData.status_display}]</Text>)}  {rowData.title}</Text>
+                        <Text style={{fontSize:14,paddingBottom:10,color:'#aaaaaa',}}>所属专区：{rowData.section.name}</Text>
                         <Text style={{paddingBottom:10,color:'#858585'}} numberOfLines={1}>{rowData.content}</Text>
                         <View style={{flexDirection:'row',alignItems:'center',flexWrap:'wrap'}}>
                             <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.userinfo.name}</Text>
@@ -276,13 +356,14 @@ export default class ForumList extends Component{
     render(){
         if(!this.state.dataSource){
             return( <View style={styles.container}>
-                        <SlideView _change={this._changeTag.bind(this)}/>
+                        {/*<SlideView _change={this._changeTag.bind(this)}/>*/}
+                        <Text>正在加载......</Text>
                     </View>)
         }else{
             return (
                 <View style={styles.container}>
                     <View>   
-                        <SlideView _change={this._changeTag.bind(this)}/>
+                        {/*<SlideView _change={this._changeTag.bind(this)}/>*/}
                         <FlatList
                             horizontal={false}
                             refreshing={true}
@@ -305,51 +386,27 @@ export default class ForumList extends Component{
                         >
                         </FlatList>
                     </View>
+
+                    {this.state.moreshow?(
+                        <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa',paddingRight:5,paddingLeft:8,}}>
+                            <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}>
+                                <Text onPress={this._newscenter.bind(this)} style={{padding:15,}}>消息中心</Text>
+                                {this.props.navigation.state.params && this.props.navigation.state.params.newscount!=0?(<View style={{position:'absolute',top:12,right:10,width:8,height:8,borderRadius:4,backgroundColor:'red'}}></View>):(null)}
+                            </View>
+                            <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this.MyCollect.bind(this)} style={{padding:15,}}>我的收藏</Text></View>
+                            <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this.MyForum.bind(this)} style={{padding:15,}}>我的帖子</Text></View>
+                            <View><Text onPress={this.ranklist.bind(this)} style={{padding:15,}}>排行榜</Text></View>
+                        </View>
+                        ):(null)}
               </View>
             )
         }
     }
 }
-class SlideView extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            tag: 0
-        }
-    }
-    _onPress(tag) {
-        this.props._change(tag);
-        this.setState({
-            tag: tag
-        })
-    }
-    render() {
-        return(
-            <ScrollView 
-                horizontal={true} 
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{width:width,height: 44, backgroundColor: 'white',borderBottomWidth:1,borderBottomColor:'#cccccc',marginBottom:3,}}
-            >
-                <TouchableOpacity onPress={this._onPress.bind(this, 0)} style={{width:width/4,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag === 0?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>全部</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this._onPress.bind(this, 1)} style={{width:width/4,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag === 1?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>精贴</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this._onPress.bind(this, 2)} style={{width:width/4,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag == 2?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>已解决</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this._onPress.bind(this, 3)} style={{width:width/4,padding:8, height: 38, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[{fontSize: 14},this.state.tag == 3?({color: '#ff6b94'}):({color: '#4a4a4a'})]}>未解决</Text>
-                </TouchableOpacity>
-                <View style={{width: width/4, height: 2, backgroundColor: '#ff6b94', position: 'absolute', bottom: 1, left: width/4 * this.state.tag}}/>
-            </ScrollView>
-        )
-    }
-}
-SlideView.propTypes = {
+
+/*SlideView.propTypes = {
     _change: React.PropTypes.func.isRequired
-}
+}*/
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -17,6 +17,7 @@ import {
   ActivityIndicator,
 }from 'react-native';
 import Http from '../utils/Http.js';
+import ModalDropdown from 'react-native-modal-dropdown';
 var basePath=Http.domain;
 var {height, width} = Dimensions.get('window');
 var allAndroid = require('react-native').NativeModules.RongYunRN;
@@ -25,7 +26,7 @@ export default class ForumAdd extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            pk:this.props.navigation.state.params.data.pk,
+            
             token:this.props.navigation.state.params.token,
             text:'',
             title:'',
@@ -146,6 +147,10 @@ export default class ForumAdd extends Component{
                     placeholder='标题'
                     placeholderTextColor='#aaaaaa'
                 />
+                <View style={{width:width*0.8,marginTop:10,marginBottom:10,marginLeft:width*0.05,flexDirection:'row'}}>
+                    <Text style={{fontSize:17,}}>选择专区：</Text>
+                    <ModalDropdown options={['option 1', 'option 2']}/>
+                </View>
                 <View style={{width:width,marginTop:10,marginBottom:10,}}>
                     <TouchableOpacity onPress={this.qiniu.bind(this)}
                         style={{width:width*0.2,height:40,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
@@ -162,8 +167,6 @@ export default class ForumAdd extends Component{
                     placeholder='尽情提问吧'
                     placeholderTextColor='#aaaaaa'
                 />
-                
-
                 {this.state.show?(
                     <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
                         <ActivityIndicator 

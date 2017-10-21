@@ -19,6 +19,7 @@ import {TabNavigator} from 'react-navigation';
 import MessagePage from './pages/MessagePage.js';
 import MyPage from './My/MyPage.js';
 import Forum from './Forum/Forum.js';
+import ForumList from './Forum/ForumList.js';
 import Activity from './Activity/Activity.js';
 
 import Utils from './utils/Utils.js';
@@ -39,7 +40,7 @@ const TabBar = TabNavigator({
         }
     },
     Forum:{
-        screen:Forum,
+        screen:ForumList,
         navigationOptions: {  // 也可以写在组件的static navigationOptions内
             tabBarLabel:'社区',
             tabBarIcon:({tintColor, focused}) => (

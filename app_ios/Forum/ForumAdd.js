@@ -13,12 +13,16 @@ import {
   DeviceEventEmitter,
   Modal,
   Alert,
+  FlatList,
+  SectionList,
   ActivityIndicator,
 }from 'react-native';
 import face from './Content_Rex';
 import Http from '../utils/Http.js';
 var basePath=Http.domain;
 var {height, width} = Dimensions.get('window');
+import ModalDropdown from 'react-native-modal-dropdown';
+import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 var ImagePicker = require('react-native-image-picker');
 var qiniu = require('react-native').NativeModules.UpLoad;
 var content='';
@@ -26,13 +30,15 @@ export default class ForumAdd extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            pk:this.props.navigation.state.params.data.pk,
+            sectionpk:'',
             token:this.props.navigation.state.params.token,
             text:'',
             title:'',
             show:false,
             IdCard1:'',//图片
+            sectionname:'',
         }
+        console.log(this.props.navigation.state.params.token)
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
@@ -58,15 +64,18 @@ export default class ForumAdd extends Component{
         this.eventEm.remove();
     }
     componentDidMount() {
+        
         this.eventEm = DeviceEventEmitter.addListener('publish', (value)=>{
             var data = {};
-            data.section = this.state.pk;
+            data.section = this.state.sectionpk;
             data.title=this.state.title;
             data.types =2;
             data.content=this.state.text;
+
             if (data.content=='') {
                 Alert.alert('请输入帖子内容！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
             }else{
+                console.log(data)
                 fetch(basePath+"/forum/posts_create/",
                 {
                     method:'post',
@@ -76,9 +85,11 @@ export default class ForumAdd extends Component{
                     body: JSON.stringify(data),  
                 })
                 .then((response)=>{
+                    console.log(response)
                     return response.json();
                 })
                 .then((result)=>{
+                    console.log(result)
                     if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
                         Alert.alert(
                             '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',
@@ -150,6 +161,14 @@ export default class ForumAdd extends Component{
         .catch((error) => {console.log(error)});
     }
 
+    sectionRowdata(data){
+        return(
+            <MenuOption pk={data.pk}>
+                <Text>{data.name}</Text>
+            </MenuOption>
+                    )
+    }
+
     // 调相册相机
     _changeIcon() {
         var options = {
@@ -184,6 +203,15 @@ export default class ForumAdd extends Component{
           }
         });
     }
+    goclass(){
+        this.props.navigation.navigate('ForumClass',{callback:(data)=>{
+                    this.setState({
+                    sectionpk:data.pk,
+                    sectionname:data.name
+            })
+        }});
+    }
+    _keyExtractor = (item, index) => index;
     render() {
         return(
             <View style={{flex:1,backgroundColor:'#ffffff'}}>
@@ -198,6 +226,13 @@ export default class ForumAdd extends Component{
                     enablesReturnKeyAutomatically={true}
                     placeholderTextColor='#aaaaaa'
                 />
+                <View style={{width:width,marginTop:10,marginBottom:10,flexDirection:'row',alignItems:'center'}}>
+                    <TouchableOpacity onPress={this.goclass.bind(this)}
+                        style={{width:width*0.2,height:30,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
+                        <Text style={{color:'#ffffff',fontSize:14,}}>选择专区</Text>
+                    </TouchableOpacity>
+                    <Text style={{fontSize:14,marginLeft:30,}}>{this.state.sectionname}</Text>
+                </View>
                 <View style={{width:width,marginTop:10,marginBottom:10,}}>
                     <TouchableOpacity onPress={this._changeIcon.bind(this)}
                         style={{width:width*0.2,height:30,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
@@ -232,3 +267,5 @@ export default class ForumAdd extends Component{
         )
     }
 }
+
+
