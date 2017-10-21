@@ -58,7 +58,7 @@ export default class ForumList extends Component{
                 ),
             headerRight:
                 (
-                <View style={{flexDirection:'row',marginRight:15,}}>
+                <View style={{flexDirection:'row',marginRight:20,}}>
                     <TouchableOpacity  onPress={()=>{
                         DeviceEventEmitter.emit('search',2)
                     }} style={{alignItems:'center',justifyContent:'center',marginRight:20,}}>
@@ -74,7 +74,6 @@ export default class ForumList extends Component{
         };
     };
     componentWillUnmount(){
-        this.props.navigation.state.params.callback();
         this.eventEmtt.remove();
         this.eventEmttsea.remove();
     }
@@ -90,6 +89,14 @@ export default class ForumList extends Component{
         });
     }
     componentDidMount(){
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    self._loadunread()
+                });
+            }
+        });
         this._loadAlldata()
         this.eventEmtt = DeviceEventEmitter.addListener('addforum', (value)=>{
             this.props.navigation.navigate('ForumAdd',{data:value,token:this.state.token,callback:(msg)=>{

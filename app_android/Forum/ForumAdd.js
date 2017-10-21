@@ -26,12 +26,13 @@ export default class ForumAdd extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            
             token:this.props.navigation.state.params.token,
             text:'',
             title:'',
             show:false,
             IdCard1:'',//图片
+            sectionpk:'',
+            sectionname:'',
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -65,7 +66,7 @@ export default class ForumAdd extends Component{
         this.progress();
         this.eventEm = DeviceEventEmitter.addListener('publish', (value)=>{
             var data = {};
-            data.section = this.state.pk;
+            data.section = this.state.sectionpk;
             data.title=this.state.title;
             data.types =2;
             data.content=this.state.text;
@@ -105,6 +106,7 @@ export default class ForumAdd extends Component{
             }
         })
     }
+
     progress(){
         var  this_=this;
         //进度
@@ -134,6 +136,14 @@ export default class ForumAdd extends Component{
         allAndroid.rnQiniu(this.state.token,false,"gallery");
         //allAndroid.rnCancelUp();
     }
+    chooseclass(){
+        this.props.navigation.navigate('ForumClass',{callback:(data)=>{
+                    this.setState({
+                    sectionpk:data.pk,
+                    sectionname:data.name
+            })
+        }});
+    }
     render() {
         return(
             <View style={{flex:1,backgroundColor:'#ffffff'}}>
@@ -147,9 +157,12 @@ export default class ForumAdd extends Component{
                     placeholder='标题'
                     placeholderTextColor='#aaaaaa'
                 />
-                <View style={{width:width*0.8,marginTop:10,marginBottom:10,marginLeft:width*0.05,flexDirection:'row'}}>
-                    <Text style={{fontSize:17,}}>选择专区：</Text>
-                    <ModalDropdown options={['option 1', 'option 2']}/>
+                <View style={{width:width,marginTop:10,marginBottom:10,}}>
+                    <TouchableOpacity onPress={this.chooseclass.bind(this)}
+                        style={{width:width*0.2,height:40,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
+                        <Text style={{color:'#ffffff',fontSize:14,}}>选择专区</Text>
+                    </TouchableOpacity>
+                    <Text style={{fontSize:14,marginLeft:30,}}>{this.state.sectionname}</Text>
                 </View>
                 <View style={{width:width,marginTop:10,marginBottom:10,}}>
                     <TouchableOpacity onPress={this.qiniu.bind(this)}
