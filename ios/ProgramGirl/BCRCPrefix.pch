@@ -22,7 +22,7 @@
 #import "BCRCConversationListViewVC.h"
 
 //融云
-#define Rong_Key @"y745wfm8483kv"
+#define Rong_Key @"82hegw5uhf50x"
 #define Rong_Key_Test @"8w7jv4qb7eqty"
 #define Rong_Kefu_ID @"KEFU150839650061098"
 #define Rong_Token @"P8kGrgqKuySdvVshtjtF5AEPC4d+0eUUDgdKJ06NjR35ezRlr6DHhJU9MOlclh8Gl95+aN8qiYPai2zrBwW66w=="
