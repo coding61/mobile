@@ -46,6 +46,16 @@ class AlterActivity extends Component {
       isUp: false
   	}
   }
+  componentWillMount() {
+    this.props.navigation.setParams({
+        navigatePress:this.onPress
+    })
+    this.setState({
+      titleText: this.props.navigation.state.params.data.name,
+      contentText: this.props.navigation.state.params.data.introduction,
+      password: this.props.navigation.state.params.data.password
+    })
+  }
   onPress = () => {
     var _this = this;
     if (this.state.titleText === '') {
@@ -90,11 +100,6 @@ class AlterActivity extends Component {
   }
   componentWillUnmount() {
     this.props.navigation.state.params.callback(this.state.isUp);
-  }
-  componentWillMount() {
-    this.props.navigation.setParams({
-        navigatePress:this.onPress
-    })
   }
   render() {
     return (

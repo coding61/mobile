@@ -92,6 +92,11 @@ class AlterActivity extends Component {
     this.props.navigation.state.params.callback(this.state.isUp);
   }
   componentWillMount() {
+    this.setState({
+      titleText: this.props.navigation.state.params.data.name,
+      contentText: this.props.navigation.state.params.data.introduction,
+      password: this.props.navigation.state.params.data.password
+    })
     this.props.navigation.setParams({
         navigatePress:this.onPress
     })
