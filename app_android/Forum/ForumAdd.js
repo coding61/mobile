@@ -15,6 +15,7 @@ import {
   Alert,
   Button,
   ActivityIndicator,
+  AsyncStorage,
 }from 'react-native';
 import Http from '../utils/Http.js';
 var basePath=Http.domain;
@@ -61,6 +62,16 @@ export default class ForumAdd extends Component{
         this.listenerProgressb.remove();
         this.listenerProgressc.remove();
     }
+    _reloadPage(){
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    
+                });
+            }
+        });
+    }
     componentDidMount() {
         this.progress();
         this.eventEm = DeviceEventEmitter.addListener('publish', (value)=>{
@@ -71,7 +82,16 @@ export default class ForumAdd extends Component{
             data.content=this.state.text;
             if (data.content=='') {
                 Alert.alert('请输入帖子内容！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
-            }else{
+            }else if(data.section==''){
+                Alert.alert('请选择发布帖子专区！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+            }else if(this.state.token==''||this.state.token==null){
+                Alert.alert('请登录后再发帖！','',[{text:'确定',onPress: () => {
+                    this.props.navigation.navigate("Login", {callback:()=>{
+                        this._reloadPage();
+                    }})
+                }, style: 'destructive'}])
+            }
+            else{
                 fetch(basePath+"/forum/posts_create/",
                 {
                     method:'post',
@@ -81,11 +101,9 @@ export default class ForumAdd extends Component{
                     body: JSON.stringify(data),  
                 })
                 .then((response)=>{
-                    console.log(response)
                     return response.json();
                 })
                 .then((result)=>{
-                    console.log(result)
                     if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
                         Alert.alert(
                             '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',
@@ -139,9 +157,9 @@ export default class ForumAdd extends Component{
     }
     chooseclass(){
         this.props.navigation.navigate('ForumClass',{callback:(data)=>{
-                    this.setState({
-                    sectionpk:data.pk,
-                    sectionname:data.name
+            this.setState({
+                sectionpk:data.pk,
+                sectionname:data.name
             })
         }});
     }

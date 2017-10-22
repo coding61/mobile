@@ -50,7 +50,7 @@ export default class ForumList extends Component{
                 <View>
                     <TouchableOpacity  onPress={()=>{
                         DeviceEventEmitter.emit('addforum',2)
-                    }} style={{width:80,height:30,marginLeft:20,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
+                    }} style={{width:70,height:30,marginLeft:10,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
                         <Text style={{color:'#ffffff',fontSize:16}}>发布新帖</Text>
                     </TouchableOpacity>
                 </View>
@@ -77,6 +77,16 @@ export default class ForumList extends Component{
     componentWillUnmount(){
         this.eventEmtt.remove();
         this.eventEmttsea.remove();
+        this.eventEm.remove();
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},(result)=>{
+                    
+                });
+            }
+            
+        });
     }
     componentWillMount(){
         var self = this;
@@ -237,12 +247,8 @@ export default class ForumList extends Component{
             this.setState({
                 isLoading: true
             },()=> {
-                /*fetch(this.state.nextPage, {
-                    headers: {Authorization: 'Token ' + this.state.token}
-                })*/
                 fetch(this.state.nextPage)
                 .then(response => {
-                    console.log(response)
                     if (response.status === 200) {
                         return response.json();
                     } else {
@@ -250,7 +256,6 @@ export default class ForumList extends Component{
                     }
                 })
                 .then(responseJson=> {
-                    console.log(responseJson)
                     if (responseJson === '加载失败') {
                         Alert.alert(
                           '加载失败,请重试1',
@@ -327,7 +332,6 @@ export default class ForumList extends Component{
     }
     renderForumRow(item){
         var rowData=item.item;
-        /*rowData.newposts.last_replied?rowData.newposts.last_replied:rowData.newposts.create_time*/
         var time_last=this.dealWithTime(rowData.last_replied?rowData.last_replied:rowData.create_time)
         return (
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
@@ -356,14 +360,12 @@ export default class ForumList extends Component{
     render(){
         if(!this.state.dataSource){
             return( <View style={styles.container}>
-                        {/*<SlideView _change={this._changeTag.bind(this)}/>*/}
                         <Text>正在加载......</Text>
                     </View>)
         }else{
             return (
                 <View style={styles.container}>
                     <View>   
-                        {/*<SlideView _change={this._changeTag.bind(this)}/>*/}
                         <FlatList
                             horizontal={false}
                             refreshing={true}
@@ -404,9 +406,6 @@ export default class ForumList extends Component{
     }
 }
 
-/*SlideView.propTypes = {
-    _change: React.PropTypes.func.isRequired
-}*/
 const styles = StyleSheet.create({
   container: {
     flex: 1,
