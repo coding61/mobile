@@ -123,7 +123,7 @@ export default class NewsCenter extends Component{
                         })
                     }
                     this.setState({
-                        nextPage: responseData.next,
+                        nextPage: responseData.next?responseData.next.replace("http://", "https://"):null,
                         dataArr: resultArr,
                         dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
                         isLoading: false,
@@ -178,7 +178,7 @@ export default class NewsCenter extends Component{
                         })
                     }
                     this.setState({
-                        nextPage: responseJson.next,
+                        nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
                         dataArr: resultArr,
                         dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(resultArr),
                         isLoading: false,

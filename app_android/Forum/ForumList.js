@@ -80,13 +80,16 @@ export default class ForumList extends Component{
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){
                 self.setState({token: result},(result)=>{
-                    
+                    self._loadunread()
                 });
             }
             
         });
     }
     componentWillMount(){
+        this.props.navigation.setParams({
+            newscount: '',
+        });
         var self = this;
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){
