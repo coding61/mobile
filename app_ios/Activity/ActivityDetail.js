@@ -463,7 +463,7 @@ class ActivityDetail extends Component {
                     {
                         !this.state.data.isleader?
                             <View style={styles.bottomView}>
-                                <Text style={styles.tips}>提示：如果活动发布者未公布参加密码，您可以联系发布者，向发布者获取参加密码。</Text>
+                                <Text style={styles.tips}>提示：密码（参加活动的人需要填对密码才能参加）。</Text>
                                 {
                                     this.state.data.isjoin?
                                         <View>
@@ -535,7 +535,7 @@ class ActivityDetail extends Component {
                     type="input"
                     showAlertView={this.state.showJoinActivityAlertView}
                     hideAlertView={this._closeJoinActivityAlertView.bind(this)}
-                    inputPlaceHolderText={"请输入密码"}
+                    inputPlaceHolderText={"请联系发起人获得密码"}
                     valueText={this.state.activityPsd}
                     setValueText={(text)=>{this.setState({activityPsd:text})}}
                     OkPressEvent={this._OkPressEvent.bind(this)}
