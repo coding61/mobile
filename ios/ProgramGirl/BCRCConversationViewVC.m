@@ -26,6 +26,7 @@
 - (void)viewWillAppear:(BOOL)animated{
   [super viewWillAppear:animated];
   
+  
   [self.navigationController setNavigationBarHidden:NO animated:YES];
   
   [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];//设置导航栏返回按钮的颜色

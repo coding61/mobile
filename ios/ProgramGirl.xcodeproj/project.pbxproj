@@ -51,6 +51,9 @@
 		7425F9741F4AD237002857CB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7425F9731F4AD237002857CB /* SystemConfiguration.framework */; };
 		7425F9761F4AD249002857CB /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7425F9751F4AD249002857CB /* libz.tbd */; };
 		7425F9781F4AD256002857CB /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7425F9771F4AD256002857CB /* libc++.tbd */; };
+		742CB7731F9DCE2B00967C16 /* RongYunView.m in Sources */ = {isa = PBXBuildFile; fileRef = 742CB7721F9DCE2B00967C16 /* RongYunView.m */; };
+		742CB7A71F9DD1A800967C16 /* RongYunViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 742CB7A61F9DD1A800967C16 /* RongYunViewManager.m */; };
+		742CB7AA1F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 742CB7A91F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m */; };
 		74C31B571F502A6F00F78E6D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74C31B561F502A6F00F78E6D /* CoreFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8650C2B91F565D46007B7678 /* UpLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = 8650C2B81F565D46007B7678 /* UpLoad.m */; };
@@ -352,6 +355,12 @@
 		7425F9731F4AD237002857CB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		7425F9751F4AD249002857CB /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		7425F9771F4AD256002857CB /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		742CB7711F9DCE2B00967C16 /* RongYunView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RongYunView.h; sourceTree = "<group>"; };
+		742CB7721F9DCE2B00967C16 /* RongYunView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RongYunView.m; sourceTree = "<group>"; };
+		742CB7A51F9DD1A800967C16 /* RongYunViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RongYunViewManager.h; sourceTree = "<group>"; };
+		742CB7A61F9DD1A800967C16 /* RongYunViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RongYunViewManager.m; sourceTree = "<group>"; };
+		742CB7A81F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCRCConversationListViewFirstVC.h; sourceTree = "<group>"; };
+		742CB7A91F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCRCConversationListViewFirstVC.m; sourceTree = "<group>"; };
 		7485BF981F95D3C8002D05B4 /* FileProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FileProvider.framework; path = System/Library/Frameworks/FileProvider.framework; sourceTree = SDKROOT; };
 		74C31B561F502A6F00F78E6D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -582,6 +591,8 @@
 			children = (
 				7412C1EB1F95B003007DD13E /* RNBridgeModule.h */,
 				7412C1EC1F95B003007DD13E /* RNBridgeModule.m */,
+				742CB7A51F9DD1A800967C16 /* RongYunViewManager.h */,
+				742CB7A61F9DD1A800967C16 /* RongYunViewManager.m */,
 			);
 			name = RNHelp;
 			path = ProgramGirl/RNHelp;
@@ -598,6 +609,10 @@
 				7412C1F21F95B003007DD13E /* BCRCIMDataSource.m */,
 				7412C1F41F95B003007DD13E /* BCRongCHelp.h */,
 				7412C1F51F95B003007DD13E /* BCRongCHelp.m */,
+				742CB7A81F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.h */,
+				742CB7A91F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m */,
+				742CB7711F9DCE2B00967C16 /* RongYunView.h */,
+				742CB7721F9DCE2B00967C16 /* RongYunView.m */,
 			);
 			name = RongIM;
 			sourceTree = "<group>";
@@ -808,12 +823,12 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = TPCJ534SQ6;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = TPCJ534SQ6;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1269,12 +1284,15 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				7412C1F81F95B003007DD13E /* RNBridgeModule.m in Sources */,
+				742CB7A71F9DD1A800967C16 /* RongYunViewManager.m in Sources */,
+				742CB7731F9DCE2B00967C16 /* RongYunView.m in Sources */,
 				7412C1FA1F95B003007DD13E /* BCRCConversationViewVC.m in Sources */,
 				7412C1F61F95B003007DD13E /* AFAppNetAPIClient.m in Sources */,
 				8650C2B91F565D46007B7678 /* UpLoad.m in Sources */,
 				7412C1F71F95B003007DD13E /* BCAFRequest.m in Sources */,
 				7412C1FB1F95B003007DD13E /* BCRCIMDataSource.m in Sources */,
 				7412C1FC1F95B003007DD13E /* BCRongCHelp.m in Sources */,
+				742CB7AA1F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1327,7 +1345,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = TPCJ534SQ6;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1364,7 +1382,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = TPCJ534SQ6;
 				HEADER_SEARCH_PATHS = (
@@ -1400,7 +1418,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_MODULES_AUTOLINK = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = TPCJ534SQ6;
@@ -1425,8 +1443,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.cxy61.chengxuyuan;
 				PRODUCT_NAME = ProgramGirl;
-				PROVISIONING_PROFILE = "6f8c2eae-6843-4cd0-b8f6-2a0f52aaf73f";
-				PROVISIONING_PROFILE_SPECIFIER = "chengxuyuan-adhoc";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "armv7 armv7s arm64";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1439,7 +1457,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_MODULES_AUTOLINK = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TPCJ534SQ6;
 				GCC_PREFIX_HEADER = ProgramGirl/BCRCPrefix.pch;
@@ -1463,8 +1481,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.cxy61.chengxuyuan;
 				PRODUCT_NAME = ProgramGirl;
-				PROVISIONING_PROFILE = "6f8c2eae-6843-4cd0-b8f6-2a0f52aaf73f";
-				PROVISIONING_PROFILE_SPECIFIER = "chengxuyuan-adhoc";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "armv7 armv7s arm64";
 				VERSIONING_SYSTEM = "apple-generic";

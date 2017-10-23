@@ -21,6 +21,7 @@ import MyPage from './My/MyPage.js';
 import Forum from './Forum/Forum.js';
 import ForumList from './Forum/ForumList.js';
 import Activity from './Activity/Activity.js';
+import ConversationList from './Message/ConversationList.js';
 
 import Utils from './utils/Utils.js';
 
@@ -49,6 +50,20 @@ const TabBar = TabNavigator({
                     style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
                 :
                     <Image source={require('./images/tabs/2-unselect.png')}
+                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
+            ),
+        }
+    },
+    ConversationList:{
+        screen:ConversationList,
+        navigationOptions: {  // 也可以写在组件的static navigationOptions内
+            tabBarLabel:'对话',
+            tabBarIcon:({tintColor, focused}) => (
+                focused?
+                    <Image source={require('./images/tabs/5-select.png')}
+                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
+                :
+                    <Image source={require('./images/tabs/5-unselect.png')}
                     style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
             ),
         }

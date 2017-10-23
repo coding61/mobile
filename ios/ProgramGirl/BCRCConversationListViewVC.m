@@ -31,7 +31,7 @@
   
   self.emptyConversationView = [[UIView alloc] init];
   self.title = @"会话列表";
-    
+  
 }
 //重写RCConversationListViewController的onSelectedTableRow事件
 - (void)onSelectedTableRow:(RCConversationModelType)conversationModelType
@@ -59,6 +59,7 @@
   [self.navigationItem setHidesBackButton:YES animated:YES];
   UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
   self.navigationItem.leftBarButtonItem = item;
+  
 }
 - (void)viewWillDisappear:(BOOL)animated{
   [super viewWillDisappear:animated];

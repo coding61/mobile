@@ -20,6 +20,7 @@
 #import "BCRongCHelp.h"
 #import "BCRCConversationViewVC.h"
 #import "BCRCConversationListViewVC.h"
+#import "BCRCConversationListViewFirstVC.h"
 
 //融云
 #define Rong_Key @"82hegw5uhf50x"
