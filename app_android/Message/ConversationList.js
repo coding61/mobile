@@ -26,6 +26,9 @@ class ConversationList extends Component {
             headerStyle: { backgroundColor: pinkColor}
 		}
 	};
+	componentWillMount() {
+	    // RnTest.rnIMStart();
+	}
   	render() {
 	    return (
 	        <View style={{flex: 1}}>

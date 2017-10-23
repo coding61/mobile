@@ -12,18 +12,20 @@ import {
     View,
     TouchableOpacity,
     Image,
-    Button
+    Button,
+    NativeModules
 } from 'react-native';
 import {TabNavigator} from 'react-navigation';
 
 import MessagePage from './pages/MessagePage.js';
 import MyPage from './My/MyPage.js';
-
 import ForumList from './Forum/ForumList.js';
 import Activity from './Activity/Activity.js';
 import ConversationList from './Message/ConversationList.js';
 
 import Utils from './utils/Utils.js';
+
+var RnTest = NativeModules.RongYunRN;
 
 var tabBarIcon = {width:30, height:30};
 const TabBar = TabNavigator({
@@ -67,6 +69,13 @@ const TabBar = TabNavigator({
                     <Image source={require('./images/tabs/5-unselect.png')}
                     style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
             ),
+            tabBarOnPress:(({ route, index },jumpToIndex)=>{
+                // console.log(route);        
+                // alert(index);
+                // 只有调用jumpToIndex方法之后才会真正的跳转页面。
+                // jumpToIndex(index);
+                RnTest.rnIMStart();
+            }),
         }
     },
     Activity:{
