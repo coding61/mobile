@@ -15,6 +15,7 @@ import {
   WebView,
   DeviceEventEmitter,
   Button,
+  AsyncStorage,
 }from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ForumDeatilCont from './ForumDeatilCont';
@@ -68,6 +69,17 @@ export default class Forum_Details extends Component{
         }
         this.eventEmss.remove();
         this.eventEm.remove();
+    }
+    componentWillMount(){
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},(result)=>{
+                    self._loadUserinfo()
+                });
+            }
+             
+        });
     }
     componentDidMount() {
         this._loadforum()
@@ -124,25 +136,22 @@ export default class Forum_Details extends Component{
  
     _loadforum(){
         forum_url=basePath+'/forum/posts/'+this.state.pk+'/';
-        fetch(forum_url,{
-            headers: {Authorization: 'Token ' + this.state.token}
+        fetch(forum_url)
+        .then(response=>{
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                return '加载失败';
+            }
         })
-            .then(response=>{
-                if (response.status === 200) {
-                    return response.json();
-                } else {
-                    return '加载失败';
-                }
+        .then(responseJson=>{
+            this.setState({
+                data:responseJson,
             })
-            .then(responseJson=>{
-                this.setState({
-                    data:responseJson,
-
-                })
-            })
-            .catch((error) => {
-                console.error(error);
-            })
+        })
+        .catch((error) => {
+            console.error(error);
+        })
     }
     _loadUserinfo(){
         info_url=basePath+'/userinfo/whoami/';
@@ -330,7 +339,7 @@ export default class Forum_Details extends Component{
                     })
                     .catch((error) => {
                         console.error(error);  
-                        })
+                    })
                 }, style: 'destructive'},
                 {text: '取消', onPress: () => {}, style: 'destructive'},
              ]

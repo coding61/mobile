@@ -17,7 +17,6 @@ import {
   FlatList,
   DeviceEventEmitter
 }from 'react-native';
-
 var {height, width} = Dimensions.get('window');
 import Http from '../utils/Http.js';
 var basePath=Http.domain;
@@ -51,7 +50,7 @@ export default class ForumList extends Component{
                 <View>
                     <TouchableOpacity  onPress={()=>{
                         DeviceEventEmitter.emit('addforum',2)
-                    }} style={{width:80,height:30,marginLeft:20,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
+                    }} style={{width:70,height:30,marginLeft:10,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
                         <Text style={{color:'#ffffff',fontSize:16}}>发布新帖</Text>
                     </TouchableOpacity>
                 </View>
@@ -77,6 +76,15 @@ export default class ForumList extends Component{
         this.eventEmtt.remove();
         this.eventEmttsea.remove();
         this.eventEm.remove();
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},(result)=>{
+                    
+                });
+            }
+            
+        });
     }
     componentWillMount(){
         var self = this;
@@ -244,7 +252,6 @@ export default class ForumList extends Component{
                         }
                     })
                     .catch((error) => {
-                        console.error(error);
                         this.setState({
                             isLoading: false,
                             isRefreshing: false
@@ -321,7 +328,7 @@ export default class ForumList extends Component{
             </TouchableOpacity>
         ) 
     }
-       _newscenter(){
+    _newscenter(){
         Utils.isLogin((token)=>{
             if (token) {
                 this.props.navigation.navigate('NewsCenter',{callback:()=>{
