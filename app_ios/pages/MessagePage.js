@@ -260,6 +260,7 @@ class MessagePage extends Component{
     handleAppStateChange(appState) {
         console.log('当前状态为:', appState);
         // alert('当前状态为:'+appState);
+        /*
         if (appState == "active") {
             Utils.getValue("newsTime", (err, result)=>{
                 if (result) {
@@ -281,9 +282,9 @@ class MessagePage extends Component{
                     showAction:false
                 })
                 // this._loadNews("chat");        //加载新闻信息
-            })
-            
+            }) 
         }
+        */
     }
     _getDeviceInfo(){
         console.log("Device Unique ID", DeviceInfo.getUniqueID());  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9

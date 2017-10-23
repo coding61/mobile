@@ -254,6 +254,7 @@ class MessagePage extends Component{
     }
     //状态改变响应
     handleAppStateChange(appState) {
+        /*
         console.log('当前状态为:', appState);
         // alert('当前状态为:'+appState);
         if (appState == "active") {
@@ -280,6 +281,7 @@ class MessagePage extends Component{
             })
             
         }
+        */
     }
     _getDeviceInfo(){
         console.log("Device Unique ID", DeviceInfo.getUniqueID());  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9
