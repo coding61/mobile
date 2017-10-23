@@ -13,13 +13,16 @@ import {
   AsyncStorage,
   Alert,
   DeviceEventEmitter,
-  NativeModules  
+  NativeModules,
+  ActivityIndicator  
 } from 'react-native';
 const {width, height} = Dimensions.get('window');
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 import Prompt from 'react-native-prompt';
 var RnTest = NativeModules.RongYunRN;
+var allAndroid = NativeModules.RongYunRN;
+var basePath=Http.domain;
 class MyPage extends Component {
 	static navigationOptions  = ({ navigation, screenProps }) => ({
     header: null
@@ -30,10 +33,13 @@ class MyPage extends Component {
   		isLogin: false,
   		name: null,
   		headImg: null,
-      promptVisible: false
+      promptVisible: false,
+      show: false
   	}
   }
+
   componentWillMount() {
+    this.progress();
   	var _this = this;
   	AsyncStorage.getItem('token', (errs, results) => {
   		if (results) {
@@ -42,30 +48,34 @@ class MyPage extends Component {
   					if (response.ok === true) {
   						return response.json();
   					} else {
-  						Utils.showMessage('获取用户信息失败，请重新登录'); 
+  						return '失败'; 
   					}
   				})
   				.then(responseJSON => {
-            fetch(Http.domain + '/im/user_get_token/',{headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'}})
-              .then(response => {
-                if (response.ok === true) {
-                  return response.json();
-                } else {
-                  return '失败'
-                }
+            if (responseJSON !== '失败') {
+              fetch(Http.domain + '/im/user_get_token/',{headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'}})
+                .then(response => {
+                  if (response.ok === true) {
+                    return response.json();
+                  } else {
+                    return '失败'
+                  }
+                })
+                .then(res => {
+                  if (res !== '失败') {
+                    RnTest.rnIMConnect(res.token, function() {
+                    });
+                  }
+                })
+              _this.setState({
+                isLogin: true,
+                name: responseJSON.name,
+                headImg: responseJSON.avatar
               })
-              .then(res => {
-                if (res !== '失败') {
-                  RnTest.rnIMConnect(res.token, function() {
+            } else {
+              Utils.showMessage('获取用户信息失败，请重新登录');
+            }
 
-                  });
-                }
-              })
-  					_this.setState({
-  						isLogin: true,
-  						name: responseJSON.name,
-  						headImg: responseJSON.avatar
-  					})
   				})
   		}
   	})
@@ -78,11 +88,12 @@ class MyPage extends Component {
 					if (response.ok === true) {
 						return response.json();
 					} else {
-						Utils.showMessage('获取用户信息失败，请重新登录'); 
+						return '失败'; 
 					}
 				})
 				.then(responseJSON => {
-          fetch(Http.domain + '/im/user_get_token/',{headers: {'Authorization': 'Token ' + token, 'content-type': 'application/json'}})
+          if (responseJSON !== '失败') {
+            fetch(Http.domain + '/im/user_get_token/',{headers: {'Authorization': 'Token ' + token, 'content-type': 'application/json'}})
               .then(response => {
                 if (response.ok === true) {
                   return response.json();
@@ -97,11 +108,14 @@ class MyPage extends Component {
                   });
                 }
               })
-					_this.setState({
-						isLogin: true,
-						name: responseJSON.name,
-						headImg: responseJSON.avatar
-					})
+              _this.setState({
+                isLogin: true,
+                name: responseJSON.name,
+                headImg: responseJSON.avatar
+              })
+          } else {
+            Utils.showMessage('获取用户信息失败，请重新登录');
+          }
 				})
   	})
   	this.listenlogout = DeviceEventEmitter.addListener('logout', () => {
@@ -114,6 +128,9 @@ class MyPage extends Component {
   }
   componentWillUnmount() {
   	this.listenLogin.remove();
+    this.listenerProgressa.remove();
+    this.listenerProgressb.remove();
+    this.listenerProgressc.remove();
   }
   Logout() {
   	AsyncStorage.removeItem('token', () => {})
@@ -171,6 +188,52 @@ class MyPage extends Component {
   			}
   	}
   }
+  progress(){
+    var this_=this;
+    //进度
+    this.listenerProgressa = DeviceEventEmitter.addListener("uploadProgress_listener", function(params) {
+        
+    })
+    //完成
+    this.listenerProgressb = DeviceEventEmitter.addListener("uploadSuccess_listener", function(params) {
+      AsyncStorage.getItem('token', (errs, results) => {
+        fetch(Http.domain + '/userinfo/userinfo_update/',{method: 'put', headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'}, body: JSON.stringify({"avatar": params.imageurl})})
+          .then(response => {
+            if (response.ok === true) {
+              Utils.showMessage('修改成功');
+              this_.setState({
+                headImg: params.imageurl,
+                show: false
+              })
+            } else {
+              this_.setState({
+                headImg: params.imageurl,
+                show: false
+              })
+              Utils.showMessage('修改失败');
+            }
+          })
+      })
+      this_.setState({
+        show:false,
+      })
+    });
+    //开始
+    this.listenerProgressc = DeviceEventEmitter.addListener("uploadStrat_listener", function(params) {
+      this_.setState({
+        show:true,
+      })
+    })
+  }
+  qiniu(){
+    AsyncStorage.getItem('token', (errs, results) => {
+      allAndroid.rnQiniu(results,false,"gallery");  
+    })
+    
+  }
+  updateavatar() {
+    this.qiniu();
+  }
   updatename(name) {
     var _this = this;
     this.setState({
@@ -197,7 +260,9 @@ class MyPage extends Component {
       	<ScrollView>
       		{this.state.isLogin === true?(
       			<View style={{backgroundColor: 'rgb(250, 80, 131)', width: width, height: height / 3, alignItems: 'center', justifyContent: 'center'}}>
-	      			<Image resizeMode={'contain'} style={{width: height / 9, height: height / 9}} source={{uri: this.state.headImg}}/>
+              <TouchableOpacity onPress={this.updateavatar.bind(this)} style={{width: height / 9, height: height / 9}}>
+	      			  <Image resizeMode={'contain'} style={{width: height / 9, height: height / 9}} source={{uri: this.state.headImg}}/>
+              </TouchableOpacity>
 	      				<Text style={{color: 'white', fontSize: 18, marginTop: 20}}>{this.state.name}</Text>
       			</View>
       			):(
@@ -244,7 +309,17 @@ class MyPage extends Component {
       			</View>
       			):(null)}
       	</ScrollView>
-
+        {this.state.show?(
+          <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
+              <ActivityIndicator 
+                  style={{marginTop: 10}}
+                  color={'white'}
+                  size={'large'}
+                  animating={true}
+                      />
+              <Text style={{color: 'white'}}>上传中...</Text>
+          </View>
+          ):(null)}
         <Prompt
           title="修改昵称"
           placeholder={'昵称'}
