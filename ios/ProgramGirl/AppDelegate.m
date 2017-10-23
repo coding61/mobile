@@ -172,6 +172,7 @@
 - (void)onRCIMConnectionStatusChanged:(RCConnectionStatus)status {
   NSLog(@"status:%ld", (long)status);
   if (status == ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT) {
+    /*
     UIAlertView *alert = [[UIAlertView alloc]
                           initWithTitle:@"提示"
                           message:
@@ -181,6 +182,7 @@
                           cancelButtonTitle:@"知道了"
                           otherButtonTitles:nil, nil];
     [alert show];
+     */
     //让用户去登录
   } else if (status == ConnectionStatus_TOKEN_INCORRECT) {
     NSLog(@"重新请求去连接");
@@ -193,6 +195,7 @@
     }];
   }else if (status == ConnectionStatus_DISCONN_EXCEPTION){
     [[RCIMClient sharedRCIMClient] disconnect];
+    /*
     UIAlertView *alert = [[UIAlertView alloc]
                           initWithTitle:@"提示"
                           message:
@@ -201,6 +204,7 @@
                           cancelButtonTitle:@"知道了"
                           otherButtonTitles:nil, nil];
     [alert show];
+     */
     //让用户去登录
   }
 }

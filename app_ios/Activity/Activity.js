@@ -119,7 +119,7 @@ class Activity extends Component {
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
                     if (response == 401) {
                         //去登录
-                        this._goLogin();
+                        // this._goLogin();
                         return;
                     }
                     if (!response) {

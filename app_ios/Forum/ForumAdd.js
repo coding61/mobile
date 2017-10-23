@@ -15,6 +15,7 @@ import {
   Alert,
   FlatList,
   SectionList,
+  AsyncStorage,
   ActivityIndicator,
 }from 'react-native';
 import face from './Content_Rex';
@@ -36,7 +37,6 @@ export default class ForumAdd extends Component{
             IdCard1:'',//图片
             sectionname:'',
         }
-        console.log(this.props.navigation.state.params.token)
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
@@ -72,8 +72,16 @@ export default class ForumAdd extends Component{
 
             if (data.content=='') {
                 Alert.alert('请输入帖子内容！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
-            }else{
-                console.log(data)
+            }else if(data.section==''){
+                Alert.alert('请选择发布帖子专区！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+            }else if(this.state.token==''||this.state.token==null){
+                Alert.alert('请登录后再发帖！','',[{text:'确定',onPress: () => {
+                    this.props.navigation.navigate("Login", {callback:()=>{
+                        this._reloadPage();
+                    }})
+                }, style: 'destructive'}])
+            }
+            else{
                 fetch(basePath+"/forum/posts_create/",
                 {
                     method:'post',
@@ -83,11 +91,9 @@ export default class ForumAdd extends Component{
                     body: JSON.stringify(data),  
                 })
                 .then((response)=>{
-                    console.log(response)
                     return response.json();
                 })
                 .then((result)=>{
-                    console.log(result)
                     if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
                         Alert.alert(
                             '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',
@@ -108,10 +114,17 @@ export default class ForumAdd extends Component{
             }
         })
     }
-    componentWillUpdate(){
-
+    _reloadPage(){
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    
+                });
+            }
+        });
     }
-        // 上传图片方法
+    // 上传图片方法
     _upload(filename, token, key) {
         qiniu.uploadImage(filename, token, key,(error, callBackEvents)=>{
           if(error) {
@@ -122,9 +135,8 @@ export default class ForumAdd extends Component{
                     imgArr+='img['+ callBackEvents.url+ '] ';
                     content=this.state.text+imgArr;
                     this.setState({text:content,show: false})
-                    //this._renewIcon(callBackEvents.url);
+                    
                 } else {
-                    //this.setState({show: false});
                     AlertIOS.alert('上传失败');
                 }
             }
@@ -135,21 +147,20 @@ export default class ForumAdd extends Component{
     _getQNToken(filename) {
         var url = basePath + "/upload/token/";
         fetch(url, {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Token ' + this.state.token,
-          },
-          body: JSON.stringify({
-            filename: filename,
-            private: false,
-          }),
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + this.state.token,
+            },
+            body: JSON.stringify({
+                filename: filename,
+                private: false,
+            }),
         })
         .then((response)=> response.json())
         .then((responseJson) => {
             if (responseJson.token) {
-
                 this._upload(filename, responseJson.token, responseJson.key);
             } else {
                 this.setState({show: false});
@@ -175,29 +186,28 @@ export default class ForumAdd extends Component{
             }
         };
         ImagePicker.showImagePicker(options, (response) => {
-          if (response.didCancel) {
-            console.log('User cancelled image picker');
-          }
-          else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-          }
-          else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
-          }
-          else {
-                console.log(response)
-              this.setState({show: true});
-              let source = { uri: response.uri };
-              var filename = response.uri.replace('file://', '');
-              this._getQNToken(filename);
-          }
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            }
+            else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            }
+            else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            }
+            else {
+                this.setState({show: true});
+                let source = { uri: response.uri };
+                var filename = response.uri.replace('file://', '');
+                this._getQNToken(filename);
+            }
         });
     }
     goclass(){
         this.props.navigation.navigate('ForumClass',{callback:(data)=>{
-                    this.setState({
-                    sectionpk:data.pk,
-                    sectionname:data.name
+            this.setState({
+                sectionpk:data.pk,
+                sectionname:data.name
             })
         }});
     }
@@ -240,8 +250,6 @@ export default class ForumAdd extends Component{
                     enablesReturnKeyAutomatically={true}
                     placeholderTextColor='#aaaaaa'
                 />
-                
-
                 {this.state.show?(
                     <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
                         <ActivityIndicator 

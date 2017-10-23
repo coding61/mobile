@@ -13,6 +13,7 @@ import {
   Alert,
   RefreshControl,
   WebView,
+  AsyncStorage,
   DeviceEventEmitter
 }from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -40,9 +41,7 @@ export default class Forum_Details extends Component{
             commentshow:false,
             Maincommentshow:false,
             content:'',
-            //reply_pk:'',
         } 
-        console.log(this.props.navigation.state.params)
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
@@ -73,11 +72,21 @@ export default class Forum_Details extends Component{
         }
         this.eventEmss.remove();
     }
+    componentWillMount(){
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},(result)=>{
+                    self._loadUserinfo()
+                });
+            }
+             
+        });
+    }
     componentDidMount() {
         this._loadforum()
         this._loadData()
         this._loadUserinfo()
-
         this.eventEmss = DeviceEventEmitter.addListener('collec', (value)=>{
             var data = {};
             data.types = "posts";
@@ -127,9 +136,7 @@ export default class Forum_Details extends Component{
     }
     _loadforum(){
         forum_url=basePath+'/forum/posts/'+this.state.pk+'/';
-        fetch(forum_url,{
-            headers: {Authorization: 'Token ' + this.state.token}
-        })
+        fetch(forum_url)
         .then(response=>{
             if (response.status === 200) {
                 return response.json();
