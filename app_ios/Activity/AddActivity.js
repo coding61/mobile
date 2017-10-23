@@ -74,7 +74,7 @@ class AddActivity extends Component {
           })
           .then(res => {
             if (res === '成功') {
-              Utils.showMessage('添加成功！');
+              Utils.showMessage('活动已经提交，审核后将出现在列表中！');
               _this.setState({
                 isUp: true
               },() => {

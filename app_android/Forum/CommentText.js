@@ -35,7 +35,6 @@ export default class CommentText extends Component{
             show:false,
             IdCard1:'',//图片
         }
-        //console.log(this.state.pk)
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;

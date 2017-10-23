@@ -91,11 +91,11 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "25.0.0"
 
     defaultConfig {
         applicationId "com.cxy61.girls"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 22
         versionCode 5
         versionName "1.4.0"
@@ -130,6 +130,12 @@ android {
             }
         }
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs', 'src/main/jniLibs']
+        }
+    }
 }
 
 dependencies {
@@ -145,6 +151,8 @@ dependencies {
     //compile 'com.qiniu:qiniu-android-sdk:7.2.+'
     compile project(':library')
     compile files('libs/xUtils-2.6.14.jar')
+    compile project(':IMKit')
+    compile files('libs/MiPush_SDK_Client_3_2_2.jar')
 }
 
 // Run this once to be able to run the application with BUCK
