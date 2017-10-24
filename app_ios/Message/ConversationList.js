@@ -19,6 +19,8 @@ import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 
+import EmptyView from '../Component/EmptyView.js';
+
 var RCTMyView = requireNativeComponent('RongYunView', null);
 //导入iOS原生模块
 var LocalModuleiOS = NativeModules.RNBridgeModule;
@@ -43,20 +45,20 @@ class ConversationList extends Component {
 	};
 	componentWillMount() {
         //监听iOS的QQLoginOut事件
-        localModuleEmitter.addListener('connectRongSuccess',(result)=>{
+        this.listener=localModuleEmitter.addListener('connectRongSuccess',(result)=>{
             this.setState({
             	showView:true
             })
         })
 	}
 	componentWillUnmount() {
-	   
+		this.listener&&this.listener.remove();
 	}
   	render() {
 	    return (
-	        <View style={{flex: 1}}>
+	        <View style={{flex: 1, backgroundColor:bgColor}}>
 				{
-					this.state.showView?<RCTMyView style={{width: width, height: height - headerH}}/>:null
+					this.state.showView?<RCTMyView style={{width: width, height: height - headerH}}/>:<EmptyView failTxt="暂无对话"/>
 				}
 		    </View>
 	    );
@@ -70,6 +72,8 @@ const width = Utils.width;                          //屏幕的总宽
 const height = Utils.height;                        //屏幕的总高
 
 const pinkColor = Utils.btnBgColor;
+const bgColor = Utils.bgColor;
+
 const styles = StyleSheet.create({
 
 });

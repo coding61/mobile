@@ -51,6 +51,8 @@
   [RCIM sharedRCIM].userInfoDataSource = BCRCDataSource;
   [RCIM sharedRCIM].groupInfoDataSource = BCRCDataSource;
   
+//  [RCIM sharedRCIM].enablePersistentUserInfoCache = YES;
+  
   //设置Log级别，开发阶段打印详细log
 //  [RCIMClient sharedRCIMClient].logLevel = RC_Log_Level_Info;
   

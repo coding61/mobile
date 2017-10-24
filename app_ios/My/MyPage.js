@@ -101,7 +101,7 @@ class MyPage extends Component {
               })
               .then(res => {
                 if (res !== '失败') {
-                  RNBridgeModule.RNConnectRongIM(res.token, results);
+                  RNBridgeModule.RNConnectRongIM(res.token, token);
                 }
               })
               _this.setState({
