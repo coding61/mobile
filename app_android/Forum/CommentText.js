@@ -163,6 +163,7 @@ export default class CommentText extends Component{
     }
     qiniu(){
         allAndroid.rnQiniu(this.state.token,false,"gallery");
+        DeviceEventEmitter.emit('forumadd', "photo");
     }
     render() {
         return (

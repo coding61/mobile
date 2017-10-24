@@ -82,6 +82,16 @@ class MyPage extends Component {
   }
   componentDidMount() {
   	var _this = this;
+    this.listenphoto = DeviceEventEmitter.addListener("forumadd",(photo)=>{
+      if(photo=='photo'){
+        this.listenerProgressaa.remove();
+    this.listenerProgressbb.remove();
+    this.listenerProgresscc.remove();
+       /* DeviceEventEmitter.removeListener('uploadProgress_listener')
+        DeviceEventEmitter.removeListener('uploadSuccess_listener')
+        DeviceEventEmitter.removeListener('uploadStrat_listener')*/
+      }
+    })
   	this.listenLogin = DeviceEventEmitter.addListener('listenLogin', (token) => {
   		fetch(Http.domain + '/userinfo/whoami/',{headers: {'Authorization': 'Token ' + token, 'content-type': 'application/json'}})
 				.then(response => {
@@ -128,9 +138,10 @@ class MyPage extends Component {
   }
   componentWillUnmount() {
   	this.listenLogin.remove();
-    this.listenerProgressa.remove();
-    this.listenerProgressb.remove();
-    this.listenerProgressc.remove();
+     this.listenphoto.remove();
+    this.listenerProgressaa.remove();
+    this.listenerProgressbb.remove();
+    this.listenerProgresscc.remove();
   }
   Logout() {
   	AsyncStorage.removeItem('token', () => {})
@@ -191,11 +202,13 @@ class MyPage extends Component {
   progress(){
     var this_=this;
     //进度
-    this.listenerProgressa = DeviceEventEmitter.addListener("uploadProgress_listener", function(params) {
+
+
+    this.listenerProgressaa = DeviceEventEmitter.addListener("uploadProgress_listener", function(params) {
         
     })
     //完成
-    this.listenerProgressb = DeviceEventEmitter.addListener("uploadSuccess_listener", function(params) {
+    this.listenerProgressbb = DeviceEventEmitter.addListener("uploadSuccess_listener", function(params) {
       AsyncStorage.getItem('token', (errs, results) => {
         fetch(Http.domain + '/userinfo/userinfo_update/',{method: 'put', headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'}, body: JSON.stringify({"avatar": params.imageurl})})
           .then(response => {
@@ -219,7 +232,7 @@ class MyPage extends Component {
       })
     });
     //开始
-    this.listenerProgressc = DeviceEventEmitter.addListener("uploadStrat_listener", function(params) {
+    this.listenerProgresscc = DeviceEventEmitter.addListener("uploadStrat_listener", function(params) {
       this_.setState({
         show:true,
       })
@@ -227,7 +240,8 @@ class MyPage extends Component {
   }
   qiniu(){
     AsyncStorage.getItem('token', (errs, results) => {
-      allAndroid.rnQiniu(results,false,"gallery");  
+      allAndroid.rnQiniu(results,false,"gallery"); 
+
     })
     
   }

@@ -129,6 +129,7 @@ export default class ForumAdd extends Component{
     progress(){
         var  this_=this;
         //进度
+
         this.listenerProgressa = DeviceEventEmitter.addListener("uploadProgress_listener", function(params) {
             
         })
@@ -153,6 +154,7 @@ export default class ForumAdd extends Component{
     }
     qiniu(){
         allAndroid.rnQiniu(this.state.token,false,"gallery");
+        DeviceEventEmitter.emit('forumadd', "photo");
         //allAndroid.rnCancelUp();
     }
     chooseclass(){
