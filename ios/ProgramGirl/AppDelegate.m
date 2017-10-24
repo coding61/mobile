@@ -14,6 +14,7 @@
 #import <React/RCTRootView.h>
 
 #import "TalkingData.h"   //应用统计分析
+#import "RNBridgeModule.h"
 
 @implementation AppDelegate
 
@@ -83,7 +84,6 @@
   NSString *userToken = dic[UserToken];
   int failTimes = 0;
   
-  
   [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:UserToken];   //用户 token
   [[NSUserDefaults standardUserDefaults] setObject:token forKey:RongToken];       //融云 token
   
@@ -137,6 +137,9 @@
        
       [[RCIM sharedRCIM] refreshUserInfoCache:user withUserId:info[UserId]];
        */
+      //向 js 发送通知消息
+      RNBridgeModule *rn = [RNBridgeModule allocWithZone:nil];
+      [rn sendMsg];
       
     }else if(ConnectStatus == ConnectFail){
       //连接融云失败
