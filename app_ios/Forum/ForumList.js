@@ -35,6 +35,7 @@ export default class ForumList extends Component{
             loadText: '正在加载...',
             isRefreshing: false,
             moreshow:false,
+            token:'',
         };
     }
  
@@ -85,7 +86,6 @@ export default class ForumList extends Component{
                     self._loadunread()
                 });
             }
-            
         });
     }
     componentWillMount(){
@@ -99,7 +99,6 @@ export default class ForumList extends Component{
                     self._loadunread()
                 });
             }
-            
         });
     }
     componentDidMount(){

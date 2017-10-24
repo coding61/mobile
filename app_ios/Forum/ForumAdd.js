@@ -61,8 +61,27 @@ export default class ForumAdd extends Component{
     componentWillUnmount(){
         this.eventEm.remove();
     }
+    componentWillMount(){
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    
+                });
+            }
+            
+        });
+    }
     componentDidMount() {
-        
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    
+                });
+            }
+            
+        });
         this.eventEm = DeviceEventEmitter.addListener('publish', (value)=>{
             var data = {};
             data.section = this.state.sectionpk;

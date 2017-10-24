@@ -36,6 +36,7 @@ export default class ForumList extends Component{
             loadText: '正在加载...',
             isRefreshing: false,
             moreshow:false,
+            token:'',
         };
     }
  

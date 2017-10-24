@@ -34,6 +34,7 @@ export default class ForumAdd extends Component{
             sectionpk:'',
             sectionname:'',
         }
+        console.log(this.props.navigation.state.params.token)
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
@@ -72,7 +73,27 @@ export default class ForumAdd extends Component{
             }
         });
     }
+    componentWillMount(){
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    
+                });
+            }
+            
+        });
+    }
     componentDidMount() {
+        var self = this;
+        AsyncStorage.getItem('token', function(errs, result) {
+            if(result!=null){
+                self.setState({token: result},()=>{
+                    
+                });
+            }
+            
+        });
         this.progress();
         this.eventEm = DeviceEventEmitter.addListener('publish', (value)=>{
             var data = {};
