@@ -7,7 +7,6 @@
 //
 
 #import "BCRCConversationListViewFirstVC.h"
-
 @interface BCRCConversationListViewFirstVC ()
 
 @end
@@ -26,6 +25,7 @@
                                       @(ConversationType_APPSERVICE),
                                       @(ConversationType_SYSTEM)]];
   self.emptyConversationView = [[UIView alloc] init];
+  self.navigationController.navigationBar.translucent = NO;
 }
 //重写RCConversationListViewController的onSelectedTableRow事件
 - (void)onSelectedTableRow:(RCConversationModelType)conversationModelType
@@ -38,7 +38,6 @@
   
   [CXYAppDelegate.nav pushViewController:chat animated:YES];
 }
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

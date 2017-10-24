@@ -10,7 +10,9 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  requireNativeComponent
+  requireNativeComponent,
+  NativeModules,
+  NativeEventEmitter,
 } from 'react-native';
 
 import BCFetchRequest from '../utils/BCFetchRequest.js';
@@ -18,8 +20,19 @@ import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 
 var RCTMyView = requireNativeComponent('RongYunView', null);
+//导入iOS原生模块
+var LocalModuleiOS = NativeModules.RNBridgeModule;
+//iOS事件监听
+const localModuleEmitter = new NativeEventEmitter(LocalModuleiOS);
 
 class ConversationList extends Component {
+	constructor(props) {
+	   super(props);
+	
+	    this.state = {
+			showView:false
+	    };
+	}
 	static navigationOptions = ({navigation}) => {
 		const {state, setParams, goBack, navigate} = navigation;
 		return {
@@ -28,10 +41,23 @@ class ConversationList extends Component {
             headerStyle: { backgroundColor: pinkColor}
 		}
 	};
+	componentWillMount() {
+        //监听iOS的QQLoginOut事件
+        localModuleEmitter.addListener('connectRongSuccess',(result)=>{
+            this.setState({
+            	showView:true
+            })
+        })
+	}
+	componentWillUnmount() {
+	   
+	}
   	render() {
 	    return (
 	        <View style={{flex: 1}}>
-				<RCTMyView style={{width: width, height: height - headerH}}/>
+				{
+					this.state.showView?<RCTMyView style={{width: width, height: height - headerH}}/>:null
+				}
 		    </View>
 	    );
   	}

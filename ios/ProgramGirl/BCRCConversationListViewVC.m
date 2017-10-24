@@ -31,6 +31,7 @@
   
   self.emptyConversationView = [[UIView alloc] init];
   self.title = @"会话列表";
+  self.navigationController.navigationBar.translucent = NO;
   
 }
 //重写RCConversationListViewController的onSelectedTableRow事件

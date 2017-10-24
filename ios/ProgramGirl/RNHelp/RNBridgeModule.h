@@ -8,7 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <React/RCTBridgeModule.h>   //RN 交互
+#import <React/RCTEventEmitter.h>
 
-@interface RNBridgeModule : NSObject<RCTBridgeModule>
+@interface RNBridgeModule : RCTEventEmitter<RCTBridgeModule>
+
+- (void)sendMsg;
 
 @end

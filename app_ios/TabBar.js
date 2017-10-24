@@ -12,7 +12,7 @@ import {
     View,
     TouchableOpacity,
     Image,
-    Button
+    Button,
 } from 'react-native';
 import {TabNavigator} from 'react-navigation';
 
@@ -65,7 +65,7 @@ const TabBar = TabNavigator({
                 :
                     <Image source={require('./images/tabs/5-unselect.png')}
                     style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
-            ),
+            )
         }
     },
     Activity:{

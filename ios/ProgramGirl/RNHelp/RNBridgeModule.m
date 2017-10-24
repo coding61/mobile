@@ -8,10 +8,21 @@
 
 #import "RNBridgeModule.h"
 
-@implementation RNBridgeModule
-@synthesize bridge = _bridge;
+@implementation RNBridgeModule{
+  bool hasListeners;
+}
 
-RCT_EXPORT_MODULE()   //RNBridgeModule实现模块协议方法
++ (id)allocWithZone:(NSZone *)zone {
+  static RNBridgeModule *sharedInstance = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    sharedInstance = [super allocWithZone:zone];
+  });
+  return sharedInstance;
+}
+
+//导出这个类，不然js不能使用 默认导出当前类名
+RCT_EXPORT_MODULE();   //RNBridgeModule实现模块协议方法
 
 //连接融云，并设置当前用户信息
 //RCT_EXPORT_METHOD(RNConnectRongIM:(NSString *)rongToken userInfo:(NSDictionary *)info){
@@ -45,5 +56,24 @@ RCT_EXPORT_METHOD(RNEnterChatListView){
 //退出融云，即断开与融云的连接
 RCT_EXPORT_METHOD(disconnect) {
   [[RCIM sharedRCIM] logout];
+}
+#pragma mark - 监听相关，iOS-》JS
+// 在添加第一个监听函数时触发
+-(void)startObserving {
+  hasListeners = YES;
+}
+// 取消监听时触发
+-(void)stopObserving {
+  hasListeners = NO;
+}
+//这里注册一个退出登录的事件(通知名)
+- (NSArray<NSString *> *)supportedEvents {
+  return @[@"connectRongSuccess"];
+}
+- (void)sendMsg{
+  if(hasListeners){
+    //发送事件，可以携带数据
+    [self sendEventWithName:@"connectRongSuccess" body:@{}];
+  }
 }
 @end
