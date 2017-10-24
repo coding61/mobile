@@ -471,11 +471,6 @@ const styles = StyleSheet.create({
         flex:1,
         backgroundColor:bgColor
     },
-    item:{
-        padding:10,
-        fontSize:18,
-        height:44,
-    },
 
     // ------------------------------------------活动列表
     // --------------FlatList 的尾部

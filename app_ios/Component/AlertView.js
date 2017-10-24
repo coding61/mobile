@@ -127,8 +127,8 @@ const styles = StyleSheet.create({
         backgroundColor:'rgba(0,0,0,0.5)', 
         flex:1, 
         alignItems:'center', 
-        justifyContent:'center',
-
+        paddingTop:height/2-150
+        // justifyContent:'center',   //键盘会覆盖底部按钮
     },
     alertView:{
         backgroundColor:alertViewBgColor, 
@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
 
     middleView:{
         minHeight:120, 
+        maxHeight:150,
         borderBottomColor:alertLineColor, 
         borderBottomWidth:1, 
         alignItems:'center', 

@@ -507,11 +507,6 @@ const styles = StyleSheet.create({
         flex:1,
         backgroundColor:bgColor
     },
-    item:{
-        padding:10,
-        fontSize:18,
-        height:44,
-    },
     // ------------------------------------------tab 选项卡
     tabs:{
         height:40, 
