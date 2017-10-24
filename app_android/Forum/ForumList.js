@@ -83,7 +83,6 @@ export default class ForumList extends Component{
                     self._loadunread()
                 });
             }
-            
         });
     }
     componentWillMount(){
