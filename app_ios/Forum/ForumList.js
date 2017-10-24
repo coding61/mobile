@@ -90,7 +90,7 @@ export default class ForumList extends Component{
     }
     componentWillMount(){
         this.props.navigation.setParams({
-            newscount: '',
+            newscount: 0,
         });
         var self = this;
         AsyncStorage.getItem('token', function(errs, result) {
@@ -301,6 +301,7 @@ export default class ForumList extends Component{
             isRefreshing: true
         },()=> {
             this._loadAlldata();
+            this._reloadPage();
         })
     }
     forumdetail(data){
