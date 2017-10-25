@@ -13,7 +13,8 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  Image
+  Image,
+  DeviceEventEmitter
 } from 'react-native';
 
 import BCFetchRequest from '../utils/BCFetchRequest.js';
@@ -326,6 +327,8 @@ class MyActivity extends Component {
                 if (this.state.tab == CreateActivityTab) {
                     // 删除我发布的某条活动
                     this._reloadDeletePage(pk);
+                    // 同时，发送消息告知活动页，去掉删除的这条活动
+                    DeviceEventEmitter.emit('listenDeleteActivity', pk);
                 }
             }
         }})

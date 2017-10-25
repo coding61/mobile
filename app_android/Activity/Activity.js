@@ -13,7 +13,8 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  Image
+  Image,
+  DeviceEventEmitter
 } from 'react-native';
 
 import BCFetchRequest from '../utils/BCFetchRequest.js';
@@ -64,9 +65,17 @@ class Activity extends Component {
         this.props.navigation.setParams({
             addActivityEvent:this._clickAddActivity
         })
+
+        // 注册删除活动的监听
+        this.listenDeleteActivity = DeviceEventEmitter.addListener('listenDeleteActivity', (pk)=>{
+            this._deleteDataPage(pk);
+        })
     }
     componentWillUnmount() {
         this.timer && clearTimeout(this.timer);
+
+        // 移除监听
+        this.listenDeleteActivity.remove();
     }
     // ------------------------------------------网络请求
     //获取活动列表
