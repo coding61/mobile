@@ -311,7 +311,7 @@ class MyActivity extends Component {
     }
     // 活动详情
     _pushActivityDetail(pk){
-        this.props.navigation.navigate("ActivityDetail", {pk:pk, fromPage:"my", callback:(isChange)=>{
+        this.props.navigation.navigate("ActivityDetail", {pk:pk, fromPage:"my", callback:(isChange, isDelete)=>{
             if (isChange) {
                 if (this.state.tab === JoinActivityTab) {
                     // 删除我加入的这条活动
@@ -319,6 +319,13 @@ class MyActivity extends Component {
                 }else if (this.state.tab === CreateActivityTab) {
                     // 刷新本页
                     this._reloadPage(pk);
+                }
+            }
+            // 解散活动
+            if (isDelete) {
+                if (this.state.tab == CreateActivityTab) {
+                    // 删除我发布的某条活动
+                    this._reloadDeletePage(pk);
                 }
             }
         }})

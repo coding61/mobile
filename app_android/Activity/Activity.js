@@ -307,9 +307,14 @@ class Activity extends Component {
     }
     // 活动详情
     _pushActivityDetail(pk){
-        this.props.navigation.navigate("ActivityDetail", {pk:pk, fromPage:"list", callback:(isChange)=>{
+        this.props.navigation.navigate("ActivityDetail", {pk:pk, fromPage:"list", callback:(isChange, isDelete)=>{
             if (isChange) {
+                // 更新某条数据
                 this._reloadPage(pk);
+            }
+            if (isDelete) {
+                // 删除数据
+                this._deleteDataPage(pk);
             }
         }})
     }
@@ -317,6 +322,20 @@ class Activity extends Component {
     _reloadPage(pk){
         // this._fetchActivityList(1);
         this._fetchActivityDetail(pk)
+    }
+    // 删除页面数据
+    _deleteDataPage(pk){
+        var array = this.state.dataSource;
+        for (var i = 0; i < array.length; i++) {
+            if(array[i].pk == pk){
+                // 删除数据
+                array.splice(i, 1);
+                break;
+            }
+        }
+        this.setState({
+            dataSource:array
+        })
     }
 
 	// ------------------------------------------活动列表

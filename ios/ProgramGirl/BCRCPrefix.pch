@@ -65,7 +65,7 @@
 #define user1 @{UserId:@"01", NickName:@"小一", PortraitUri:@"https://wx.qlogo.cn/mmopen/Miayzv8oDnvAkFvJ5EyYKh6iaG4uXEIkna1YduZ48Ok66SU5ewJkK5gzqkdMJDHicGE8VJ1Qf8pcibAXPjtZUlRotxcSrEEszUbY/0"}
 #define user2 @{UserId:@"02", NickName:@"小二", PortraitUri:@"https://wx.qlogo.cn/mmopen/Miayzv8oDnvAkFvJ5EyYKh6iaG4uXEIkna1YduZ48Ok66SU5ewJkK5gzqkdMJDHicGE8VJ1Qf8pcibAXPjtZUlRotxcSrEEszUbY/0"}
 #define user3 @{UserId:@"03", NickName:@"小三", PortraitUri:@"https://wx.qlogo.cn/mmopen/Miayzv8oDnvAkFvJ5EyYKh6iaG4uXEIkna1YduZ48Ok66SU5ewJkK5gzqkdMJDHicGE8VJ1Qf8pcibAXPjtZUlRotxcSrEEszUbY/0"};
-#define group1 @{GroupId:@"001", GroupName:@"01建的群组", GroupPortraitUri:@"https://static1.bcjiaoyu.com/binshu.jpg"}
+#define group1 @{GroupId:@"001", GroupName:@"匿名群组", GroupPortraitUri:@"https://fqs.haorenao.cn/defaultavatar.png"}
 
 #endif /* BCRCPrefix_pch */
 

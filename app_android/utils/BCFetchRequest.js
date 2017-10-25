@@ -39,7 +39,7 @@ let BCFetchRequest = {
 		
 		fetch(url, dic)
 		.then((response) => {
-            if (response.status === 200 || response.status=== 400 || response.status == 403) {
+            if (response.status === 200 || response.status=== 400 || response.status == 403 || response.status === 201) {
             	return response.json();
             }else if(response.status === 401){
             	return 401

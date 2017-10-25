@@ -34,10 +34,12 @@
     //调用服务器接口根据 userId 异步请求数据
     if (![userId isEqualToString: [RCIM sharedRCIM].currentUserInfo.userId]) {
         [[BCRCIMDataSource shareInstance] getOtherInfo:userId callback:^(RCUserInfo *otherUser) {
+            [[RCIM sharedRCIM] refreshUserInfoCache:otherUser withUserId:userId];
             completion(otherUser);
         }];
     }else{
         [[BCRCIMDataSource shareInstance] getOwnInfo:userId callback:^(RCUserInfo *ownUser) {
+            [[RCIM sharedRCIM] refreshUserInfoCache:ownUser withUserId:userId];
             completion(ownUser);
         }];
     }
@@ -112,7 +114,8 @@
             NSLog(@"获取群组信息失败");
             NSDictionary *info = group1;
             NSLog(@"%@", info);
-            RCGroup *group = [[RCGroup alloc] initWithGroupId:info[GroupId] groupName:info[GroupName] portraitUri:info[GroupPortraitUri]];
+            NSString *groupName = [NSString stringWithFormat:@"%@%@", info[GroupName], groupId];
+            RCGroup *group = [[RCGroup alloc] initWithGroupId:groupId groupName:groupName portraitUri:GroupThumb];
             
             callback(group);
         }else{

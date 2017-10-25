@@ -38,6 +38,7 @@ class ActivityDetail extends Component {
             showJoinActivityAlertView:false,     //是否显示输入密码弹框
             activityPsd:"",                      //活动密码
             isChange:false,                      //是否增加成员或者改变成员,修改信息，移除成员
+            isDelete:false,                      //是否解散活动
 	  	};
 	}
 	// -----导航栏自定制
@@ -57,7 +58,7 @@ class ActivityDetail extends Component {
     }
     componentWillUnmount() {
         if (this.props.navigation.state.params.callback) {
-           this.props.navigation.state.params.callback(this.state.isChange);
+           this.props.navigation.state.params.callback(this.state.isChange, this.state.isDelete);
         }
     }
     // ------------------------------------------网络请求
@@ -168,7 +169,8 @@ class ActivityDetail extends Component {
                         return;
                     }
                     this.setState({
-                        isChange:true
+                        isChange:true,
+                        isDelete:false
                     })
                     this._adjustActivityInfo(response);
                 }, (err) => {
@@ -203,7 +205,8 @@ class ActivityDetail extends Component {
                         return;
                     }
                     this.setState({
-                        isChange:true
+                        isChange:true,
+                        isDelete:false
                     })
                     this._adjustActivityInfo(response);
 
@@ -218,6 +221,42 @@ class ActivityDetail extends Component {
             }
         })
         
+    }
+    // 解散活动
+    _fetchQuitActivity(pk){
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "delete",
+                    url = Http.quitActivity(pk),
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response == 401) {
+                        //去登录
+                        this._goLogin();
+                        return;
+                    }
+                    if (!response) {
+                        //请求失败
+                    };
+                    if (response.status == -4) {
+                        Utils.showMessage(response.message?response.message:response.detail);
+                        return;
+                    }
+                    Utils.showMessage("活动删除成功");
+                    this.setState({
+                        isChange:false,
+                        isDelete:true
+                    }, ()=>{
+                        this.props.navigation.goBack();
+                    })
+                    
+                }, (err) => {
+                    console.log(2);
+                    // Utils.showMessage('网络请求失败');
+                });
+            }
+        })
     }
     // ------------------------------------------帮助方法
     // 去登录
@@ -324,6 +363,10 @@ class ActivityDetail extends Component {
     // 退出活动
     _leaveActivity(){
         this._fetchLeaveActivity(this.props.navigation.state.params.pk);
+    }
+    // 解散活动
+    _quitActivity(){
+        this._fetchQuitActivity(this.props.navigation.state.params.pk);
     }
     _OkPressEvent(){
         this._submitJoinActivity();
@@ -493,6 +536,12 @@ class ActivityDetail extends Component {
                             <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
                             <View style={styles.btnJoin}>
                                 <Text style={styles.btnText}>进入群聊</Text>
+                            </View>
+                            </TouchableOpacity>
+                            
+                            <TouchableOpacity onPress={this._quitActivity.bind(this)}>
+                            <View style={styles.btnQuit}>
+                                <Text style={styles.btnText}>解散活动</Text>
                             </View>
                             </TouchableOpacity>
                             </View>
