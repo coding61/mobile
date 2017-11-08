@@ -366,7 +366,12 @@ class ActivityDetail extends Component {
     }
     // 解散活动
     _quitActivity(){
-        this._fetchQuitActivity(this.props.navigation.state.params.pk);
+        Utils.showAlert("解散活动", "是否要确定解散活动？", ()=>{
+            // 确定
+            this._fetchQuitActivity(this.props.navigation.state.params.pk);
+        }, ()=>{
+            // 取消
+        }, "确定", "取消");
     }
     _OkPressEvent(){
         this._submitJoinActivity();
