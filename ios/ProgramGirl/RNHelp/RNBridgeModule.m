@@ -68,12 +68,18 @@ RCT_EXPORT_METHOD(disconnect) {
 }
 //这里注册一个退出登录的事件(通知名)
 - (NSArray<NSString *> *)supportedEvents {
-  return @[@"connectRongSuccess"];
+  return @[@"connectRongSuccess", @"RongCloudUnreadMessage"];
 }
 - (void)sendMsg{
   if(hasListeners){
     //发送事件，可以携带数据
     [self sendEventWithName:@"connectRongSuccess" body:@{}];
+  }
+}
+- (void)hasUnreadMsg:(NSString *)hasUnread{
+  if (hasListeners) {
+    //发送事件,可以携带数据
+    [self sendEventWithName:@"RongCloudUnreadMessage" body:@{@"hasUnreadMsg":hasUnread}];
   }
 }
 @end

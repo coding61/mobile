@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BCGroupAnnouncementVC : UIViewController
+@interface BCGroupAnnouncementVC : UIViewController<UITextViewDelegate,UIAlertViewDelegate>
+
+@property (nonatomic, strong) UITextViewAndPlaceholder *AnnouncementContent;
+@property (nonatomic, strong) NSString *groupId;
 
 @end

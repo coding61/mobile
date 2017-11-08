@@ -18,4 +18,21 @@
 
 + (BCRCIMDataSource *)shareInstance;
 
+
+/**
+ 获取融云个人信息
+
+ @param userId 用户 id
+ @param callback  融云用户信息
+ */
+- (void)getOtherInfo:(NSString *)userId callback:(void (^)(RCUserInfo *))callback;
+
+/**
+ 获取融云群组成员信息
+
+ @param groupId 群组 id
+ @param callback  融云群组成员
+ */
+- (void)getGroupMemberInfo:(NSString *)groupId callback:(void (^)(NSArray *))callback;
+
 @end

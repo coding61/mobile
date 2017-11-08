@@ -12,6 +12,15 @@
 
 @interface RNBridgeModule : RCTEventEmitter<RCTBridgeModule>
 
+/**
+ 连接融云成功的监听
+ */
 - (void)sendMsg;
 
+/**
+ 发监听，通知 rn 融云是否含有未读消息
+
+ @param hasUnread true 有，false 无
+ */
+- (void)hasUnreadMsg:(NSString *)hasUnread;
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "BCRCConversationListViewFirstVC.h"
+#import "RNBridgeModule.h"
 @interface BCRCConversationListViewFirstVC ()
 
 @end
@@ -26,6 +27,23 @@
                                       @(ConversationType_SYSTEM)]];
   self.emptyConversationView = [[UIView alloc] init];
   self.navigationController.navigationBar.translucent = NO;
+
+}
+- (void)viewWillAppear:(BOOL)animated{
+  [super viewWillAppear:animated];
+  NSLog(@"未读消息数:%d", [[RCIMClient sharedRCIMClient] getTotalUnreadCount]);
+  NSLog(@"会话列表:%@", [[RCIMClient sharedRCIMClient] getConversationList:@[@(ConversationType_PRIVATE),
+                                                                         @(ConversationType_GROUP)]]);
+  //发通知，更改底部 tab 角标
+  RNBridgeModule *rn = [RNBridgeModule allocWithZone:nil];
+  if ([[RCIMClient sharedRCIMClient] getTotalUnreadCount] > 0) {
+    //红色角标
+    //向 js 发送通知消息
+    [rn hasUnreadMsg:@"true"];
+  }else{
+    //无角标
+    [rn hasUnreadMsg:@"false"];
+  }
 }
 //重写RCConversationListViewController的onSelectedTableRow事件
 - (void)onSelectedTableRow:(RCConversationModelType)conversationModelType

@@ -16,6 +16,9 @@
 #import <RongIMLib/RongIMLib.h>
 #import "AppDelegate.h"
 #import "BCAFRequest.h"
+#import "UITextViewAndPlaceholder.h"
+#import "UIColor+BCColor.h"
+#import "MBProgressHUD.h"
 #import "BCRCIMDataSource.h"
 #import "BCRongCHelp.h"
 #import "BCRCConversationViewVC.h"
@@ -26,9 +29,7 @@
 #define Rong_Key @"82hegw5uhf50x"
 #define Rong_Key_Test @"8w7jv4qb7eqty"
 #define Rong_Kefu_ID @"KEFU150839650061098"
-#define Rong_Token @"P8kGrgqKuySdvVshtjtF5AEPC4d+0eUUDgdKJ06NjR35ezRlr6DHhJU9MOlclh8Gl95+aN8qiYPai2zrBwW66w=="
-
-
+#define Rong_Token @"rpE53O1BLdFV4PWza9Qdm/ILLknaRXrcoLiW4dhFqQ+i43p1rfyFiWB7wGaNBLC6yNNzVhj/snyL4UjR4F6cd2PbrMuS2BXr"
 
 //连接融云的回调状态
 #define ConnectSuccess 1
@@ -54,6 +55,7 @@
 #define GroupName @"name"
 #define GroupPortraitUri @"groupThumb"
 #define GroupThumb @"https://fqs.haorenao.cn/defaultavatar.png"
+#define UserThumb @"https://fqs.haorenao.cn/defaultavatar.png"
 
 #define Domain @"https://www.cxy61.com/program_girl"   //https://app.bcjiaoyu.com/program_girl  https://www.cxy61.com/program_girl
 
@@ -61,6 +63,7 @@
 #define OwnInfoUrl   @"https://www.cxy61.com/program_girl/userinfo/whoami/"
 #define OtherInfoUrl @"https://www.cxy61.com/program_girl/userinfo/username_userinfo/?username=%@"
 #define GroupInfoUrl @"https://www.cxy61.com/program_girl/club/club_detail/%@/"
+#define GroupReplyTimeUrl @"https://www.cxy61.com/program_girl/club/club_last_reply_time_update/%@/"
 
 #define user1 @{UserId:@"01", NickName:@"小一", PortraitUri:@"https://wx.qlogo.cn/mmopen/Miayzv8oDnvAkFvJ5EyYKh6iaG4uXEIkna1YduZ48Ok66SU5ewJkK5gzqkdMJDHicGE8VJ1Qf8pcibAXPjtZUlRotxcSrEEszUbY/0"}
 #define user2 @{UserId:@"02", NickName:@"小二", PortraitUri:@"https://wx.qlogo.cn/mmopen/Miayzv8oDnvAkFvJ5EyYKh6iaG4uXEIkna1YduZ48Ok66SU5ewJkK5gzqkdMJDHicGE8VJ1Qf8pcibAXPjtZUlRotxcSrEEszUbY/0"}

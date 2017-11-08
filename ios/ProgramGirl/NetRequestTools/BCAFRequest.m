@@ -68,4 +68,19 @@
         }
     }];
 }
+//修改活动排序
++ (NSURLSessionDataTask *)updateActivitySort:(NSString *)url WithBlock:(void (^) (id obj, NSError *error))block{
+  NSString *string = [NSString stringWithFormat:@"Token %@",[[NSUserDefaults standardUserDefaults] objectForKey:UserToken]];
+  [[[AFAppNetAPIClient shareClient] requestSerializer] setValue:string forHTTPHeaderField:@"Authorization"];
+  
+  return [[AFAppNetAPIClient shareClient] PUT:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    if (block) {
+      block(responseObject, nil);
+    }
+  } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    if (block) {
+      block(nil, error);
+    }
+  }];
+}
 @end

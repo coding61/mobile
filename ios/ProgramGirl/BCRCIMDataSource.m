@@ -129,4 +129,41 @@
         }
     }];
 }
+#pragma mark - RCIMGroupMemberDataSource
+- (void)getAllMembersOfGroup:(NSString *)groupId
+                      result:(void (^)(NSArray<NSString *> *userIdList))resultBlock{
+  [self getGroupMemberInfo:groupId callback:^(NSArray * result) {
+    NSMutableArray *ret = [[NSMutableArray alloc] init];
+    for (RCUserInfo *user in result) {
+      [ret addObject:user.userId];
+    }
+    resultBlock(ret);
+  }];
+}
+//获取群所有成员,根据 groupId
+- (void)getGroupMemberInfo:(NSString *)groupId callback:(void (^)(NSArray *))callback{
+  [BCAFRequest getGroupInfo:[NSString stringWithFormat:GroupInfoUrl, groupId] WithBlock:^(id obj, NSError *error) {
+    if (error) {
+      NSLog(@"获取群组信息失败");
+      callback(nil);
+    }else{
+      NSLog(@"获取群组信息成功%@", groupId);
+      NSArray *array = obj[@"club_member"];
+      NSMutableArray *arr = [NSMutableArray array];
+      for (NSDictionary *memberInfo in array) {
+        NSDictionary *tempInfo = memberInfo[@"owner"];
+        RCUserInfo *member = [[RCUserInfo alloc] init];
+        member.userId = tempInfo[@"owner"];
+        member.name = tempInfo[@"name"];
+        member.portraitUri = tempInfo[@"avatar"];
+        
+        if (!member.portraitUri || member.portraitUri <= 0) {
+          member.portraitUri = UserThumb;
+        }
+        [arr addObject:member];
+      }
+      callback(arr);
+    }
+  }];
+}
 @end

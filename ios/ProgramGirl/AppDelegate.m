@@ -45,11 +45,22 @@
   [[UIApplication sharedApplication] setStatusBarHidden:YES];  //隐藏状态栏
   [self.window makeKeyAndVisible];
   
+  //导航栏
+  [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:250/255.0 green:80/255.0 blue:131/255.0 alpha:1]];
+  [UINavigationBar appearance].titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+  
 #pragma mark - RongIM
   [[RCIM sharedRCIM] initWithAppKey:Rong_Key];  //初始化融云环境
   //设置用户信息源和群组信息源
   [RCIM sharedRCIM].userInfoDataSource = BCRCDataSource;
   [RCIM sharedRCIM].groupInfoDataSource = BCRCDataSource;
+  //@消息
+  [RCIM sharedRCIM].groupMemberDataSource = BCRCDataSource;
+  [RCIM sharedRCIM].enableMessageMentioned = YES;
+  //开启发送已读回执
+//  [RCIM sharedRCIM].enabledReadReceiptConversationTypeList = @[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION),@(ConversationType_GROUP)];
+  //开启多端未读状态同步
+  [RCIM sharedRCIM].enableSyncReadStatus = YES;
   
 //  [RCIM sharedRCIM].enablePersistentUserInfoCache = YES;
   
@@ -65,7 +76,6 @@
   
   //已经登录的用户
   [[RCIM sharedRCIM] setConnectionStatusDelegate:self];
-  
   return YES;
 }
 //连接融云通知实现
@@ -127,18 +137,15 @@
 }
 - (void)loginRongWithToken:(NSString *)rongToken userInfo:(NSDictionary *)info failTimes:(int)times{
   __block int failTimes = times;
-  [[BCRongCHelp shareInstance] connectRongWithToken:rongToken WithBlock:^(int ConnectStatus) {
+  [[BCRongCHelp shareInstance] connectRongWithToken:rongToken WithBlock:^(int ConnectStatus, NSString *userId) {
     if (ConnectStatus == ConnectSuccess) {
-      
+      NSLog(@"链接融云成功");
       //连接融云成功
-      /*
-      RCUserInfo *user = [[RCUserInfo alloc] initWithUserId:info[UserId]
-                                                       name:info[NickName]
-                                                   portrait:info[PortraitUri]];
-      [RCIM sharedRCIM].currentUserInfo = user;
-       
-      [[RCIM sharedRCIM] refreshUserInfoCache:user withUserId:info[UserId]];
-       */
+      [[BCRCIMDataSource shareInstance] getOtherInfo:userId callback:^(RCUserInfo *user) {
+        [RCIM sharedRCIM].currentUserInfo = user;
+        [[RCIM sharedRCIM] refreshUserInfoCache:user withUserId:userId];
+      }];
+      
       //向 js 发送通知消息
       RNBridgeModule *rn = [RNBridgeModule allocWithZone:nil];
       [rn sendMsg];
@@ -194,7 +201,7 @@
     //重新请求去连接
     [BCAFRequest getRongTokenWithURL:RongTokenUrl WithParams:nil WithBlock:^(id obj, NSError *error) {
       NSString *token = obj[RongToken];
-      [[BCRongCHelp shareInstance] connectRongWithToken:token WithBlock:^(int ConnectStatus) {
+      [[BCRongCHelp shareInstance] connectRongWithToken:token WithBlock:^(int ConnectStatus, NSString *userId) {
         
       }];
     }];

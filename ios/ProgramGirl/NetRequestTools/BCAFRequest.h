@@ -32,7 +32,31 @@
  */
 + (NSURLSessionDataTask *)getOwnInfo:(NSString *)url WithBlock:(void (^)(id obj, NSError *error))block;
 
+
+/**
+ 请求他人信息
+
+ @param url 请求 url
+ @param block  请求回调
+ @return 发起网络请求
+ */
 + (NSURLSessionDataTask *)getOtherInfo:(NSString *)url WithBlock:(void (^)(id obj, NSError *error))block;
 
+/**
+ 请求群组信息
+ 
+ @param url 请求 url
+ @param block  请求回调
+ @return 发起网络请求
+ */
 + (NSURLSessionDataTask *)getGroupInfo:(NSString *)url WithBlock:(void (^)(id obj, NSError *error))block;
+
+/**
+ 更新活动排序信息
+ 
+ @param url 请求 url
+ @param block  请求回调
+ @return 发起网络请求
+ */
++ (NSURLSessionDataTask *)updateActivitySort:(NSString *)url WithBlock:(void (^) (id obj, NSError *error))block;
 @end

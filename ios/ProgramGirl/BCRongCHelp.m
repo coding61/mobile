@@ -19,18 +19,18 @@
     return instance;
 }
 
-- (void)connectRongWithToken:(NSString *)token WithBlock:(void (^)(int))block{
+- (void)connectRongWithToken:(NSString *)token WithBlock:(void (^)(int, NSString*))block{
     
     [[RCIM sharedRCIM] connectWithToken:token success:^(NSString *userId) {
         NSLog(@"connectRongWithToken-----%@", userId);
-        block(ConnectSuccess);
+        block(ConnectSuccess, userId);
     } error:^(RCConnectErrorCode status) {
         //失败，监听连接状态，让 SDK 自动重连
-        block(ConnectFail);
+        block(ConnectFail, nil);
         
     } tokenIncorrect:^{
         //token 不正确, 重新请求 token，然后连接
-        block(TokenInCorrect);
+        block(TokenInCorrect, nil);
     }];
 }
 

@@ -12,6 +12,6 @@
 
 + (BCRongCHelp *)shareInstance;
 
-- (void)connectRongWithToken:(NSString *)token WithBlock:(void (^)(int))block;
-
+//- (void)connectRongWithToken:(NSString *)token WithBlock:(void (^)(int))block;
+- (void)connectRongWithToken:(NSString *)token WithBlock:(void (^)(int, NSString*))block;
 @end
