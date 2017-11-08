@@ -840,8 +840,7 @@ class MessagePage extends Component{
     }
     // -------------------------------------------动画事件
     _loadAudio(flag){
-        var url = flag=="zuan"?"https://static1.bcjiaoyu.com/Diamond%20Drop.wav":"https://static1.bcjiaoyu.com/level_up.mp3";
-        // url = "https://static1.bcjiaoyu.com/level_up.mp3"
+        var url = flag=="zuan"?require('../images/diamond.mp3'):require('../images/grade.wav');
         const callback = (error, sound) => {
             if (error) {
               console.log(error)
@@ -871,7 +870,7 @@ class MessagePage extends Component{
     }
     _loadZuanAni(waittime){
         this.timer = setTimeout(()=>{
-            // this._loadAudio("zuan");   //打开钻石音频
+            this._loadAudio("zuan");   //打开钻石音频
             this.setState({
                 showZuanAni:true
             }, ()=>{
@@ -885,7 +884,7 @@ class MessagePage extends Component{
     }
     _loadGradeAni(waittime){
         this.timer = setTimeout(()=>{
-            // this._loadAudio("grade");   //打开升级音频
+            this._loadAudio("grade");   //打开升级音频
             this.setState({
                 showGradeAni:true
             }, ()=>{
@@ -1837,6 +1836,14 @@ class MessagePage extends Component{
             currentItem:item
         }) 
     }
+    // 隐藏弹框
+    _hideHelpAlert(){
+        this.setState({
+            showHelpActions:false,
+            showCatalogsView:false,
+            showEditorsView:false
+        })
+    }
     //帮助/更多点击
     _clickHelp = ()=>{
         this.setState({
@@ -2327,6 +2334,7 @@ class MessagePage extends Component{
     // 课程目录
     _renderCourseCatalogs(){
         return (
+            <TouchableOpacity style={styles.helpSuperParent} onPress={this._hideHelpAlert.bind(this)}>
             <View style={styles.catalogsView}>
                 <ScrollView style={styles.catalogsList}>
                     {
@@ -2347,6 +2355,7 @@ class MessagePage extends Component{
                   resizeMode={"contain"}
                 />
             </View>
+            </TouchableOpacity>
         )
     }
     // 编辑器组
@@ -2358,6 +2367,7 @@ class MessagePage extends Component{
             {"type":"java", "name":"Java 编辑器", link:Http.domainPage+"/app/home/compileRN.html?lang=java"}
         ]
         return (
+            <TouchableOpacity style={styles.helpSuperParent} onPress={this._hideHelpAlert.bind(this)}>
             <View style={styles.editorsView}>
                 <ScrollView style={styles.editorsList}>
                     {
@@ -2378,11 +2388,13 @@ class MessagePage extends Component{
                   resizeMode={"contain"}
                 />
             </View>
+            </TouchableOpacity>
         )
     }
     // 帮助
     _renderHelpActions(){
         return (
+            <TouchableOpacity style={styles.helpSuperParent} onPress={this._hideHelpAlert.bind(this)}>
                 <View style={styles.helpParentView}>
                     <View style={styles.helpActionsView}>
                         <TouchableOpacity style={[{borderBottomColor:'#d2d2d2', borderBottomWidth:1}, styles.helpActionTextParent]} onPress={this._clickChooseCourse}>
@@ -2426,7 +2438,7 @@ class MessagePage extends Component{
                       resizeMode={"contain"}
                     />
                 </View>
-                
+            </TouchableOpacity>
         )
     }
     // ----------------------------------------action 按钮数据加载
@@ -2587,7 +2599,7 @@ class MessagePage extends Component{
             imgDePlaSty = {width:widthMsg2*0.5-10}
         }
         return (
-            <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
+            
                 <View style={[styles.message, {width:widthMsg1}]}>
                     <Image
                       style={styles.avatar}
@@ -2600,17 +2612,17 @@ class MessagePage extends Component{
                           source={{uri: item.img}}
                         />
                         */}
-                        
+                        <TouchableOpacity onPress={this._clickMessageImg.bind(this, item.img)}>
                         <ImageLoad
                             style={{width:(widthMsg2)*0.5, height:imgH}}
                             source={{uri: item.img}}
                             resizeMode={'contain'}
                             customImagePlaceholderDefaultStyle={imgDePlaSty}
                         />
-                        
+                        </TouchableOpacity>
                     </View>
                 </View>
-            </TouchableOpacity>
+            
         )
     }
     // 链接信息
@@ -3362,6 +3374,12 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     // ----------------帮助按钮组
+    helpSuperParent:{
+        position:'absolute',
+        top:0,
+        width:width,
+        bottom:0,
+    },
     helpParentView:{
         position:'absolute',
         // bottom:45,
