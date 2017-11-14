@@ -130,6 +130,7 @@ class MessagePage extends Component{
     // -----导航栏自定制
     static navigationOptions = ({navigation}) => {
         const {state, setParams, goBack, navigate} = navigation;
+        /*
         var json = state.params?state.params.userinfo:"";
         if (json && json != "") {
             var pw = 0;
@@ -139,7 +140,6 @@ class MessagePage extends Component{
                 pw = width-200
             }
         }
-        
         return {
             headerStyle: json?styles.headerStyle:{backgroundColor:'white'},
             title:json?null:"程序媛",
@@ -190,6 +190,23 @@ class MessagePage extends Component{
                     </View>
                 </TouchableOpacity>  
             ):null
+        }*/
+        return {
+            headerStyle:styles.headerStyle,
+            title:"学习",
+            headerTintColor: "#fff",
+            headerTitleStyle:{alignSelf:'auto',},
+            headerRight:(
+                <TouchableOpacity onPress={()=>{DeviceEventEmitter.emit('help',1 )}}>
+                    <View style={styles.headerRightView}>
+                        <Image
+                          style={styles.headerRightImg}
+                          source={require('../images/more.png')}
+                          resizeMode={'contain'}
+                        />
+                    </View>
+                </TouchableOpacity>
+            )
         }
     };
     

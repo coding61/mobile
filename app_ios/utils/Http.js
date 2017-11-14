@@ -55,6 +55,19 @@ let Http = {
 	},
 	leaveActivity:(pk)=>{
 		return Http_Domain + "/club/quit_club/"+pk+"/"                                   //退出活动
+	},
+
+	competeList:(pagenum)=>{
+		return Http_Domain + "/contest/?page=" + pagenum                              //竞赛列表 
+	},
+	competeDetail:(pk)=>{
+		return Http_Domain + "/contest/"+pk+"/"                                       //竞赛详情
+	},
+	questionList:(pk)=>{
+		return Http_Domain + "/contest/"+pk+"/question/"                              //竞赛下问题列表
+	},
+	competeAnswer:(pk)=>{
+		return Http_Domain + "/contest/"+pk+"/answer_question/"                       //回答问题
 	}
 
 }

@@ -100,7 +100,10 @@ let Utils = {
     btnCancelColor:'rgb(154,155,156)',
     alertViewBgColor:'rgb(240, 241, 242)',
     alertLineColor:'rgb(231,232,233)',
-
+    
+    containKey:(dic, key)=>{
+        return dic.hasOwnProperty(key)
+    },
 	px2dp:(px)=>{
 		return px * deviceW/basePx
 	},

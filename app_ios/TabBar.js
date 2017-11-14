@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import {TabNavigator} from 'react-navigation';
 
+import HomeScreen from './pages/HomeScreen.js';
 import MessagePage from './pages/MessagePage.js';
 import MyPage from './My/MyPage.js';
 import Forum from './Forum/Forum.js';
@@ -26,10 +27,10 @@ import ConversationList from './Message/ConversationList.js';
 import Utils from './utils/Utils.js';
 
 const TabBar = TabNavigator({
-  	MessagePage: {
-        screen: MessagePage, 
+  	HomeScreen: {
+        screen: HomeScreen, 
         navigationOptions: {  // 也可以写在组件的static navigationOptions内
-            tabBarLabel:'学习',
+            tabBarLabel:'首页',
             tabBarIcon:({focused}) => (
                 focused?
                     <Image source={require('./images/tabs/1-select.png')}
@@ -86,6 +87,7 @@ const TabBar = TabNavigator({
         }
     },
 },{
+    lazy:true,    //app 启动前不加载全部页面
 	animationEnabled: false, // 切换页面时是否有动画效果
     tabBarPosition: 'bottom', // 显示在底端，android 默认是显示在页面顶端的
     swipeEnabled: false, // 是否可以左右滑动切换tab

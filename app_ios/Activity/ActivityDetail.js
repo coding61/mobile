@@ -412,7 +412,7 @@ class ActivityDetail extends Component {
                           resizeMode={'contain'}
                         />
                         <Text style={styles.itemHeaderTitle}>
-                          {this.state.data.name}
+                          {this.state.data.name.slice(0, 20)}
                         </Text>
                         <Image
                           style={{height:20}}
@@ -429,7 +429,7 @@ class ActivityDetail extends Component {
                     {/******发布者*******/}
                     <View style={styles.item1View}>
                         <Text style={styles.itemBottomText}>
-                          发布者:{this.state.data.leaderName}
+                          发布者:{this.state.data.leaderName.slice(0, 14)}
                         </Text>
                         {
                             this.state.data.isleader?
