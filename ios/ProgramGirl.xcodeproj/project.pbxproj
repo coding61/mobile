@@ -62,7 +62,12 @@
 		746820FE1FAAF30600103D29 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 746820FD1FAAF30600103D29 /* MBProgressHUD.m */; };
 		74C31B571F502A6F00F78E6D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74C31B561F502A6F00F78E6D /* CoreFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		86463F9C1FBA885E0019B183 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463F961FBA885E0019B183 /* MBProgressHUD.m */; };
+		86463F9D1FBA885E0019B183 /* UIColor+BCColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463F991FBA885E0019B183 /* UIColor+BCColor.m */; };
+		86463F9E1FBA885E0019B183 /* UITextViewAndPlaceholder.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463F9B1FBA885E0019B183 /* UITextViewAndPlaceholder.m */; };
+		86463FA11FBA886B0019B183 /* BCGroupAnnouncementVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463FA01FBA886B0019B183 /* BCGroupAnnouncementVC.m */; };
 		8650C2B91F565D46007B7678 /* UpLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = 8650C2B81F565D46007B7678 /* UpLoad.m */; };
+		88B3E120C18F4463BF45BB8B /* libRCTOrientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C87F7C03E1BD40499B2E69D7 /* libRCTOrientation.a */; };
 		CC7EDC24578B36D85947C187 /* libPods-ProgramGirl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8894901384F47136F38B1DD4 /* libPods-ProgramGirl.a */; };
 		DBF5859EB5F9407A91A0AF1D /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DC7A101C173456D868E3B12 /* libRNSound.a */; };
 		E80C6BB937C0437AAF140BEA /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E084B59DAFB487BBCC17411 /* libRNDeviceInfo.a */; };
@@ -272,6 +277,13 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		86463FD31FBA8E200019B183 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04C2059F91444AECBFFFE5D3 /* RCTOrientation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTOrientation;
+		};
 		C30162FE1F3C333400711262 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B77BB5AD22014F398FA16B64 /* RNSound.xcodeproj */;
@@ -319,6 +331,7 @@
 		00E356EE1AD99517003FC87E /* ProgramGirlTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProgramGirlTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* ProgramGirlTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ProgramGirlTests.m; sourceTree = "<group>"; };
+		04C2059F91444AECBFFFE5D3 /* RCTOrientation.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTOrientation.xcodeproj; path = "../node_modules/react-native-orientation/iOS/RCTOrientation.xcodeproj"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* ProgramGirl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProgramGirl.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -382,12 +395,21 @@
 		74C31B561F502A6F00F78E6D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		86463F951FBA885E0019B183 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		86463F961FBA885E0019B183 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
+		86463F981FBA885E0019B183 /* UIColor+BCColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+BCColor.h"; sourceTree = "<group>"; };
+		86463F991FBA885E0019B183 /* UIColor+BCColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+BCColor.m"; sourceTree = "<group>"; };
+		86463F9A1FBA885E0019B183 /* UITextViewAndPlaceholder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITextViewAndPlaceholder.h; sourceTree = "<group>"; };
+		86463F9B1FBA885E0019B183 /* UITextViewAndPlaceholder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITextViewAndPlaceholder.m; sourceTree = "<group>"; };
+		86463F9F1FBA886B0019B183 /* BCGroupAnnouncementVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCGroupAnnouncementVC.h; sourceTree = "<group>"; };
+		86463FA01FBA886B0019B183 /* BCGroupAnnouncementVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCGroupAnnouncementVC.m; sourceTree = "<group>"; };
 		8650C2B71F565D46007B7678 /* UpLoad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpLoad.h; sourceTree = "<group>"; };
 		8650C2B81F565D46007B7678 /* UpLoad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpLoad.m; sourceTree = "<group>"; };
 		8894901384F47136F38B1DD4 /* libPods-ProgramGirl.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ProgramGirl.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E084B59DAFB487BBCC17411 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		A890D638076EE5228FEA3556 /* Pods-ProgramGirl.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProgramGirl.release.xcconfig"; path = "Pods/Target Support Files/Pods-ProgramGirl/Pods-ProgramGirl.release.xcconfig"; sourceTree = "<group>"; };
 		B77BB5AD22014F398FA16B64 /* RNSound.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSound.xcodeproj; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; };
+		C87F7C03E1BD40499B2E69D7 /* libRCTOrientation.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTOrientation.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -427,6 +449,7 @@
 				E80C6BB937C0437AAF140BEA /* libRNDeviceInfo.a in Frameworks */,
 				CC7EDC24578B36D85947C187 /* libPods-ProgramGirl.a in Frameworks */,
 				22B5943E177845E1A44F38E2 /* libRNImagePicker.a in Frameworks */,
+				88B3E120C18F4463BF45BB8B /* libRCTOrientation.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -536,8 +559,10 @@
 			isa = PBXGroup;
 			children = (
 				7426AEE61FB99F590017B49D /* iVersion */,
-				746820FA1FAAF2DD00103D29 /* ThirdLib */,
-				746820D01FAAE9FC00103D29 /* UIKitHelp */,
+				86463F9F1FBA886B0019B183 /* BCGroupAnnouncementVC.h */,
+				86463FA01FBA886B0019B183 /* BCGroupAnnouncementVC.m */,
+				86463F931FBA885E0019B183 /* ThirdLib */,
+				86463F971FBA885E0019B183 /* UIKitHelp */,
 				7412C1E51F95B003007DD13E /* NetRequestTools */,
 				7412C1EA1F95B003007DD13E /* RNHelp */,
 				7412C21D1F95B068007DD13E /* RongIM */,
@@ -728,6 +753,7 @@
 				B77BB5AD22014F398FA16B64 /* RNSound.xcodeproj */,
 				1498497ADC6C4D8A9765A3FA /* RNDeviceInfo.xcodeproj */,
 				54BCC4B7078C4E7DA1DDE327 /* RNImagePicker.xcodeproj */,
+				04C2059F91444AECBFFFE5D3 /* RCTOrientation.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -767,6 +793,42 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		86463F931FBA885E0019B183 /* ThirdLib */ = {
+			isa = PBXGroup;
+			children = (
+				86463F941FBA885E0019B183 /* MBProgressHUD */,
+			);
+			path = ThirdLib;
+			sourceTree = "<group>";
+		};
+		86463F941FBA885E0019B183 /* MBProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				86463F951FBA885E0019B183 /* MBProgressHUD.h */,
+				86463F961FBA885E0019B183 /* MBProgressHUD.m */,
+			);
+			path = MBProgressHUD;
+			sourceTree = "<group>";
+		};
+		86463F971FBA885E0019B183 /* UIKitHelp */ = {
+			isa = PBXGroup;
+			children = (
+				86463F981FBA885E0019B183 /* UIColor+BCColor.h */,
+				86463F991FBA885E0019B183 /* UIColor+BCColor.m */,
+				86463F9A1FBA885E0019B183 /* UITextViewAndPlaceholder.h */,
+				86463F9B1FBA885E0019B183 /* UITextViewAndPlaceholder.m */,
+			);
+			path = UIKitHelp;
+			sourceTree = "<group>";
+		};
+		86463FD01FBA8E200019B183 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				86463FD41FBA8E200019B183 /* libRCTOrientation.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		8650C2D41F56697E007B7678 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -781,6 +843,7 @@
 				2DC7A101C173456D868E3B12 /* libRNSound.a */,
 				8E084B59DAFB487BBCC17411 /* libRNDeviceInfo.a */,
 				4B099F1C5BAF45E3AC854D94 /* libRNImagePicker.a */,
+				C87F7C03E1BD40499B2E69D7 /* libRCTOrientation.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -936,6 +999,10 @@
 				{
 					ProductGroup = 00C302D41ABCB9D200DB3ED1 /* Products */;
 					ProjectRef = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
+				},
+				{
+					ProductGroup = 86463FD01FBA8E200019B183 /* Products */;
+					ProjectRef = 04C2059F91444AECBFFFE5D3 /* RCTOrientation.xcodeproj */;
 				},
 				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
@@ -1170,6 +1237,13 @@
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		86463FD41FBA8E200019B183 /* libRCTOrientation.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTOrientation.a;
+			remoteRef = 86463FD31FBA8E200019B183 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		C30162FF1F3C333400711262 /* libRNSound.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1341,6 +1415,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86463FA11FBA886B0019B183 /* BCGroupAnnouncementVC.m in Sources */,
 				7412C1F91F95B003007DD13E /* BCRCConversationListViewVC.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
@@ -1354,11 +1429,13 @@
 				746820F91FAAED4900103D29 /* BCGroupAnnouncementVC.m in Sources */,
 				7412C1FA1F95B003007DD13E /* BCRCConversationViewVC.m in Sources */,
 				7412C1F61F95B003007DD13E /* AFAppNetAPIClient.m in Sources */,
+				86463F9E1FBA885E0019B183 /* UITextViewAndPlaceholder.m in Sources */,
 				8650C2B91F565D46007B7678 /* UpLoad.m in Sources */,
 				7412C1F71F95B003007DD13E /* BCAFRequest.m in Sources */,
 				7412C1FB1F95B003007DD13E /* BCRCIMDataSource.m in Sources */,
 				7412C1FC1F95B003007DD13E /* BCRongCHelp.m in Sources */,
 				742CB7AA1F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m in Sources */,
+				86463F9C1FBA885E0019B183 /* MBProgressHUD.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1424,12 +1501,14 @@
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 				);
 				INFOPLIST_FILE = ProgramGirlTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1459,12 +1538,14 @@
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 				);
 				INFOPLIST_FILE = ProgramGirlTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1498,6 +1579,7 @@
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 				);
 				INFOPLIST_FILE = ProgramGirl/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1537,6 +1619,7 @@
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 				);
 				INFOPLIST_FILE = ProgramGirl/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1577,11 +1660,13 @@
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 				);
 				INFOPLIST_FILE = "ProgramGirl-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1617,11 +1702,13 @@
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 				);
 				INFOPLIST_FILE = "ProgramGirl-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1658,6 +1745,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.ProgramGirl-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1682,6 +1770,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
