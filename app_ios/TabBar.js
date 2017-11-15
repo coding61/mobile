@@ -87,7 +87,7 @@ const TabBar = TabNavigator({
         }
     },
 },{
-    lazy:true,    //app 启动前不加载全部页面
+    // lazy:true,    //app 启动前不加载全部页面
 	animationEnabled: false, // 切换页面时是否有动画效果
     tabBarPosition: 'bottom', // 显示在底端，android 默认是显示在页面顶端的
     swipeEnabled: false, // 是否可以左右滑动切换tab

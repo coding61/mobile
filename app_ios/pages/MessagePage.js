@@ -3023,7 +3023,6 @@ class MessagePage extends Component{
         var MessageWidth1 = this.state.courseProgressArray.length?MessageWidth:MessageWidth+CourseProgressWidth
         return (
             <View style={{flex:1}}>
-                <StatusBar hidden={false} />
                 <View style={{flexDirection:'row'}}>
                     {/*******课程进度********/}
                     {/*this.state.courseProgressArray.length? this._renderCourseProgress():null*/}
