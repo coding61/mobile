@@ -35,12 +35,12 @@
 //  [[UIApplication sharedApplication] setStatusBarHidden:NO];  //隐藏状态栏
   
   [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];//设置导航栏返回按钮的颜色
-  [self.navigationController.navigationBar setBackIndicatorImage:[UIImage imageNamed:@"back"]];
-  [self.navigationController.navigationBar setBackIndicatorTransitionMaskImage:[UIImage imageNamed:@"back"]];
-  [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:250/255.0 green:80/255.0 blue:131/255.0 alpha:1]];
-  self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+//  [self.navigationController.navigationBar setBackIndicatorImage:[UIImage imageNamed:@"back"]];
+//  [self.navigationController.navigationBar setBackIndicatorTransitionMaskImage:[UIImage imageNamed:@"back"]];
+//  [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:250/255.0 green:80/255.0 blue:131/255.0 alpha:1]];
+//  self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
   //去掉系统返回键后文字
-  [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-100,0) forBarMetrics:UIBarMetricsDefault];
+//  [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-100,0) forBarMetrics:UIBarMetricsDefault];
   
 //  [self.navigationItem setHidesBackButton:YES animated:YES];
 //  UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
@@ -48,7 +48,8 @@
   
   if(self.conversationType == ConversationType_GROUP){
     //如果是群组，添加群公告，右按钮
-    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 34)];
+    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80, 34)];
+//    btn.backgroundColor = [UIColor redColor];
     [btn setTitle:@"群公告" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(rightBtnClick:) forControlEvents:UIControlEventTouchUpInside];

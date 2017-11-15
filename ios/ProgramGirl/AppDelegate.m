@@ -43,11 +43,13 @@
   self.window.rootViewController = self.nav;
   
   [[UIApplication sharedApplication] setStatusBarHidden:YES];  //隐藏状态栏
+  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
   [self.window makeKeyAndVisible];
   
   //导航栏
   [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:250/255.0 green:80/255.0 blue:131/255.0 alpha:1]];
   [UINavigationBar appearance].titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+  [[UINavigationBar appearance] setTranslucent:YES];
   
 #pragma mark - RongIM
   [[RCIM sharedRCIM] initWithAppKey:Rong_Key];  //初始化融云环境
