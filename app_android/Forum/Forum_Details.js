@@ -280,13 +280,13 @@ export default class Forum_Details extends Component{
             return;
         }
         if(top=='Top10'){
-            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/top10.png')}/>)
+            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/10.png')}/>)
         }
         if(top=='Top50'){
-            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/top50.png')}/>)
+            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/50.png')}/>)
         }
         if(top=='Top100'){
-            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/top100.png')}/>)
+            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/100.png')}/>)
         }
     }
     renderForumRow(item){
