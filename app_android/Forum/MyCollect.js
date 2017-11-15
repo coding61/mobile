@@ -175,6 +175,20 @@ export default class MyCollect extends Component{
         return time;
 
     }
+    rendertop(top){
+        if(top==null){
+            return;
+        }
+        if(top=='Top10'){
+            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/top10.png')}/>)
+        }
+        if(top=='Top50'){
+            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/top50.png')}/>)
+        }
+        if(top=='Top100'){
+            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/top100.png')}/>)
+        }
+    }
     renderForumRow(item){
         var rowData=item.item.posts;
         var time_last=this.dealWithTime(rowData.last_replied)
@@ -185,6 +199,7 @@ export default class MyCollect extends Component{
                     <View style={{alignItems:'center'}}>
                         {!rowData.userinfo.avatar?(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>)}
                         <Text style={{paddingTop:10,fontSize:12,color:'#aaaaaa'}}>{rowData.userinfo.grade.current_name}</Text>
+                        {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
                     <View style={{paddingLeft:16,paddingRight:20,paddingTop:10,width:width*0.86,}}>
                         <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10,fontWeight: '100',fontFamily:'Noto SansCJK'}}>{rowData.status=='unsolved'?(<Text style={{color:'red'}}>[未解决]</Text>):(<Text style={{color:'#cccccc'}}>[{rowData.status_display}]</Text>)}  {rowData.title}</Text>

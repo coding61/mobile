@@ -61,6 +61,17 @@ export default class CommentText extends Component{
         });
         this.progress();
     }
+    componentWillMount(){
+        if(this.props.navigation.state.params.name=='reply'){
+            this.setState({
+                text:'@'+this.props.navigation.state.params.userinfo,
+            })
+        }else{
+            this.setState({
+                text:''
+            })
+        }
+    }
     Comment_Main(){
         var data = {};
         data.posts = this.state.pk;
