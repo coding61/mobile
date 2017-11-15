@@ -696,7 +696,6 @@
 			path = ProgramGirl/RongIM;
 			sourceTree = "<group>";
 		};
->>>>>>> 490a2fc2ace373a0f4817ef72ebe5baad4b29d60
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
