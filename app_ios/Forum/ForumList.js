@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 import {
-  AppRegistry, 
-  StyleSheet, 
-  Image, 
-  Text, 
-  TextInput, 
-  View, 
+  AppRegistry,
+  StyleSheet,
+  Image,
+  Text,
+  TextInput,
+  View,
   ScrollView,
-  Dimensions, 
+  Dimensions,
   TouchableOpacity,
   ListView,
   AsyncStorage,
@@ -31,19 +31,19 @@ export default class ForumList extends Component{
             tag: 0,
             nextPage: null,
             isLoading: false,
-            url:basePath+'/forum/posts/?myposts=false&page=1',  
+            url:basePath+'/forum/posts/?myposts=false&page=1',
             loadText: '正在加载...',
             isRefreshing: false,
             moreshow:false,
             token:'',
         };
     }
- 
+
     static navigationOptions = ({ navigation }) => {
         const {state, setParams,navigate} = navigation;
         return {
             title: "",
-            headerTintColor: "#fff",   
+            headerTintColor: "#fff",
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
             headerBackTitle:null,
@@ -62,10 +62,10 @@ export default class ForumList extends Component{
                     <TouchableOpacity  onPress={()=>{
                         DeviceEventEmitter.emit('search', 1)
                     }} style={{alignItems:'center',justifyContent:'center',marginRight:25,}}>
-                        
+
                         <Image style={{width:20,height:20,}} source={require('../assets/Forum/sousuo-b.png')}/>
                     </TouchableOpacity>
-                    
+
                     <TouchableOpacity style={{width:30,height:25,marginTop:2,}} onPress={()=>{
                         DeviceEventEmitter.emit('newsmore',1 )
                     }}>
@@ -110,23 +110,23 @@ export default class ForumList extends Component{
                     self._loadunread()
                 });
             }
-            
+
         });
         this.eventEmtt = DeviceEventEmitter.addListener('addforum', (value)=>{
             this.props.navigation.navigate('ForumAdd',{data:value,token:this.state.token,callback:(msg)=>{
                 this._onRefresh()
             }})
-        }) 
+        })
         this.eventEmttsea = DeviceEventEmitter.addListener('search', (value)=>{
             this.props.navigation.navigate('Search',{data:value,token:this.state.token,keyword:'',auto:true,callback:(msg)=>{
-                
+
             }})
         })
         this.eventEm = DeviceEventEmitter.addListener('newsmore', (value)=>{
             this.setState({
                 moreshow:!this.state.moreshow,
             })
-        })  
+        })
     }
 
     _loadunread(){
@@ -168,11 +168,11 @@ export default class ForumList extends Component{
                     isLoading: false,
                     loadText: responseData.next?('正在加载...'):('没有更多了...'),
                     isRefreshing: false
-                 });     
+                 });
             })
             .catch((error) => {
                 console.error(error);
-            }); 
+            });
         })
     }
     _newscenter(){
@@ -190,7 +190,7 @@ export default class ForumList extends Component{
                 }})
             }
         })
-        
+
     }
     ranklist(){
         Utils.isLogin((token)=>{
@@ -205,7 +205,7 @@ export default class ForumList extends Component{
                 }})
             }
         })
-        
+
     }
     _reloadPage(){
         var self = this;
@@ -244,7 +244,7 @@ export default class ForumList extends Component{
                 }})
             }
         })
-        
+
     }
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
@@ -309,7 +309,11 @@ export default class ForumList extends Component{
             this._onRefresh()
         }})
     }
-    
+
+    goPersonalPage(userinfo) {
+        this.props.navigation.navigate('PersonalPage', { data: userinfo });
+    }
+
     dealWithTime(Time){
         var timeArray = Time.split('.')[0].split('T');
         var year = timeArray[0].split('-')[0];
@@ -357,7 +361,13 @@ export default class ForumList extends Component{
                 style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
                 <View style={{flexDirection:'row',}}>
                     <View style={{alignItems:'center'}}>
-                        {!rowData.userinfo.avatar?(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>)}
+                        <TouchableOpacity style={{width:50,height:50,marginTop:20}} onPress={this.goPersonalPage.bind(this, rowData.userinfo)}>
+                            {!rowData.userinfo.avatar?(
+                                <Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>
+                            ):(
+                                <Image style={{width:50,height:50,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>
+                            )}
+                        </TouchableOpacity>
                         <Text style={{paddingTop:10,fontSize:12,color:'#6E7B8B'}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
@@ -374,7 +384,7 @@ export default class ForumList extends Component{
                      </View>
                 </View>
             </TouchableOpacity>
-        ) 
+        )
     }
     _keyExtractor = (item, index) => index;
     render(){
@@ -385,7 +395,7 @@ export default class ForumList extends Component{
         }else{
             return (
                 <View style={styles.container}>
-                    <View>   
+                    <View>
                         <FlatList
                             horizontal={false}
                             refreshing={true}
@@ -433,4 +443,3 @@ const styles = StyleSheet.create({
   },
 
 });
-
