@@ -44,6 +44,17 @@ export default class CommentText extends Component{
             headerTitleStyle:{alignSelf:'auto',fontSize:15,},
         };
     }
+    componentWillMount(){
+        if(this.props.navigation.state.params.name=='reply'){
+            this.setState({
+                text:'@'+this.props.navigation.state.params.userinfo,
+            })
+        }else{
+            this.setState({
+                text:''
+            })
+        }
+    }
     componentDidMount() {
         var self = this;
         AsyncStorage.getItem('token', function(errs, result) {

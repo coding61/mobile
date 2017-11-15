@@ -78,6 +78,21 @@
   
   //已经登录的用户
   [[RCIM sharedRCIM] setConnectionStatusDelegate:self];
+  
+#pragma mark - 向用户请求允许远程推送
+  /**
+   * 推送处理1
+   */
+  if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+    //注册推送, 用于iOS8以及iOS8之后的系统
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings
+                                            settingsForTypes:(UIUserNotificationTypeBadge |
+                                                              UIUserNotificationTypeSound |
+                                                              UIUserNotificationTypeAlert)
+                                            categories:nil];
+    [application registerUserNotificationSettings:settings];
+  }
+  
   return YES;
 }
 //连接融云通知实现
@@ -221,5 +236,33 @@
      */
     //让用户去登录
   }
+}
+
+/**
+ * 推送处理2
+ */
+//注册用户通知设置
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings*)notificationSettings {
+  // register to receive notifications
+  [application registerForRemoteNotifications];
+}
+/**
+ * 推送处理3
+ */
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  NSString *token = [[[[deviceToken description] stringByReplacingOccurrencesOfString:@"<"
+                                                         withString:@""]
+   stringByReplacingOccurrencesOfString:@">"
+    withString:@""]
+   stringByReplacingOccurrencesOfString:@" "
+   withString:@""];
+  
+  NSLog(@"推送token:%@", token);
+  
+  [[RCIMClient sharedRCIMClient] setDeviceToken:token];
+}
+//如果deviceToken获取不到会进入此事件
+- (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
+  NSLog(@"%@", err);
 }
 @end
