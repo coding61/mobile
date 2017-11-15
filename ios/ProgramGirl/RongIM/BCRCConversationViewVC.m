@@ -39,9 +39,12 @@
   [self.navigationController.navigationBar setBackIndicatorTransitionMaskImage:[UIImage imageNamed:@"back"]];
   [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:250/255.0 green:80/255.0 blue:131/255.0 alpha:1]];
   self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
-  [self.navigationItem setHidesBackButton:YES animated:YES];
-  UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
-  self.navigationItem.leftBarButtonItem = item;
+  //去掉系统返回键后文字
+  [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-100,0) forBarMetrics:UIBarMetricsDefault];
+  
+//  [self.navigationItem setHidesBackButton:YES animated:YES];
+//  UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
+//  self.navigationItem.leftBarButtonItem = item;
   
   if(self.conversationType == ConversationType_GROUP){
     //如果是群组，添加群公告，右按钮

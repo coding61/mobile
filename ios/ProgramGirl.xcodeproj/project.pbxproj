@@ -39,10 +39,6 @@
 		7412C1F61F95B003007DD13E /* AFAppNetAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 7412C1E71F95B003007DD13E /* AFAppNetAPIClient.m */; };
 		7412C1F71F95B003007DD13E /* BCAFRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7412C1E91F95B003007DD13E /* BCAFRequest.m */; };
 		7412C1F81F95B003007DD13E /* RNBridgeModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 7412C1EC1F95B003007DD13E /* RNBridgeModule.m */; };
-		7412C1F91F95B003007DD13E /* BCRCConversationListViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7412C1EE1F95B003007DD13E /* BCRCConversationListViewVC.m */; };
-		7412C1FA1F95B003007DD13E /* BCRCConversationViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7412C1F01F95B003007DD13E /* BCRCConversationViewVC.m */; };
-		7412C1FB1F95B003007DD13E /* BCRCIMDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7412C1F21F95B003007DD13E /* BCRCIMDataSource.m */; };
-		7412C1FC1F95B003007DD13E /* BCRongCHelp.m in Sources */ = {isa = PBXBuildFile; fileRef = 7412C1F51F95B003007DD13E /* BCRongCHelp.m */; };
 		7425F94B1F4AD1CE002857CB /* libTalkingData.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7425F9491F4AD1CE002857CB /* libTalkingData.a */; };
 		7425F96C1F4AD215002857CB /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7425F96B1F4AD215002857CB /* AdSupport.framework */; };
 		7425F96E1F4AD221002857CB /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7425F96D1F4AD221002857CB /* CoreTelephony.framework */; };
@@ -53,19 +49,21 @@
 		7425F9781F4AD256002857CB /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7425F9771F4AD256002857CB /* libc++.tbd */; };
 		7426AEEA1FB99F5A0017B49D /* iVersion.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7426AEE71FB99F590017B49D /* iVersion.bundle */; };
 		7426AEEB1FB99F5A0017B49D /* iVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 7426AEE91FB99F590017B49D /* iVersion.m */; };
-		742CB7731F9DCE2B00967C16 /* RongYunView.m in Sources */ = {isa = PBXBuildFile; fileRef = 742CB7721F9DCE2B00967C16 /* RongYunView.m */; };
 		742CB7A71F9DD1A800967C16 /* RongYunViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 742CB7A61F9DD1A800967C16 /* RongYunViewManager.m */; };
-		742CB7AA1F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 742CB7A91F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m */; };
 		746820F31FAAEA3000103D29 /* UITextViewAndPlaceholder.m in Sources */ = {isa = PBXBuildFile; fileRef = 746820F21FAAEA3000103D29 /* UITextViewAndPlaceholder.m */; };
 		746820F61FAAEC9900103D29 /* UIColor+BCColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 746820F51FAAEC9900103D29 /* UIColor+BCColor.m */; };
-		746820F91FAAED4900103D29 /* BCGroupAnnouncementVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 746820F81FAAED4900103D29 /* BCGroupAnnouncementVC.m */; };
 		746820FE1FAAF30600103D29 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 746820FD1FAAF30600103D29 /* MBProgressHUD.m */; };
 		74C31B571F502A6F00F78E6D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74C31B561F502A6F00F78E6D /* CoreFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		74D197591FBBDF5E0040FFCD /* BCGroupAnnouncementVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 74D1974C1FBBDF5E0040FFCD /* BCGroupAnnouncementVC.m */; };
+		74D1975A1FBBDF5E0040FFCD /* BCRCConversationListViewFirstVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 74D1974E1FBBDF5E0040FFCD /* BCRCConversationListViewFirstVC.m */; };
+		74D1975B1FBBDF5E0040FFCD /* BCRCConversationListViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 74D197501FBBDF5E0040FFCD /* BCRCConversationListViewVC.m */; };
+		74D1975C1FBBDF5E0040FFCD /* BCRCConversationViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 74D197521FBBDF5E0040FFCD /* BCRCConversationViewVC.m */; };
+		74D1975D1FBBDF5E0040FFCD /* BCRCIMDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 74D197541FBBDF5E0040FFCD /* BCRCIMDataSource.m */; };
+		74D1975E1FBBDF5E0040FFCD /* BCRongCHelp.m in Sources */ = {isa = PBXBuildFile; fileRef = 74D197561FBBDF5E0040FFCD /* BCRongCHelp.m */; };
+		74D1975F1FBBDF5E0040FFCD /* RongYunView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74D197581FBBDF5E0040FFCD /* RongYunView.m */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		86463F9C1FBA885E0019B183 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463F961FBA885E0019B183 /* MBProgressHUD.m */; };
-		86463F9D1FBA885E0019B183 /* UIColor+BCColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463F991FBA885E0019B183 /* UIColor+BCColor.m */; };
 		86463F9E1FBA885E0019B183 /* UITextViewAndPlaceholder.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463F9B1FBA885E0019B183 /* UITextViewAndPlaceholder.m */; };
-		86463FA11FBA886B0019B183 /* BCGroupAnnouncementVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463FA01FBA886B0019B183 /* BCGroupAnnouncementVC.m */; };
 		8650C2B91F565D46007B7678 /* UpLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = 8650C2B81F565D46007B7678 /* UpLoad.m */; };
 		88B3E120C18F4463BF45BB8B /* libRCTOrientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C87F7C03E1BD40499B2E69D7 /* libRCTOrientation.a */; };
 		CC7EDC24578B36D85947C187 /* libPods-ProgramGirl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8894901384F47136F38B1DD4 /* libPods-ProgramGirl.a */; };
@@ -356,15 +354,7 @@
 		7412C1E91F95B003007DD13E /* BCAFRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCAFRequest.m; sourceTree = "<group>"; };
 		7412C1EB1F95B003007DD13E /* RNBridgeModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNBridgeModule.h; sourceTree = "<group>"; };
 		7412C1EC1F95B003007DD13E /* RNBridgeModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNBridgeModule.m; sourceTree = "<group>"; };
-		7412C1ED1F95B003007DD13E /* BCRCConversationListViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCRCConversationListViewVC.h; path = ProgramGirl/BCRCConversationListViewVC.h; sourceTree = "<group>"; };
-		7412C1EE1F95B003007DD13E /* BCRCConversationListViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BCRCConversationListViewVC.m; path = ProgramGirl/BCRCConversationListViewVC.m; sourceTree = "<group>"; };
-		7412C1EF1F95B003007DD13E /* BCRCConversationViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCRCConversationViewVC.h; path = ProgramGirl/BCRCConversationViewVC.h; sourceTree = "<group>"; };
-		7412C1F01F95B003007DD13E /* BCRCConversationViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BCRCConversationViewVC.m; path = ProgramGirl/BCRCConversationViewVC.m; sourceTree = "<group>"; };
-		7412C1F11F95B003007DD13E /* BCRCIMDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCRCIMDataSource.h; path = ProgramGirl/BCRCIMDataSource.h; sourceTree = "<group>"; };
-		7412C1F21F95B003007DD13E /* BCRCIMDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BCRCIMDataSource.m; path = ProgramGirl/BCRCIMDataSource.m; sourceTree = "<group>"; };
 		7412C1F31F95B003007DD13E /* BCRCPrefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCRCPrefix.pch; path = ProgramGirl/BCRCPrefix.pch; sourceTree = "<group>"; };
-		7412C1F41F95B003007DD13E /* BCRongCHelp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCRongCHelp.h; path = ProgramGirl/BCRongCHelp.h; sourceTree = "<group>"; };
-		7412C1F51F95B003007DD13E /* BCRongCHelp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BCRongCHelp.m; path = ProgramGirl/BCRongCHelp.m; sourceTree = "<group>"; };
 		7425F9491F4AD1CE002857CB /* libTalkingData.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTalkingData.a; sourceTree = "<group>"; };
 		7425F94A1F4AD1CE002857CB /* TalkingData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TalkingData.h; sourceTree = "<group>"; };
 		7425F96B1F4AD215002857CB /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -377,22 +367,27 @@
 		7426AEE71FB99F590017B49D /* iVersion.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = iVersion.bundle; sourceTree = "<group>"; };
 		7426AEE81FB99F590017B49D /* iVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iVersion.h; sourceTree = "<group>"; };
 		7426AEE91FB99F590017B49D /* iVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iVersion.m; sourceTree = "<group>"; };
-		742CB7711F9DCE2B00967C16 /* RongYunView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RongYunView.h; sourceTree = "<group>"; };
-		742CB7721F9DCE2B00967C16 /* RongYunView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RongYunView.m; sourceTree = "<group>"; };
 		742CB7A51F9DD1A800967C16 /* RongYunViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RongYunViewManager.h; sourceTree = "<group>"; };
 		742CB7A61F9DD1A800967C16 /* RongYunViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RongYunViewManager.m; sourceTree = "<group>"; };
-		742CB7A81F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCRCConversationListViewFirstVC.h; sourceTree = "<group>"; };
-		742CB7A91F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCRCConversationListViewFirstVC.m; sourceTree = "<group>"; };
-		746820F11FAAEA3000103D29 /* UITextViewAndPlaceholder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UITextViewAndPlaceholder.h; sourceTree = "<group>"; };
 		746820F21FAAEA3000103D29 /* UITextViewAndPlaceholder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UITextViewAndPlaceholder.m; sourceTree = "<group>"; };
-		746820F41FAAEC9900103D29 /* UIColor+BCColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+BCColor.h"; sourceTree = "<group>"; };
 		746820F51FAAEC9900103D29 /* UIColor+BCColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+BCColor.m"; sourceTree = "<group>"; };
-		746820F71FAAED4900103D29 /* BCGroupAnnouncementVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BCGroupAnnouncementVC.h; sourceTree = "<group>"; };
-		746820F81FAAED4900103D29 /* BCGroupAnnouncementVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BCGroupAnnouncementVC.m; sourceTree = "<group>"; };
-		746820FC1FAAF30600103D29 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		746820FD1FAAF30600103D29 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		7485BF981F95D3C8002D05B4 /* FileProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FileProvider.framework; path = System/Library/Frameworks/FileProvider.framework; sourceTree = SDKROOT; };
 		74C31B561F502A6F00F78E6D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		74D1974B1FBBDF5E0040FFCD /* BCGroupAnnouncementVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCGroupAnnouncementVC.h; sourceTree = "<group>"; };
+		74D1974C1FBBDF5E0040FFCD /* BCGroupAnnouncementVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCGroupAnnouncementVC.m; sourceTree = "<group>"; };
+		74D1974D1FBBDF5E0040FFCD /* BCRCConversationListViewFirstVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCRCConversationListViewFirstVC.h; sourceTree = "<group>"; };
+		74D1974E1FBBDF5E0040FFCD /* BCRCConversationListViewFirstVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCRCConversationListViewFirstVC.m; sourceTree = "<group>"; };
+		74D1974F1FBBDF5E0040FFCD /* BCRCConversationListViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCRCConversationListViewVC.h; sourceTree = "<group>"; };
+		74D197501FBBDF5E0040FFCD /* BCRCConversationListViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCRCConversationListViewVC.m; sourceTree = "<group>"; };
+		74D197511FBBDF5E0040FFCD /* BCRCConversationViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCRCConversationViewVC.h; sourceTree = "<group>"; };
+		74D197521FBBDF5E0040FFCD /* BCRCConversationViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCRCConversationViewVC.m; sourceTree = "<group>"; };
+		74D197531FBBDF5E0040FFCD /* BCRCIMDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCRCIMDataSource.h; sourceTree = "<group>"; };
+		74D197541FBBDF5E0040FFCD /* BCRCIMDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCRCIMDataSource.m; sourceTree = "<group>"; };
+		74D197551FBBDF5E0040FFCD /* BCRongCHelp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCRongCHelp.h; sourceTree = "<group>"; };
+		74D197561FBBDF5E0040FFCD /* BCRongCHelp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCRongCHelp.m; sourceTree = "<group>"; };
+		74D197571FBBDF5E0040FFCD /* RongYunView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RongYunView.h; sourceTree = "<group>"; };
+		74D197581FBBDF5E0040FFCD /* RongYunView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RongYunView.m; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		86463F951FBA885E0019B183 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
@@ -401,8 +396,6 @@
 		86463F991FBA885E0019B183 /* UIColor+BCColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+BCColor.m"; sourceTree = "<group>"; };
 		86463F9A1FBA885E0019B183 /* UITextViewAndPlaceholder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITextViewAndPlaceholder.h; sourceTree = "<group>"; };
 		86463F9B1FBA885E0019B183 /* UITextViewAndPlaceholder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITextViewAndPlaceholder.m; sourceTree = "<group>"; };
-		86463F9F1FBA886B0019B183 /* BCGroupAnnouncementVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCGroupAnnouncementVC.h; sourceTree = "<group>"; };
-		86463FA01FBA886B0019B183 /* BCGroupAnnouncementVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCGroupAnnouncementVC.m; sourceTree = "<group>"; };
 		8650C2B71F565D46007B7678 /* UpLoad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpLoad.h; sourceTree = "<group>"; };
 		8650C2B81F565D46007B7678 /* UpLoad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpLoad.m; sourceTree = "<group>"; };
 		8894901384F47136F38B1DD4 /* libPods-ProgramGirl.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ProgramGirl.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -558,14 +551,12 @@
 		13B07FAE1A68108700A75B9A /* ProgramGirl */ = {
 			isa = PBXGroup;
 			children = (
+				74D1974A1FBBDF5E0040FFCD /* RongIM */,
 				7426AEE61FB99F590017B49D /* iVersion */,
-				86463F9F1FBA886B0019B183 /* BCGroupAnnouncementVC.h */,
-				86463FA01FBA886B0019B183 /* BCGroupAnnouncementVC.m */,
 				86463F931FBA885E0019B183 /* ThirdLib */,
 				86463F971FBA885E0019B183 /* UIKitHelp */,
 				7412C1E51F95B003007DD13E /* NetRequestTools */,
 				7412C1EA1F95B003007DD13E /* RNHelp */,
-				7412C21D1F95B068007DD13E /* RongIM */,
 				7412C1F31F95B003007DD13E /* BCRCPrefix.pch */,
 				7425F9491F4AD1CE002857CB /* libTalkingData.a */,
 				7425F94A1F4AD1CE002857CB /* TalkingData.h */,
@@ -643,27 +634,6 @@
 			path = ProgramGirl/RNHelp;
 			sourceTree = "<group>";
 		};
-		7412C21D1F95B068007DD13E /* RongIM */ = {
-			isa = PBXGroup;
-			children = (
-				7412C1ED1F95B003007DD13E /* BCRCConversationListViewVC.h */,
-				7412C1EE1F95B003007DD13E /* BCRCConversationListViewVC.m */,
-				7412C1EF1F95B003007DD13E /* BCRCConversationViewVC.h */,
-				7412C1F01F95B003007DD13E /* BCRCConversationViewVC.m */,
-				7412C1F11F95B003007DD13E /* BCRCIMDataSource.h */,
-				7412C1F21F95B003007DD13E /* BCRCIMDataSource.m */,
-				7412C1F41F95B003007DD13E /* BCRongCHelp.h */,
-				7412C1F51F95B003007DD13E /* BCRongCHelp.m */,
-				742CB7A81F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.h */,
-				742CB7A91F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m */,
-				742CB7711F9DCE2B00967C16 /* RongYunView.h */,
-				742CB7721F9DCE2B00967C16 /* RongYunView.m */,
-				746820F71FAAED4900103D29 /* BCGroupAnnouncementVC.h */,
-				746820F81FAAED4900103D29 /* BCGroupAnnouncementVC.m */,
-			);
-			name = RongIM;
-			sourceTree = "<group>";
-		};
 		7425F96A1F4AD215002857CB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -699,32 +669,26 @@
 			path = iVersion;
 			sourceTree = "<group>";
 		};
-		746820D01FAAE9FC00103D29 /* UIKitHelp */ = {
+		74D1974A1FBBDF5E0040FFCD /* RongIM */ = {
 			isa = PBXGroup;
 			children = (
-				746820F11FAAEA3000103D29 /* UITextViewAndPlaceholder.h */,
-				746820F21FAAEA3000103D29 /* UITextViewAndPlaceholder.m */,
-				746820F41FAAEC9900103D29 /* UIColor+BCColor.h */,
-				746820F51FAAEC9900103D29 /* UIColor+BCColor.m */,
+				74D1974B1FBBDF5E0040FFCD /* BCGroupAnnouncementVC.h */,
+				74D1974C1FBBDF5E0040FFCD /* BCGroupAnnouncementVC.m */,
+				74D1974D1FBBDF5E0040FFCD /* BCRCConversationListViewFirstVC.h */,
+				74D1974E1FBBDF5E0040FFCD /* BCRCConversationListViewFirstVC.m */,
+				74D1974F1FBBDF5E0040FFCD /* BCRCConversationListViewVC.h */,
+				74D197501FBBDF5E0040FFCD /* BCRCConversationListViewVC.m */,
+				74D197511FBBDF5E0040FFCD /* BCRCConversationViewVC.h */,
+				74D197521FBBDF5E0040FFCD /* BCRCConversationViewVC.m */,
+				74D197531FBBDF5E0040FFCD /* BCRCIMDataSource.h */,
+				74D197541FBBDF5E0040FFCD /* BCRCIMDataSource.m */,
+				74D197551FBBDF5E0040FFCD /* BCRongCHelp.h */,
+				74D197561FBBDF5E0040FFCD /* BCRongCHelp.m */,
+				74D197571FBBDF5E0040FFCD /* RongYunView.h */,
+				74D197581FBBDF5E0040FFCD /* RongYunView.m */,
 			);
-			path = UIKitHelp;
-			sourceTree = "<group>";
-		};
-		746820FA1FAAF2DD00103D29 /* ThirdLib */ = {
-			isa = PBXGroup;
-			children = (
-				746820FB1FAAF30600103D29 /* MBProgressHUD */,
-			);
-			path = ThirdLib;
-			sourceTree = "<group>";
-		};
-		746820FB1FAAF30600103D29 /* MBProgressHUD */ = {
-			isa = PBXGroup;
-			children = (
-				746820FC1FAAF30600103D29 /* MBProgressHUD.h */,
-				746820FD1FAAF30600103D29 /* MBProgressHUD.m */,
-			);
-			path = MBProgressHUD;
+			name = RongIM;
+			path = ProgramGirl/RongIM;
 			sourceTree = "<group>";
 		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
@@ -844,6 +808,9 @@
 				8E084B59DAFB487BBCC17411 /* libRNDeviceInfo.a */,
 				4B099F1C5BAF45E3AC854D94 /* libRNImagePicker.a */,
 				C87F7C03E1BD40499B2E69D7 /* libRCTOrientation.a */,
+				746820F51FAAEC9900103D29 /* UIColor+BCColor.m */,
+				746820F21FAAEA3000103D29 /* UITextViewAndPlaceholder.m */,
+				746820FD1FAAF30600103D29 /* MBProgressHUD.m */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1415,27 +1382,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				86463FA11FBA886B0019B183 /* BCGroupAnnouncementVC.m in Sources */,
-				7412C1F91F95B003007DD13E /* BCRCConversationListViewVC.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				74D1975F1FBBDF5E0040FFCD /* RongYunView.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				7412C1F81F95B003007DD13E /* RNBridgeModule.m in Sources */,
 				7426AEEB1FB99F5A0017B49D /* iVersion.m in Sources */,
+				74D197591FBBDF5E0040FFCD /* BCGroupAnnouncementVC.m in Sources */,
+				74D1975C1FBBDF5E0040FFCD /* BCRCConversationViewVC.m in Sources */,
 				742CB7A71F9DD1A800967C16 /* RongYunViewManager.m in Sources */,
+				74D1975E1FBBDF5E0040FFCD /* BCRongCHelp.m in Sources */,
 				746820F61FAAEC9900103D29 /* UIColor+BCColor.m in Sources */,
+				74D1975D1FBBDF5E0040FFCD /* BCRCIMDataSource.m in Sources */,
 				746820F31FAAEA3000103D29 /* UITextViewAndPlaceholder.m in Sources */,
 				746820FE1FAAF30600103D29 /* MBProgressHUD.m in Sources */,
-				742CB7731F9DCE2B00967C16 /* RongYunView.m in Sources */,
-				746820F91FAAED4900103D29 /* BCGroupAnnouncementVC.m in Sources */,
-				7412C1FA1F95B003007DD13E /* BCRCConversationViewVC.m in Sources */,
 				7412C1F61F95B003007DD13E /* AFAppNetAPIClient.m in Sources */,
 				86463F9E1FBA885E0019B183 /* UITextViewAndPlaceholder.m in Sources */,
 				8650C2B91F565D46007B7678 /* UpLoad.m in Sources */,
+				74D1975B1FBBDF5E0040FFCD /* BCRCConversationListViewVC.m in Sources */,
 				7412C1F71F95B003007DD13E /* BCAFRequest.m in Sources */,
-				7412C1FB1F95B003007DD13E /* BCRCIMDataSource.m in Sources */,
-				7412C1FC1F95B003007DD13E /* BCRongCHelp.m in Sources */,
-				742CB7AA1F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m in Sources */,
 				86463F9C1FBA885E0019B183 /* MBProgressHUD.m in Sources */,
+				74D1975A1FBBDF5E0040FFCD /* BCRCConversationListViewFirstVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
