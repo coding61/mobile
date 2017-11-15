@@ -63,7 +63,6 @@
 		74C31B571F502A6F00F78E6D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74C31B561F502A6F00F78E6D /* CoreFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		86463F9C1FBA885E0019B183 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463F961FBA885E0019B183 /* MBProgressHUD.m */; };
-		86463F9D1FBA885E0019B183 /* UIColor+BCColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463F991FBA885E0019B183 /* UIColor+BCColor.m */; };
 		86463F9E1FBA885E0019B183 /* UITextViewAndPlaceholder.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463F9B1FBA885E0019B183 /* UITextViewAndPlaceholder.m */; };
 		86463FA11FBA886B0019B183 /* BCGroupAnnouncementVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 86463FA01FBA886B0019B183 /* BCGroupAnnouncementVC.m */; };
 		8650C2B91F565D46007B7678 /* UpLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = 8650C2B81F565D46007B7678 /* UpLoad.m */; };
@@ -383,13 +382,10 @@
 		742CB7A61F9DD1A800967C16 /* RongYunViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RongYunViewManager.m; sourceTree = "<group>"; };
 		742CB7A81F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCRCConversationListViewFirstVC.h; sourceTree = "<group>"; };
 		742CB7A91F9DD5FB00967C16 /* BCRCConversationListViewFirstVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCRCConversationListViewFirstVC.m; sourceTree = "<group>"; };
-		746820F11FAAEA3000103D29 /* UITextViewAndPlaceholder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UITextViewAndPlaceholder.h; sourceTree = "<group>"; };
 		746820F21FAAEA3000103D29 /* UITextViewAndPlaceholder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UITextViewAndPlaceholder.m; sourceTree = "<group>"; };
-		746820F41FAAEC9900103D29 /* UIColor+BCColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+BCColor.h"; sourceTree = "<group>"; };
 		746820F51FAAEC9900103D29 /* UIColor+BCColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+BCColor.m"; sourceTree = "<group>"; };
 		746820F71FAAED4900103D29 /* BCGroupAnnouncementVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BCGroupAnnouncementVC.h; sourceTree = "<group>"; };
 		746820F81FAAED4900103D29 /* BCGroupAnnouncementVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BCGroupAnnouncementVC.m; sourceTree = "<group>"; };
-		746820FC1FAAF30600103D29 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		746820FD1FAAF30600103D29 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		7485BF981F95D3C8002D05B4 /* FileProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FileProvider.framework; path = System/Library/Frameworks/FileProvider.framework; sourceTree = SDKROOT; };
 		74C31B561F502A6F00F78E6D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -699,34 +695,6 @@
 			path = iVersion;
 			sourceTree = "<group>";
 		};
-		746820D01FAAE9FC00103D29 /* UIKitHelp */ = {
-			isa = PBXGroup;
-			children = (
-				746820F11FAAEA3000103D29 /* UITextViewAndPlaceholder.h */,
-				746820F21FAAEA3000103D29 /* UITextViewAndPlaceholder.m */,
-				746820F41FAAEC9900103D29 /* UIColor+BCColor.h */,
-				746820F51FAAEC9900103D29 /* UIColor+BCColor.m */,
-			);
-			path = UIKitHelp;
-			sourceTree = "<group>";
-		};
-		746820FA1FAAF2DD00103D29 /* ThirdLib */ = {
-			isa = PBXGroup;
-			children = (
-				746820FB1FAAF30600103D29 /* MBProgressHUD */,
-			);
-			path = ThirdLib;
-			sourceTree = "<group>";
-		};
-		746820FB1FAAF30600103D29 /* MBProgressHUD */ = {
-			isa = PBXGroup;
-			children = (
-				746820FC1FAAF30600103D29 /* MBProgressHUD.h */,
-				746820FD1FAAF30600103D29 /* MBProgressHUD.m */,
-			);
-			path = MBProgressHUD;
-			sourceTree = "<group>";
-		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -844,6 +812,9 @@
 				8E084B59DAFB487BBCC17411 /* libRNDeviceInfo.a */,
 				4B099F1C5BAF45E3AC854D94 /* libRNImagePicker.a */,
 				C87F7C03E1BD40499B2E69D7 /* libRCTOrientation.a */,
+				746820F51FAAEC9900103D29 /* UIColor+BCColor.m */,
+				746820F21FAAEA3000103D29 /* UITextViewAndPlaceholder.m */,
+				746820FD1FAAF30600103D29 /* MBProgressHUD.m */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
