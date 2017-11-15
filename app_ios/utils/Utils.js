@@ -14,7 +14,7 @@ const TopStatusBarAndroid = 25
 const TopNavBarHeight = 48
 const BottomStatusBarAndroid = 48
 const HeaderH = isIOS ? 64 : TopNavBarHeight+TopStatusBarAndroid
-const BottomH = isIOS ? 40 : BottomStatusBarAndroid
+const BottomH = isIOS ? 49 : BottomStatusBarAndroid
 
 const deviceH = Dimensions.get('window').height
 const deviceW = Dimensions.get('window').width
