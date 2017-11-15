@@ -122,14 +122,14 @@ export default class Forum_Details extends Component{
         })
 
         this.eventEm = DeviceEventEmitter.addListener('message', (value)=>{
-              this.props.navigation.navigate('CommentText', {data: value,name:'main',callback:(msg)=>{
+              this.props.navigation.navigate('CommentText', {data: value,userinfo:'',name:'main',callback:(msg)=>{
                 this._onRefresh()
             }}) 
         })         
     }
 
-    Show_Comment(pk){
-        this.props.navigation.navigate('CommentText', {data: pk,name:'reply',callback:(msg)=>{
+    Show_Comment(pk,userinfo){
+        this.props.navigation.navigate('CommentText', {data: pk,userinfo:userinfo,name:'reply',callback:(msg)=>{
             this._onRefresh()
         }}) 
     }
@@ -275,7 +275,20 @@ export default class Forum_Details extends Component{
     _renderFooter(){
         return <View style={{alignItems:'center', justifyContent: 'center', width: width, height: 30}}><Text style={{fontSize: 12, color: '#cccccc'}}>{this.state.loadText}</Text></View>
     }
-    
+    rendertop(top){
+        if(top==null){
+            return;
+        }
+        if(top=='Top10'){
+            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/top10.png')}/>)
+        }
+        if(top=='Top50'){
+            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/top50.png')}/>)
+        }
+        if(top=='Top100'){
+            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/top100.png')}/>)
+        }
+    }
     renderForumRow(item){
         var rowData=item.item;
         return (
@@ -284,13 +297,14 @@ export default class Forum_Details extends Component{
                     <View style={{alignItems:'center',paddingLeft:20,}}>
                         {!rowData.userinfo.avatar?(<Image style={{width:50,height:30,borderRadius:15,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:30,height:30,borderRadius:15,}} source={{uri:rowData.userinfo.avatar}}/>)}
                         <Text style={{paddingTop:5,fontSize:10,color:'#ff6b94',}}>{rowData.userinfo.grade.current_name}</Text>
+                        {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
                     <View style={{paddingLeft:40,paddingRight:10,width:width*0.7,}}>
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.userinfo.name}</Text>
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                     </View>
                     <View style={{paddingRight:20,}}>
-                        <TouchableOpacity style={{width:40,height:25,paddingLeft:2,}} onPress={this.Show_Comment.bind(this,rowData.pk)}>
+                        <TouchableOpacity style={{width:40,height:25,paddingLeft:2,}} onPress={this.Show_Comment.bind(this,rowData.pk,rowData.userinfo.name)}>
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
@@ -464,6 +478,7 @@ export default class Forum_Details extends Component{
                             <View style={{alignItems:'center',paddingLeft:20,}}>
                                 {!data.userinfo.avatar?(<Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,borderRadius:25}} source={{uri:data.userinfo.avatar}}/>)}
                                 <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
+                                {this.rendertop(data.userinfo.top_rank)}
                             </View>
                             <View style={{paddingLeft:40,paddingRight:10,width:width*0.87,}}>
                                 <Text style={{paddingBottom:10,color:'#858585'}}>{data.userinfo.name}</Text>
