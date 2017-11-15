@@ -26,23 +26,23 @@ export default class MyForum extends Component{
             dataSource: '',
             nextPage: null,
             isLoading: false,
-            url:basePath+'/forum/posts/?section=&isessence=&myposts=true&page=1',  
+            url:basePath+'/forum/posts/?section=&isessence=&myposts=true&page=1',
             loadText: '正在加载...',
             isRefreshing: false,
         };
     }
- 
+
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
         return {
             title: '我的帖子',
-            headerTintColor: "#fff",   
+            headerTintColor: "#fff",
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
         };
     };
     componentWillUnmount(){
-        
+
     }
     componentDidMount(){
          var self = this;
@@ -72,14 +72,14 @@ export default class MyForum extends Component{
                     isLoading: false,
                     loadText: responseData.next?('正在加载...'):('没有更多了...'),
                     isRefreshing: false
-                 });     
+                 });
             })
             .catch((error) => {
                 console.error(error);
-            }); 
+            });
         })
     }
-    
+
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
             this.setState({
@@ -144,7 +144,7 @@ export default class MyForum extends Component{
             this._onRefresh()
         }})
     }
-    
+
     dealWithTime(Time){
         var timeArray = Time.split('.')[0].split('T');
         var year = timeArray[0].split('-')[0];
@@ -210,7 +210,7 @@ export default class MyForum extends Component{
                 </View>
             </TouchableOpacity>
         )
-        
+
     }
     _keyExtractor = (item, index) => index;
     render(){

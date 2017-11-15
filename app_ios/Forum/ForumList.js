@@ -309,11 +309,15 @@ export default class ForumList extends Component{
             this._onRefresh()
         }})
     }
-
     goPersonalPage(userinfo) {
-        this.props.navigation.navigate('PersonalPage', { data: userinfo });
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('PersonalPage', { data: userinfo });
+            }else{
+                this.props.navigation.navigate("Login");
+            }
+        })
     }
-
     dealWithTime(Time){
         var timeArray = Time.split('.')[0].split('T');
         var year = timeArray[0].split('-')[0];

@@ -3,10 +3,10 @@
  * @description: 接口地址
  * @time: 2017-03-15
  */
-const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
-const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
-// const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
-// const Page_Domain = "https://app.bcjiaoyu.com/girl";
+// const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
+// const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
+const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
+const Page_Domain = "https://app.bcjiaoyu.com/girl";
 let Http = {
 	domainPage:Page_Domain,    //网站页面地址的域名
 	domain:Http_Domain,        //接口域名
@@ -18,6 +18,7 @@ let Http = {
 	teamBrand:Http_Domain + "/userinfo/groups/diamond/ranking/",  //团队排行
 	lunTanUnread:Http_Domain + "/message/messages/?types=forum&status=unread",   //论坛未读消息
 	findPassword:Http_Domain + "/userinfo/reset_password/",       //找回密码
+	awardDiamond:Http_Domain + "/userinfo/play_reward/",		  //打赏钻石
 	courseInfo:(pk)=>{                                            //课程信息
 		return Http_Domain + "/course/courses/" + pk + "/"
 	},
