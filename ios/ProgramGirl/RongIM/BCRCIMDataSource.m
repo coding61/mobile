@@ -57,7 +57,7 @@
         }else{
             NSLog(@"获取他人信息成功%@", userId);
             RCUserInfo *userinfo = [[RCUserInfo alloc] init];
-            userinfo.userId = obj[UserId];
+            userinfo.userId = userId;
             userinfo.name = obj[NickName];
             userinfo.portraitUri = obj[PortraitUri];
             
@@ -78,7 +78,7 @@
         }else{
             NSLog(@"获取自己信息成功%@", userId);
             RCUserInfo *userinfo = [[RCUserInfo alloc] init];
-            userinfo.userId = obj[UserId];
+            userinfo.userId = userId;
             userinfo.name = obj[NickName];
             userinfo.portraitUri = obj[PortraitUri];
             

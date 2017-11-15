@@ -3029,10 +3029,10 @@ class MessagePage extends Component{
                     {/*this.state.courseProgressArray.length? this._renderCourseProgress():null*/}
                     
                     {/******会话消息******/}
-                    <View style={{width:MessageWidth1, maxHeight:height-headerH-bottomH-50-10}}>
+                    <View style={{width:MessageWidth1, maxHeight:height-headerH-50-10}}>
                         <FlatList 
                             ref={(flatlist)=>this._flatList=flatlist}
-                            style={{maxHeight:height-headerH-bottomH-50-10}}
+                            style={{maxHeight:height-headerH-50-10}}
                             data={this.state.dataSource}
                             renderItem={this._renderItem}
                             ListHeaderComponent={this.state.showHeaderComponent?this._renderHeader:null}
@@ -3062,9 +3062,9 @@ class MessagePage extends Component{
                                     // this._flatList.scrollToIndex({viewPosition: 0, index: 0}); 
                                     // console.log("-----scrollTop");
                                 }else{
-                                    if (contentHeight > height-headerH-bottomH-50-10) {
+                                    if (contentHeight > height-headerH-50-10) {
                                         // this._flatList.scrollToIndex({viewPosition: 1, index: this.state.number-1});
-                                        this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-bottomH-50-10)});
+                                        this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-50-10)});
                                         // console.log("-----scrollEnd");
                                         // this._flatList.scrollToEnd();  //与getItemLayout配合使用
                                     } 

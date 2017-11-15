@@ -37,7 +37,7 @@
 #define TokenInCorrect 3
 
 //用户的唯一标识，昵称，头像, 融 token
-#define UserId @"username"
+#define UserId @"owner"
 #define NickName @"name"
 #define PortraitUri @"avatar"
 #define RongToken @"token"
