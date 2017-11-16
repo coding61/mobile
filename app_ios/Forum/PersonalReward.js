@@ -64,7 +64,7 @@ class PersonalReward extends Component {
             var num = Number(this.state.num);
             if (!isNaN(num)) {
                 if (parseInt(num, 10) === num && num > 0) {
-                    this._fetchAward(String(num));
+                    this._fetchAward(num);
                 } else {
                     Alert.alert('请输入一个正整数');
                 }
@@ -77,10 +77,6 @@ class PersonalReward extends Component {
     }
 
     _fetchAward(num) {
-        console.log(this.state.token);
-        console.log(num);
-        console.log(this.state.owner);
-
         fetch(Http.awardDiamond, {
             method: "POST",
             headers: {
@@ -93,26 +89,20 @@ class PersonalReward extends Component {
                 to_username: this.state.owner
             }),
         })
-        // fetch(Http.addActivity, {
-        //     method: "POST",
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //         'Authorization': 'Token ' + this.state.token
-        //     },
-        //     body: JSON.stringify({
-        //         name: "小明俱ddd乐部",
-        //         password:"123456",
-        //         introduction:"这是小明的俱乐部"
-        //     }),
-        // })
         .then((response)=>{
-            console.log(response);
-            return response.json();
+            if (response.ok) {
+                return response.json();
+            } else {
+                return null;
+            }
         })
         .then((responseJson)=>{
-            console.log(responseJson);
-            Alert.alert(responseJson.message);
+            if (responseJson) {
+                Alert.alert(responseJson.message);
+                this.setState({num: null});
+            } else {
+                Alert.alert('失败，请重试');
+            }
         })
     }
 
