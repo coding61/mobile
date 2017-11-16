@@ -406,19 +406,23 @@ class ActivityDetail extends Component {
                 <View style={styles.item}>
                     {/******标题*******/}
                     <View style={styles.itemHeader}>
+                        {/*
                         <Image
                           style={{height:20}}
                           source={require('../images/left.png')}
                           resizeMode={'contain'}
                         />
+                        */}
                         <Text style={styles.itemHeaderTitle}>
-                          {this.state.data.name.slice(0, 20)}
+                          {this.state.data.name}
                         </Text>
+                        {/*
                         <Image
                           style={{height:20}}
                           source={require('../images/right.png')}
                           resizeMode={'contain'}
                         />
+                        */}
                     </View>
                     {/******介绍*******/}
                     <View style={styles.itemMiddle}>
@@ -654,13 +658,15 @@ const styles = StyleSheet.create({
     itemHeader:{
     	flexDirection:'row', 
     	justifyContent:'center', 
-    	height:45, 
-    	alignItems:'center'
+    	// height:45, 
+    	alignItems:'center',
+        marginBottom:10
     },
     itemHeaderTitle:{
     	fontSize:16, 
     	color:pinkColor, 
-    	paddingHorizontal:5
+    	paddingHorizontal:5,
+        lineHeight:20
     },
     itemMiddle:{
     	flexDirection:'row', 

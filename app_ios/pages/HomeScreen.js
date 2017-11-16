@@ -54,7 +54,7 @@ class HomeScreen extends Component{
 
         return {
             headerStyle: styles.headerStyle,
-            title:json?null:"儿童编程",
+            title:json?null:"程序媛",
             headerTintColor: "#fff",
             headerTitleStyle:{alignSelf:'auto',},
             headerLeft:json?(
@@ -258,7 +258,8 @@ class HomeScreen extends Component{
             case 2:
             {
                 //在线编辑器
-                this._clickHelp();
+                // this._clickHelp();
+                this._clickChooseEditor();
                 break;
             }
             default:

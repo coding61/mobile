@@ -63,7 +63,7 @@ class MyPage extends Component {
                 })
                 .then(res => {
                   if (res !== '失败') {
-                    RnTest.rnIMConnect(res.token, function() {
+                    RnTest.rnIMConnect(res.token, results, function() {
                     });
                   }
                 })
@@ -113,7 +113,7 @@ class MyPage extends Component {
               })
               .then(res => {
                 if (res !== '失败') {
-                  RnTest.rnIMConnect(res.token, function() {
+                  RnTest.rnIMConnect(res.token, token, function() {
 
                   });
                 }
