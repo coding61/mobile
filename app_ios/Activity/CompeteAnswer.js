@@ -8,7 +8,8 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  Keyboard
+  Keyboard,
+  ScrollView
 } from 'react-native';
 
 import BCFetchRequest from '../utils/BCFetchRequest.js';
@@ -53,7 +54,7 @@ class CompeteAnswer extends Component {
     //获取问题列表
     _fetchQuestionList(){
         Utils.isLogin((token)=>{
-            if (token) {
+            // if (token) {
                 var type = "get",
                     url = Http.questionList(this.state.item.pk),
                     token = token,
@@ -78,7 +79,7 @@ class CompeteAnswer extends Component {
                         loading:false
                     })
                 });
-            }
+            // }
         })
     }
     //提交答案
@@ -130,6 +131,21 @@ class CompeteAnswer extends Component {
 	    Keyboard.dismiss();
     }
     _submitAnswer(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate("EditAnswer", {compete:this.state.item.pk, question:this.state.data.pk, callback:(isAnswer)=>{
+                    this.setState({
+                        isAnswer:true
+                    }, ()=>{
+                        // this.props.navigation.goBack();
+                    })
+
+                }});
+            }else{
+                this.props.navigation.navigate("Login");
+            }
+        })
+        /*
 		Utils.isLogin((token)=>{
 			if (token) {
 				if (this.state.answer == "") {
@@ -145,27 +161,47 @@ class CompeteAnswer extends Component {
 				this.props.navigation.navigate("Login");
 			}
 		})
+        */
+    }
+    _renderMainView1(){
+        return (
+            <TouchableOpacity onPress={() => this._cancelkeyboard()} activeOpacity={1} style={{flex:1,backgroundColor:bgColor, paddingHorizontal:10, paddingVertical:10}}>
+            <View style={{position:'relative', flex:1}}>
+                <Text style={styles.title}>{"题目: "}{this.state.data.title}</Text>
+                {/*
+                <TextInput
+                    style={styles.answer}
+                    onChangeText={(text)=>{this.setState({answer:text})}}
+                    placeholder={"请输入您的答案"}
+                    value={this.state.answer}
+                    multiline={true}
+                />
+                */}
+                 <TouchableOpacity style={styles.submit} onPress={this._submitAnswer.bind(this)}>
+                    <Text style={{color:'white', fontSize:15}}>{"提交答案"}</Text>
+                </TouchableOpacity>
+            </View>
+            </TouchableOpacity>
+        )
+    }
+    _renderMainView(){
+        return (
+            <View style={{flex:1}}>
+                <ScrollView style={{flex:1}} contentContainerStyle={{padding:10}}>
+                    <Text style={styles.title}>{"题目: "}{this.state.data.title}</Text>
+                </ScrollView>
+                <TouchableOpacity style={styles.submit} onPress={this._submitAnswer.bind(this)}>
+                    <Text style={{color:'white', fontSize:15}}>{"提交答案"}</Text>
+                </TouchableOpacity>
+            </View>
+        )
     }
   	render() {
 	    return (
-            <View style={{flex:1}}>
+            <View style={{flex:1, backgroundColor:bgColor}}>
             {
                 this.state.data?
-                    <TouchableOpacity onPress={() => this._cancelkeyboard()} activeOpacity={1} style={{flex:1,backgroundColor:bgColor, paddingHorizontal:10, paddingVertical:10}}>
-                    <View style={{position:'relative', flex:1}}>
-                        <Text style={styles.title}>{"题目: "}{this.state.data.title}</Text>
-                        <TextInput
-                            style={styles.answer}
-                            onChangeText={(text)=>{this.setState({answer:text})}}
-                            placeholder={"请输入您的答案"}
-                            value={this.state.answer}
-                            multiline={true}
-                        />
-                        <TouchableOpacity style={styles.submit} onPress={this._submitAnswer.bind(this)}>
-                            <Text style={{color:'white', fontSize:15}}>{"提交答案"}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    </TouchableOpacity>
+                    this._renderMainView()
                 :
                     !this.state.loading?<EmptyView failTxt={"该竞赛下暂无题目"}/>:null
             }
@@ -215,6 +251,7 @@ const styles = StyleSheet.create({
    		color:fontBColor, 
    		fontWeight:'bold',
    		backgroundColor:'transparent',
+        lineHeight:20
    	},
    	answer:{
    		backgroundColor:'white', 
@@ -228,16 +265,35 @@ const styles = StyleSheet.create({
    		fontSize:15
    	},
    	submit:{
-   		backgroundColor:pinkColor, 
-   		height:45, 
-   		alignItems:'center', 
-   		justifyContent:'center', 
-   		borderRadius:5,
-   		// marginTop:20,
-   		position:'absolute',
-   		bottom:40,
-   		width:width-20
-   	}
+   		// backgroundColor:pinkColor, 
+   		// height:45, 
+   		// alignItems:'center', 
+   		// justifyContent:'center', 
+   		// borderRadius:5,
+   		// // marginTop:20,
+   		// position:'absolute',
+   		// bottom:40,
+   		// width:width-20
+
+        height:45,
+        backgroundColor:pinkColor,
+        alignItems:'center',
+        justifyContent:'center',
+        borderRadius:5,
+        width:width-20,
+        marginHorizontal:10,
+        marginVertical:20
+   	},
+    cancel:{
+        height:45,
+        backgroundColor:btnCancelColor,
+        alignItems:'center',
+        justifyContent:'center',
+        borderRadius:5,
+        width:width-20,
+        marginHorizontal:10,
+        marginVertical:20
+    }
 
 });
 

@@ -50,6 +50,8 @@ import AddActivity from './Activity/AddActivity.js';
 import AlterActivity from './Activity/AlterActivity.js';
 import ManageMember from './Activity/ManageMember.js';
 import CompeteAnswer from './Activity/CompeteAnswer.js';
+import EditAnswer from './Activity/EditAnswer.js';
+
 import CatalogCourse from './My/CatalogCourse.js';
 
 
@@ -120,6 +122,7 @@ const app = StackNavigator({
     AlterActivity:{screen:AlterActivity},
     ManageMember:{screen:ManageMember},
     CompeteAnswer:{screen:CompeteAnswer},
+    EditAnswer:{screen:EditAnswer},
     CatalogCourse:{screen:CatalogCourse}
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称

@@ -275,17 +275,17 @@ class Activity extends Component {
     _renderItemActivityNew(item, index){
         return (
             <TouchableOpacity onPress={this._pushActivityDetail.bind(this, item.pk)}>
-            <View style={[styles.item, {overflow:'hidden', borderColor:'#c9c9c9', borderWidth:1}]}>
-                <View style={{height:160, width:width}}>
+            <View style={[styles.item, {overflow:'visible', borderColor:'#c9c9c9', borderWidth:1, position:'relative'}]}>
+                <View style={{height:160, width:width-20}}>
                     
                     <Image
-                      style={{flex:1, width:width}}
+                      style={{flex:1, width:width-20}}
                       source={require('../assets/Activity/default.png')}
                       resizeMode={'cover'}
                     />
                     
-                    <Text style={{color:'white', fontSize:20, fontWeight:'bold', position:'absolute', left:10, bottom:10, backgroundColor:'transparent'}}>
-                      {item.name.slice(0,15)}
+                    <Text style={{color:'white', fontSize:20, fontWeight:'bold', position:'absolute', left:10, right:10, bottom:10, backgroundColor:'transparent'}}>
+                      {item.name.slice(0,30)}
                     </Text>
                 </View>
 

@@ -265,4 +265,15 @@
 - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
   NSLog(@"%@", err);
 }
+/**
+ 活跃状态
+ */
+- (void)applicationDidBecomeActive:(UIApplication *)application{
+  application.applicationIconBadgeNumber = 0;
+}
+/**
+ 非活跃状态
+ */
+- (void)applicationWillResignActive:(UIApplication *)application{
+}
 @end
