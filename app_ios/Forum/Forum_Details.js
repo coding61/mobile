@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
 import {
-  StyleSheet, 
-  Image, 
-  Text, 
-  TextInput, 
-  View, 
+  StyleSheet,
+  Image,
+  Text,
+  TextInput,
+  View,
   ScrollView,
-  Dimensions, 
+  Dimensions,
   TouchableOpacity,
   ListView,
   FlatList,
@@ -22,6 +22,8 @@ import ForumDeatilCont from './ForumDeatilCont';
 var {height, width} = Dimensions.get('window');
 import NewsCenter from './NewsCenter';
 import Http from '../utils/Http.js';
+import Utils from '../utils/Utils.js';
+
 var basePath=Http.domain;
 export default class Forum_Details extends Component{
     constructor(props) {
@@ -41,12 +43,12 @@ export default class Forum_Details extends Component{
             commentshow:false,
             Maincommentshow:false,
             content:'',
-        } 
+        }
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
         return {
-            headerTintColor: "#fff",   
+            headerTintColor: "#fff",
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
             headerRight:
@@ -80,7 +82,7 @@ export default class Forum_Details extends Component{
                     self._loadUserinfo()
                 });
             }
-             
+
         });
     }
     componentDidMount() {
@@ -97,7 +99,7 @@ export default class Forum_Details extends Component{
                 headers: {
                     'Authorization': 'Token ' + this.state.token,
                     'Content-Type': 'application/json'},
-                body: JSON.stringify(data),  
+                body: JSON.stringify(data),
             })
             .then((response)=>{
                 if (response.status === 200) {
@@ -117,7 +119,7 @@ export default class Forum_Details extends Component{
                     iscollect:!state.params.iscollect
                 })
                 state.params.callback();
-                
+
             })
             .catch((error) => {
                 console.error(error);
@@ -128,14 +130,14 @@ export default class Forum_Details extends Component{
         this.eventEm = DeviceEventEmitter.addListener('message', (value)=>{
             this.props.navigation.navigate('CommentText', {data: value,name:'main',userinfo:'',callback:(msg)=>{
                 this._onRefresh()
-            }}) 
-        })         
+            }})
+        })
     }
-    
+
     Show_Comment(pk,userinfo){
         this.props.navigation.navigate('CommentText', {data: pk,userinfo:userinfo,name:'reply',callback:(msg)=>{
             this._onRefresh()
-        }}) 
+        }})
     }
     _loadforum(){
         forum_url=basePath+'/forum/posts/'+this.state.pk+'/';
@@ -175,7 +177,7 @@ export default class Forum_Details extends Component{
             })
         })
         .catch((error) => {
-            console.error(error);  
+            console.error(error);
         })
     }
     _loadData() {
@@ -228,7 +230,7 @@ export default class Forum_Details extends Component{
                     isRefreshing: false
                 })
             })
-        })  
+        })
     }
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
@@ -276,17 +278,34 @@ export default class Forum_Details extends Component{
             })
         }
     }
+
+    goPersonalPage(userinfo) {
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('PersonalPage', { data: userinfo });
+            }else{
+                this.props.navigation.navigate("Login");
+            }
+        })
+    }
+
     _renderFooter(){
         return <View style={{alignItems:'center', justifyContent: 'center', width: width, height: 30}}><Text style={{fontSize: 12, color: '#cccccc'}}>{this.state.loadText}</Text></View>
     }
-    
+
     renderForumRow(item){
         var rowData=item.item;
         return (
             <View style={{width: width,flex:1, backgroundColor: '#ffffff',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingRight:10,paddingBottom:10,}}>
                 <View style={{flexDirection:'row',paddingTop:10,backgroundColor:'#ffffff',width:width,paddingLeft:15}}>
                     <View style={{alignItems:'center',paddingLeft:20,}}>
-                        {!rowData.userinfo.avatar?(<Image style={{width:50,height:30,borderRadius:15,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:30,height:30,borderRadius:15,}} source={{uri:rowData.userinfo.avatar}}/>)}
+                        <TouchableOpacity style={{width:50,height:30}} onPress={this.goPersonalPage.bind(this, rowData.userinfo)}>
+                            {!rowData.userinfo.avatar ? (
+                                <Image style={{width:50,height:30,borderRadius:15,}} source={require('../assets/Forum/defaultHeader.png')}/>
+                            ) : (
+                                <Image style={{width:30,height:30,borderRadius:15,}} source={{uri:rowData.userinfo.avatar}}/>
+                            )}
+                        </TouchableOpacity>
                         <Text style={{paddingTop:5,fontSize:10,color:'#ff6b94',}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
@@ -341,7 +360,7 @@ export default class Forum_Details extends Component{
                         this._onRefresh()
                     })
                     .catch((error) => {
-                        console.error(error);  
+                        console.error(error);
                         })
                 }, style: 'destructive'},
                 {text: '取消', onPress: () => {}, style: 'destructive'},
@@ -367,7 +386,7 @@ export default class Forum_Details extends Component{
                     fetch(dete_url,
                     {
                         method: 'DELETE',
-                        headers: {  
+                        headers: {
                             'Authorization': 'Token '+ this.state.token,
                             'Content-Type': 'application/json' }
                     })
@@ -376,14 +395,14 @@ export default class Forum_Details extends Component{
                         this.props.navigation.goBack();
                     })
                     .catch((error) => {
-                        console.error(error);  
+                        console.error(error);
                     })
                 }, style: 'destructive'},
                 {text: '取消', onPress: () => {}, style: 'destructive'},
              ]
         )
     }
-    
+
     forum_tag(tag){
         if(tag==0){
             statetag='solved'
@@ -400,7 +419,7 @@ export default class Forum_Details extends Component{
             headers: {
                 'Authorization': 'Token ' + this.state.token,
                 'Content-Type': 'application/json'},
-            body: JSON.stringify(data),    
+            body: JSON.stringify(data),
         })
         .then(response=>{
             if (response.status === 200) {
@@ -413,7 +432,7 @@ export default class Forum_Details extends Component{
             this._loadforum()
         })
         .catch((error) => {
-            console.error(error);  
+            console.error(error);
         })
     }
     manager(index){
@@ -424,7 +443,7 @@ export default class Forum_Details extends Component{
                 this._loadforum()
             })
             .catch((error) => {
-                console.error(error);  
+                console.error(error);
             })
         }else if(index==1){
             fetch(basePath+"/forum/posts_essence/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
@@ -433,7 +452,7 @@ export default class Forum_Details extends Component{
                 this._loadforum()
             })
             .catch((error) => {
-                console.error(error);  
+                console.error(error);
             })
         }else if(index==2){
             fetch(basePath+"/forum/posts_top/cancel/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
@@ -442,7 +461,7 @@ export default class Forum_Details extends Component{
                 this._loadforum()
             })
             .catch((error) => {
-                console.error(error);  
+                console.error(error);
             })
         }else{
             fetch(basePath+"/forum/posts_top/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
@@ -451,7 +470,7 @@ export default class Forum_Details extends Component{
                 this._loadforum()
             })
             .catch((error) => {
-                console.error(error);  
+                console.error(error);
             })
         }
     }
@@ -480,7 +499,13 @@ export default class Forum_Details extends Component{
                         <Text style={{fontSize:16,color:'#292929',padding:15,}} selectable={true}>{data.status_display=='未解决'?(<Text style={{color:'#ff6b94',marginRight:10,}}>[{data.status_display}]</Text>):(<Text style={{color:'#858585',paddingRight:10,}}>[{data.status_display}]</Text>)}   {data.title}</Text>
                         <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:'#F2F2F2'}}>
                             <View style={{alignItems:'center',paddingLeft:20,}}>
-                                {!data.userinfo.avatar?(<Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,borderRadius:25}} source={{uri:data.userinfo.avatar}}/>)}
+                                <TouchableOpacity style={{width:50,height:50}} onPress={this.goPersonalPage.bind(this, data.userinfo)}>
+                                    {!data.userinfo.avatar ? (
+                                        <Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>
+                                    ) : (
+                                        <Image style={{width:50,height:50,borderRadius:25}} source={{uri:data.userinfo.avatar}}/>
+                                    )}
+                                </TouchableOpacity>
                                 <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
                                 {this.rendertop(data.userinfo.top_rank)}
                             </View>
@@ -498,10 +523,10 @@ export default class Forum_Details extends Component{
                                             {data.status=='unsolved'?(
                                                 <View style={{flexDirection:'row'}}>
                                                     <Text onPress={this.forum_tag.bind(this,0)} style={{color:'#ff6b94',marginRight:30,}}>标记为已解决</Text>
-                                                    <Text onPress={this.forum_tag.bind(this,1)} style={{color:'#ff6b94',marginRight:30,}}>关闭问题</Text>    
+                                                    <Text onPress={this.forum_tag.bind(this,1)} style={{color:'#ff6b94',marginRight:30,}}>关闭问题</Text>
                                                 </View>
                                             ):(
-                                                <Text onPress={this.forum_tag.bind(this,2)} style={{color:'#ff6b94',marginRight:30,}}>标记为未解决</Text> 
+                                                <Text onPress={this.forum_tag.bind(this,2)} style={{color:'#ff6b94',marginRight:30,}}>标记为未解决</Text>
                                             )}
                                         </View>
                                     ):(null)}
