@@ -34,6 +34,7 @@ class MyPage extends Component {
   		isLogin: false,
   		name: null,
   		headImg: null,
+        owner: null,
       promptVisible: false,
       show: false
   	}
@@ -47,7 +48,7 @@ class MyPage extends Component {
             if (response.ok === true) {
               return response.json();
             } else {
-              return '失败'; 
+              return '失败';
             }
           })
           .then(responseJSON => {
@@ -68,7 +69,8 @@ class MyPage extends Component {
               _this.setState({
                 isLogin: true,
                 name: responseJSON.name,
-                headImg: responseJSON.avatar
+                headImg: responseJSON.avatar,
+                owner: responseJSON.owner
               })
             } else {
               Utils.showMessage('获取用户信息失败，请重新登录');
@@ -86,7 +88,7 @@ class MyPage extends Component {
           if (response.ok === true) {
             return response.json();
           } else {
-            return '失败'; 
+            return '失败';
           }
         })
         .then(responseJSON => {
@@ -175,7 +177,13 @@ class MyPage extends Component {
   				this.props.navigation.navigate('Login');
   				break;
   			}
-  		default: 
+        case 7:
+  			{
+  				//勋章
+  				this.props.navigation.navigate('PersonalMedal', {owner: this.state.owner, myself: true});
+  				break;
+  			}
+  		default:
   			{
   				break;
   			}
@@ -333,6 +341,12 @@ class MyPage extends Component {
 	      				<Image resizeMode={'contain'} style={{width: 13, height: 13, position: 'absolute', right: 10, top: 18}} source={require('../assets/My/right.png')}/>
 	      			</TouchableOpacity>
 
+                    <TouchableOpacity onPress={this.onPress.bind(this, 7)} style={{flexDirection: 'row', alignItems: 'center', borderColor: 'rgb(238, 238, 239)', borderBottomWidth: 1, borderTopWidth: 1, width: width, height: 50, backgroundColor: 'white'}}>
+	      				<Image resizeMode={'contain'} style={{marginLeft: 10, width: 20, height: 20}} source={require('../images/forum_icon/medal.png')}/>
+	      				<Text style={{marginLeft: 10, fontSize: 15, color: 'rgb(59, 60, 61)'}}>{'我的勋章'}</Text>
+	      				<Image resizeMode={'contain'} style={{width: 13, height: 13, position: 'absolute', right: 10, top: 18}} source={require('../assets/My/right.png')}/>
+	      			</TouchableOpacity>
+
 	      			<TouchableOpacity onPress={this.onPress.bind(this, 3)} style={{marginTop: 20, flexDirection: 'row', alignItems: 'center', borderColor: 'rgb(238, 238, 239)', borderTopWidth: 1, width: width, height: 50, backgroundColor: 'white'}}>
 	      				<Image resizeMode={'contain'} style={{marginLeft: 10, width: 20, height: 20}} source={require('../assets/My/hadStudy.png')}/>
 	      				<Text style={{marginLeft: 10, fontSize: 15, color: 'rgb(59, 60, 61)'}}>{'已完成课程'}</Text>
@@ -353,7 +367,7 @@ class MyPage extends Component {
       	</ScrollView>
         {this.state.show?(
           <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
-              <ActivityIndicator 
+              <ActivityIndicator
                   style={{marginTop: 10}}
                   color={'white'}
                   size={'large'}

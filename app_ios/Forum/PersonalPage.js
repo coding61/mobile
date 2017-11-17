@@ -78,6 +78,9 @@ class PersonalPage extends Component {
                 Alert.alert('获取个人信息失败');
             }
         })
+        .catch((err) => {
+            Alert.alert('失败，请重试...');
+		});
     }
 
     onPress(num) {
@@ -121,9 +124,9 @@ class PersonalPage extends Component {
                     <TouchableOpacity style={{position: 'absolute', top: 20, width: 60, height: 40, alignSelf: 'flex-start', alignItems: 'center', justifyContent: 'center'}} onPress={this._goBack.bind(this)}>
                         <Image resizeMode={'cover'} style={{width: 12, height: 20, alignSelf: 'flex-start', marginLeft: 10}} source={require('../images/forum_icon/back.png')}/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{width: width * 170 / 750, height: width * 170 / 750, marginTop: 50}}>
+                    <View style={{width: width * 170 / 750, height: width * 170 / 750, marginTop: 50}}>
                         <Image resizeMode={'cover'} style={{width: width * 170 / 750, height: width * 170 / 750, borderRadius: width * 170 / 750 / 2, borderWidth: 5, borderColor: '#fff'}} source={{uri: this.state.userinfo.avatar}}/>
-                    </TouchableOpacity>
+                    </View>
                     <Text style={{width: width - 30, color: 'white', fontSize: 18, marginTop: 20, textAlign: 'center'}} numberOfLines={1}>{this.state.userinfo.name}</Text>
                     <View style={{marginTop: 20, flexDirection: 'row', justifyContent: 'center'}}>
                         <Text style={{color: 'white', fontSize: 18, width: width / 2 - 30, textAlign: 'right'}}>{'段位:' + this.state.userinfo.grade.current_name}</Text>
@@ -155,7 +158,7 @@ class PersonalPage extends Component {
                     ) : ( null )}
 
           			<TouchableOpacity onPress={this.onPress.bind(this, 3)} style={{marginTop: 20, flexDirection: 'row', alignItems: 'center', borderColor: 'rgb(238, 238, 239)', borderBottomWidth: 1, borderTopWidth: 1, width: width, height: 50, backgroundColor: 'white'}}>
-          				<Image resizeMode={'contain'} style={{marginLeft: 10, width: 20, height: 20}} source={require('../images/forum_icon/reward.png')}/>
+          				<Image resizeMode={'contain'} style={{marginLeft: 10, width: 20, height: 20}} source={require('../images/forum_icon/medal.png')}/>
           				<Text style={{marginLeft: 15, fontSize: 15, color: 'rgb(59, 60, 61)'}}>{!this.state.myself ? '她的勋章' : '我的勋章'}</Text>
                         <Image resizeMode={'contain'} style={{width: 13, height: 13, position: 'absolute', right: 10, top: 18}} source={require('../assets/My/right.png')}/>
           			</TouchableOpacity>

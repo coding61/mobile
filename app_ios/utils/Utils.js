@@ -100,7 +100,7 @@ let Utils = {
     btnCancelColor:'rgb(154,155,156)',
     alertViewBgColor:'rgb(240, 241, 242)',
     alertLineColor:'rgb(231,232,233)',
-    
+
     containKey:(dic, key)=>{
         return dic.hasOwnProperty(key)
     },
@@ -154,7 +154,7 @@ let Utils = {
                 break;
             }
         }
-        
+
         if (url.split(string).length == 1) {
             // 图片格式非法，
             return 0;
@@ -187,7 +187,7 @@ let Utils = {
             var str = url.split(string)[1]; //45x36
             width = str.split('x')[0];  //45
             height = str.split('x')[1];  //36
-            
+
             callback(width, height)
         }
     },

@@ -156,7 +156,6 @@ export default class ForumList extends Component{
             fetch(this.state.url)
             .then((response) =>response.json())
             .then((responseData) => {
-                console.log(responseData)
                 var resultArr = new Array();
                     responseData.results.map(result=> {
                         resultArr.push(result);
