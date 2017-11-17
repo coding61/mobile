@@ -18,6 +18,7 @@ import Http from '../utils/Http.js';
 
 import EmptyView from '../Component/EmptyView.js';
 import LoadingView from '../Component/LoadingView.js';
+import RewardView from '../Activity/RewardView.js';
 
 class EditAnswer extends Component {
 	constructor(props) {
@@ -30,6 +31,10 @@ class EditAnswer extends Component {
             loading:false,
             loadingText:"加载中...",
             isAnswer:false,
+            showRewardView:false,      //是否展示奖励视图
+            showRewardText:"",         //奖励视图文本信息
+            showRewardType:"hongbao",  //何种类型的奖励
+
 	  	};
 	}
 	// -----导航栏自定制
@@ -75,16 +80,27 @@ class EditAnswer extends Component {
                     if (response.status == -1 || response.status == -2 || response.status == -4) {
                         Utils.showMessage(response.message);
                     }else{
+                        
+                        var msg = "",
+                            type = "hongbao";
                         if (Utils.containKey(response, "taken_amount")) {
-                            Utils.showMessage('恭喜，获取'+response.taken_amount+'元奖金，请到个人账户查看');
+                            msg = "很厉害哦，恭喜你获取"+response.taken_amount+"元奖学金红包";
+                            type = "hongbao";
+                            // Utils.showMessage('恭喜，获取'+response.taken_amount+'元奖金，请到个人账户查看');
                         }
                         if (Utils.containKey(response, "diamond_count")) {
-                            Utils.showMessage('恭喜，获取'+response.diamond_count+'个钻石，请到个人账户查看');
-                        }
-                        
+                            msg = "很厉害哦，恭喜你获得了"+response.diamond_count+"颗钻石";
+                            type = "zuan";
+                            // Utils.showMessage('恭喜，获取'+response.diamond_count+'个钻石，请到个人账户查看');
+                        }  
+                        this.setState({
+                            showRewardView:true,
+                            showRewardType:type,
+                            showRewardText:msg
+                        })                      
                     }
                     // Utils.showMessage('提交答案成功');
-                    this.props.navigation.goBack();
+                    // this.props.navigation.goBack();
 
                 }, (err) => {
                     console.log(2);
@@ -130,6 +146,14 @@ class EditAnswer extends Component {
                 </TouchableOpacity>
                 {
                     this.state.loading?<LoadingView msg={this.state.loadingText}/>:null
+                }
+                {
+                    this.state.showRewardView?
+                        <RewardView 
+                            type={this.state.showRewardType} 
+                            msg={this.state.showRewardText} 
+                            hide={()=>{this.setState({showRewardView:false}); this.props.navigation.goBack()}}
+                        />:null
                 }
             </View>
 	    );

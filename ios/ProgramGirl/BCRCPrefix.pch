@@ -57,13 +57,13 @@
 #define GroupThumb @"https://fqs.haorenao.cn/defaultavatar.png"
 #define UserThumb @"https://fqs.haorenao.cn/defaultavatar.png"
 
-#define Domain @"https://www.cxy61.com/program_girl"   //https://app.bcjiaoyu.com/program_girl  https://www.cxy61.com/program_girl
+#define Domain @"https://app.bcjiaoyu.com/program_girl"   //https://www.cxy61.com/program_girl  https://app.bcjiaoyu.com/program_girl
 
-#define RongTokenUrl @"https://www.cxy61.com/program_girl/im/user_get_token/"
-#define OwnInfoUrl   @"https://www.cxy61.com/program_girl/userinfo/whoami/"
-#define OtherInfoUrl @"https://www.cxy61.com/program_girl/userinfo/username_userinfo/?username=%@"
-#define GroupInfoUrl @"https://www.cxy61.com/program_girl/club/club_detail/%@/"
-#define GroupReplyTimeUrl @"https://www.cxy61.com/program_girl/club/club_last_reply_time_update/%@/"
+#define RongTokenUrl @"https://app.bcjiaoyu.com/program_girl/im/user_get_token/"
+#define OwnInfoUrl   @"https://app.bcjiaoyu.com/program_girl/userinfo/whoami/"
+#define OtherInfoUrl @"https://app.bcjiaoyu.com/program_girl/userinfo/username_userinfo/?username=%@"
+#define GroupInfoUrl @"https://app.bcjiaoyu.com/program_girl/club/club_detail/%@/"
+#define GroupReplyTimeUrl @"https://app.bcjiaoyu.com/program_girl/club/club_last_reply_time_update/%@/"
 
 #define user1 @{UserId:@"01", NickName:@"小一", PortraitUri:@"https://wx.qlogo.cn/mmopen/Miayzv8oDnvAkFvJ5EyYKh6iaG4uXEIkna1YduZ48Ok66SU5ewJkK5gzqkdMJDHicGE8VJ1Qf8pcibAXPjtZUlRotxcSrEEszUbY/0"}
 #define user2 @{UserId:@"02", NickName:@"小二", PortraitUri:@"https://wx.qlogo.cn/mmopen/Miayzv8oDnvAkFvJ5EyYKh6iaG4uXEIkna1YduZ48Ok66SU5ewJkK5gzqkdMJDHicGE8VJ1Qf8pcibAXPjtZUlRotxcSrEEszUbY/0"}
