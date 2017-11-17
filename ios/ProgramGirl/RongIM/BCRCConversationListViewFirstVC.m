@@ -38,6 +38,7 @@
     self.conversationListTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
   } else {
     // Fallback on earlier versions
+    self.automaticallyAdjustsScrollViewInsets = NO;
   }
   
   NSLog(@"未读消息数:%d", [[RCIMClient sharedRCIMClient] getTotalUnreadCount]);

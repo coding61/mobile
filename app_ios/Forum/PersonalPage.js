@@ -33,7 +33,8 @@ class PersonalPage extends Component {
         }
     }
     static navigationOptions  = ({ navigation, screenProps }) => ({
-        header: null
+        header: null,
+        headerTintColor:"#fff"
     })
 
     componentWillMount() {
