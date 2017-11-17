@@ -234,7 +234,7 @@ export default class ForumList extends Component{
     MyForum(){
         Utils.isLogin((token)=>{
             if (token) {
-                this.props.navigation.navigate('MyForum', );
+                this.props.navigation.navigate('MyForum', {flag:'forumlist'});
                 this.setState({
                     moreshow:false
                 })

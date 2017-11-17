@@ -83,7 +83,7 @@ class PersonalPage extends Component {
     onPress(num) {
   	     switch (num) {
             case 0: {
-                this.props.navigation.navigate('MyForum', {owner: this.state.userinfo.owner});
+                this.props.navigation.navigate('MyForum', {owner: this.state.userinfo.owner,flag:'personal'});
                 break;
             }
             case 1: {
@@ -124,7 +124,7 @@ class PersonalPage extends Component {
                     <View style={{marginTop: 20, flexDirection: 'row', justifyContent: 'center'}}>
                         <Text style={{color: 'white', fontSize: 18, width: width / 2 - 30, textAlign: 'right'}}>{'段位:' + this.state.userinfo.grade.current_name}</Text>
                         <Text style={{color: 'white', fontSize: 18, marginBottom: 3, paddingLeft: 10, paddingRight: 10}}>{'  |  '}</Text>
-                        <Text style={{color: 'white', fontSize: 18, width: width / 2 - 30, backgroundColor: 'red'}} numberOfLines={1}>{'钻石:' + this.state.userinfo.diamond}</Text>
+                        <Text style={{color: 'white', fontSize: 18, width: width / 2 - 30,}} numberOfLines={1}>{'钻石:' + this.state.userinfo.diamond}</Text>
                     </View>
           		</View>
       			<View style={{marginTop: 20}}>

@@ -30,6 +30,7 @@ export default class MyForum extends Component{
             loadText: '正在加载...',
             isRefreshing: false,
         };
+        console.log(this.props.navigation.state.params)
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -46,13 +47,44 @@ export default class MyForum extends Component{
     }
     componentDidMount(){
          var self = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result!=null){
-                self.setState({token: result},()=>{
-                    self._loadAlldata();
-                });
-            }
-        });
+         if(self.props.navigation.state.params.flag=='forumlist'){
+                AsyncStorage.getItem('token', function(errs, result) {
+                    if(result!=null){
+                        self.setState({token: result},()=>{
+                                self._loadAlldata();
+                            
+                        });
+                    }
+                }); 
+        }else{
+            self._loadpersonaldata()
+        }
+
+    }
+    _loadpersonaldata(){
+        this.setState({
+            isLoading: true
+        },()=> {
+            fetch(basePath+'/forum/posts/?username='+this.props.navigation.state.params.owner)
+            .then((response) =>response.json())
+            .then((responseData) => {
+                var resultArr = new Array();
+                    responseData.results.map(result=> {
+                        resultArr.push(result);
+                })
+                this.setState({
+                    nextPage: responseData.next?responseData.next.replace("http://", "https://"):null,
+                    dataArr: resultArr,
+                    dataSource: resultArr,
+                    isLoading: false,
+                    loadText: responseData.next?('正在加载...'):('没有更多了...'),
+                    isRefreshing: false
+                 });
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        })
     }
     _loadAlldata() {
         this.setState({
@@ -85,6 +117,7 @@ export default class MyForum extends Component{
             this.setState({
                 isLoading: true
             },()=> {
+                if(this.props.navigation.state.params.flag=='forumlist'){
                 fetch(this.state.nextPage, {
                     headers: {Authorization: 'Token ' + this.state.token}
                 })
@@ -126,6 +159,47 @@ export default class MyForum extends Component{
                         isRefreshing: false
                     })
                 })
+            }else{
+                fetch(this.state.nextPage)
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        return '加载失败';
+                    }
+                })
+                .then(responseJson=> {
+                    if (responseJson === '加载失败') {
+                        Alert.alert(
+                          '加载失败,请重试',
+                          '',
+                          [
+                            {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
+                          ]
+                        )
+                    } else {
+                        var resultArr;
+                        resultArr = this.state.dataArr.concat();
+                        responseJson.results.map(result=> {
+                            resultArr.push(result);
+                        })
+                        this.setState({
+                            nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
+                            dataArr: resultArr,
+                            dataSource: resultArr,
+                            isLoading: false,
+                            loadText: responseJson.next?('正在加载...'):('没有更多了')
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    this.setState({
+                        isLoading: false,
+                        isRefreshing: false
+                    })
+                })
+            }
             })
         }
     }
@@ -136,7 +210,13 @@ export default class MyForum extends Component{
         this.setState({
             isRefreshing: true
         },()=> {
-            this._loadAlldata();
+            if(this.props.navigation.state.params.flag=='forumlist'){
+                this._loadAlldata();
+            }
+            else{
+                this._loadpersonaldata()
+            }
+            
         })
     }
     forumdetail(data){
@@ -187,7 +267,8 @@ export default class MyForum extends Component{
     }
     renderForumRow(item){
         var rowData=item.item;
-        var time_last=this.dealWithTime(rowData.last_replied)
+        
+        var time_last=this.dealWithTime(rowData.last_replied?rowData.last_replied:rowData.create_time)
         return (
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
                 style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
