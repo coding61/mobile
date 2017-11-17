@@ -78,6 +78,7 @@
   
   //已经登录的用户
   [[RCIM sharedRCIM] setConnectionStatusDelegate:self];
+  [[RCIM sharedRCIM] setReceiveMessageDelegate:self];
   
 #pragma mark - 向用户请求允许远程推送
   /**
@@ -165,7 +166,17 @@
       
       //向 js 发送通知消息
       RNBridgeModule *rn = [RNBridgeModule allocWithZone:nil];
-      [rn sendMsg];
+      [rn sendMsg];  //展示会话页面
+      
+      //发通知，更改底部 tab 角标
+      if ([[RCIMClient sharedRCIMClient] getTotalUnreadCount] > 0) {
+        //红色角标
+        //向 js 发送通知消息
+        [rn hasUnreadMsg:@"true"];
+      }else{
+        //无角标
+        [rn hasUnreadMsg:@"false"];
+      }
       
     }else if(ConnectStatus == ConnectFail){
       //连接融云失败
@@ -237,7 +248,21 @@
     //让用户去登录
   }
 }
-
+#pragma mark - RCIMReceiveMessageDelegate
+- (void)onRCIMReceiveMessage:(RCMessage *)message
+                        left:(int)left{
+  //向 js 发送通知消息
+  RNBridgeModule *rn = [RNBridgeModule allocWithZone:nil];
+  //发通知，更改底部 tab 角标
+  if ([[RCIMClient sharedRCIMClient] getTotalUnreadCount] > 0) {
+    //红色角标
+    //向 js 发送通知消息
+    [rn hasUnreadMsg:@"true"];
+  }else{
+    //无角标
+    [rn hasUnreadMsg:@"false"];
+  }
+}
 /**
  * 推送处理2
  */
