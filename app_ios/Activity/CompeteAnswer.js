@@ -190,9 +190,18 @@ class CompeteAnswer extends Component {
                 <ScrollView style={{flex:1}} contentContainerStyle={{padding:10}}>
                     <Text style={styles.title}>{"题目: "}{this.state.data.title}</Text>
                 </ScrollView>
-                <TouchableOpacity style={styles.submit} onPress={this._submitAnswer.bind(this)}>
-                    <Text style={{color:'white', fontSize:15}}>{"提交答案"}</Text>
-                </TouchableOpacity>
+
+                {
+                    this.state.item.has_answer?
+                        <View style={styles.cancel}>
+                            <Text style={{color:'white', fontSize:15}}>{"你已经回答过这次竞赛了"}</Text>
+                        </View>
+                    :
+                        <TouchableOpacity style={styles.submit} onPress={this._submitAnswer.bind(this)}>
+                            <Text style={{color:'white', fontSize:15}}>{"提交答案"}</Text>
+                        </TouchableOpacity>
+                }
+                
             </View>
         )
     }
