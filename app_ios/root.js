@@ -43,6 +43,7 @@ import FindWord from './Login/FindWord.js';
 import SelectHead from './Login/SelectHead.js';
 import PersonalPage from './Forum/PersonalPage.js';
 import PersonalReward from './Forum/PersonalReward.js';
+import PersonalMedal from './Forum/PersonalMedal.js';
 
 import CompeteView from './Activity/CompeteView.js';
 import Activity from './Activity/Activity.js';
@@ -103,6 +104,7 @@ const app = StackNavigator({
     ForumClass:{screen:ForumClass},
     PersonalPage:{screen:PersonalPage},
     PersonalReward:{screen:PersonalReward},
+    PersonalMedal:{screen:PersonalMedal},
 
     HomeScreen:{screen:HomeScreen},
     MessagePage:{screen: MessagePage},

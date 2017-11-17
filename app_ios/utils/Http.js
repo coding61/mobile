@@ -69,6 +69,10 @@ let Http = {
 	},
 	competeAnswer:(pk)=>{
 		return Http_Domain + "/contest/"+pk+"/answer_question/"                       //回答问题
+	},
+
+	userinfo:(username)=>{
+		return Http_Domain + "/userinfo/username_userinfo/?username=" + username
 	}
 
 }
