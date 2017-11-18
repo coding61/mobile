@@ -87,7 +87,7 @@ class PersonalPage extends Component {
     onPress(num) {
   	     switch (num) {
             case 0: {
-                this.props.navigation.navigate('MyForum', {owner: this.state.userinfo.owner,flag:'personal'});
+                this.props.navigation.navigate('MyForum', {owner: this.state.userinfo.owner,flag:'她的帖子'});
                 break;
             }
             case 1: {

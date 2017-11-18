@@ -192,7 +192,6 @@ export default class Forum_Details extends Component{
                 }
             })
             .then(responseJson=> {
-                console.log(responseJson)
                 if (responseJson === '加载失败') {
                     Alert.alert(
                         '加载失败,请重试1',
