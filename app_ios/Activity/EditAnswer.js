@@ -19,6 +19,7 @@ import Http from '../utils/Http.js';
 import EmptyView from '../Component/EmptyView.js';
 import LoadingView from '../Component/LoadingView.js';
 import RewardView from '../Activity/RewardView.js';
+import MedalView from '../Activity/MedalView.js';
 
 class EditAnswer extends Component {
 	constructor(props) {
@@ -34,6 +35,8 @@ class EditAnswer extends Component {
             showRewardView:false,      //是否展示奖励视图
             showRewardText:"",         //奖励视图文本信息
             showRewardType:"hongbao",  //何种类型的奖励
+            showMedalView:true,        //是否展示勋章视图
+            showMedalMsg:"答题勋章1",   //勋章的名字
 
 	  	};
 	}
@@ -153,6 +156,14 @@ class EditAnswer extends Component {
                             type={this.state.showRewardType} 
                             msg={this.state.showRewardText} 
                             hide={()=>{this.setState({showRewardView:false}); this.props.navigation.goBack()}}
+                        />:null
+                }
+                {
+                    this.state.showMedalView?
+                        <MedalView 
+                            type={"compete"} 
+                            msg={this.state.showMedalMsg} 
+                            hide={()=>{this.setState({showMedalView:false});}}
                         />:null
                 }
             </View>
