@@ -73,7 +73,9 @@ let Http = {
 
 	userinfo:(username)=>{
 		return Http_Domain + "/userinfo/username_userinfo/?username=" + username
-	}
+	},
+
+	getScholarship: Http_Domain + "/asset/record/"                                   //奖学金
 
 }
 export default Http;

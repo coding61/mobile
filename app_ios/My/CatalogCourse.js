@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 const {width, height} = Dimensions.get('window');
 import Http from '../utils/Http.js';
-
+import EmptyView from '../Component/EmptyView.js';
 class CatalogCourse extends Component {
   static navigationOptions  = ({ navigation, screenProps }) => ({
     title: navigation.state.params.switch,
@@ -34,7 +34,8 @@ class CatalogCourse extends Component {
     this.state = {
       switch: null,
       dataSource: null,
-      selected: null
+      selected: null,
+      loadingView: false
     }
   }
   componentWillMount() {
@@ -47,6 +48,9 @@ class CatalogCourse extends Component {
           }
         })
         .then(responseJSON => {
+          _this.setState({
+            loadingView: true
+          })
           var datas = new Array();
           if (_this.props.navigation.state.params.switch === '已完成课程') {
             responseJSON.forEach((item) => {
@@ -119,7 +123,7 @@ class CatalogCourse extends Component {
             data={this.state.dataSource[this.state.selected].dataArr}
             renderItem={this._renderItemBottom}
             keyExtractor={this._keyExtractor_}
-          />):(<View style={{width: width, height: height, alignItems: 'center', justifyContent: 'center'}}><Text style={{fontSize: 16}}>{'暂无课程'}</Text></View>)}
+          />):(this.state.loadingView?(<View style={{width: width, height: height, flex: 1, alignItems: 'center', justifyContent: 'center'}}><EmptyView /></View>):(null))}
       </View>
     )
   }
