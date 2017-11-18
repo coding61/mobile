@@ -57,7 +57,7 @@ import EditAnswer from './Activity/EditAnswer.js';
 
 import CatalogCourse from './My/CatalogCourse.js';
 
-
+import ExchangeRecord from './My/ExchangeRecord.js';
 class RootApp extends Component{
     constructor(props) {
       super(props);
@@ -129,7 +129,8 @@ const app = StackNavigator({
     ManageMember:{screen:ManageMember},
     CompeteAnswer:{screen:CompeteAnswer},
     EditAnswer:{screen:EditAnswer},
-    CatalogCourse:{screen:CatalogCourse}
+    CatalogCourse:{screen:CatalogCourse},
+    ExchangeRecord:{screen:ExchangeRecord}
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称
     initialRouteParams:{userinfo:''}        //配置初始路由的参数
