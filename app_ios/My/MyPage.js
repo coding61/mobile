@@ -183,6 +183,11 @@ class MyPage extends Component {
   				this.props.navigation.navigate('PersonalMedal', {owner: this.state.owner, myself: true});
   				break;
   			}
+        case 8:
+        {
+          this.props.navigation.navigate('ExchangeRecord');
+          break;
+        }
   		default:
   			{
   				break;
@@ -307,17 +312,19 @@ class MyPage extends Component {
       <View style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}>
       	<ScrollView>
       		{this.state.isLogin === true?(
-      			<View style={{backgroundColor: 'rgb(250, 80, 131)', width: width, height: height / 3, alignItems: 'center', justifyContent: 'center'}}>
+      			<View style={{width: width, height: height / 3, alignItems: 'center', justifyContent: 'center'}}>
+              <Image source={require('../assets/My/group.png')} style={{width: width, height: height / 3, position: 'absolute', left: 0, top: 0}}/>
               <TouchableOpacity onPress={this.updateavatar.bind(this)} style={{width: height / 9, height: height / 9}}>
 	      			  <Image resizeMode={'cover'} style={{width: height / 9, height: height / 9, borderRadius:height/18}} source={{uri: this.state.headImg}}/>
               </TouchableOpacity>
-	      				<Text style={{color: 'white', fontSize: 18, marginTop: 20}}>{this.state.name}</Text>
+	      				<Text style={{color: 'white', fontSize: 18, marginTop: 20, backgroundColor: 'rgba(0, 0, 0, 0)'}}>{this.state.name}</Text>
       			</View>
       			):(
-      			<View style={{backgroundColor: 'rgb(253, 109, 149)', width: width, height: height / 3, alignItems: 'center', justifyContent: 'center'}}>
+      			<View style={{width: width, height: height / 3, alignItems: 'center', justifyContent: 'center'}}>
+              <Image source={require('../assets/My/group.png')} style={{width: width, height: height / 3, position: 'absolute', left: 0, top: 0}}/>
 	      			<Image resizeMode={'contain'} style={{width: height / 9, height: height / 9}} source={require('../assets/Login/head1.png')}/>
 	      			<TouchableOpacity onPress={this.onPress.bind(this, 6)}>
-	      				<Text style={{color: 'white', fontSize: 18, marginTop: 20}}>{'未登录/去登录'}</Text>
+	      				<Text style={{color: 'white', fontSize: 18, marginTop: 20, backgroundColor: 'rgba(0, 0, 0, 0)'}}>{'未登录/去登录'}</Text>
 	      			</TouchableOpacity>
       			</View>
       			)}
@@ -346,6 +353,12 @@ class MyPage extends Component {
 	      				<Text style={{marginLeft: 10, fontSize: 15, color: 'rgb(59, 60, 61)'}}>{'我的勋章'}</Text>
 	      				<Image resizeMode={'contain'} style={{width: 13, height: 13, position: 'absolute', right: 10, top: 18}} source={require('../assets/My/right.png')}/>
 	      			</TouchableOpacity>
+
+              <TouchableOpacity onPress={this.onPress.bind(this, 8)} style={{flexDirection: 'row', alignItems: 'center', borderColor: 'rgb(238, 238, 239)', borderBottomWidth: 1, borderTopWidth: 1, width: width, height: 50, backgroundColor: 'white'}}>
+                <Image resizeMode={'contain'} style={{marginLeft: 10, width: 20, height: 20}} source={require('../assets/My/reward.png')}/>
+                <Text style={{marginLeft: 10, fontSize: 15, color: 'rgb(59, 60, 61)'}}>{'奖学金记录'}</Text>
+                <Image resizeMode={'contain'} style={{width: 13, height: 13, position: 'absolute', right: 10, top: 18}} source={require('../assets/My/right.png')}/>
+              </TouchableOpacity>
 
 	      			<TouchableOpacity onPress={this.onPress.bind(this, 3)} style={{marginTop: 20, flexDirection: 'row', alignItems: 'center', borderColor: 'rgb(238, 238, 239)', borderTopWidth: 1, width: width, height: 50, backgroundColor: 'white'}}>
 	      				<Image resizeMode={'contain'} style={{marginLeft: 10, width: 20, height: 20}} source={require('../assets/My/hadStudy.png')}/>

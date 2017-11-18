@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 const {width, height} = Dimensions.get('window');
 import Http from '../utils/Http.js';
-
+import EmptyView from '../Component/EmptyView.js';
 class CatalogCourse extends Component {
   static navigationOptions  = ({ navigation, screenProps }) => ({
     title: navigation.state.params.switch,
@@ -38,6 +38,7 @@ class CatalogCourse extends Component {
     }
   }
   componentWillMount() {
+    console.log(123)
     var _this = this;
     AsyncStorage.getItem('token', function(errs, results) {
       fetch(Http.domain + '/course/courses/', {headers: {Authorization: 'Token ' + results, 'content-type': 'application/json'}})

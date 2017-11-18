@@ -190,7 +190,7 @@ class PersonalMedal extends Component {
     render() {
         var loadingView = this._loadingView();
         return (
-            <ScrollView style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}
+            <View style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}
                 refreshControl={
                     <RefreshControl
                       refreshing={this.state.isRefreshing ? this.state.isRefreshing : false}
@@ -213,7 +213,7 @@ class PersonalMedal extends Component {
                     this.state.dataList ? <EmptyView /> : null
                 )}
                 {loadingView}
-            </ScrollView>
+            </View>
         );
     }
 }
