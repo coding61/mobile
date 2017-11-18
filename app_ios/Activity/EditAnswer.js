@@ -19,7 +19,6 @@ import Http from '../utils/Http.js';
 import EmptyView from '../Component/EmptyView.js';
 import LoadingView from '../Component/LoadingView.js';
 import RewardView from '../Activity/RewardView.js';
-import MedalView from '../Activity/MedalView.js';
 
 class EditAnswer extends Component {
 	constructor(props) {
@@ -35,8 +34,7 @@ class EditAnswer extends Component {
             showRewardView:false,      //是否展示奖励视图
             showRewardText:"",         //奖励视图文本信息
             showRewardType:"hongbao",  //何种类型的奖励
-            showMedalView:true,        //是否展示勋章视图
-            showMedalMsg:"答题勋章1",   //勋章的名字
+            response:null,             //是否奖励勋章
 
 	  	};
 	}
@@ -53,9 +51,10 @@ class EditAnswer extends Component {
         
     }
     componentWillUnmount() {
+        this.timer && this.timer.remove();
         if (typeof(this.props.navigation.state.params) !== 'undefined') {
           if (typeof(this.props.navigation.state.params.callback) !== 'undefined') {
-            this.props.navigation.state.params.callback(this.state.isAnswer); 
+            this.props.navigation.state.params.callback(this.state.isAnswer, this.state.response); 
           }
         }
     }
@@ -78,7 +77,8 @@ class EditAnswer extends Component {
                     
                     this.setState({
                         loading:false,
-                        isAnswer:true
+                        isAnswer:true,
+                        response:response,
                     })
                     if (response.status == -1 || response.status == -2 || response.status == -4) {
                         Utils.showMessage(response.message);
@@ -99,9 +99,10 @@ class EditAnswer extends Component {
                         this.setState({
                             showRewardView:true,
                             showRewardType:type,
-                            showRewardText:msg
-                        })                      
+                            showRewardText:msg,
+                        })                   
                     }
+                    
                     // Utils.showMessage('提交答案成功');
                     // this.props.navigation.goBack();
 
@@ -124,6 +125,11 @@ class EditAnswer extends Component {
             loadingText:"正在提交..."
         })
         this._fetchSubmitAnswer();
+    }
+    _hideRewardView(){   
+        this.setState({showRewardView:false}, ()=>{
+            this.props.navigation.goBack();
+        });
     }
   	render() {
 	    return (
@@ -155,15 +161,7 @@ class EditAnswer extends Component {
                         <RewardView 
                             type={this.state.showRewardType} 
                             msg={this.state.showRewardText} 
-                            hide={()=>{this.setState({showRewardView:false}); this.props.navigation.goBack()}}
-                        />:null
-                }
-                {
-                    this.state.showMedalView?
-                        <MedalView 
-                            type={"compete"} 
-                            msg={this.state.showMedalMsg} 
-                            hide={()=>{this.setState({showMedalView:false});}}
+                            hide={this._hideRewardView.bind(this)}
                         />:null
                 }
             </View>

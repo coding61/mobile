@@ -30,13 +30,12 @@ export default class MyForum extends Component{
             loadText: '正在加载...',
             isRefreshing: false,
         };
-        console.log(this.props.navigation.state.params)
     }
 
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
         return {
-            title: '我的帖子',
+            title: state.params.flag,
             headerTintColor: "#fff",
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
@@ -47,7 +46,7 @@ export default class MyForum extends Component{
     }
     componentDidMount(){
          var self = this;
-         if(self.props.navigation.state.params.flag=='forumlist'){
+         if(self.props.navigation.state.params.flag=='我的帖子'){
                 AsyncStorage.getItem('token', function(errs, result) {
                     if(result!=null){
                         self.setState({token: result},()=>{
@@ -117,7 +116,7 @@ export default class MyForum extends Component{
             this.setState({
                 isLoading: true
             },()=> {
-                if(this.props.navigation.state.params.flag=='forumlist'){
+                if(this.props.navigation.state.params.flag=='我的帖子'){
                 fetch(this.state.nextPage, {
                     headers: {Authorization: 'Token ' + this.state.token}
                 })
@@ -210,7 +209,7 @@ export default class MyForum extends Component{
         this.setState({
             isRefreshing: true
         },()=> {
-            if(this.props.navigation.state.params.flag=='forumlist'){
+            if(this.props.navigation.state.params.flag=='我的帖子'){
                 this._loadAlldata();
             }
             else{

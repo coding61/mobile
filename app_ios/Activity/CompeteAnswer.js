@@ -18,6 +18,7 @@ import Http from '../utils/Http.js';
 
 import EmptyView from '../Component/EmptyView.js';
 import LoadingView from '../Component/LoadingView.js';
+import MedalView from '../Activity/MedalView.js';
 
 class CompeteAnswer extends Component {
 	constructor(props) {
@@ -30,6 +31,8 @@ class CompeteAnswer extends Component {
             loading:true,
             loadingText:"加载中...",
             isAnswer:false,
+            showMedalView:false,       //是否展示勋章视图
+            showMedalMsg:"答题勋章1",   //勋章的名字
 	  	};
 	}
 	// -----导航栏自定制
@@ -133,12 +136,19 @@ class CompeteAnswer extends Component {
     _submitAnswer(){
         Utils.isLogin((token)=>{
             if (token) {
-                this.props.navigation.navigate("EditAnswer", {compete:this.state.item.pk, question:this.state.data.pk, callback:(isAnswer)=>{
+                this.props.navigation.navigate("EditAnswer", {compete:this.state.item.pk, question:this.state.data.pk, callback:(isAnswer, response)=>{
                     this.setState({
-                        isAnswer:true
+                        isAnswer:isAnswer
                     }, ()=>{
                         // this.props.navigation.goBack();
                     })
+                    if (response && response.taken_medal) {
+                        //打开勋章
+                        this.setState({
+                            showMedalView:true,
+                            showMedalMsg:response.medal.name
+                        })
+                    }
 
                 }});
             }else{
@@ -162,6 +172,10 @@ class CompeteAnswer extends Component {
 			}
 		})
         */
+    }
+    _hideMedalView(){   
+        this.setState({showMedalView:false}, ()=>{
+        });
     }
     _renderMainView1(){
         return (
@@ -196,7 +210,7 @@ class CompeteAnswer extends Component {
                 </TouchableOpacity>
                 */}
                 {
-                    this.state.item.has_answer?
+                    this.state.item.has_answer || this.state.isAnswer?
                         <View style={styles.cancel}>
                             <Text style={{color:'white', fontSize:15}}>{"你已经回答过这次竞赛了"}</Text>
                         </View>
@@ -222,6 +236,14 @@ class CompeteAnswer extends Component {
             {
                 this.state.loading?<LoadingView msg={this.state.loadingText}/>:null
             }
+            {
+                this.state.showMedalView?
+                    <MedalView 
+                        type={"compete"} 
+                        msg={this.state.showMedalMsg} 
+                        hide={this._hideMedalView.bind(this)}
+                    />:null
+                }
             </View>
 	    );
   	}
