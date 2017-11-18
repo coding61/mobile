@@ -180,7 +180,7 @@ class ExchangeRecord extends Component {
         return (
             <View style={styles.item}>
             	<Text style={{color:fontSColor, fontSize:font4, height:30, lineHeight:30}}>{item.create_time.slice(0,19).replace('T', " ")}</Text>
-                <Text style={{color:fontBColor, fontSize:font3, height:30, lineHeight:30}}>{item.record_type}</Text>
+                <Text style={{color:fontBColor, fontSize:font3, height:30, lineHeight:30}}>{item.amount + "元  " + item.record_type}</Text>
             </View>
         )
     }
