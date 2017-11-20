@@ -209,15 +209,19 @@ class CompeteAnswer extends Component {
                     <Text style={{color:'white', fontSize:15}}>{"提交答案"}</Text>
                 </TouchableOpacity>
                 */}
-                {
-                    this.state.item.has_answer || this.state.isAnswer?
+                {   this.state.item.finish?
                         <View style={styles.cancel}>
-                            <Text style={{color:'white', fontSize:15}}>{"你已经回答过这次竞赛了"}</Text>
+                            <Text style={{color:'white', fontSize:15}}>{"竞赛已结束"}</Text>
                         </View>
                     :
-                        <TouchableOpacity style={styles.submit} onPress={this._submitAnswer.bind(this)}>
-                            <Text style={{color:'white', fontSize:15}}>{"提交答案"}</Text>
-                        </TouchableOpacity>
+                        this.state.item.has_answer || this.state.isAnswer?
+                            <View style={styles.cancel}>
+                                <Text style={{color:'white', fontSize:15}}>{"你已经回答过这次竞赛了"}</Text>
+                            </View>
+                        :
+                            <TouchableOpacity style={styles.submit} onPress={this._submitAnswer.bind(this)}>
+                                <Text style={{color:'white', fontSize:15}}>{"提交答案"}</Text>
+                            </TouchableOpacity>
                 }
                 
             </View>
