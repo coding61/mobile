@@ -179,14 +179,26 @@ class ExchangeRecord extends Component {
     _renderItemCommodity(item, index){
         return (
             <View style={styles.item}>
-            	<Text style={{color:fontSColor, fontSize:font4, height:30, lineHeight:30}}>{item.create_time.slice(0,19).replace('T', " ")}</Text>
-                <Text style={{color:fontBColor, fontSize:font3, height:30, lineHeight:30}}>{item.amount + "元  " + item.record_type}</Text>
+                <View style={{marginLeft: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                  <Text style={{color:fontBColor, fontSize:font3, height:30, lineHeight:30}}>{item.record_type}</Text>
+                  <Text style={{color: 'rgb(247, 99, 146)'}}>{'+' + item.amount}</Text>
+                </View>
+                <Text style={{marginLeft: 10, color:fontSColor, fontSize:12, height:30, lineHeight:30}}>{item.create_time.slice(0,19).replace('T', " ")}</Text>
             </View>
         )
     }
     _renderItem = ({item, index}) => (
         this._renderItemCommodity(item, index)
     )
+    _renderHeader = () => {
+      return (<View style={{width: width, height: width * 2 / 3 + 50, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white'}}>
+                <Text style={{fontSize: 42, marginBottom: 40}}>{this.props.navigation.state.params.balance}<Text style={{fontSize: 16}}>元</Text></Text>
+                <Text style={{width: width * 2 / 3, textAlign: 'center', color: 'gray', lineHeight: 25}}>{'奖学金提现请到微信公众服务号"橙旭园儿童编程"进行提取'}</Text>
+                <View style={{position: 'absolute', bottom: 0, left: 0, width: width, height: 40, backgroundColor: 'rgb(236, 237, 238)', justifyContent: 'center'}}>
+                  <Text style={{fontSize: 12, marginLeft: 20}}>奖学金明细</Text>
+                </View>
+              </View>)
+    }
     _renderFooter = ()=>{
         return  (
         	<TouchableOpacity onPress={this._clickLoadMore.bind(this)}>
@@ -207,6 +219,7 @@ class ExchangeRecord extends Component {
 				            style={{flex:1,}}
 				            data={this.state.dataSource}
 				            renderItem={this._renderItem}
+                    ListHeaderComponent={this._renderHeader}
 				            extraData={this.state}
 				            keyExtractor={this._keyExtractor}
 				            ListFooterComponent={this._renderFooter}
