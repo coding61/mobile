@@ -36,7 +36,8 @@ class MyPage extends Component {
   		headImg: null,
         owner: null,
       promptVisible: false,
-      show: false
+      show: false,
+      balance: null
   	}
   }
   componentWillMount() {
@@ -53,6 +54,9 @@ class MyPage extends Component {
           })
           .then(responseJSON => {
             if (responseJSON !== '失败') {
+              _this.setState({
+                balance: responseJSON.balance
+              })
               fetch(Http.domain + '/im/user_get_token/',{headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'}})
                 .then(response => {
                   if (response.ok === true) {
@@ -93,6 +97,9 @@ class MyPage extends Component {
         })
         .then(responseJSON => {
           if (responseJSON !== '失败') {
+            _this.setState({
+              balance: responseJSON.balance
+            })
             fetch(Http.domain + '/im/user_get_token/',{headers: {'Authorization': 'Token ' + token, 'content-type': 'application/json'}})
               .then(response => {
                 if (response.ok === true) {
@@ -185,7 +192,7 @@ class MyPage extends Component {
   			}
         case 8:
         {
-          this.props.navigation.navigate('ExchangeRecord');
+          this.props.navigation.navigate('ExchangeRecord', {balance: this.state.balance});
           break;
         }
   		default:
