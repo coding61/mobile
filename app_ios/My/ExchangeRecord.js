@@ -100,7 +100,7 @@ class ExchangeRecord extends Component {
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "get",
-                    url = Http.getScholarship,
+                    url = Http.getScholarship(pagenum),
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
