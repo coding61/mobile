@@ -183,6 +183,7 @@
       dispatch_async(dispatch_get_main_queue(), ^{
         //SDK会自动重连登录，这时候需要监听连接状态
         [[RCIM sharedRCIM] setConnectionStatusDelegate:self];
+        [[RCIM sharedRCIM] setReceiveMessageDelegate:self];
       });
       
     }else if(ConnectStatus == TokenInCorrect){
