@@ -69,30 +69,4 @@ public class ConversationActivity extends FragmentActivity implements View.OnCli
                 this.startActivity(intent);
         }
     }
-
-    @Override
-    protected void onResume() {
-        RongIM.getInstance().addUnReadMessageCountChangedObserver(new MyUnReadMessageCount(), Conversation.ConversationType.GROUP);
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        RongIM.getInstance().removeUnReadMessageCountChangedObserver(new MyUnReadMessageCount());
-        super.onPause();
-    }
-
-    private class MyUnReadMessageCount implements IUnReadMessageObserver {
-
-        @Override
-        public void onCountChanged(int i) {
-            WritableMap sendSuccess = Arguments.createMap();
-            sendSuccess.putInt("unread_message_count",i);
-            sendTransMisson(MainApplication.myReactNativeHost.getReactInstanceManager().getCurrentReactContext(), "unreadmessagecount_listener", sendSuccess);
-        }
-    }
-
-    public void sendTransMisson(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
-    }
 }
