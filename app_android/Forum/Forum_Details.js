@@ -293,18 +293,18 @@ export default class Forum_Details extends Component{
         var rowData=item.item;
         return (
             <View style={{width: width,flex:1, backgroundColor: '#ffffff',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingRight:10,paddingBottom:10,}}>
-                <View style={{flexDirection:'row',paddingTop:10,backgroundColor:'#ffffff',width:width,paddingLeft:15}}>
+                <View style={{flexDirection:'row',paddingTop:10,backgroundColor:'#ffffff',width:width*0.9,paddingLeft:15,marginRight:10,}}>
                     <View style={{alignItems:'center',paddingLeft:20,}}>
                         {!rowData.userinfo.avatar?(<Image style={{width:50,height:30,borderRadius:15,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:30,height:30,borderRadius:15,}} source={{uri:rowData.userinfo.avatar}}/>)}
                         <Text style={{paddingTop:5,fontSize:10,color:'#ff6b94',}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
-                    <View style={{paddingLeft:40,paddingRight:10,width:width*0.7,}}>
+                    <View style={{paddingLeft:40,paddingRight:10,width:width*0.6,}}>
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.userinfo.name}</Text>
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                     </View>
-                    <View style={{paddingRight:20,}}>
-                        <TouchableOpacity style={{width:40,height:25,paddingLeft:2,}} onPress={this.Show_Comment.bind(this,rowData.pk,rowData.userinfo.name)}>
+                    <View style={{marginRight:30,}}>
+                        <TouchableOpacity style={{marginTop:3,}} onPress={this.Show_Comment.bind(this,rowData.pk,rowData.userinfo.name)}>
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
@@ -321,6 +321,9 @@ export default class Forum_Details extends Component{
                             <View style={{flexDirection:'row',paddingTop:10,paddingLeft:20,}}>
                                 <Text style={{paddingBottom:10,color:'#4f99cf',marginRight:30,}}>{result.userinfo.name}</Text>
                                 <Text style={{paddingBottom:10,color:'#858585'}}>{result.create_time.slice(0, 16).replace("T", " ")}</Text>
+                                <TouchableOpacity style={{marginLeft:10,}} onPress={this.Show_Comment.bind(this,rowData.pk,result.userinfo.name)}>
+                                    <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
+                                </TouchableOpacity>
                             </View>
                             {result.content?(<ForumDeatilCont data={result.content}></ForumDeatilCont>):(null)}
                         </View>
