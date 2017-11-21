@@ -41,6 +41,7 @@
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:singleLine="true"
+                    android:text="群公告"
             />
         </RelativeLayout>
         <RelativeLayout
@@ -58,16 +59,18 @@
                     android:layout_gravity="center_vertical"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp"
-                    android:text="群公告"
+                    android:text="完成"
             />
         </RelativeLayout>
     </LinearLayout>
 
-    <fragment
-            android:id="@+id/conversation"
-            android:name="io.rong.imkit.fragment.ConversationFragment"
+    <EditText
+            android:id="@+id/et_placard"
             android:layout_below="@+id/action_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:hint="请编辑群公告"
+            android:gravity="top|left"
+    />
 
 </LinearLayout>
