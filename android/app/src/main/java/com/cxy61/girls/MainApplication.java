@@ -6,13 +6,17 @@ import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import com.facebook.react.ReactApplication;
-import com.github.yamill.orientation.OrientationPackage;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.imagepicker.ImagePickerPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
-// import com.zmxv.RNSound.BuildConfig;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
@@ -23,8 +27,10 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import io.rong.imkit.RongIM;
-import io.rong.imkit.model.GroupUserInfo;
+import io.rong.imkit.manager.IUnReadMessageObserver;
+import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Group;
+import io.rong.imlib.model.Message;
 import io.rong.imlib.model.UserInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
   public static Boolean isPrivate;
   public long id;
   public Group group;
+  public static ReactNativeHost myReactNativeHost;
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
@@ -49,7 +56,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new OrientationPackage(),
             new ImagePickerPackage(),
             new RNDeviceInfo(),
             new RNSoundPackage(),
@@ -61,6 +67,7 @@ public class MainApplication extends Application implements ReactApplication {
 
   @Override
   public ReactNativeHost getReactNativeHost() {
+    myReactNativeHost = mReactNativeHost;
     return mReactNativeHost;
   }
 
@@ -95,6 +102,41 @@ public class MainApplication extends Application implements ReactApplication {
           return getGroupMessage(utils, groupid);
         }
       },true);
+
+      RongIM.getInstance().setSendMessageListener(new MySendMessageListener());
+
+      RongIM.getInstance().addUnReadMessageCountChangedObserver(new MyUnReadMessageCount(), Conversation.ConversationType.GROUP);
+
+    }
+  }
+
+  private class MySendMessageListener implements RongIM.OnSendMessageListener{
+
+    @Override
+    public Message onSend(Message message) {
+      return message;
+    }
+
+    @Override
+    public boolean onSent(Message message, RongIM.SentMessageErrorCode sentMessageErrorCode) {
+      if (message.getConversationType() == Conversation.ConversationType.GROUP){
+        if (message.getSentStatus() != Message.SentStatus.FAILED && sentMessageErrorCode==null){
+          HttpUtils utils = new HttpUtils(60 * 1000);
+          utils.configCurrentHttpCacheExpiry(0);
+          updateGroupLastTime(utils,message.getTargetId());
+        }
+      }
+      return false;
+    }
+  }
+
+  private class MyUnReadMessageCount implements IUnReadMessageObserver{
+
+    @Override
+    public void onCountChanged(int i) {
+      WritableMap sendSuccess = Arguments.createMap();
+      sendSuccess.putInt("unread_message_count",i);
+      sendTransMisson(getReactNativeHost().getReactInstanceManager().getCurrentReactContext(), "unreadmessagecount_listener", sendSuccess);
     }
   }
 
@@ -113,7 +155,8 @@ public class MainApplication extends Application implements ReactApplication {
 
   public UserInfo getUserMessage(HttpUtils utils,String username) {
     final CountDownLatch latch = new CountDownLatch(1);
-    String getUserinfoUrl = "https://www.cxy61.com/program_girl/userinfo/username_userinfo/?username="+username;
+    String getUserinfoUrl = "https://app.bcjiaoyu.com/program_girl/userinfo/username_userinfo/?username="+username;
+    //String getUserinfoUrl = "https://www.cxy61.com/program_girl/userinfo/username_userinfo/?username="+username;
     utils.send(HttpMethod.GET, getUserinfoUrl, new RequestCallBack<String>() {
       @Override
       public void onSuccess(ResponseInfo<String> responseInfo) {
@@ -162,7 +205,8 @@ public class MainApplication extends Application implements ReactApplication {
 
   public Group getGroupMessage(HttpUtils utils,String groupid) {
     final CountDownLatch latch = new CountDownLatch(1);
-    String getUserinfoUrl = "https://www.cxy61.com/program_girl/club/club_detail/"+groupid+"/";
+    String getUserinfoUrl = "https://app.bcjiaoyu.com/program_girl/club/club_detail/"+groupid+"/";
+    //String getUserinfoUrl = "https://www.cxy61.com/program_girl/club/club_detail/"+groupid+"/";
     utils.send(HttpMethod.GET, getUserinfoUrl, new RequestCallBack<String>() {
       @Override
       public void onSuccess(ResponseInfo<String> responseInfo) {
@@ -194,6 +238,29 @@ public class MainApplication extends Application implements ReactApplication {
       e.printStackTrace();
     }
     return group;
+  }
+
+  public void updateGroupLastTime(HttpUtils utils,String groupid) {
+    RequestParams requestParams = new RequestParams();
+    requestParams.addHeader("Authorization","Token "+token);
+    String updateLastTimeUrl = "https://app.bcjiaoyu.com/program_girl/club/club_last_reply_time_update/"+groupid+"/";
+    //String updateLastTimeUrl = "https://www.cxy61.com/program_girl/club/club_last_reply_time_update/"+groupid+"/";
+    utils.send(HttpMethod.PUT, updateLastTimeUrl, requestParams, new RequestCallBack<String>() {
+      @Override
+      public void onSuccess(ResponseInfo<String> responseInfo) {
+
+      }
+
+      @Override
+      public void onFailure(HttpException error, String msg) {
+        //Toast.makeText(getReactApplicationContext(), "获取用户信息失败，请查看网络连接", Toast.LENGTH_SHORT).show();
+        error.printStackTrace();
+      }
+    });
+  }
+
+  public void sendTransMisson(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
   }
 }
 

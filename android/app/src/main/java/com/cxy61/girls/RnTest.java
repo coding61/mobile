@@ -64,7 +64,9 @@ public class RnTest extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void rnIMConnect(final String token, final Callback callback){
+    public void rnIMConnect(final String token,String login_token,final Callback callback){
+        MainApplication app = new MainApplication();
+        app.token = login_token;
         if(getReactApplicationContext().getApplicationInfo().packageName.equals(MainApplication.getCurProcessName(getReactApplicationContext().getApplicationContext()))){
             RongIM.connect(token, new RongIMClient.ConnectCallback() {
                 @Override

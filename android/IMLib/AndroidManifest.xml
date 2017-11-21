@@ -21,9 +21,11 @@
     <application>
 
         <!-- imlib config begin -->
+        <!--test   8w7jv4qb7eqty-->
+        <!--product   82hegw5uhf50x-->
         <meta-data
             android:name="RONG_CLOUD_APP_KEY"
-            android:value="82hegw5uhf50x" />
+            android:value="8w7jv4qb7eqty" />
 
         <service
             android:name="io.rong.imlib.ipc.RongService"
