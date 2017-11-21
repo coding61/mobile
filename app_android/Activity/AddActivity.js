@@ -103,19 +103,22 @@ class AddActivity extends Component {
 		        onChangeText={(titleText) => this.setState({titleText})}
 		        placeholder={'标题'}
 		        value={this.state.titleText}
+            underlineColorAndroid={'transparent'}
 	      	/>
           <TextInput
             style={{fontSize: 16, paddingLeft: 10, height: 40, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)'}}
             onChangeText={(password) => this.setState({password})}
             placeholder={'密码'}
             value={this.state.password}
+            underlineColorAndroid={'transparent'}
           />
 	      	<TextInput
-		        style={{fontSize: 14, paddingLeft: 10, height: height / 3, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)'}}
+		        style={{fontSize: 14, paddingLeft: 10, height: height / 3, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)', textAlignVertical: 'top'}}
 		        onChangeText={(contentText) => this.setState({contentText})}
 		        placeholder={'通告内容'}
 		        value={this.state.contentText}
 		        multiline={true}
+            underlineColorAndroid={'transparent'}
 	      	/>
 	      </ScrollView>
       </View>

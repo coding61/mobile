@@ -134,6 +134,7 @@ class CompeteView extends Component {
                         if(array[i].pk == response.pk){
                             // 替换数据
                             array[i].member_count = response.member_count;
+                            array[i] = response;
                             break;
                         }
                     }
@@ -214,7 +215,6 @@ class CompeteView extends Component {
                   source={bg1}
                   resizeMode={'cover'}
                 />
-
                 <Image
                   style={styles.itemTitleBg}
                   source={bg2}
@@ -233,7 +233,6 @@ class CompeteView extends Component {
                     />
                     
                 </View>
-                
             </View>
             </TouchableOpacity>
         )
@@ -367,33 +366,36 @@ const styles = StyleSheet.create({
     item:{
     	flex:1, 
         marginHorizontal:10, 
-        marginBottom:20, 
-        marginTop:20, 
+        marginBottom:10, 
+        marginTop:10, 
         borderRadius:5,
-        backgroundColor:'white', height:180, justifyContent:'center', alignItems:'center'
+        // backgroundColor:'white', 
+        height:190, 
+        justifyContent:'center', 
+        alignItems:'center'
     },
     itemBg:{
         position:'absolute', 
         width:width-20, 
         height:180, 
-        top:0, 
+        top:10, 
         left:0,
         borderRadius:5,
     },
     itemTitleBg:{
         position:'absolute', 
         height:40, 
-        top:-10
+        top:0
     },
     itemTitleIng:{
         position:'absolute', 
-        top:0, 
+        top:8, 
         color:'white', 
         backgroundColor:'transparent'
     },
     itemTitleEnd:{
         position:'absolute', 
-        top:0, 
+        top:8, 
         color:fontBColor, 
         backgroundColor:'transparent'
     },
