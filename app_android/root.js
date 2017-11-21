@@ -46,7 +46,7 @@ import AddActivity from './Activity/AddActivity.js';
 import AlterActivity from './Activity/AlterActivity.js';
 import ManageMember from './Activity/ManageMember.js';
 import CatalogCourse from './My/CatalogCourse.js';
-
+import ExchangeRecord from './My/ExchangeRecord.js';
 class RootApp extends Component{
     constructor(props) {
       super(props);
