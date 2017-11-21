@@ -126,7 +126,7 @@ const app = StackNavigator({
     CompeteAnswer:{screen:CompeteAnswer},
     EditAnswer:{screen:EditAnswer},
     CatalogCourse:{screen:CatalogCourse},
-    // ExchangeRecord:{screen:ExchangeRecord}
+    ExchangeRecord:{screen:ExchangeRecord}
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称
     initialRouteParams:{userinfo:''}        //配置初始路由的参数   
