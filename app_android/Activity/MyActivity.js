@@ -370,13 +370,13 @@ class MyActivity extends Component {
                     {
                         item.banner?
                         <Image
-                          style={{flex:1, width:width-20}}
+                          style={{flex:1, width:width-22, borderTopLeftRadius:5, borderTopRightRadius:5}}
                           source={{uri:item.banner}}
                           resizeMode={'cover'}
                         />
                         :
                         <Image
-                          style={{flex:1, width:width-20}}
+                          style={{flex:1, width:width-22, borderTopLeftRadius:5, borderTopRightRadius:5}}
                           source={icon}
                           resizeMode={'cover'}
                         />
