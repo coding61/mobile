@@ -20,6 +20,7 @@ import {
 }from 'react-native';
 import face from './Content_Rex';
 import Http from '../utils/Http.js';
+import MedalView from '../Activity/MedalView.js';
 var basePath=Http.domain;
 var {height, width} = Dimensions.get('window');
 var ImagePicker = require('react-native-image-picker');
@@ -36,6 +37,9 @@ export default class ForumAdd extends Component{
             show:false,
             IdCard1:'',//图片
             sectionname:'',
+            showRewardType:"hongbao",  //何种类型的奖励
+            showMedalView:false,        //是否展示勋章视图
+            showMedalMsg:"发布帖子",   //勋章的名字
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -113,6 +117,7 @@ export default class ForumAdd extends Component{
                     return response.json();
                 })
                 .then((result)=>{
+                    console.log(result)
                     if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
                         Alert.alert(
                             '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',

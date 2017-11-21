@@ -273,16 +273,33 @@ class Activity extends Component {
 
 	// ------------------------------------------活动列表
     _renderItemActivityNew(item, index){
+        var arr = [
+            require('../assets/Activity/g1.png'), 
+            require('../assets/Activity/g2.png'),
+            require('../assets/Activity/g3.png'),
+            require('../assets/Activity/g4.png'),
+            require('../assets/Activity/g5.png')];
+        
+        var icon = arr[index%5];
         return (
             <TouchableOpacity onPress={this._pushActivityDetail.bind(this, item.pk)}>
-            <View style={[styles.item, {overflow:'visible', borderColor:'#c9c9c9', borderWidth:1, position:'relative'}]}>
+            <View style={[styles.item, {overflow:'hidden', borderColor:'#c9c9c9', borderWidth:1, position:'relative'}]}>
                 <View style={{height:160, width:width-20}}>
+                    {
+                        item.banner?
+                        <Image
+                          style={{flex:1, width:width-20}}
+                          source={{uri:item.banner}}
+                          resizeMode={'cover'}
+                        />
+                        :
+                        <Image
+                          style={{flex:1, width:width-20}}
+                          source={icon}
+                          resizeMode={'cover'}
+                        />
+                    }
                     
-                    <Image
-                      style={{flex:1, width:width-20}}
-                      source={require('../assets/Activity/default.png')}
-                      resizeMode={'cover'}
-                    />
                     
                     <Text style={{color:'white', fontSize:20, fontWeight:'bold', position:'absolute', left:10, right:10, bottom:10, backgroundColor:'transparent'}}>
                       {item.name.slice(0,30)}

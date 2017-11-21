@@ -14,7 +14,7 @@ const TopStatusBarAndroid = 25
 const TopNavBarHeight = 48
 const BottomStatusBarAndroid = 48
 const HeaderH = isIOS ? 64 : TopNavBarHeight+TopStatusBarAndroid
-const BottomH = isIOS ? 40 : BottomStatusBarAndroid
+const BottomH = isIOS ? 49 : BottomStatusBarAndroid
 
 const deviceH = Dimensions.get('window').height
 const deviceW = Dimensions.get('window').width
@@ -100,6 +100,10 @@ let Utils = {
     btnCancelColor:'rgb(154,155,156)',
     alertViewBgColor:'rgb(240, 241, 242)',
     alertLineColor:'rgb(231,232,233)',
+
+    containKey:(dic, key)=>{
+        return dic.hasOwnProperty(key)
+    },
 	px2dp:(px)=>{
 		return px * deviceW/basePx
 	},
@@ -150,12 +154,11 @@ let Utils = {
                 break;
             }
         }
-        
+
         if (url.split(string).length == 1) {
             // 图片格式非法，
             return 0;
         }
-
         var str = url.split(string)[1]; //45x36
         width = str.split('x')[0];  //45
         height = str.split('x')[1];  //36
@@ -177,7 +180,6 @@ let Utils = {
                 break;
             }
         }
-        
         if (url.split(string).length == 1) {
             // 图片格式非法，
             callback(0, 0)
@@ -185,7 +187,7 @@ let Utils = {
             var str = url.split(string)[1]; //45x36
             width = str.split('x')[0];  //45
             height = str.split('x')[1];  //36
-            
+
             callback(width, height)
         }
     },
@@ -256,7 +258,5 @@ let Utils = {
             Utils.showMessage('一个错误被发现' + err);
         })
     }
-    
-
 }
 export default Utils;

@@ -64,7 +64,7 @@ export default class CommentText extends Component{
     componentWillMount(){
         if(this.props.navigation.state.params.name=='reply'){
             this.setState({
-                text:'@'+this.props.navigation.state.params.userinfo,
+                text:'@'+this.props.navigation.state.params.userinfo+' ',
             })
         }else{
             this.setState({

@@ -29,11 +29,21 @@
 //  self.navigationController.navigationBar.translucent = NO;
 
 }
+- (void)viewWillDisappear:(BOOL)animated{
+  [super viewWillDisappear:animated];
+}
 - (void)viewWillAppear:(BOOL)animated{
   [super viewWillAppear:animated];
+  if (@available(iOS 11.0, *)) {
+    self.conversationListTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+  } else {
+    // Fallback on earlier versions
+    self.automaticallyAdjustsScrollViewInsets = NO;
+  }
+  
   NSLog(@"未读消息数:%d", [[RCIMClient sharedRCIMClient] getTotalUnreadCount]);
   NSLog(@"会话列表:%@", [[RCIMClient sharedRCIMClient] getConversationList:@[@(ConversationType_PRIVATE),
-                                                                         @(ConversationType_GROUP)]]);
+                                                                     @(ConversationType_GROUP)]]);
   //发通知，更改底部 tab 角标
   RNBridgeModule *rn = [RNBridgeModule allocWithZone:nil];
   if ([[RCIMClient sharedRCIMClient] getTotalUnreadCount] > 0) {
@@ -53,7 +63,6 @@
   chat.conversationType = model.conversationType;
   chat.targetId = model.targetId;
   chat.title = model.conversationTitle;
-  
   [CXYAppDelegate.nav pushViewController:chat animated:YES];
 }
 - (void)didReceiveMemoryWarning {

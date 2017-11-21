@@ -128,6 +128,7 @@ class MessagePage extends Component{
     // -----导航栏自定制
     static navigationOptions = ({navigation}) => {
         const {state, setParams, goBack, navigate} = navigation;
+        /*
         var json = state.params?state.params.userinfo:"";
         if (json && json != "") {
             var pw = 0;
@@ -137,7 +138,6 @@ class MessagePage extends Component{
                 pw = width-200
             }
         }
-        
         return {
             headerStyle: json?styles.headerStyle:{backgroundColor:'white'},
             title:json?null:"程序媛",
@@ -188,9 +188,26 @@ class MessagePage extends Component{
                     </View>
                 </TouchableOpacity>  
             ):null
+        }*/
+        return {
+            headerStyle:styles.headerStyle,
+            title:"学习",
+            headerTintColor: "#fff",
+            headerTitleStyle:{alignSelf:'auto',},
+            headerRight:(
+                <TouchableOpacity onPress={()=>{DeviceEventEmitter.emit('help',1 )}}>
+                    <View style={styles.headerRightView}>
+                        <Image
+                          style={styles.headerRightImg}
+                          source={require('../images/more.png')}
+                          resizeMode={'contain'}
+                        />
+                    </View>
+                </TouchableOpacity>
+            )
         }
-        
     };
+    
     componentWillMount() {
         //给当前页面设置默认参数
         this.props.navigation.setParams({
@@ -204,6 +221,7 @@ class MessagePage extends Component{
         // Utils.setValue("token", null);
         // Utils.clearAllValue();
         this._load(); 
+
         this._fetchUserInfo();
         this._fetchLunTanUnread();
         this._getDeviceInfo();
@@ -244,9 +262,10 @@ class MessagePage extends Component{
     componentWillUnmount() {
         // this.props.navigation.setParams({userinfo:""})
         this.timer && clearTimeout(this.timer);
+
         //删除状态改变事件监听
         AppState.removeEventListener('change', this.handleAppStateChange.bind(this));
-
+        
         //移除监听
         this.eventEm.remove();
         this.listenLogin.remove();
@@ -1642,6 +1661,7 @@ class MessagePage extends Component{
             })
         }
     }
+    // 点击选择课程
     _loadChooseCourse(help){
         var this_ = this;
         Utils.isLogin((token)=>{
@@ -1738,7 +1758,7 @@ class MessagePage extends Component{
             }
         })
     }
-    // action 按钮
+    // 下一条action 按钮
     _loadClickBtnAction(){
         if (this.state.optionData && this.state.optionData.length) {
             // 问题下的普通按钮
@@ -2020,6 +2040,7 @@ class MessagePage extends Component{
             newsIndex:0,                 //新闻下标
 
             hasChatData:false,           //区分程序第一次进入，有没有缓存信息
+
         })
         Utils.clearAllValue()
         this.setState({showHelpActions:false})
@@ -3007,10 +3028,10 @@ class MessagePage extends Component{
                     {/*this.state.courseProgressArray.length? this._renderCourseProgress():null*/}
                     
                     {/******会话消息******/}
-                    <View style={{width:MessageWidth1, maxHeight:height-headerH-bottomH-50-10}}>
+                    <View style={{width:MessageWidth1, maxHeight:height-headerH-50-10}}>
                         <FlatList 
                             ref={(flatlist)=>this._flatList=flatlist}
-                            style={{maxHeight:height-headerH-bottomH-50-10}}
+                            style={{maxHeight:height-headerH-50-10}}
                             data={this.state.dataSource}
                             renderItem={this._renderItem}
                             ListHeaderComponent={this.state.showHeaderComponent?this._renderHeader:null}
@@ -3040,9 +3061,9 @@ class MessagePage extends Component{
                                     // this._flatList.scrollToIndex({viewPosition: 0, index: 0}); 
                                     // console.log("-----scrollTop");
                                 }else{
-                                    if (contentHeight > height-headerH-bottomH-50-10) {
+                                    if (contentHeight > height-headerH-50-10) {
                                         // this._flatList.scrollToIndex({viewPosition: 1, index: this.state.number-1});
-                                        this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-bottomH-50-10)});
+                                        this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-50-10)});
                                         // console.log("-----scrollEnd");
                                         // this._flatList.scrollToEnd();  //与getItemLayout配合使用
                                     } 
@@ -3205,7 +3226,7 @@ const styles = StyleSheet.create({
         marginRight:10
     },
     headerRightImg:{
-        height:20
+        height:30
     },
     headerRightText:{
         color:'white', 

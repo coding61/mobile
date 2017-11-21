@@ -8,7 +8,7 @@
 import React, {Component} from 'react'
 import {
     View,
-    StyleSheet, 
+    StyleSheet,
     Text,
     TouchableOpacity,
     Button
@@ -41,6 +41,9 @@ import CourseList from './CourseList/CourseList.js';
 import Register from './Login/Register.js';
 import FindWord from './Login/FindWord.js';
 import SelectHead from './Login/SelectHead.js';
+import PersonalPage from './Forum/PersonalPage.js';
+import PersonalReward from './Forum/PersonalReward.js';
+import PersonalMedal from './Forum/PersonalMedal.js';
 
 import CompeteView from './Activity/CompeteView.js';
 import Activity from './Activity/Activity.js';
@@ -54,7 +57,7 @@ import EditAnswer from './Activity/EditAnswer.js';
 
 import CatalogCourse from './My/CatalogCourse.js';
 
-
+import ExchangeRecord from './My/ExchangeRecord.js';
 class RootApp extends Component{
     constructor(props) {
       super(props);
@@ -63,15 +66,15 @@ class RootApp extends Component{
     render(){
         return (
             <View style={styles.container}>
-                <Button 
+                <Button
                     title="消息1"
                     onPress={()=>{this.props.navigation.navigate('MessagePage1')}}
                 />
-                <Button 
+                <Button
                     title="消息"
                     onPress={()=>{this.props.navigation.navigate('MessagePage', {userinfo:''})}}
                 />
-                <Button 
+                <Button
                     title="消息2"
                     onPress={()=>{this.props.navigation.navigate('CodeEditWebView', {userinfo:''})}}
                 />
@@ -81,7 +84,7 @@ class RootApp extends Component{
 }
 
 const styles = StyleSheet.create({
-  
+
 });
 
 const app = StackNavigator({
@@ -99,7 +102,10 @@ const app = StackNavigator({
     CommentText:{screen:CommentText},
     Search:{screen:Search},
     ForumClass:{screen:ForumClass},
-    
+    PersonalPage:{screen:PersonalPage},
+    PersonalReward:{screen:PersonalReward},
+    PersonalMedal:{screen:PersonalMedal},
+
     HomeScreen:{screen:HomeScreen},
     MessagePage:{screen: MessagePage},
     MessagePage1:{screen:MessagePage1},
@@ -113,7 +119,7 @@ const app = StackNavigator({
     Register:{screen: Register},
     FindWord: {screen: FindWord},
     SelectHead: {screen: SelectHead},
-    
+
     CompeteView:{screen:CompeteView},
     Activity:{screen:Activity},
     ActivityDetail:{screen:ActivityDetail},
@@ -123,10 +129,11 @@ const app = StackNavigator({
     ManageMember:{screen:ManageMember},
     CompeteAnswer:{screen:CompeteAnswer},
     EditAnswer:{screen:EditAnswer},
-    CatalogCourse:{screen:CatalogCourse}
+    CatalogCourse:{screen:CatalogCourse},
+    ExchangeRecord:{screen:ExchangeRecord}
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称
-    initialRouteParams:{userinfo:''}        //配置初始路由的参数    
+    initialRouteParams:{userinfo:''}        //配置初始路由的参数
 });
 
 
