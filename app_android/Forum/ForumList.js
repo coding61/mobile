@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 import {
-  AppRegistry, 
-  StyleSheet, 
-  Image, 
-  Text, 
-  TextInput, 
-  View, 
+  AppRegistry,
+  StyleSheet,
+  Image,
+  Text,
+  TextInput,
+  View,
   ScrollView,
-  Dimensions, 
+  Dimensions,
   TouchableOpacity,
   ListView,
   AsyncStorage,
@@ -32,19 +32,19 @@ export default class ForumList extends Component{
             tag: 0,
             nextPage: null,
             isLoading: false,
-            url:basePath+'/forum/posts/?myposts=false&page=1',  
+            url:basePath+'/forum/posts/?myposts=false&page=1',
             loadText: '正在加载...',
             isRefreshing: false,
             moreshow:false,
             token:'',
         };
     }
- 
+
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
         return {
             title: '',
-            headerTintColor: "#fff",   
+            headerTintColor: "#fff",
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
             headerLeft:(
@@ -97,7 +97,7 @@ export default class ForumList extends Component{
                     self._loadunread()
                 });
             }
-            
+
         });
     }
     componentDidMount(){
@@ -124,7 +124,7 @@ export default class ForumList extends Component{
             this.props.navigation.navigate('Search',{token:this.state.token,keyword:'',callback:(msg)=>{
                 this._onRefresh()
             }})
-        })  
+        })
     }
     _reloadPage(){
         var self = this;
@@ -134,7 +134,7 @@ export default class ForumList extends Component{
                     self._loadunread()
                 });
             }
-            
+
         });
     }
     _loadAlldata() {
@@ -155,11 +155,11 @@ export default class ForumList extends Component{
                     isLoading: false,
                     loadText: responseData.next?('正在加载...'):('没有更多了...'),
                     isRefreshing: false
-                 });     
+                 });
             })
             .catch((error) => {
                 console.error(error);
-            }); 
+            });
         })
     }
     _loadunread(){
@@ -279,7 +279,15 @@ export default class ForumList extends Component{
             this._onRefresh()
         }})
     }
-    
+    goPersonalPage(userinfo) {
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('PersonalPage', { data: userinfo });
+            }else{
+                this.props.navigation.navigate("Login");
+            }
+        })
+    }
     dealWithTime(Time){
         var timeArray = Time.split('.')[0].split('T');
         var year = timeArray[0].split('-')[0];
@@ -328,7 +336,13 @@ export default class ForumList extends Component{
                 style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
                 <View style={{flexDirection:'row',}}>
                     <View style={{alignItems:'center'}}>
-                        {!rowData.userinfo.avatar?(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>)}
+                        <TouchableOpacity style={{width:50,height:50,marginTop:20}} onPress={this.goPersonalPage.bind(this, rowData.userinfo)}>
+                            {!rowData.userinfo.avatar?(
+                                <Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>
+                            ):(
+                                <Image style={{width:50,height:50,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>
+                            )}
+                        </TouchableOpacity>
                         <Text style={{paddingTop:10,fontSize:12,color:'#aaaaaa'}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
@@ -345,7 +359,7 @@ export default class ForumList extends Component{
                      </View>
                 </View>
             </TouchableOpacity>
-        ) 
+        )
     }
     _newscenter(){
         Utils.isLogin((token)=>{
@@ -415,7 +429,7 @@ export default class ForumList extends Component{
         }else{
             return (
                 <View style={styles.container}>
-                    <View>   
+                    <View>
                         <FlatList
                             horizontal={false}
                             refreshing={true}
@@ -469,8 +483,8 @@ export default class ForumList extends Component{
     }
     render() {
         return(
-            <ScrollView 
-                horizontal={true} 
+            <ScrollView
+                horizontal={true}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{width:width,height: 44, backgroundColor: 'white',borderBottomWidth:1,borderBottomColor:'#cccccc',marginBottom:3,}}
             >
@@ -501,4 +515,3 @@ SlideView.propTypes = {
   },
 
 });
-
