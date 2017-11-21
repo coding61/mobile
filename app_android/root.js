@@ -51,7 +51,7 @@ import CompeteAnswer from './Activity/CompeteAnswer.js';
 import EditAnswer from './Activity/EditAnswer.js';
 
 import CatalogCourse from './My/CatalogCourse.js';
-
+import ExchangeRecord from './My/ExchangeRecord.js';
 class RootApp extends Component{
     constructor(props) {
       super(props);
