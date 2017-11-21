@@ -94,7 +94,7 @@ class PersonalPage extends Component {
                 var username = this.state.userinfo.owner,
                     name = this.state.userinfo.name,
                     avatar = this.state.userinfo.avatar,
-                    tag = "single";
+                    tag = "private";
                 RongYunRN.rnIMChat(username, tag, name);
                 break;
             }
