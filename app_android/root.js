@@ -42,9 +42,6 @@ import CourseList from './CourseList/CourseList.js';
 import Register from './Login/Register.js';
 import FindWord from './Login/FindWord.js';
 import SelectHead from './Login/SelectHead.js';
-import PersonalPage from './Forum/PersonalPage.js';
-import PersonalReward from './Forum/PersonalReward.js';
-import PersonalMedal from './Forum/PersonalMedal.js';
 
 import CompeteView from './Activity/CompeteView.js';
 import Activity from './Activity/Activity.js';

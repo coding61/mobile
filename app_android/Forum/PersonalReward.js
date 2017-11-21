@@ -112,6 +112,7 @@ class PersonalReward extends Component {
                 <Image style={styles.imgView} source={require('../images/forum_icon/diamond.png')}/>
                 <TextInput style={styles.textInput}
                     placeholder='请输入你要打赏的钻石数'
+                    underlineColorAndroid='transparent'
                     onChangeText={(num) => this.setState({num})}
                     value={this.state.num}
                     keyboardType={'numeric'}

@@ -190,7 +190,7 @@ class PersonalMedal extends Component {
     render() {
         var loadingView = this._loadingView();
         return (
-            <View style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}
+            <ScrollView style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}
                 refreshControl={
                     <RefreshControl
                       refreshing={this.state.isRefreshing ? this.state.isRefreshing : false}
@@ -213,7 +213,7 @@ class PersonalMedal extends Component {
                     this.state.dataList ? <EmptyView /> : null
                 )}
                 {loadingView}
-            </View>
+            </ScrollView>
         );
     }
 }
@@ -238,10 +238,10 @@ const styles = StyleSheet.create({
         // width: (width - 20 * 4) / 3,
         // height: (width - 20 * 4) / 3,
         width: width / 4,
-        height: width / 4,
+        height: width / 4 + 20,
         // marginTop: 20,
         // marginLeft: 20,
-        padding: 20
+        padding: 15
     },
     itemTitleView: {
         width: 60,

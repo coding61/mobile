@@ -19,7 +19,7 @@ import {
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 
-var RNBridgeModule = NativeModules.RNBridgeModule;
+var RongYunRN = NativeModules.RongYunRN;
 
 const {width, height} = Dimensions.get('window');
 
@@ -95,7 +95,7 @@ class PersonalPage extends Component {
                     name = this.state.userinfo.name,
                     avatar = this.state.userinfo.avatar,
                     tag = "single";
-                RNBridgeModule.RNEnterChatView(username, name, tag);
+                RongYunRN.rnIMChat(username, tag, name);
                 break;
             }
             case 2: {

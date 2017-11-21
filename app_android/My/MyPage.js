@@ -14,7 +14,7 @@ import {
   Alert,
   DeviceEventEmitter,
   NativeModules,
-  ActivityIndicator  
+  ActivityIndicator
 } from 'react-native';
 const {width, height} = Dimensions.get('window');
 import Utils from '../utils/Utils.js';
@@ -50,7 +50,7 @@ class MyPage extends Component {
   					if (response.ok === true) {
   						return response.json();
   					} else {
-  						return '失败'; 
+  						return '失败';
   					}
   				})
   				.then(responseJSON => {
@@ -104,7 +104,7 @@ class MyPage extends Component {
 					if (response.ok === true) {
 						return response.json();
 					} else {
-						return '失败'; 
+						return '失败';
 					}
 				})
 				.then(responseJSON => {
@@ -225,7 +225,7 @@ class MyPage extends Component {
 
 
     this.listenerProgressaa = DeviceEventEmitter.addListener("uploadProgress_listener", function(params) {
-        
+
     })
     //完成
     this.listenerProgressbb = DeviceEventEmitter.addListener("uploadSuccess_listener", function(params) {
@@ -260,10 +260,10 @@ class MyPage extends Component {
   }
   qiniu(){
     AsyncStorage.getItem('token', (errs, results) => {
-      allAndroid.rnQiniu(results,false,"gallery"); 
+      allAndroid.rnQiniu(results,false,"gallery");
 
     })
-    
+
   }
   updateavatar() {
     this.qiniu();
@@ -360,7 +360,7 @@ class MyPage extends Component {
       	</ScrollView>
         {this.state.show?(
           <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
-              <ActivityIndicator 
+              <ActivityIndicator
                   style={{marginTop: 10}}
                   color={'white'}
                   size={'large'}
