@@ -130,7 +130,8 @@ class MyPage extends Component {
               _this.setState({
                 isLogin: true,
                 name: responseJSON.name,
-                headImg: responseJSON.avatar
+                headImg: responseJSON.avatar,
+                owner: responseJSON.owner
               })
           } else {
             Utils.showMessage('获取用户信息失败，请重新登录');

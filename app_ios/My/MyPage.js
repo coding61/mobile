@@ -116,7 +116,8 @@ class MyPage extends Component {
               _this.setState({
                 isLogin: true,
                 name: responseJSON.name,
-                headImg: responseJSON.avatar
+                headImg: responseJSON.avatar,
+                owner: responseJSON.owner
               })
           } else {
             Utils.showMessage('获取用户信息失败，请重新登录');
@@ -127,7 +128,8 @@ class MyPage extends Component {
       _this.setState({
         isLogin: false,
         name: null,
-        headImg: null
+        headImg: null,
+        owner: null
       })
     })
   }
@@ -186,6 +188,7 @@ class MyPage extends Component {
   			}
         case 7:
   			{
+                console.log(this.state.owner);
   				//勋章
   				this.props.navigation.navigate('PersonalMedal', {owner: this.state.owner, myself: true});
   				break;

@@ -84,6 +84,7 @@ class PersonalMedal extends Component {
             }
         })
         .then((response)=>{
+            console.log(response);
             if (response.ok) {
                 return response.json();
             } else {
@@ -91,6 +92,7 @@ class PersonalMedal extends Component {
             }
         })
         .then((responseJson)=>{
+            console.log(responseJson);
             this.setState({show: false, isRefreshing: false});
             if (responseJson) {
                 this.setState({dataList: responseJson.medal_record});
