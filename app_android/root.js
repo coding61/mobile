@@ -33,6 +33,9 @@ import MyForum from './Forum/MyForum.js';
 import CommentText from './Forum/CommentText.js';
 import ForumClass from './Forum/ForumClass.js';
 import Search from './Forum/Search.js';
+import PersonalPage from './Forum/PersonalPage.js';
+import PersonalReward from './Forum/PersonalReward.js';
+import PersonalMedal from './Forum/PersonalMedal.js';
 
 import Login from './Login/Login.js';
 import CourseList from './CourseList/CourseList.js';
@@ -64,19 +67,19 @@ class RootApp extends Component{
         const { navigate } = this.props.navigation;
         return (
             <View style={{}}>
-                <Button 
+                <Button
                     title="论坛"
                     onPress={() =>
                             navigate('Forum', { name: 'Forum' })
                         }
                 />
 
-                <Button 
+                <Button
                     title="消息"
                     onPress={()=>{this.props.navigation.navigate('MessagePage', {userinfo:''})}}
                 />
 
-                <Button 
+                <Button
                     title="在线编辑器"
                     onPress={()=>{this.props.navigation.navigate('CodeCompileWebView', {userinfo:''})}}
                 />
@@ -86,13 +89,13 @@ class RootApp extends Component{
 }
 
 const styles = StyleSheet.create({
-  
+
 });
 
 const app = StackNavigator({
     RootApp:{screen: RootApp},
     TabBar: {screen: TabBar},
-    
+
     Forum:{screen: Forum},
     ForumList:{screen:ForumList},
     Forum_Details:{screen:Forum_Details},
@@ -135,7 +138,7 @@ const app = StackNavigator({
     ExchangeRecord:{screen:ExchangeRecord}
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称
-    initialRouteParams:{userinfo:''}        //配置初始路由的参数   
+    initialRouteParams:{userinfo:''}        //配置初始路由的参数
 });
 
 export default app;
