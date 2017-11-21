@@ -1,10 +1,7 @@
 package com.cxy61.girls;
 
-import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.app.AlertDialog;
+import android.content.*;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -68,6 +65,11 @@ public class MainActivity extends ReactActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            getServerVersionNumber();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         receiver = new InnerReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("CANCELUP");
@@ -291,5 +293,65 @@ public class MainActivity extends ReactActivity {
         registerReceiver(receiver, filter);
 
         super.onResume();
+    }
+
+    private void getServerVersionNumber() throws Exception {
+        String os="Android";
+        String app_version=Utils.getVersionName(MainActivity.this);
+        String versionUrl="https://app.bcjiaoyu.com/program_girl/appversion/check_for_updates/?os="+os+"&app_version="+app_version;
+        //String versionUrl="https://www.cxy61.com/program_girl/appversion/check_for_updates/?os="+os+"&app_version="+app_version;
+
+        HttpUtils utils=new HttpUtils(60*1000);
+        utils.send(HttpMethod.GET, versionUrl, new RequestCallBack<String>() {
+            @Override
+            public void onSuccess(com.lidroid.xutils.http.ResponseInfo<String> responseInfo) {
+                String json = responseInfo.result;
+                try {
+                    JSONObject object = new JSONObject(json);
+                    //是否需要更新: false; true;
+                    boolean need_update=object.getBoolean("need_update");
+                    if (need_update){
+                        showUpdateDialog();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(HttpException error, String msg) {
+                error.printStackTrace();
+            }
+        });
+
+    }
+
+    private void showUpdateDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.mipmap.ic_launcher);
+        String app_name= this.getString(R.string.app_name);
+        builder.setTitle(app_name+"新版本更新");
+        builder.setMessage(app_name+"最新版本来了，您可以升级至最新版本，立即更新！");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Uri uri = Uri.parse("http://android.myapp.com/myapp/detail.htm?apkName=com.cxy61.girls");
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }

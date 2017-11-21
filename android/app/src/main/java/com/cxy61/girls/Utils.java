@@ -1,6 +1,9 @@
 package com.cxy61.girls;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -10,6 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Utils {
+
+    public static String getVersionName(Context context) throws Exception
+    {
+        // 获取packagemanager的实例
+        PackageManager packageManager = context.getPackageManager();
+        // getPackageName()是你当前类的包名，0代表是获取版本信息
+        PackageInfo packInfo = packageManager.getPackageInfo(context.getPackageName(),0);
+        String version = packInfo.versionName;
+        return version;
+    }
 
     public static long insert(SQLiteDatabase db,String username,String nickname,String thumb){
         ContentValues values = new ContentValues();

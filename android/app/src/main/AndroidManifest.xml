@@ -90,6 +90,8 @@
                         android:scheme="rong"/>
             </intent-filter>
         </activity>
+        <activity android:name=".PlacardActivity">
+        </activity>
     </application>
 
 </manifest>

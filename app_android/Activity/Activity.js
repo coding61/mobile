@@ -22,17 +22,20 @@ import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 
 import EmptyView from '../Component/EmptyView.js';
+import LoadingView from '../Component/LoadingView.js';
+import CompeteView from '../Activity/CompeteView.js';
 
 const LoadMore = 1;           //点击加载更多
 const LoadNoMore = 0;         //已经到尾了
 const LoadMoreIng = -1;       //加载中
-
+const ActivityTab = 1;    //加入活动的选项
+const CompeteTab = 0;  //发布活动的选项
 class Activity extends Component {
 	constructor(props) {
 	  	super(props);
 	
 	  	this.state = {
-	  		loading:false,
+	  		loading:true,
             dataSource:[],               //页面加载的所有数据源
             footerLoadTag:LoadMore,      //默认是点击加载更多, FlatList，列表底部
             isRefresh:false,             //FlatList，头部是否处于下拉刷新
@@ -43,19 +46,31 @@ class Activity extends Component {
     static navigationOptions = ({navigation}) => {
         const {state, setParams, goBack, navigate} = navigation;
         return {
-        	headerTitle:"活动",
+        	headerTitle:state.params && state.params.tab == CompeteTab?
+                    <View style={styles.headerTitleTabs}>
+                        <TouchableOpacity style={[styles.headerTitleTab, {flex:1}]} onPress={()=>{DeviceEventEmitter.emit('navigateTabPress', ActivityTab)}}><Text style={[styles.headerTitleTabText,]}>{"活动"}</Text></TouchableOpacity>
+                        <View style={[styles.headerTitleTab, {flex:1}]}><View style={[styles.headerTitleTab, styles.headerTitleTabSelect]}><Text style={[styles.headerTitleTabText, styles.headerTitleTabTextSelect]}>{"竞赛"}</Text></View></View>
+                    </View>
+                :
+                    <View style={styles.headerTitleTabs}>
+                        <View style={[styles.headerTitleTab, {flex:1}]}><View style={[styles.headerTitleTab, styles.headerTitleTabSelect]}><Text style={[styles.headerTitleTabText, styles.headerTitleTabTextSelect]}>{"活动"}</Text></View></View>
+                        <TouchableOpacity style={[styles.headerTitleTab, {flex:1}]} onPress={()=>{DeviceEventEmitter.emit('navigateTabPress', CompeteTab)}}><Text style={styles.headerTitleTabText}>{"竞赛"}</Text></TouchableOpacity>
+                    </View>
+            ,
         	headerTintColor: "#fff",
             headerStyle: styles.headerStyle,
-            headerRight:(
-            	<TouchableOpacity onPress={state.params?state.params.addActivityEvent:null}>
-                    <View style={styles.headerRightView}>
-                        <Image
-                          style={styles.headerRightImg}
-                          source={require('../images/add.png')}
-                          resizeMode={'contain'}
-                        />
-                    </View>
-                </TouchableOpacity>)
+            headerRight:state.params && state.params.tab == CompeteTab?
+                    null
+                :
+                	<TouchableOpacity onPress={state.params?state.params.addActivityEvent:null}>
+                        <View style={styles.headerRightView}>
+                            <Image
+                              style={styles.headerRightImg}
+                              source={require('../images/add.png')}
+                              resizeMode={'contain'}
+                            />
+                        </View>
+                    </TouchableOpacity>
         }
     };
     componentWillMount() {
@@ -63,12 +78,18 @@ class Activity extends Component {
     }
     componentDidMount() {
         this.props.navigation.setParams({
-            addActivityEvent:this._clickAddActivity
+            addActivityEvent:this._clickAddActivity,
+            tab:ActivityTab
         })
 
         // 注册删除活动的监听
         this.listenDeleteActivity = DeviceEventEmitter.addListener('listenDeleteActivity', (pk)=>{
             this._deleteDataPage(pk);
+        })
+        this.listenTabPress = DeviceEventEmitter.addListener('navigateTabPress', (tab)=>{
+            this.props.navigation.setParams({
+                tab:tab
+            })
         })
     }
     componentWillUnmount() {
@@ -76,49 +97,11 @@ class Activity extends Component {
 
         // 移除监听
         this.listenDeleteActivity.remove();
+        this.listenTabPress.remove();
     }
     // ------------------------------------------网络请求
     //获取活动列表
     _fetchActivityList(pagenum){
-        /*
-        var dic = {
-              "pk": 4,
-              "name": "北京大学现场讲座",
-              "password": "123456",
-              "introduction": "通告，北京大学现场讲座，通告，北京大学现场讲座通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座。",
-              "member_number": 1,
-              "leader": {},
-              "create_time": "2017-10-18T10:06:21.129728"
-        }
-        var array = [];
-        
-        if (pagenum > 3) {
-            this.setState({footerLoadTag:LoadNoMore});
-            var arr = [];
-            for (var i = 0; i < 5; i++) {
-                arr.push(dic);
-            }
-            array = this.state.dataSource.concat(arr);
-
-        }else if(pagenum>1){
-            this.setState({footerLoadTag:LoadMore});
-            var arr = [];
-            for (var i = 0; i < 10; i++) {
-                arr.push(dic);
-            }
-            array = this.state.dataSource.concat(arr);
-        }else{
-            this.setState({footerLoadTag:LoadMore});
-            for (var i = 0; i < 10; i++) {
-                array.push(dic);
-            }
-        }
-        this.setState({
-            loading:true,
-            dataSource:array,
-        });
-        */
-        
         Utils.isLogin((token)=>{
             // if (token) {
                 var type = "get",
@@ -151,7 +134,7 @@ class Activity extends Component {
                     }
                     this.setState({
                         isRefresh:false,
-                        loading:true,
+                        loading:false,
                         dataSource:array,
                     });
 
@@ -164,67 +147,8 @@ class Activity extends Component {
     }
     //获取活动详情
     _fetchActivityDetail(pk){
-        /*
-        var dic = {
-              "pk": 4,
-              "name": "北京大学现场讲座",
-              "password": "123456",
-              "introduction": "通告，北京大学现场讲座，通告，北京大学现场讲座通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座。",
-              "member_number": 1,
-              "club_member": [],
-              "isjoin": false,
-              "isLeader":true,
-              "create_time": "2017-10-18T10:06:21.129728"
-        }
-        var dic1 = {
-            "pk": 5,
-            "owner": {
-                "pk": 2,
-                "name": "三十三",
-                "avatar": "http://wx.qlogo.cn/mmopen/Q3auHgzwzM6n2icNq7G9jdaqwcaeiaianPDPOZVdmDiaxpoOPzicEzDlR6Picqx2lzBlCic3pqYIzJesgLW8fjTE9icxIEybx5YjpTVnEnKHkR2ZKyU/0",
-                "experience": 120,
-                "diamond": 17,
-                "remark": "",
-                "olduser": true,
-                "grade": {
-                    "next_name": "青铜3",
-                    "current_name": "青铜4",
-                    "current_all_experience": 90,
-                    "next_all_experience": 188
-                },
-                "is_staff": false,
-                "isactive": false
-            },
-            "leader": true
-        }
-        var dic2 = {
-          "pk": 1,
-          "owner": null,
-          "leader": true
-        }
-        var array = [];
-        for (var i = 0; i < 12; i++) {
-            array.push(dic2);
-        }
-        for (var i = 0; i < array.length; i++) {
-            if(array[i].leader == true){
-                dic["leaderName"] = array[i].owner?array[i].owner.name:"管理员";
-                dic["leaderAvatar"] = array[i].owner?array[i].owner.avatar:"https://static1.bcjiaoyu.com/binshu.jpg";
-                break;
-            }
-        }
-        dic["club_member"] = array; 
-        
-        
-        this.setState({
-            loading:true,
-            data:dic,
-        });
-        */
-        
-        
         Utils.isLogin((token)=>{
-            // if (token) {
+            if (token) {
                 var type = "get",
                     url = Http.getActivityDetail(pk),
                     token = token,
@@ -257,7 +181,7 @@ class Activity extends Component {
                     console.log(2);
                     // Utils.showMessage('网络请求失败');
                 });
-            // }
+            }
         })
     }
     // ------------------------------------------帮助方法
@@ -348,6 +272,54 @@ class Activity extends Component {
     }
 
 	// ------------------------------------------活动列表
+    _renderItemActivityNew(item, index){
+        var arr = [
+            require('../assets/Activity/g1.png'), 
+            require('../assets/Activity/g2.png'),
+            require('../assets/Activity/g3.png'),
+            require('../assets/Activity/g4.png'),
+            require('../assets/Activity/g5.png')];
+        
+        var icon = arr[index%5];
+        return (
+            <TouchableOpacity onPress={this._pushActivityDetail.bind(this, item.pk)}>
+            <View style={[styles.item, {overflow:'hidden', borderColor:'#c9c9c9', borderWidth:1, position:'relative'}]}>
+                <View style={{height:160, width:width-20}}>
+                    {
+                        item.banner?
+                        <Image
+                          style={{flex:1, width:width-20}}
+                          source={{uri:item.banner}}
+                          resizeMode={'cover'}
+                        />
+                        :
+                        <Image
+                          style={{flex:1, width:width-20}}
+                          source={icon}
+                          resizeMode={'cover'}
+                        />
+                    }
+                    
+                    
+                    <Text style={{color:'white', fontSize:20, fontWeight:'bold', position:'absolute', left:10, right:10, bottom:10, backgroundColor:'transparent'}}>
+                      {item.name.slice(0,30)}
+                    </Text>
+                </View>
+
+                <View style={styles.itemBottom}>
+                    <View style={styles.itemBottomView}>
+                        <Text style={styles.itemBottomText}>
+                          {"发起人: "}{item.leader.name?item.leader.name.slice(0, 8):"管理员"}
+                        </Text>
+                    </View>
+                    <Text style={styles.itemBottomText}>
+                      {"已报名: "}:{item.member_number}人
+                    </Text>
+                </View>
+            </View>
+            </TouchableOpacity>
+        )
+    }
     _renderItemActivity(item, index){
         return (
         	<TouchableOpacity onPress={this._pushActivityDetail.bind(this, item.pk)}>
@@ -359,7 +331,7 @@ class Activity extends Component {
             		  resizeMode={'contain'}
             		/>
             		<Text style={styles.itemHeaderTitle}>
-            		  {item.name}
+            		  {item.name.slice(0, 15)}
             		</Text>
             		<Image
             		  style={{height:20}}
@@ -393,7 +365,10 @@ class Activity extends Component {
         )
     }
     _renderItem = ({item, index}) => (
-        this._renderItemActivity(item, index)
+        // this._renderItemActivity(item, index)
+        this._renderItemActivityNew(item, index)
+        // this._renderItemCompete(item, index)
+        // this.props.navigation.state.params && this.props.navigation.state.params.tab == CompeteTab?this._renderItemCompete(item, index):this._renderItemActivityNew(item, index)
     )
     _renderFooter = ()=>{
         return  <TouchableOpacity onPress={this._clickLoadMore.bind(this)}>
@@ -407,51 +382,36 @@ class Activity extends Component {
         return (
             <View style={{flex:1}}>
             {
-                this.state.dataSource.length?
-                    /******会话消息******/
-                    <FlatList 
-                        ref={(flatlist)=>this._flatList=flatlist}
-                        style={{flex:1}}
-                        data={this.state.dataSource}
-                        renderItem={this._renderItem}
-                        extraData={this.state}
-                        keyExtractor={this._keyExtractor}
-                        ListFooterComponent={this._renderFooter}
-                        onRefresh={this._pullToRefresh.bind(this)}
-                        refreshing={this.state.isRefresh}
-                    />
+                this.props.navigation.state.params && this.props.navigation.state.params.tab == CompeteTab?
+                    <CompeteView navigation={this.props.navigation}/> 
                 :
-                    <EmptyView />
+                    this.state.dataSource.length?
+                        /******会话消息******/
+                        <FlatList 
+                            ref={(flatlist)=>this._flatList=flatlist}
+                            style={{flex:1}}
+                            data={this.state.dataSource}
+                            renderItem={this._renderItem}
+                            extraData={this.state}
+                            keyExtractor={this._keyExtractor}
+                            ListFooterComponent={this._renderFooter}
+                            onRefresh={this._pullToRefresh.bind(this)}
+                            refreshing={this.state.isRefresh}
+                        />
+                    :
+                        !this.state.loading?<EmptyView />:null
             }
                 
-            </View>
-        )
-    }
-    
-    // 页面加载中...
-    _renderLoadingView(){
-        return (
-            <View style={styles.loadingView}>
-                <Text>
-                  Loading ...
-                </Text>
-            </View>
-        )
-    }
-    _renderRootView(){
-        if (!this.state.loading) {
-            return this._renderLoadingView()
-        }
-        return(
-            <View style={styles.container}>
-                {this._renderTableView()}
             </View>
         )
     }
   	render() {
     	return (
         	<View style={styles.container}>
-        		{this._renderRootView()}
+        		{this._renderTableView()}
+                {
+                    this.state.loading?<LoadingView />:null
+                }
         	</View>
     	);
   	}
@@ -484,6 +444,32 @@ const styles = StyleSheet.create({
     },
     headerRightImg:{
         height:20
+    },
+    // -----------导航栏中间部分
+    headerTitleTabs:{
+        flexDirection:'row', 
+        justifyContent:'space-around', 
+        alignItems:'center', 
+        backgroundColor:'transparent', 
+        width:width/2, 
+        height:40,
+    },
+    headerTitleTab:{
+        height:35, 
+        alignItems:'center',
+        justifyContent:'center', 
+        marginVertical:2, 
+    },
+    headerTitleTabSelect:{
+        borderBottomColor:'white', 
+        borderBottomWidth:2, 
+    },
+    headerTitleTabText:{
+        color:'white', 
+        fontSize:18,
+    },
+    headerTitleTabTextSelect:{
+        fontWeight: 'bold'
     },
     
     // -----------------------------------------------加载中
@@ -538,7 +524,7 @@ const styles = StyleSheet.create({
     itemMiddleText:{
 		fontSize:14, 
 		color:fontBColor, 
-		lineHeight:28, 
+		lineHeight:20, 
 		textAlign:'justify', 
 		height:80, 
 		overflow:'hidden',
