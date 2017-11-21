@@ -45,6 +45,9 @@ public class ConversationActivity extends FragmentActivity implements View.OnCli
         //intent.getData().getLastPathSegment();//获得当前会话类型
         mConversationType = Conversation.ConversationType.valueOf(intent.getData().getLastPathSegment().toUpperCase(Locale.getDefault()));
         titletext.setText(title);
+        if(mConversationType.equals(Conversation.ConversationType.GROUP)){
+            righttext.setVisibility(View.VISIBLE);
+        }
         enterFragment(mConversationType, mTargetId);
     }
 

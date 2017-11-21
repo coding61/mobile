@@ -59,6 +59,7 @@
                     android:textColor="#FFFFFF"
                     android:textSize="15sp"
                     android:text="群公告"
+                    android:visibility="gone"
             />
         </RelativeLayout>
     </LinearLayout>
