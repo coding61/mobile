@@ -20,6 +20,7 @@ import CodeEditWebView from './pages/CodeEditWebView.js';
 import CodeEditWebView1 from './pages/CodeEditWebView1.js';
 import ThirdSiteWebView from './pages/ThirdSiteWebView.js';
 import CodeCompileWebView from './pages/CodeCompileWebView.js';
+import HomeScreen from './pages/HomeScreen.js';
 
 import Forum from './Forum/Forum.js';
 import ForumList from './Forum/ForumList.js';
@@ -39,12 +40,16 @@ import Register from './Login/Register.js';
 import FindWord from './Login/FindWord.js';
 import SelectHead from './Login/SelectHead.js';
 
+import CompeteView from './Activity/CompeteView.js';
 import Activity from './Activity/Activity.js';
 import ActivityDetail from './Activity/ActivityDetail.js';
 import MyActivity from './Activity/MyActivity.js';
 import AddActivity from './Activity/AddActivity.js';
 import AlterActivity from './Activity/AlterActivity.js';
 import ManageMember from './Activity/ManageMember.js';
+import CompeteAnswer from './Activity/CompeteAnswer.js';
+import EditAnswer from './Activity/EditAnswer.js';
+
 import CatalogCourse from './My/CatalogCourse.js';
 
 class RootApp extends Component{
@@ -97,6 +102,7 @@ const app = StackNavigator({
     Search:{screen:Search},
     ForumClass:{screen:ForumClass},
 
+    HomeScreen:{screen:HomeScreen},
     MessagePage:{screen: MessagePage},
     MessagePage1:{screen:MessagePage1},
     CodeEditWebView:{screen:CodeEditWebView},
@@ -110,13 +116,17 @@ const app = StackNavigator({
     FindWord: {screen: FindWord},
     SelectHead: {screen: SelectHead},
 
+    CompeteView:{screen:CompeteView},
     Activity:{screen:Activity},
     ActivityDetail:{screen:ActivityDetail},
     MyActivity:{screen:MyActivity},
     AddActivity:{screen:AddActivity},
     AlterActivity:{screen:AlterActivity},
     ManageMember:{screen:ManageMember},
-    CatalogCourse:{screen:CatalogCourse}
+    CompeteAnswer:{screen:CompeteAnswer},
+    EditAnswer:{screen:EditAnswer},
+    CatalogCourse:{screen:CatalogCourse},
+    // ExchangeRecord:{screen:ExchangeRecord}
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称
     initialRouteParams:{userinfo:''}        //配置初始路由的参数   

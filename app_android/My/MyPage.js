@@ -63,8 +63,8 @@ class MyPage extends Component {
                 })
                 .then(res => {
                   if (res !== '失败') {
-                    RnTest.rnIMConnect(res.token, results, function() {
-                    });
+                    // RnTest.rnIMConnect(res.token, results, function() {
+                    // });
                   }
                 })
               _this.setState({
@@ -113,9 +113,9 @@ class MyPage extends Component {
               })
               .then(res => {
                 if (res !== '失败') {
-                  RnTest.rnIMConnect(res.token, token, function() {
+                  // RnTest.rnIMConnect(res.token, token, function() {
 
-                  });
+                  // });
                 }
               })
               _this.setState({

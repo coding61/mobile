@@ -65,7 +65,6 @@ class MyActivity extends Component {
     // ------------------------------------------网络请求
     //获取活动列表
     _fetchMyActivity(pagenum){
-        
         // 区分是参加的还是发布的活动
         var tab = "join";
         if (this.state.tab == JoinActivityTab) {
@@ -355,6 +354,55 @@ class MyActivity extends Component {
     }
 
 	// ------------------------------------------活动列表
+    _renderItemActivityNew(item, index){
+        var arr = [
+            require('../assets/Activity/g1.png'), 
+            require('../assets/Activity/g2.png'),
+            require('../assets/Activity/g3.png'),
+            require('../assets/Activity/g4.png'),
+            require('../assets/Activity/g5.png')];
+        
+        var icon = arr[index%5];
+        return (
+            <TouchableOpacity onPress={this._pushActivityDetail.bind(this, item.pk)}>
+            <View style={[styles.item, {overflow:'hidden', borderColor:'#c9c9c9', borderWidth:1, position:'relative'}]}>
+                <View style={{height:160, width:width-20}}>
+                    {
+                        item.banner?
+                        <Image
+                          style={{flex:1, width:width-20}}
+                          source={{uri:item.banner}}
+                          resizeMode={'cover'}
+                        />
+                        :
+                        <Image
+                          style={{flex:1, width:width-20}}
+                          source={icon}
+                          resizeMode={'cover'}
+                        />
+                    }
+                    
+                    
+                    <Text style={{color:'white', fontSize:20, fontWeight:'bold', position:'absolute', left:10, right:10, bottom:10, backgroundColor:'transparent'}}>
+                      {item.name.slice(0,30)}
+                    </Text>
+                </View>
+
+                <View style={styles.itemBottom}>
+                    <View style={styles.itemBottomView}>
+                        <Text style={styles.itemBottomText}>
+                          {"发起人: "}{item.leader.name?item.leader.name.slice(0, 8):"管理员"}
+                        </Text>
+                    </View>
+                    <Text style={styles.itemBottomText}>
+                      {"已报名: "}:{item.member_number}人
+                    </Text>
+                </View>
+            </View>
+            </TouchableOpacity>
+        )
+    }
+    //活动 item
     _renderItemActivity(item, index){
         return (
         	<TouchableOpacity onPress={this._pushActivityDetail.bind(this, item.pk)}>
@@ -400,7 +448,8 @@ class MyActivity extends Component {
         )
     }
     _renderItem = ({item, index}) => (
-        this._renderItemActivity(item, index)
+        // this._renderItemActivity(item, index)
+        this._renderItemActivityNew(item, index)
     )
     _renderFooter = ()=>{
         return  <TouchableOpacity onPress={this._clickLoadMore.bind(this)}>
@@ -578,7 +627,7 @@ const styles = StyleSheet.create({
     itemMiddleText:{
 		fontSize:14, 
 		color:fontBColor, 
-		lineHeight:28, 
+		lineHeight:20, 
 		textAlign:'justify', 
 		height:80, 
 		overflow:'hidden',

@@ -17,29 +17,28 @@ import {
 } from 'react-native';
 import {TabNavigator} from 'react-navigation';
 
+import HomeScreen from './pages/HomeScreen.js';
 import MessagePage from './pages/MessagePage.js';
 import MyPage from './My/MyPage.js';
+import Forum from './Forum/Forum.js';
 import ForumList from './Forum/ForumList.js';
 import Activity from './Activity/Activity.js';
 import ConversationList from './Message/ConversationList.js';
 
 import Utils from './utils/Utils.js';
 
-var RnTest = NativeModules.RongYunRN;
-
-var tabBarIcon = {width:30, height:30};
 const TabBar = TabNavigator({
-  	MessagePage: {
-        screen: MessagePage, 
+  	HomeScreen: {
+        screen: HomeScreen, 
         navigationOptions: {  // 也可以写在组件的static navigationOptions内
-            tabBarLabel:'学习',
-            tabBarIcon:({tintColor, focused}) => (
+            tabBarLabel:'首页',
+            tabBarIcon:({focused}) => (
                 focused?
                     <Image source={require('./images/tabs/1-select.png')}
-                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
+                    style={[{width:30,height:30}, ]} resizeMode={'contain'}/>
                 :
                     <Image source={require('./images/tabs/1-unselect.png')}
-                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
+                    style={[{width:30,height:30}, ]} resizeMode={'contain'}/>
             ),
         }
     },
@@ -47,48 +46,30 @@ const TabBar = TabNavigator({
         screen:ForumList,
         navigationOptions: {  // 也可以写在组件的static navigationOptions内
             tabBarLabel:'社区',
-            tabBarIcon:({tintColor, focused}) => (
+            tabBarIcon:({focused}) => (
                 focused?
                     <Image source={require('./images/tabs/2-select.png')}
-                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
+                    style={[{width:30,height:30}, ]} resizeMode={'contain'}/>
                 :
                     <Image source={require('./images/tabs/2-unselect.png')}
-                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
+                    style={[{width:30,height:30}, ]} resizeMode={'contain'}/>
             ),
         }
     },
     ConversationList:{
         screen:ConversationList,
-        navigationOptions: {  // 也可以写在组件的static navigationOptions内
-            tabBarLabel:'对话',
-            tabBarIcon:({tintColor, focused}) => (
-                focused?
-                    <Image source={require('./images/tabs/5-select.png')}
-                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
-                :
-                    <Image source={require('./images/tabs/5-unselect.png')}
-                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
-            ),
-            tabBarOnPress:(({ route, index },jumpToIndex)=>{
-                // console.log(route);        
-                // alert(index);
-                // 只有调用jumpToIndex方法之后才会真正的跳转页面。
-                // jumpToIndex(index);
-                RnTest.rnIMStart();
-            }),
-        }
     },
     Activity:{
         screen:Activity,
         navigationOptions: {  // 也可以写在组件的static navigationOptions内
             tabBarLabel:'活动',
-            tabBarIcon:({tintColor, focused}) => (
+            tabBarIcon:({focused}) => (
                 focused?
                     <Image source={require('./images/tabs/3-select.png')}
-                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
+                    style={[{width:30,height:30}, ]} resizeMode={'contain'}/>
                 :
                     <Image source={require('./images/tabs/3-unselect.png')}
-                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
+                    style={[{width:30,height:30}, ]} resizeMode={'contain'}/>
             ),
         }
     },
@@ -96,35 +77,37 @@ const TabBar = TabNavigator({
         screen:MyPage,
         navigationOptions: {  // 也可以写在组件的static navigationOptions内
             tabBarLabel:'个人',
-            tabBarIcon:({tintColor, focused}) => (
+            tabBarIcon:({focused}) => (
                 focused?
                     <Image source={require('./images/tabs/4-select.png')}
-                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
+                    style={[{width:30,height:30}, ]} resizeMode={'contain'}/>
                 :
                         <Image source={require('./images/tabs/4-unselect.png')}
-                    style={[{width:30,height:30}, {tintColor:tintColor}]} resizeMode={'contain'}/>
+                    style={[{width:30,height:30}, ]} resizeMode={'contain'}/>
             ),
         }
     },
 },{
-    animationEnabled: false, // 切换页面时是否有动画效果
+    // lazy:true,    //app 启动前不加载全部页面
+	animationEnabled: false, // 切换页面时是否有动画效果
     tabBarPosition: 'bottom', // 显示在底端，android 默认是显示在页面顶端的
     swipeEnabled: false, // 是否可以左右滑动切换tab
     backBehavior: 'none', // 按 back 键是否跳转到第一个Tab(首页)， none 为不跳转
-	tabBarOptions:{
-		activeTintColor:Utils.tabBarSelectColor,
-        inactiveTintColor:Utils.tabBarUnselectColor,
-        indicatorStyle: {
+    tabBarOptions:{
+        // activeTintColor:Utils.tabBarSelectColor,
+        // inactiveTintColor:Utils.tabBarUnselectColor,
+        indicatorStyle: {//android
             height: 0  // 如TabBar下面显示有一条线，可以设高度为0后隐藏
         }, 
         showIcon: true, // android 默认不显示 icon, 需要设置为 true 才会显示
         style:{
             backgroundColor:'white',
-            height:40
+            // height:40
         },
         tabStyle:{
-            paddingTop:5,
+            // paddingTop:5,
             // backgroundColor:'red',
+            alignItems:'center'
         },
         labelStyle: {
             fontSize: 10, // 文字大小

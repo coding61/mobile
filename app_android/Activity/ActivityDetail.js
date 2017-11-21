@@ -311,8 +311,9 @@ class ActivityDetail extends Component {
     }
     // 修改活动信息
     _updateActivityInfo(){
-        this.props.navigation.navigate("UpdateActivity", {pk:this.props.navigation.state.params.pk, data:this.state.data, callback:(isUpdate)=>{
+        this.props.navigation.navigate("AlterActivity", {pk:this.props.navigation.state.params.pk, data:this.state.data, callback:(isUpdate)=>{
             if (isUpdate) {
+                // 更新当前内容
                 this.setState({
                     isChange:true
                 })
@@ -408,19 +409,23 @@ class ActivityDetail extends Component {
                 <View style={styles.item}>
                     {/******标题*******/}
                     <View style={styles.itemHeader}>
+                        {/*
                         <Image
                           style={{height:20}}
                           source={require('../images/left.png')}
                           resizeMode={'contain'}
                         />
+                        */}
                         <Text style={styles.itemHeaderTitle}>
                           {this.state.data.name}
                         </Text>
+                        {/*
                         <Image
                           style={{height:20}}
                           source={require('../images/right.png')}
                           resizeMode={'contain'}
                         />
+                        */}
                     </View>
                     {/******介绍*******/}
                     <View style={styles.itemMiddle}>
@@ -431,10 +436,10 @@ class ActivityDetail extends Component {
                     {/******发布者*******/}
                     <View style={styles.item1View}>
                         <Text style={styles.itemBottomText}>
-                          发布者:{this.state.data.leaderName}
+                          发布者:{this.state.data.leaderName.slice(0, 14)}
                         </Text>
                         {
-                            this.state.isleader?
+                            this.state.data.isleader?
                                 /******修改活动*******/
                                 <TouchableOpacity onPress={this._updateActivityInfo.bind(this)}>
                                 <View style={styles.item2View}>
@@ -543,7 +548,7 @@ class ActivityDetail extends Component {
                                 <Text style={styles.btnText}>进入群聊</Text>
                             </View>
                             </TouchableOpacity>
-                            
+
                             <TouchableOpacity onPress={this._quitActivity.bind(this)}>
                             <View style={styles.btnQuit}>
                                 <Text style={styles.btnText}>解散活动</Text>
@@ -655,13 +660,15 @@ const styles = StyleSheet.create({
     itemHeader:{
     	flexDirection:'row', 
     	justifyContent:'center', 
-    	height:45, 
-    	alignItems:'center'
+    	// height:45, 
+    	alignItems:'center',
+        marginBottom:10
     },
     itemHeaderTitle:{
     	fontSize:16, 
     	color:pinkColor, 
-    	paddingHorizontal:5
+    	paddingHorizontal:5,
+        lineHeight:20
     },
     itemMiddle:{
     	flexDirection:'row', 
@@ -673,7 +680,7 @@ const styles = StyleSheet.create({
     itemMiddleText:{
 		fontSize:14, 
 		color:fontBColor, 
-		lineHeight:28, 
+		lineHeight:20, 
 		textAlign:'justify', 
 		overflow:'hidden',
     },
