@@ -298,8 +298,8 @@ public class MainActivity extends ReactActivity {
     private void getServerVersionNumber() throws Exception {
         String os="Android";
         String app_version=Utils.getVersionName(MainActivity.this);
-        String versionUrl="https://app.bcjiaoyu.com/program_girl/appversion/check_for_updates/?os="+os+"&app_version="+app_version;
-        //String versionUrl="https://www.cxy61.com/program_girl/appversion/check_for_updates/?os="+os+"&app_version="+app_version;
+        //String versionUrl="https://app.bcjiaoyu.com/program_girl/appversion/check_for_updates/?os="+os+"&app_version="+app_version;
+        String versionUrl="https://www.cxy61.com/program_girl/appversion/check_for_updates/?os="+os+"&app_version="+app_version;
 
         HttpUtils utils=new HttpUtils(60*1000);
         utils.send(HttpMethod.GET, versionUrl, new RequestCallBack<String>() {
