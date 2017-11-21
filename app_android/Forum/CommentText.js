@@ -21,6 +21,7 @@ var {height, width} = Dimensions.get('window');
 const isAndroid = Platform.OS === 'android';
 var allAndroid = require('react-native').NativeModules.RongYunRN;
 import Http from '../utils/Http.js';
+import MedalView from '../Activity/MedalView.js';
 var basePath=Http.domain;
 var content='';
 export default class CommentText extends Component{
@@ -34,6 +35,9 @@ export default class CommentText extends Component{
             isDisable:false,
             show:false,
             IdCard1:'',//图片
+            showRewardType:"hongbao",  //何种类型的奖励
+            showMedalView:false,        //是否展示勋章视图
+            showMedalMsg:"回复帖子",   //勋章的名字
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -94,8 +98,15 @@ export default class CommentText extends Component{
                 this.setState({
                     content:'',
                 },()=>{
-                    this.props.navigation.state.params.callback();
-                    this.props.navigation.goBack();
+                    if(result.taken_medal==true){
+                        this.setState({
+                            showMedalView:true,
+                            showMedalMsg:result.medal.name
+                        })
+                    }else{
+                        this.props.navigation.state.params.callback();
+                        this.props.navigation.goBack();
+                    }
                 })
             })
             .catch((error) => {
@@ -211,6 +222,14 @@ export default class CommentText extends Component{
                         <Text style={{color: 'white'}}>上传中...</Text>
                     </View>
                     ):(null)}
+                {
+                    this.state.showMedalView?
+                        <MedalView 
+                            type={"compete"} 
+                            msg={this.state.showMedalMsg} 
+                            hide={()=>{this.setState({showMedalView:false},()=>{this.props.navigation.state.params.callback();this.props.navigation.goBack()});}}
+                        />:null
+                }
             </View>
         )
     }
