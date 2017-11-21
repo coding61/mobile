@@ -14,7 +14,7 @@ import {
   Alert,
   DeviceEventEmitter,
   NativeModules,
-  ActivityIndicator  
+  ActivityIndicator
 } from 'react-native';
 const {width, height} = Dimensions.get('window');
 import Utils from '../utils/Utils.js';
@@ -33,6 +33,7 @@ class MyPage extends Component {
   		isLogin: false,
   		name: null,
   		headImg: null,
+        owner: null,
       promptVisible: false,
       show: false,
       balance: null
@@ -49,7 +50,7 @@ class MyPage extends Component {
   					if (response.ok === true) {
   						return response.json();
   					} else {
-  						return '失败'; 
+  						return '失败';
   					}
   				})
   				.then(responseJSON => {
@@ -67,14 +68,15 @@ class MyPage extends Component {
                 })
                 .then(res => {
                   if (res !== '失败') {
-                    // RnTest.rnIMConnect(res.token, results, function() {
-                    // });
+                    RnTest.rnIMConnect(res.token, results, function() {
+                    });
                   }
                 })
               _this.setState({
                 isLogin: true,
                 name: responseJSON.name,
-                headImg: responseJSON.avatar
+                headImg: responseJSON.avatar,
+                owner: responseJSON.owner
               })
             } else {
               Utils.showMessage('获取用户信息失败，请重新登录');
@@ -102,7 +104,7 @@ class MyPage extends Component {
 					if (response.ok === true) {
 						return response.json();
 					} else {
-						return '失败'; 
+						return '失败';
 					}
 				})
 				.then(responseJSON => {
@@ -120,9 +122,9 @@ class MyPage extends Component {
               })
               .then(res => {
                 if (res !== '失败') {
-                  // RnTest.rnIMConnect(res.token, token, function() {
+                  RnTest.rnIMConnect(res.token, token, function() {
 
-                  // });
+                  });
                 }
               })
               _this.setState({
@@ -200,12 +202,18 @@ class MyPage extends Component {
   				this.props.navigation.navigate('Login');
   				break;
   			}
-      case 8:
-      {
-        this.props.navigation.navigate('ExchangeRecord', {balance: this.state.balance});
-        break;
-      }
-  		default: 
+        case 7:
+  			{
+  				//勋章
+  				this.props.navigation.navigate('PersonalMedal', {owner: this.state.owner, myself: true});
+  				break;
+  			}
+        case 8:
+        {
+          this.props.navigation.navigate('ExchangeRecord', {balance: this.state.balance});
+          break;
+        }
+  		default:
   			{
   				break;
   			}
@@ -217,7 +225,7 @@ class MyPage extends Component {
 
 
     this.listenerProgressaa = DeviceEventEmitter.addListener("uploadProgress_listener", function(params) {
-        
+
     })
     //完成
     this.listenerProgressbb = DeviceEventEmitter.addListener("uploadSuccess_listener", function(params) {
@@ -252,10 +260,10 @@ class MyPage extends Component {
   }
   qiniu(){
     AsyncStorage.getItem('token', (errs, results) => {
-      allAndroid.rnQiniu(results,false,"gallery"); 
+      allAndroid.rnQiniu(results,false,"gallery");
 
     })
-    
+
   }
   updateavatar() {
     this.qiniu();
@@ -320,6 +328,13 @@ class MyPage extends Component {
 	      				<Text style={{marginLeft: 10, fontSize: 15, color: 'rgb(59, 60, 61)'}}>{'我的活动'}</Text>
 	      				<Image resizeMode={'contain'} style={{width: 13, height: 13, position: 'absolute', right: 10, top: 18}} source={require('../assets/My/right.png')}/>
 	      			</TouchableOpacity>
+
+                    <TouchableOpacity onPress={this.onPress.bind(this, 7)} style={{flexDirection: 'row', alignItems: 'center', borderColor: 'rgb(238, 238, 239)', borderBottomWidth: 1, borderTopWidth: 1, width: width, height: 50, backgroundColor: 'white'}}>
+	      				<Image resizeMode={'contain'} style={{marginLeft: 10, width: 20, height: 20}} source={require('../images/forum_icon/medal.png')}/>
+	      				<Text style={{marginLeft: 10, fontSize: 15, color: 'rgb(59, 60, 61)'}}>{'我的勋章'}</Text>
+	      				<Image resizeMode={'contain'} style={{width: 13, height: 13, position: 'absolute', right: 10, top: 18}} source={require('../assets/My/right.png')}/>
+	      			</TouchableOpacity>
+
               <TouchableOpacity onPress={this.onPress.bind(this, 8)} style={{flexDirection: 'row', alignItems: 'center', borderColor: 'rgb(238, 238, 239)', borderBottomWidth: 1, borderTopWidth: 1, width: width, height: 50, backgroundColor: 'white'}}>
                 <Image resizeMode={'contain'} style={{marginLeft: 10, width: 20, height: 20}} source={require('../assets/My/reward.png')}/>
                 <Text style={{marginLeft: 10, fontSize: 15, color: 'rgb(59, 60, 61)'}}>{'奖学金记录'}</Text>
@@ -345,7 +360,7 @@ class MyPage extends Component {
       	</ScrollView>
         {this.state.show?(
           <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
-              <ActivityIndicator 
+              <ActivityIndicator
                   style={{marginTop: 10}}
                   color={'white'}
                   size={'large'}

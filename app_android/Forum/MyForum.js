@@ -36,7 +36,7 @@ export default class MyForum extends Component{
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
         return {
-            title: '我的帖子',
+            title: state.params.flag,
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:14,marginLeft:width*0.28},
@@ -47,13 +47,43 @@ export default class MyForum extends Component{
     }
     componentDidMount(){
         var self = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result!=null){
-                self.setState({token: result},()=>{
-                    self._loadAlldata();
-                });
-            }
-        });
+         if(self.props.navigation.state.params.flag=='我的帖子'){
+                AsyncStorage.getItem('token', function(errs, result) {
+                    if(result!=null){
+                        self.setState({token: result},()=>{
+                                self._loadAlldata();
+                            
+                        });
+                    }
+                }); 
+        }else{
+            self._loadpersonaldata()
+        }
+    }
+    _loadpersonaldata(){
+        this.setState({
+            isLoading: true
+        },()=> {
+            fetch(basePath+'/forum/posts/?username='+this.props.navigation.state.params.owner)
+            .then((response) =>response.json())
+            .then((responseData) => {
+                var resultArr = new Array();
+                    responseData.results.map(result=> {
+                        resultArr.push(result);
+                })
+                this.setState({
+                    nextPage: responseData.next?responseData.next.replace("http://", "https://"):null,
+                    dataArr: resultArr,
+                    dataSource: resultArr,
+                    isLoading: false,
+                    loadText: responseData.next?('正在加载...'):('没有更多了...'),
+                    isRefreshing: false
+                 });
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        })
     }
     _loadAlldata() {
         this.setState({
@@ -86,9 +116,51 @@ export default class MyForum extends Component{
             this.setState({
                 isLoading: true
             },()=> {
-                fetch(this.state.nextPage, {
-                    headers: {Authorization: 'Token ' + this.state.token}
-                })
+                if(this.props.navigation.state.params.flag=='我的帖子'){
+                    fetch(this.state.nextPage, {
+                        headers: {Authorization: 'Token ' + this.state.token}
+                    })
+                    .then(response => {
+                        if (response.status === 200) {
+                            return response.json();
+                        } else {
+                            return '加载失败';
+                        }
+                    })
+                    .then(responseJson=> {
+                        if (responseJson === '加载失败') {
+                            Alert.alert(
+                              '加载失败,请重试',
+                              '',
+                              [
+                                {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
+                              ]
+                            )
+                        } else {
+                            var resultArr;
+                            resultArr = this.state.dataArr.concat();
+                            responseJson.results.map(result=> {
+                                resultArr.push(result);
+                            })
+                            this.setState({
+                                nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
+                                dataArr: resultArr,
+                                dataSource: resultArr,
+                                isLoading: false,
+                                loadText: responseJson.next?('正在加载...'):('没有更多了')
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        this.setState({
+                            isLoading: false,
+                            isRefreshing: false
+                        })
+                    })
+                }
+                else{
+                    fetch(this.state.nextPage)
                 .then(response => {
                     if (response.status === 200) {
                         return response.json();
@@ -127,7 +199,9 @@ export default class MyForum extends Component{
                         isRefreshing: false
                     })
                 })
+                }
             })
+
         }
     }
     _renderFooter(){
@@ -137,7 +211,12 @@ export default class MyForum extends Component{
         this.setState({
             isRefreshing: true
         },()=> {
-            this._loadAlldata();
+            if(this.props.navigation.state.params.flag=='我的帖子'){
+                this._loadAlldata();
+            }
+            else{
+                this._loadpersonaldata()
+            }
         })
     }
     forumdetail(data){

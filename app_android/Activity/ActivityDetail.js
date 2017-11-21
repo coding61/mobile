@@ -31,7 +31,7 @@ var RongYunRN = NativeModules.RongYunRN;
 class ActivityDetail extends Component {
 	constructor(props) {
 	  	super(props);
-	
+
 	  	this.state = {
 	  		loading:false,
             data:{},                             //页面加载的所有数据源
@@ -54,7 +54,7 @@ class ActivityDetail extends Component {
       	this._fetchActivityDetail(this.props.navigation.state.params.pk);
     }
     componentDidMount() {
-        
+
     }
     componentWillUnmount() {
         if (this.props.navigation.state.params.callback) {
@@ -113,15 +113,15 @@ class ActivityDetail extends Component {
                 break;
             }
         }
-        dic["club_member"] = array; 
-        
-        
+        dic["club_member"] = array;
+
+
         this.setState({
             loading:true,
             data:dic,
         });
         */
-        
+
         Utils.isLogin((token)=>{
             // if (token) {
                 var type = "get",
@@ -183,8 +183,8 @@ class ActivityDetail extends Component {
         })
     }
     //退出活动
-    _fetchLeaveActivity(pk){        
-        
+    _fetchLeaveActivity(pk){
+
         Utils.isLogin((token)=>{
             if (token) {
                 var type = "get",
@@ -220,7 +220,7 @@ class ActivityDetail extends Component {
                 });
             }
         })
-        
+
     }
     // 解散活动
     _fetchQuitActivity(pk){
@@ -250,7 +250,7 @@ class ActivityDetail extends Component {
                     }, ()=>{
                         this.props.navigation.goBack();
                     })
-                    
+
                 }, (err) => {
                     console.log(2);
                     // Utils.showMessage('网络请求失败');
@@ -330,7 +330,7 @@ class ActivityDetail extends Component {
                     isChange:true
                 })
                 // 更新当前内容
-                this._fetchActivityDetail(this.props.navigation.state.params.pk); 
+                this._fetchActivityDetail(this.props.navigation.state.params.pk);
             }
         }})
     }
@@ -541,7 +541,7 @@ class ActivityDetail extends Component {
                                         </TouchableOpacity>
                                 }
                             </View>
-                        :   
+                        :
                             <View style={styles.bottomView}>
                             <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
                             <View style={styles.btnJoin}>
@@ -556,13 +556,13 @@ class ActivityDetail extends Component {
                             </TouchableOpacity>
                             </View>
                     }
-                    
+
                 </View>
-                
+
             </ScrollView>
         )
     }
-    
+
     // 页面加载中...
     _renderLoadingView(){
         return (
@@ -590,7 +590,7 @@ class ActivityDetail extends Component {
                 {/*
                     this.state.showJoinActivityAlertView?this._renderJoinActivity():null
                 */}
-                <AlertView 
+                <AlertView
                     type="input"
                     showAlertView={this.state.showJoinActivityAlertView}
                     hideAlertView={this._closeJoinActivityAlertView.bind(this)}
@@ -628,15 +628,15 @@ const styles = StyleSheet.create({
     },
     // -----------导航栏右部分
     headerRightView:{
-        flexDirection:'row', 
-        justifyContent:'center', 
-        alignItems:'center', 
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center',
         marginRight:10
     },
     headerRightImg:{
         height:20
     },
-    
+
     // -----------------------------------------------加载中
     loadingView:{
         flex: 1,
@@ -653,66 +653,66 @@ const styles = StyleSheet.create({
 
     // ------------------------------------------活动列表
     item:{
-    	flex:1, 
-    	backgroundColor:'white', 
+    	flex:1,
+    	backgroundColor:'white',
         paddingTop:10
     },
     itemHeader:{
-    	flexDirection:'row', 
-    	justifyContent:'center', 
-    	// height:45, 
+    	flexDirection:'row',
+    	justifyContent:'center',
+    	// height:45,
     	alignItems:'center',
         marginBottom:10
     },
     itemHeaderTitle:{
-    	fontSize:16, 
-    	color:pinkColor, 
+    	fontSize:16,
+    	color:pinkColor,
     	paddingHorizontal:5,
         lineHeight:20
     },
     itemMiddle:{
-    	flexDirection:'row', 
-    	borderBottomColor:lineColor, 
-    	borderBottomWidth:1, 
-    	paddingHorizontal:10, 
+    	flexDirection:'row',
+    	borderBottomColor:lineColor,
+    	borderBottomWidth:1,
+    	paddingHorizontal:10,
     	paddingBottom:10,
     },
     itemMiddleText:{
-		fontSize:14, 
-		color:fontBColor, 
-		lineHeight:20, 
-		textAlign:'justify', 
+		fontSize:14,
+		color:fontBColor,
+		lineHeight:20,
+		textAlign:'justify',
 		overflow:'hidden',
     },
 	itemBottomText:{
-		color:fontSColor, 
+		color:fontSColor,
 		fontSize:13
 	},
     item1View:{
-        flexDirection:'row', 
-        justifyContent:'space-between', 
-        paddingHorizontal:10, 
-        borderBottomColor:lineColor, 
-        borderBottomWidth:1, 
-        height:40, 
+        flexDirection:'row',
+        justifyContent:'space-between',
+        paddingHorizontal:10,
+        borderBottomColor:lineColor,
+        borderBottomWidth:1,
+        height:40,
         alignItems:'center'
     },
     item2View:{
-        flexDirection:'row', 
+        flexDirection:'row',
         alignItems:'center'
     },
     item2Img:{
-        width:15, 
+        width:15,
         height:15
     },
     item3Parent:{
-        paddingHorizontal:10, 
+        paddingHorizontal:10,
         paddingBottom:20,
     },
     item3:{
-        flexDirection:'row', 
+        flexDirection:'row',
         justifyContent:'space-between',
-        alignItems:'center', 
+        alignItems:'center',
         height:40
     },
     item3Imgs:{
@@ -720,14 +720,14 @@ const styles = StyleSheet.create({
         flexWrap:'wrap',
     },
     item3ImgView:{
-        width:(width-20)/6, 
+        width:(width-20)/6,
         justifyContent:'center',
         alignItems:'center',
         marginBottom:20,
     },
     item3Img:{
-        width:40, 
-        height:40, 
+        width:40,
+        height:40,
         borderRadius:20,
         marginBottom:10,
     },
@@ -762,37 +762,37 @@ const styles = StyleSheet.create({
 
     // -------------------------------视图弹框
     AlertInputAlertParentView:{
-        backgroundColor:'rgba(0,0,0,0.5)', 
-        flex:1, 
-        alignItems:'center', 
+        backgroundColor:'rgba(0,0,0,0.5)',
+        flex:1,
+        alignItems:'center',
         justifyContent:'center'
     },
     AlertInputAlertView:{
-        backgroundColor:alertViewBgColor, 
-        width:width-120, 
+        backgroundColor:alertViewBgColor,
+        width:width-120,
         borderRadius:10,
     },
     AlertInputView:{
-        minHeight:120, 
-        borderBottomColor:alertLineColor, 
-        borderBottomWidth:1, 
-        alignItems:'center', 
-        justifyContent:'center', 
+        minHeight:120,
+        borderBottomColor:alertLineColor,
+        borderBottomWidth:1,
+        alignItems:'center',
+        justifyContent:'center',
     },
     AlertInput:{
-        width:width-170, 
-        height:30, 
-        fontSize:12, 
-        borderColor:alertLineColor, 
-        borderWidth:1, 
-        backgroundColor:'white', 
+        width:width-170,
+        height:30,
+        fontSize:12,
+        borderColor:alertLineColor,
+        borderWidth:1,
+        backgroundColor:'white',
         textAlign:'center',
         padding:0,
         paddingHorizontal:5,
     },
     AlertBtnView:{
-        height:40, 
-        alignItems:'center', 
+        height:40,
+        alignItems:'center',
         justifyContent:'center'
     },
     AlertBtnText:{
