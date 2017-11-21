@@ -190,30 +190,32 @@ class PersonalMedal extends Component {
     render() {
         var loadingView = this._loadingView();
         return (
-            <ScrollView style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}
-                refreshControl={
-                    <RefreshControl
-                      refreshing={this.state.isRefreshing ? this.state.isRefreshing : false}
-                      onRefresh={this._onRefresh.bind(this)}
-                      tintColor='#cccccc'
-                      title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
-                      titleColor='#cccccc' />
-                }>
+            <View style={{flex: 1}}>
                 {this.state.dataList && this.state.dataList.length != 0 ? (
-                    <FlatList style={styles.flatList}
-                        ref={(flatList)=>this._flatList = flatList}
-                        // ListHeaderComponent={this._forumHeader}
-                        renderItem={this._renderItem}
-                        numColumns={4}
-                        keyExtractor={this._keyExtractor}
-                        extraData={this.state}
-                        data={this.state.dataList}>
-                    </FlatList>
+                    <ScrollView style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}
+                        refreshControl={
+                            <RefreshControl
+                              refreshing={this.state.isRefreshing ? this.state.isRefreshing : false}
+                              onRefresh={this._onRefresh.bind(this)}
+                              tintColor='#cccccc'
+                              title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
+                              titleColor='#cccccc' />
+                        }>
+                        <FlatList style={styles.flatList}
+                            ref={(flatList)=>this._flatList = flatList}
+                            // ListHeaderComponent={this._forumHeader}
+                            renderItem={this._renderItem}
+                            numColumns={4}
+                            keyExtractor={this._keyExtractor}
+                            extraData={this.state}
+                            data={this.state.dataList}>
+                        </FlatList>
+                    </ScrollView>
                 ) : (
                     this.state.dataList ? <EmptyView /> : null
                 )}
                 {loadingView}
-            </ScrollView>
+            </View>
         );
     }
 }
