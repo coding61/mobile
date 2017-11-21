@@ -141,6 +141,7 @@ class EditAnswer extends Component {
                     onChangeText={(answer) => this.setState({answer})}
                     value={this.state.answer}
                     placeholder={'请输入您的答案'}
+                    underlineColorAndroid={'transparent'}
                 />
                 {
                     this.state.answer ? 
@@ -213,6 +214,7 @@ const styles = StyleSheet.create({
         width: width * 0.9,
         height: width * 300 / 750,
         borderRadius:2, 
+        textAlignVertical: 'top'
     },
     answerBtn: {
         width: width * 0.8,

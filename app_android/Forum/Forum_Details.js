@@ -316,16 +316,16 @@ export default class Forum_Details extends Component{
                         <Text style={{paddingTop:5,fontSize:10,color:'#ff6b94',}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
-                    <View style={{paddingLeft:40,paddingRight:10,width:width*0.6,}}>
+                    <View style={{paddingLeft:20,paddingRight:10,width:width*0.5,}}>
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.userinfo.name}</Text>
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                     </View>
-                    <View style={{marginRight:30,}}>
-                        <TouchableOpacity style={{marginTop:3,}} onPress={this.Show_Comment.bind(this,rowData.pk,rowData.userinfo.name)}>
+                    <View style={{marginRight:20,}}>
+                        <TouchableOpacity style={{marginTop:3,marginRight:5,marginBottom:4,}} onPress={this.Show_Comment.bind(this,rowData.pk,rowData.userinfo.name)}>
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
-                            <TouchableOpacity onPress={this.detele_reply.bind(this,rowData.pk)} style={{marginRight:18,borderRadius:5,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center'}}>
+                            <TouchableOpacity onPress={this.detele_reply.bind(this,rowData.pk)} style={{marginRight:20,marginLeft:3,borderRadius:5,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center'}}>
                                 <Text  style={{fontSize:12,paddingTop:2,paddingRight:5,paddingLeft:5,paddingBottom:2,color:'#ffffff',}}>删除</Text>
                             </TouchableOpacity>
                             ):(null)}

@@ -134,6 +134,7 @@ class CompeteView extends Component {
                         if(array[i].pk == response.pk){
                             // 替换数据
                             array[i].member_count = response.member_count;
+                            array[i] = response;
                             break;
                         }
                     }
