@@ -68,8 +68,8 @@ class ConversationList extends Component {
             hasUnreadMsg: false
         });
 		this.listenerRCUnreadMsg = DeviceEventEmitter.addListener('unreadmessagecount_listener', (unread_message_count) => {
-  			console.log(result);
-			if (result <= 0) {
+  			console.log(unread_message_count);
+			if (unread_message_count <= 0) {
 				//无未读
 				this.props.navigation.setParams({
 		            hasUnreadMsg: false,

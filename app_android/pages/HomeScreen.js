@@ -388,7 +388,6 @@ class HomeScreen extends Component{
     render(){
         return (
             <View style={{flex:1, backgroundColor:"rgb(229, 230, 231)"}}>
-                <StatusBar hidden={false} />
                 {this._renderTabs()}
                 {
                     this.state.showHelpActions? this._renderHelpActions() : null
