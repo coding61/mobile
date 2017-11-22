@@ -48,14 +48,14 @@
 - (void)getOtherInfo:(NSString *)userId callback:(void (^)(RCUserInfo *))callback{
     [BCAFRequest getOtherInfo:[NSString stringWithFormat:OtherInfoUrl,userId] WithBlock:^(id obj, NSError *error) {
         if (error) {
-            NSLog(@"获取他人信息失败");
+            NSLog(@"获取他人信息失败---%@", userId);
             NSDictionary *info = user2;
             RCUserInfo *user = [[RCUserInfo alloc] initWithUserId:userId
                                                              name:info[NickName]
                                                          portrait:info[PortraitUri]];
             callback(user);
         }else{
-            NSLog(@"获取他人信息成功%@", userId);
+            NSLog(@"获取他人信息成功---%@", userId);
             RCUserInfo *userinfo = [[RCUserInfo alloc] init];
             userinfo.userId = userId;
             userinfo.name = obj[NickName];
@@ -69,14 +69,14 @@
 - (void)getOwnInfo:(NSString *)userId callback:(void (^)(RCUserInfo *))callback{
     [BCAFRequest getOwnInfo:OwnInfoUrl WithBlock:^(id obj, NSError *error) {
         if (error) {
-            NSLog(@"获取自己信息失败");
+            NSLog(@"获取自己信息失败---%@", userId);
             NSDictionary *info = user1;
             RCUserInfo *user = [[RCUserInfo alloc] initWithUserId:userId
                                                              name:info[NickName]
                                                          portrait:info[PortraitUri]];
             callback(user);
         }else{
-            NSLog(@"获取自己信息成功%@", userId);
+            NSLog(@"获取自己信息成功---%@", userId);
             RCUserInfo *userinfo = [[RCUserInfo alloc] init];
             userinfo.userId = userId;
             userinfo.name = obj[NickName];
@@ -93,7 +93,7 @@
     NSLog(@"getGroupInfoWithGroupId------%@", groupId);
     RCGroup *group = [RCGroup new];
     if (groupId == nil || [groupId length] == 0) {
-        group.groupId = group1[GroupId];
+        group.groupId = groupId;
         group.groupName = group1[GroupName];
         group.portraitUri = group1[GroupPortraitUri];
         
@@ -144,18 +144,18 @@
 - (void)getGroupMemberInfo:(NSString *)groupId callback:(void (^)(NSArray *))callback{
   [BCAFRequest getGroupInfo:[NSString stringWithFormat:GroupInfoUrl, groupId] WithBlock:^(id obj, NSError *error) {
     if (error) {
-      NSLog(@"获取群组信息失败");
+      NSLog(@"获取群组成员信息失败");
       callback(nil);
     }else{
-      NSLog(@"获取群组信息成功%@", groupId);
+      NSLog(@"获取群组成员信息成功%@", groupId);
       NSArray *array = obj[@"club_member"];
       NSMutableArray *arr = [NSMutableArray array];
       for (NSDictionary *memberInfo in array) {
         NSDictionary *tempInfo = memberInfo[@"owner"];
         RCUserInfo *member = [[RCUserInfo alloc] init];
-        member.userId = tempInfo[@"owner"];
-        member.name = tempInfo[@"name"];
-        member.portraitUri = tempInfo[@"avatar"];
+        member.userId = tempInfo[UserId];
+        member.name = tempInfo[NickName];
+        member.portraitUri = tempInfo[PortraitUri];
         
         if (!member.portraitUri || member.portraitUri <= 0) {
           member.portraitUri = UserThumb;

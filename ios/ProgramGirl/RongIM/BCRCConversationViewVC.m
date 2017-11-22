@@ -61,7 +61,8 @@
     UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithCustomView:btn];
     self.navigationItem.rightBarButtonItem = rightButton;
     
-    [self refreshGroupMembers];
+    //刷新群组成员信息
+//    [self refreshGroupMembers];
   }
 }
 
@@ -71,21 +72,9 @@
   [self.navigationController setNavigationBarHidden:YES animated:YES];
 //  [[UIApplication sharedApplication] setStatusBarHidden:YES];  //隐藏状态栏
 }
-- (void)refreshGroupMembers{
-  dispatch_async(dispatch_get_global_queue(0, 0), ^{
-    [[BCRCIMDataSource shareInstance] getGroupMemberInfo:self.targetId callback:^(NSArray * arr) {
-      if (!arr.count) {
-        return;
-      }
-      for (RCUserInfo *user in arr) {
-        if ([user.portraitUri isEqualToString:@""]) {
-          user.portraitUri = UserThumb;
-        }
-        [[RCIM sharedRCIM] refreshUserInfoCache:user withUserId:user.userId];
-      }
-    }];
-  });
-}
+
+#pragma mark - 融云回调方法
+//发送按钮点击方法
 - (void)didSendMessage:(NSInteger)status content:(RCMessageContent *)messageContent{
   NSLog(@"%ld", (long)status);
   if(status == 0){
@@ -95,11 +84,33 @@
     }
   }
 }
+//@符号输入回调
+- (void)showChooseUserViewController:(void (^)(RCUserInfo *selectedUserInfo))selectedBlock
+                              cancel:(void (^)())cancelBlock{
+  return;
+}
+
 //通知服务器修改活动的排序
 - (void)updateActivitySort{
   [BCAFRequest updateActivitySort:[NSString stringWithFormat:GroupReplyTimeUrl, self.targetId] WithBlock:^(id obj, NSError *error) {
     
   }];
+}
+//刷新群组成员
+- (void)refreshGroupMembers{
+  dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    [[BCRCIMDataSource shareInstance] getGroupMemberInfo:self.targetId callback:^(NSArray * arr) {
+      if (!arr.count) {
+        return;
+      }
+      for (RCUserInfo *user in arr) {
+        if ([user.portraitUri isEqualToString:@""]) {
+            user.portraitUri = UserThumb;
+        }
+        [[RCIM sharedRCIM] refreshUserInfoCache:user withUserId:user.userId];
+      }
+    }];
+  });
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
