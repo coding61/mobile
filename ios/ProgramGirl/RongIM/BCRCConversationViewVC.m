@@ -36,11 +36,11 @@
 //  self.navigationController.navigationBar.translucent = NO;
   [self.navigationController setNavigationBarHidden:NO animated:YES];
 //  [[UIApplication sharedApplication] setStatusBarHidden:NO];  //隐藏状态栏
-  if (@available(iOS 11.0, *)) {
-    self.conversationMessageCollectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-  } else {
-    // Fallback on earlier versions
-  }
+//  if (@available(iOS 11.0, *)) {
+//    self.conversationMessageCollectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+//  } else {
+//    // Fallback on earlier versions
+//  }
   
   [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];//设置导航栏返回按钮的颜色
 //  [self.navigationController.navigationBar setBackIndicatorImage:[UIImage imageNamed:@"back"]];

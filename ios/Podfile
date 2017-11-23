@@ -4,5 +4,7 @@ target 'ProgramGirl' do
     pod 'Qiniu'
     pod 'RongCloudIM/IMLib', '<= 2.8.3'
     pod 'RongCloudIM/IMKit', '<= 2.8.3'
+	pod 'UMengUShare/UI'
+	pod 'UMengUShare/Social/WeChat'
 end
 

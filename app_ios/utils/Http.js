@@ -77,7 +77,19 @@ let Http = {
 
 	getScholarship:(pagenum)=>{
 		return Http_Domain + "/asset/record/?page=" + pagenum                         //奖学金
-	}
+	},
+
+	shareActivityUrl:(pk)=>{
+		return Page_Domain + "/app/share/activityDetails.html?pk=" + String(pk)
+	},
+	shareCompeteUrl:(pk)=>{
+		return Page_Domain + "/app/share/compete.html?pk=" + String(pk);
+	},
+	shareForumUrl:(pk)=>{
+		return Page_Domain + "/app/share/forum.html?pk=" + String(pk);
+	},
+	shareBonusUrl: null,
+	shareLogoUrl: "https://static1.bcjiaoyu.com/girlShareLogo.png"
 
 }
 export default Http;
