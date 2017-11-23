@@ -75,6 +75,7 @@ class PersonalMedal extends Component {
     }
 
     _getUserInfo(username) {
+        username = encodeURI(username).replace(/\+/g,'%2B');
         fetch(Http.userinfo(username), {
             method: "get",
             headers: {
