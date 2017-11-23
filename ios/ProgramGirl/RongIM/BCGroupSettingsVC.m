@@ -13,6 +13,7 @@
 @interface BCGroupSettingsVC ()
 
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, assign) BOOL enableNotification;
 
 @end
 
@@ -31,6 +32,16 @@
 - (void)viewWillAppear:(BOOL)animated{
   [super viewWillAppear:animated];
   [self.navigationController setNavigationBarHidden:NO animated:YES];
+  
+  //获取群组"免打扰"状态
+  [[RCIMClient sharedRCIMClient] getConversationNotificationStatus:ConversationType_GROUP targetId:self.groupId success:^(RCConversationNotificationStatus nStatus) {
+    self.enableNotification = NO;
+    if (nStatus == NOTIFY) {
+      self.enableNotification = YES;
+    }
+  } error:^(RCErrorCode status) {
+    
+  }];
 }
 - (void)viewWillDisappear:(BOOL)animated{
   [super viewWillDisappear:animated];
@@ -68,6 +79,7 @@
     [cell setCellStyle:SwitchStyle];
     cell.leftLabel.text = @"消息免打扰";
     cell.switchButton.tag = SwitchButtonTag;
+    cell.switchButton.on = !self.enableNotification;
     [cell.switchButton addTarget:self action:@selector(onClickSwitch:) forControlEvents:UIControlEventValueChanged];
   }
   
