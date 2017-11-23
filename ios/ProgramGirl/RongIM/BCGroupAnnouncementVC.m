@@ -66,7 +66,6 @@
   //标题
   self.view.backgroundColor = [UIColor whiteColor];
   self.navigationItem.title = @"群公告";
-  self.navigationController.navigationBar.translucent = NO;
   
   //键盘监听
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];

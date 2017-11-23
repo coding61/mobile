@@ -24,7 +24,6 @@
   //标题
   self.view.backgroundColor = [UIColor whiteColor];
   self.navigationItem.title = @"群组信息";
-  self.navigationController.navigationBar.translucent = NO;
   
   //视图
   [self.view addSubview:self.tableView];

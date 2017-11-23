@@ -62,7 +62,7 @@
 //    [btn setTitle:@"群公告" forState:UIControlStateNormal];
 //    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn setImage:[UIImage imageNamed:@"Group_icon"] forState:UIControlStateNormal];
-    [btn setImageEdgeInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
+    [btn setImageEdgeInsets:UIEdgeInsetsMake(10, 15, 5, 0)];
     btn.adjustsImageWhenHighlighted = NO;
     [btn addTarget:self action:@selector(rightBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithCustomView:btn];

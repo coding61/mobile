@@ -26,7 +26,6 @@
                                       @(ConversationType_APPSERVICE),
                                       @(ConversationType_SYSTEM)]];
   self.emptyConversationView = [[UIView alloc] init];
-//  self.navigationController.navigationBar.translucent = NO;
 
 }
 - (void)viewWillDisappear:(BOOL)animated{
