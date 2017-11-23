@@ -14,6 +14,7 @@ import {
   requireNativeComponent,
   NativeModules,
   NativeEventEmitter,
+  DeviceEventEmitter
 } from 'react-native';
 
 import BCFetchRequest from '../utils/BCFetchRequest.js';
@@ -66,12 +67,13 @@ class ConversationList extends Component {
             hasUnreadMsg: false
         });
 
-        //监听iOS的QQLoginOut事件
+        //监听链接融云成功事件
         this.listener=localModuleEmitter.addListener('connectRongSuccess',(result)=>{
             this.setState({
             	showView:true
             })
         })
+        //监听融云未读消息事件
         this.listenerRCUnreadMsg=localModuleEmitter.addListener('RongCloudUnreadMessage', (result)=>{
 			console.log(result);
 			if (result["hasUnreadMsg"] == "false") {
@@ -86,10 +88,21 @@ class ConversationList extends Component {
 		        });
 			}
         })
+        //退出登录
+        this.listenlogout = DeviceEventEmitter.addListener('logout', () => {
+            this.setState({
+            	showView:false,
+            })
+            this.props.navigation.setParams({
+	            hasUnreadMsg: false
+	        });
+        })
+
 	}
 	componentWillUnmount() {
 		this.listener&&this.listener.remove();
 		this.listenerRCUnreadMsg && this.listenerRCUnreadMsg.remove();
+		this.listenlogout && this.listenlogout.remove();
 	}
   	render() {
 	    return (
