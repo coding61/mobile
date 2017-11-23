@@ -188,7 +188,6 @@ class MyPage extends Component {
   			}
         case 7:
   			{
-                console.log(this.state.owner);
   				//勋章
   				this.props.navigation.navigate('PersonalMedal', {owner: this.state.owner, myself: true});
   				break;
