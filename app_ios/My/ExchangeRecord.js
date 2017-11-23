@@ -193,7 +193,7 @@ class ExchangeRecord extends Component {
     _renderHeader = () => {
       return (<View style={{width: width, height: width * 2 / 3 + 50, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white'}}>
                 <Text style={{fontSize: 42, marginBottom: 40}}>{this.props.navigation.state.params.balance}<Text style={{fontSize: 16}}>元</Text></Text>
-                <Text style={{width: width * 2 / 3, textAlign: 'center', color: 'gray', lineHeight: 25}}>{'奖学金提现请到微信公众服务号"橙旭园儿童编程"进行提取'}</Text>
+                <Text style={{width: width * 2 / 3, textAlign: 'center', color: 'gray', lineHeight: 25}}>{'奖学金提现请关注微信公众服务号"girlcxy61"进行提取'}</Text>
                 <View style={{position: 'absolute', bottom: 0, left: 0, width: width, height: 40, backgroundColor: 'rgb(236, 237, 238)', justifyContent: 'center'}}>
                   <Text style={{fontSize: 12, marginLeft: 20}}>奖学金明细</Text>
                 </View>

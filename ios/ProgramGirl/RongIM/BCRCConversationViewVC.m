@@ -8,6 +8,7 @@
 
 #import "BCRCConversationViewVC.h"
 #import "BCGroupAnnouncementVC.h"
+#import "BCGroupSettingsVC.h"
 @interface BCRCConversationViewVC ()
 
 @end
@@ -23,7 +24,10 @@
   [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)rightBtnClick:(id)sender{
-  BCGroupAnnouncementVC *vc = [[BCGroupAnnouncementVC alloc] init];
+//  BCGroupAnnouncementVC *vc = [[BCGroupAnnouncementVC alloc] init];
+//  vc.groupId = self.targetId;
+//  [self.navigationController pushViewController:vc animated:YES];
+  BCGroupSettingsVC *vc = [[BCGroupSettingsVC alloc] init];
   vc.groupId = self.targetId;
   [self.navigationController pushViewController:vc animated:YES];
 }
@@ -52,14 +56,21 @@
   
   if(self.conversationType == ConversationType_GROUP){
     //如果是群组，添加群公告，右按钮
-    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80, 34)];
-//    btn.backgroundColor = [UIColor redColor];
-    [btn setTitle:@"群公告" forState:UIControlStateNormal];
-    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(rightBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     
+    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+//    btn.backgroundColor = [UIColor redColor];
+//    [btn setTitle:@"群公告" forState:UIControlStateNormal];
+//    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btn setImage:[UIImage imageNamed:@"Group_icon"] forState:UIControlStateNormal];
+    [btn setImageEdgeInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
+    btn.adjustsImageWhenHighlighted = NO;
+    [btn addTarget:self action:@selector(rightBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithCustomView:btn];
     self.navigationItem.rightBarButtonItem = rightButton;
+    
+//    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Group_icon"] style:UIBarButtonItemStylePlain target:self action:@selector(rightBtnClick:)];
+//    self.navigationItem.rightBarButtonItem = rightButton;
+
     
     //刷新群组成员信息
 //    [self refreshGroupMembers];
