@@ -19,6 +19,7 @@ import {
 
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
+import BCFetchRequest from '../utils/BCFetchRequest.js';
 
 var RNBridgeModule = NativeModules.RNBridgeModule;
 
@@ -77,33 +78,26 @@ class PersonalReward extends Component {
     }
 
     _fetchAward(num) {
-        fetch(Http.awardDiamond, {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Token ' + this.state.token
-            },
-            body: JSON.stringify({
+        var type = "POST",
+            url = Http.awardDiamond,
+            token = this.state.token,
+            data = {
                 amount: num,
                 to_username: this.state.owner
-            }),
-        })
-        .then((response)=>{
-            if (response.ok) {
-                return response.json();
-            } else {
-                return null;
-            }
-        })
-        .then((responseJson)=>{
-            if (responseJson) {
-                Alert.alert(responseJson.message);
-                this.setState({num: null});
-            } else {
+            };
+        BCFetchRequest.fetchData(type, url, token, data, (response) => {
+            if (!response) {
                 Alert.alert('失败，请重试');
+            };
+            if (response.status == -4 || response.message) {
+                Alert.alert(response.message?response.message:response.detail);
+                this.setState({num: null});
+                return;
             }
-        })
+        }, (err) => {
+            console.log(err);
+            Alert.alert('网络请求失败');
+        });
     }
 
     render() {
