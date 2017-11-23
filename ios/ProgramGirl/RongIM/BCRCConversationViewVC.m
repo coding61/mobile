@@ -37,7 +37,7 @@
   if(self.conversationType == ConversationType_GROUP){
     //如果是群组，添加群公告，右按钮
     UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    btn.backgroundColor = [UIColor redColor];
+//    btn.backgroundColor = [UIColor redColor];
     //[btn setTitle:@"群公告" forState:UIControlStateNormal];
     //[btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn setImage:[UIImage imageNamed:@"Group_icon"] forState:UIControlStateNormal];
