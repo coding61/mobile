@@ -17,7 +17,9 @@
 
 @end
 
-@implementation BCGroupSettingsVC
+@implementation BCGroupSettingsVC{
+  BOOL isCreator;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -28,10 +30,9 @@
   
   //视图
   [self.view addSubview:self.tableView];
-}
-- (void)viewWillAppear:(BOOL)animated{
-  [super viewWillAppear:animated];
-  [self.navigationController setNavigationBarHidden:NO animated:YES];
+  
+  //是否是管理员
+  [self getGroupCreator:self.groupId];
   
   //获取群组"免打扰"状态
   [[RCIMClient sharedRCIMClient] getConversationNotificationStatus:ConversationType_GROUP targetId:self.groupId success:^(RCConversationNotificationStatus nStatus) {
@@ -42,6 +43,10 @@
   } error:^(RCErrorCode status) {
     
   }];
+}
+- (void)viewWillAppear:(BOOL)animated{
+  [super viewWillAppear:animated];
+  [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 - (void)viewWillDisappear:(BOOL)animated{
   [super viewWillDisappear:animated];
@@ -102,10 +107,14 @@
     case 0:
       switch (indexPath.row) {
         case 0:{
-          //修改群公告
-          BCGroupAnnouncementVC *vc = [[BCGroupAnnouncementVC alloc] init];
-          vc.groupId = self.groupId;
-          [self.navigationController pushViewController:vc animated:YES];
+          if (isCreator == YES) {
+            //修改群公告
+            BCGroupAnnouncementVC *vc = [[BCGroupAnnouncementVC alloc] init];
+            vc.groupId = self.groupId;
+            [self.navigationController pushViewController:vc animated:YES];
+          }else{
+            [self showAlert:@"只有群主可以发布群公告"];
+          }
         }
           break;
         default:
@@ -128,6 +137,34 @@
        NSLog(@"失败");
      }];
   }
+}
+
+//获取群组创建者
+- (void)getGroupCreator:(NSString *)groupId{
+  dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    [BCAFRequest getGroupInfo:[NSString stringWithFormat:GroupInfoUrl, groupId] WithBlock:^(id obj, NSError *error) {
+      if (error) {
+        //NSLog(@"获取群组信息失败");
+      }else{
+        NSLog(@"获取群组信息成功:\n%@\n", obj);
+        if([[[RCIM sharedRCIM] currentUserInfo].userId isEqualToString:obj[@"leader"][@"owner"]]){
+          //创建者
+          isCreator = YES;
+        }else{
+          isCreator = NO;
+        }
+      }
+    }];
+  });
+}
+//弹框提示
+- (void)showAlert:(NSString *)alertContent {
+  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                  message:alertContent
+                                                 delegate:nil
+                                        cancelButtonTitle:@"确定"
+                                        otherButtonTitles:nil];
+  [alert show];
 }
 
 - (void)didReceiveMemoryWarning {
