@@ -27,6 +27,7 @@ class ExchangeRecord extends Component {
 	    super(props);
 	
 	    this.state = {
+      balance: '__',
 			dataSource:[],
 			loading:true,                //是否显示数据加载等待视图
 			footerLoadTag:LoadMore,      //默认是点击加载更多, FlatList，列表底部
@@ -99,6 +100,21 @@ class ExchangeRecord extends Component {
 
         Utils.isLogin((token)=>{
             if (token) {
+                fetch(Http.domain + '/userinfo/whoami/',{headers: {'Authorization': 'Token ' + token, 'content-type': 'application/json'}})
+                  .then(response => {
+                    if (response.ok === true) {
+                      return response.json();
+                    } else {
+                      return '失败';
+                    }
+                  })
+                  .then(responseJSON => {
+                    if (responseJSON !== '失败') {
+                      this.setState({
+                        balance: responseJSON.balance
+                      })
+                    }
+                  })
                 var type = "get",
                     url = Http.getScholarship(pagenum),
                     token = token,
@@ -192,7 +208,7 @@ class ExchangeRecord extends Component {
     )
     _renderHeader = () => {
       return (<View style={{width: width, height: width * 2 / 3 + 50, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white'}}>
-                <Text style={{fontSize: 42, marginBottom: 40}}>{this.props.navigation.state.params.balance}<Text style={{fontSize: 16}}>元</Text></Text>
+                <Text style={{fontSize: 42, marginBottom: 40}}>{this.state.balance}<Text style={{fontSize: 16}}>元</Text></Text>
                 <Text style={{width: width * 2 / 3, textAlign: 'center', color: 'gray', lineHeight: 25}}>{'奖学金提现请关注微信公众服务号"girlcxy61"进行提取'}</Text>
                 <View style={{position: 'absolute', bottom: 0, left: 0, width: width, height: 40, backgroundColor: 'rgb(236, 237, 238)', justifyContent: 'center'}}>
                   <Text style={{fontSize: 12, marginLeft: 20}}>奖学金明细</Text>
