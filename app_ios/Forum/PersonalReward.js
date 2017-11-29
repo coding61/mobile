@@ -56,7 +56,9 @@ class PersonalReward extends Component {
 
     componentDidMount() {}
 
-    componentWillUnmount() {}
+    componentWillUnmount() {
+        this.props.navigation.state.params.callback();
+    }
 
     _award() {
         if (this.state.num) {

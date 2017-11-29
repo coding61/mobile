@@ -18,6 +18,7 @@ import {
 
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
+import BCFetchRequest from '../utils/BCFetchRequest.js';
 
 var RongYunRN = NativeModules.RongYunRN;
 
@@ -28,6 +29,7 @@ class PersonalPage extends Component {
         super(props);
         this.state = {
            userinfo: this.props.navigation.state.params.data,
+           diamond: this.props.navigation.state.params.data.diamond,
            token: null,
            myself: true
         }
@@ -84,6 +86,28 @@ class PersonalPage extends Component {
 		});
     }
 
+    _refreshDiamond() {
+        var type = "GET",
+            url = Http.userinfo(this.state.userinfo.owner),
+            token = this.state.token,
+            data = null
+        BCFetchRequest.fetchData(type, url, token, data,(response) => {
+            if (!response) {
+                Alert.alert('失败，请重试');
+            };
+            if (response.status == -4 || response.message) {
+                Alert.alert(response.message?response.message:response.detail);
+                return;
+            } else {
+                this.setState({diamond: response.diamond});
+                return;
+            }
+        }, (err) => {
+            console.log(err);
+            Alert.alert('网络请求失败');
+        });
+    }
+
     onPress(num) {
   	     switch (num) {
             case 0: {
@@ -99,7 +123,12 @@ class PersonalPage extends Component {
                 break;
             }
             case 2: {
-                this.props.navigation.navigate('PersonalReward', {owner: this.state.userinfo.owner});
+                this.props.navigation.navigate('PersonalReward', {
+                    owner: this.state.userinfo.owner,
+                    callback: (msg)=>{
+                        this._refreshDiamond();
+                    }
+                });
                 break;
             }
             case 3: {
@@ -132,7 +161,7 @@ class PersonalPage extends Component {
                     <View style={{marginTop: 20, flexDirection: 'row', justifyContent: 'center'}}>
                         <Text style={{color: 'white', fontSize: 18, width: width / 2 - 30, textAlign: 'right'}}>{'段位:' + this.state.userinfo.grade.current_name}</Text>
                         <Text style={{color: 'white', fontSize: 18, marginBottom: 3, paddingLeft: 10, paddingRight: 10}}>{'  |  '}</Text>
-                        <Text style={{color: 'white', fontSize: 18, width: width / 2 - 30}} numberOfLines={1}>{'钻石:' + this.state.userinfo.diamond}</Text>
+                        <Text style={{color: 'white', fontSize: 18, width: width / 2 - 30}} numberOfLines={1}>{'钻石:' + this.state.diamond}</Text>
                     </View>
           		</View>
       			<View style={{marginTop: 20}}>
