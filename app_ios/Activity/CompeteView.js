@@ -227,7 +227,7 @@ class CompeteView extends Component {
                     <Text style={[itemBodyTitleTextStyle]}>{item.title}</Text>
                     <Text style={itemBodyTextStyle}>{"悬赏金额: "}{item.reward_amount}{"元"}</Text>
                     <Text style={itemBodyTextStyle}>{"已参加: "}{item.member_count}{"人"}</Text>
-                    <Text style={itemBodyTextStyle}>{"奖学金随机发放，若领完将发放钻石"}</Text>
+                    {/*<Text style={itemBodyTextStyle}>{"奖学金随机发放，若领完将发放钻石"}</Text>*/}
                     <Image
                       style={styles.itemBodyImg}
                       source={icon}
