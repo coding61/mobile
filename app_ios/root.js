@@ -44,6 +44,7 @@ import SelectHead from './Login/SelectHead.js';
 import PersonalPage from './Forum/PersonalPage.js';
 import PersonalReward from './Forum/PersonalReward.js';
 import PersonalMedal from './Forum/PersonalMedal.js';
+import RewardRecord from './My/RewardRecord.js';
 
 import CompeteView from './Activity/CompeteView.js';
 import Activity from './Activity/Activity.js';
@@ -119,6 +120,7 @@ const app = StackNavigator({
     Register:{screen: Register},
     FindWord: {screen: FindWord},
     SelectHead: {screen: SelectHead},
+    RewardRecord:{screen:RewardRecord},
 
     CompeteView:{screen:CompeteView},
     Activity:{screen:Activity},

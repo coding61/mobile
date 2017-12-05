@@ -307,16 +307,19 @@ export default class Forum_Details extends Component{
                         <Text style={{paddingTop:5,fontSize:10,color:'#ff6b94',}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
-                    <View style={{paddingLeft:40,paddingRight:10,width:width*0.6,}}>
-                        <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.userinfo.name}</Text>
+                    <View style={{paddingLeft:40,paddingRight:10,width:width*0.5,}}>
+                        <Text style={{paddingBottom:10,color:'#858585',marginRight:20,}}>{rowData.userinfo.name}</Text>
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                     </View>
-                    <View style={{marginRight:30,}}>
-                        <TouchableOpacity style={{marginTop:3,}} onPress={this.Show_Comment.bind(this,rowData.pk,rowData.userinfo.name)}>
+                    <View style={{marginRight:30,flexDirection:'row'}}>
+                        <TouchableOpacity style={{marginTop:3,marginRight:10,}} onPress={this.Show_Comment.bind(this,rowData.pk,rowData.userinfo.name)}>
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
                             <Text onPress={this.detele_reply.bind(this,rowData.pk)} style={{fontSize:14,paddingTop:10,color:'red',width:50,height:30,paddingTop:10,}} >删除</Text>
+                            ):(null)}
+                        {this.state.UserPk!=rowData.userinfo.pk?(
+                            <Text onPress={this.giveprize.bind(this, rowData.userinfo.owner)} style={{fontSize:14,paddingBottom:10,marginTop:3,color:'#999',}}>打赏</Text>
                             ):(null)}
                     </View>
                 </View>
@@ -327,9 +330,12 @@ export default class Forum_Details extends Component{
                             <View style={{flexDirection:'row',paddingTop:10,paddingLeft:20,}}>
                                 <Text style={{paddingBottom:10,color:'#4f99cf',marginRight:30,}}>{result.userinfo.name}</Text>
                                 <Text style={{paddingBottom:10,color:'#858585'}}>{result.create_time.slice(0, 16).replace("T", " ")}</Text>
-                                <TouchableOpacity style={{marginLeft:10,}} onPress={this.Show_Comment.bind(this,rowData.pk,result.userinfo.name)}>
+                                <TouchableOpacity style={{marginLeft:10,marginRight:10,}} onPress={this.Show_Comment.bind(this,rowData.pk,result.userinfo.name)}>
                                     <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                                 </TouchableOpacity>
+                                {this.state.UserPk!=result.userinfo.pk?(
+                                    <Text onPress={this.giveprize.bind(this, result.userinfo.owner)} style={{fontSize:16,paddingBottom:10,color:'#999',}}>打赏</Text>
+                                    ):(null)}
                             </View>
                             {result.content?(<ForumDeatilCont data={result.content}></ForumDeatilCont>):(null)}
                         </View>
@@ -489,6 +495,18 @@ export default class Forum_Details extends Component{
             return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/100.png')}/>)
         }
     }
+    giveprize(owner){
+        
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('PersonalReward', { owner: owner,callback: (msg)=>{
+                        /*this._onRefresh();*/
+                    } });
+            }else{
+                this.props.navigation.navigate("Login");
+            }
+        })
+    }
     render() {
         var data=this.state.data;
         if(!data||!this.state.UserInfo){
@@ -511,7 +529,12 @@ export default class Forum_Details extends Component{
                                 {this.rendertop(data.userinfo.top_rank)}
                             </View>
                             <View style={{paddingLeft:40,paddingRight:10,width:width*0.87,}}>
-                                <Text style={{paddingBottom:10,color:'#858585'}}>{data.userinfo.name}</Text>
+                                <View style={{flexDirection:'row',alignItems:'center',}}>
+                                    <Text style={{paddingBottom:10,color:'#858585',marginRight:20,}}>{data.userinfo.name}</Text>
+                                    {this.state.UserPk!=data.userinfo.pk?(
+                                        <Text onPress={this.giveprize.bind(this, data.userinfo.owner)} style={{fontSize:14,paddingBottom:10,color:'#999',}}>打赏</Text>
+                                        ):(null)}
+                                </View>
                                 <Text style={{paddingBottom:5,color:'#858585'}}>{data.create_time.slice(0, 16).replace("T", " ")}</Text>
                                 <Text style={{color:'#FF6A6A'}}>[{data.types.name}]</Text>
                             </View>
