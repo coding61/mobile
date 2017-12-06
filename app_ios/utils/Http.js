@@ -3,10 +3,10 @@
  * @description: 接口地址
  * @time: 2017-03-15
  */
-const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
-const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
-// const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
-// const Page_Domain = "https://app.bcjiaoyu.com/girl";
+// const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
+// const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
+const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
+const Page_Domain = "https://app.bcjiaoyu.com/girl";
 let Http = {
 	domainPage:Page_Domain,    //网站页面地址的域名
 	domain:Http_Domain,        //接口域名
@@ -89,7 +89,13 @@ let Http = {
 		return Page_Domain + "/app/share/forum.html?pk=" + String(pk);
 	},
 	shareBonusUrl: null,
-	shareLogoUrl: "https://static1.bcjiaoyu.com/girlShareLogo.png"
-
+	shareLogoUrl: "https://static1.bcjiaoyu.com/girlShareLogo.png",
+	punchCard:(pk)=>{
+		return Http_Domain + '/club/club_punch/' + String(pk) + '/';
+	},
+	getPunchCardRecord:(pk)=>{
+		console.log(Http_Domain + '/club/myclub_punch/' + String(pk) + '/');
+		return Http_Domain + '/club/myclub_punch/' + String(pk) + '/';
+	}
 }
 export default Http;

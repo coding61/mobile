@@ -51,9 +51,10 @@ class ActivityDetail extends Component {
         	headerTintColor: "#fff",
             headerStyle: styles.headerStyle,
             headerRight:
-                <TouchableOpacity style={styles.navRightBtn} onPress={navigation.state.params ? navigation.state.params.navRightBtnClick : null}>
+                <TouchableOpacity style={styles.navRightBtn} onPress={navigation.state.params ? navigation.state.params.shareWeChat : null}>
                     <Text style={styles.navRightTxt}>分享</Text>
-                </TouchableOpacity>
+                </TouchableOpacity>,
+            headerBackTitle: null
         }
     };
     componentWillMount() {
@@ -61,13 +62,16 @@ class ActivityDetail extends Component {
     }
     componentDidMount() {
         this.props.navigation.setParams({
-            navRightBtnClick: this._shareWeChat.bind(this)
+            shareWeChat: this._shareWeChat.bind(this)
         })
     }
     componentWillUnmount() {
         if (this.props.navigation.state.params.callback) {
             this.props.navigation.state.params.callback(this.state.isChange, this.state.isDelete);
         }
+    }
+    _punchCard = () => {
+        this.props.navigation.navigate('PunchCard', {pk: this.state.data.pk})
     }
     _shareWeChat = () => {
         if (!this.state.data.name) {
@@ -167,6 +171,7 @@ class ActivityDetail extends Component {
                     if (!response) {
                         //请求失败
                     };
+                    console.log(response);
                     this._adjustActivityInfo(response);
 
                 }, (err) => {
@@ -547,6 +552,11 @@ class ActivityDetail extends Component {
                                 {
                                     this.state.data.isjoin?
                                         <View>
+                                        <TouchableOpacity onPress={this._punchCard.bind(this)}>
+                                        <View style={styles.btnJoin}>
+                                            <Text style={styles.btnText}>打卡</Text>
+                                        </View>
+                                        </TouchableOpacity>
                                         <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
                                         <View style={styles.btnJoin}>
                                             <Text style={styles.btnText}>进入群聊</Text>
@@ -569,6 +579,12 @@ class ActivityDetail extends Component {
                             </View>
                         :
                             <View style={styles.bottomView}>
+                            <TouchableOpacity onPress={this._punchCard.bind(this)}>
+                            <View style={styles.btnJoin}>
+                                <Text style={styles.btnText}>打卡</Text>
+                            </View>
+                            </TouchableOpacity>
+
                             <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
                             <View style={styles.btnJoin}>
                                 <Text style={styles.btnText}>进入群聊</Text>

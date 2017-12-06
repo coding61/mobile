@@ -60,8 +60,8 @@ class AddActivity extends Component {
     } else if (this.state.password === '') {
       Utils.showMessage('活动密码不能为空！')
     }
-    
-    
+
+
     if (this.state.titleText !== '' && this.state.contentText !== '' && this.state.password !== '') {
       AsyncStorage.getItem("token", function(errs, results) {
          fetch(Http.domain + '/club/club_create/',{method: 'post', headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'},body: JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText})})
