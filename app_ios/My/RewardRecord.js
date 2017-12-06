@@ -26,7 +26,7 @@ export default class RewardRecord extends Component{
             dataSource: '',
             nextPage: null,
             isLoading: false,
-            url:basePath+'/forum/posts/?section=&isessence=&myposts=true&page=1',
+            url:basePath+'/userinfo/play_reward_record/',
             loadText: '正在加载...',
             isRefreshing: false,
         };
@@ -46,7 +46,6 @@ export default class RewardRecord extends Component{
     }
     componentDidMount(){
         var self = this;
-         
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){
                 self.setState({token: result},()=>{
@@ -55,8 +54,6 @@ export default class RewardRecord extends Component{
                 });
             }
         }); 
-        
-
     }
     _loadAlldata() {
         this.setState({
@@ -65,6 +62,7 @@ export default class RewardRecord extends Component{
             fetch(this.state.url,{headers: {Authorization: 'Token ' + this.state.token}})
             .then((response) =>response.json())
             .then((responseData) => {
+                console.log(responseData)
                 var resultArr = new Array();
                     responseData.results.map(result=> {
                         resultArr.push(result);
@@ -89,7 +87,6 @@ export default class RewardRecord extends Component{
             this.setState({
                 isLoading: true
             },()=> {
-                if(this.props.navigation.state.params.flag=='我的帖子'){
                 fetch(this.state.nextPage, {
                     headers: {Authorization: 'Token ' + this.state.token}
                 })
@@ -131,47 +128,6 @@ export default class RewardRecord extends Component{
                         isRefreshing: false
                     })
                 })
-            }else{
-                fetch(this.state.nextPage)
-                .then(response => {
-                    if (response.status === 200) {
-                        return response.json();
-                    } else {
-                        return '加载失败';
-                    }
-                })
-                .then(responseJson=> {
-                    if (responseJson === '加载失败') {
-                        Alert.alert(
-                          '加载失败,请重试',
-                          '',
-                          [
-                            {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
-                          ]
-                        )
-                    } else {
-                        var resultArr;
-                        resultArr = this.state.dataArr.concat();
-                        responseJson.results.map(result=> {
-                            resultArr.push(result);
-                        })
-                        this.setState({
-                            nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
-                            dataArr: resultArr,
-                            dataSource: resultArr,
-                            isLoading: false,
-                            loadText: responseJson.next?('正在加载...'):('没有更多了')
-                        })
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                    this.setState({
-                        isLoading: false,
-                        isRefreshing: false
-                    })
-                })
-            }
             })
         }
     }
@@ -182,19 +138,8 @@ export default class RewardRecord extends Component{
         this.setState({
             isRefreshing: true
         },()=> {
-            if(this.props.navigation.state.params.flag=='我的帖子'){
                 this._loadAlldata();
-            }
-            else{
-                this._loadpersonaldata()
-            }
-            
         })
-    }
-    forumdetail(data){
-        this.props.navigation.navigate('Forum_Details', { data: data.pk,token:this.state.token,iscollect:data.collect,name:'my',callback:(msg)=>{
-            this._onRefresh()
-        }})
     }
 
     dealWithTime(Time){
@@ -223,45 +168,19 @@ export default class RewardRecord extends Component{
         return time;
 
     }
-    rendertop(top){
-        if(top==null){
-            return;
-        }
-        if(top=='Top10'){
-            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/10.png')}/>)
-        }
-        if(top=='Top50'){
-            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/50.png')}/>)
-        }
-        if(top=='Top100'){
-            return(<Image style={{width:50,height:20,}} resizeMode={'contain'} source={require('../assets/Forum/100.png')}/>)
-        }
-    }
-    renderForumRow(item){
+renderForumRow(item){
         var rowData=item.item;
-        
-        var time_last=this.dealWithTime(rowData.last_replied?rowData.last_replied:rowData.create_time)
+        var time_last=this.dealWithTime(rowData.create_time)
         return (
-            <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
-                style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
-                <View style={{flexDirection:'row',}}>
-                    <View style={{alignItems:'center'}}>
-                        {!rowData.userinfo.avatar?(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>)}
-                        <Text style={{paddingTop:10,fontSize:12,color:'#aaaaaa'}}>{rowData.userinfo.grade.current_name}</Text>
-                        {this.rendertop(rowData.userinfo.top_rank)}
-                    </View>
-                    <View style={{paddingLeft:16,paddingRight:20,paddingTop:20,width:width*0.86,}}>
-                        <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10,fontWeight: '500',}}>{rowData.status=='unsolved'?(<Text style={{color:'red'}}>[未解决]</Text>):(<Text style={{color:'#cccccc'}}>[{rowData.status_display}]</Text>)}  {rowData.title}</Text>
-                        <Text style={{paddingBottom:10,color:'#858585'}} numberOfLines={1}>{rowData.content}</Text>
-                        <View style={{flexDirection:'row',alignItems:'center',flexWrap:'wrap'}}>
-                            <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.userinfo.name}</Text>
-                            <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{time_last}</Text>
-                            <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.browse_count}浏览</Text>
-                            <Text style={{fontSize:10,color:'#aaaaaa',marginRight:10,}}>{rowData.reply_count}回答</Text>
-                        </View>
-                     </View>
+            <View style={{flexDirection:'row',alignItems:'center',borderBottomColor:'#D3D3D3',borderBottomWidth:0.5,paddingLeft:20,paddingTop:10,paddingBottom:10,}}>
+                <View style={{width:width*0.7,}}>
+                    <Text style={{paddingBottom:10,}}>{rowData.remake}</Text>
+                    <Text  style={{color:'#999'}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                 </View>
-            </TouchableOpacity>
+                <View style={{alignItems:'center',justifyContent:'center',paddingLeft:10,}}> 
+                    <Text style={{color:'rgb(247, 99, 146)',fontSize:16,}}>{rowData.amount+'钻石'}</Text>
+                </View>
+            </View>
         )
 
     }

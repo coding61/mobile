@@ -125,6 +125,7 @@ class PersonalPage extends Component {
             case 2: {
                 this.props.navigation.navigate('PersonalReward', {
                     owner: this.state.userinfo.owner,
+                    flag:'personal',
                     callback: (msg)=>{
                         this._refreshDiamond();
                     }
