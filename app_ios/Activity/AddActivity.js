@@ -13,7 +13,6 @@ import {
   Alert,
   AsyncStorage
 } from 'react-native';
-
 import Utils from '../utils/Utils.js';
 const {width, height} = Dimensions.get('window');
 import Http from '../utils/Http.js';
@@ -45,7 +44,9 @@ class AddActivity extends Component {
   		titleText: '',
   		contentText: '',
       password: '',
-      isUp: false
+      isUp: false,
+      days: '',
+      isDays: false
   	}
   }
   componentWillUnmount() {
@@ -59,12 +60,18 @@ class AddActivity extends Component {
       Utils.showMessage('活动简介不能为空！')
     } else if (this.state.password === '') {
       Utils.showMessage('活动密码不能为空！')
-    }
-    
-    
-    if (this.state.titleText !== '' && this.state.contentText !== '' && this.state.password !== '') {
+    } else if (this.state.isDays === true && this.state.days === '') {
+      Utils.showMessage('打卡天数不能为空')
+    } else {
+      
+      var form;
+      if (this.state.isDays === true) {
+        form = JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText, ispunch: _this.state.isDays, punch_days: _this.state.days})
+      } else {
+        form = JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText, ispunch: _this.state.isDays})
+      }
       AsyncStorage.getItem("token", function(errs, results) {
-         fetch(Http.domain + '/club/club_create/',{method: 'post', headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'},body: JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText})})
+         fetch(Http.domain + '/club/club_create/',{method: 'post', headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'},body: form})
           .then(response => {
             if (response.ok === true) {
               return '成功';
@@ -94,6 +101,11 @@ class AddActivity extends Component {
         navigatePress:this.onPress
     })
   }
+  days() {
+    this.setState({
+      isDays: !this.state.isDays
+    })
+  }
   render() {
     return (
       <View style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}>
@@ -117,6 +129,18 @@ class AddActivity extends Component {
 		        value={this.state.contentText}
 		        multiline={true}
 	      	/>
+          <View style={{flexDirection: 'row', width: width, height: 100, alignItems: 'center', justifyContent: 'space-between'}}>
+            <TouchableOpacity onPress={this.days.bind(this)} style={{marginLeft: 10, backgroundColor: 'rgb(250, 80, 131)', width: 60, height: 60, borderRadius: 35, justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={{fontSize: 16, color: 'white', textAlign: 'center'}}>{this.state.isDays === true ? ('打卡'):('不打卡')}</Text>
+            </TouchableOpacity>
+            {this.state.isDays === true ? <TextInput
+            style={{width: 100, fontSize: 16, height: 30, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)', borderRadius: 5}}
+            onChangeText={(days) => this.setState({days})}
+            placeholder={'打卡天数为1-30天'}
+            value={this.state.days}
+            keyboardType={'numeric'}
+          /> : null}
+          </View>
 	      </ScrollView>
       </View>
     );
