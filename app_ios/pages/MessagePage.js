@@ -3028,10 +3028,10 @@ class MessagePage extends Component{
                     {/*this.state.courseProgressArray.length? this._renderCourseProgress():null*/}
                     
                     {/******会话消息******/}
-                    <View style={{width:MessageWidth1, maxHeight:height-headerH-50-10}}>
+                    <View style={{width:MessageWidth1, maxHeight:FlatListHeight}}>
                         <FlatList 
                             ref={(flatlist)=>this._flatList=flatlist}
-                            style={{maxHeight:height-headerH-50-10}}
+                            style={{maxHeight:FlatListHeight}}
                             data={this.state.dataSource}
                             renderItem={this._renderItem}
                             ListHeaderComponent={this.state.showHeaderComponent?this._renderHeader:null}
@@ -3061,9 +3061,9 @@ class MessagePage extends Component{
                                     // this._flatList.scrollToIndex({viewPosition: 0, index: 0}); 
                                     // console.log("-----scrollTop");
                                 }else{
-                                    if (contentHeight > height-headerH-50-10) {
+                                    if (contentHeight > FlatListHeight) {
                                         // this._flatList.scrollToIndex({viewPosition: 1, index: this.state.number-1});
-                                        this._flatList.scrollToOffset({animated: true, offset: contentHeight-(height-headerH-50-10)});
+                                        this._flatList.scrollToOffset({animated: true, offset: contentHeight-(FlatListHeight)});
                                         // console.log("-----scrollEnd");
                                         // this._flatList.scrollToEnd();  //与getItemLayout配合使用
                                     } 
@@ -3152,6 +3152,9 @@ const bottomH = Utils.bottomHeight;                 //tabbar 高度
 const width = Utils.width;                          //屏幕的总宽
 const height = Utils.height;                        //屏幕的总高
 
+const actionMarginBottom = Utils.isIphoneX?10+34:10
+const FlatListHeight = Utils.isIphoneX?height-headerH-34-50-10:height-headerH-50-10
+
 const CourseProgressMarginVer = 10;                 //左侧课程进度上下边距
 const CourseProgressHeight = height-CourseProgressMarginVer*2;                //左侧课程进度的总高, 
 const CourseProgressWidth = 30;                     //左侧课程进度总宽
@@ -3166,6 +3169,7 @@ const widthMsg = MessageWidth - marginHorMsg*2;     //右侧消息的宽
 
 const pinkColor = Utils.btnBgColor;
 const whiteColor = Utils.btnBgColorS;
+
 const styles = StyleSheet.create({
     // -------------------------------------------------导航栏
     headerStyle:{
@@ -3344,7 +3348,8 @@ const styles = StyleSheet.create({
         width:width,
         position:'absolute',
         // bottom:0,
-        bottom:10,
+        // bottom:10,
+        bottom:actionMarginBottom,
     },
     help:{//帮助按钮总高40
         width:30, 
@@ -3358,7 +3363,7 @@ const styles = StyleSheet.create({
         flexDirection:'row', 
         justifyContent:'flex-end', 
         marginHorizontal:8, 
-        marginVertical:5
+        marginVertical:5,
         // justifyContent:'center'
     },
     btnSubmit:{

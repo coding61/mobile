@@ -54,10 +54,14 @@ import AlterActivity from './Activity/AlterActivity.js';
 import ManageMember from './Activity/ManageMember.js';
 import CompeteAnswer from './Activity/CompeteAnswer.js';
 import EditAnswer from './Activity/EditAnswer.js';
+import Leaderboards from './Activity/Leaderboards.js';
 
 import CatalogCourse from './My/CatalogCourse.js';
+import ScholarshipRecord from './My/ScholarshipRecord.js';
 
-import ExchangeRecord from './My/ExchangeRecord.js';
+import Exchange from './Exchange/Exchange.js';
+import ExchangeRecord from './Exchange/ExchangeRecord.js';
+import ExchangeUsingRecord from './Exchange/ExchangeUsingRecord.js';
 class RootApp extends Component{
     constructor(props) {
       super(props);
@@ -130,7 +134,11 @@ const app = StackNavigator({
     CompeteAnswer:{screen:CompeteAnswer},
     EditAnswer:{screen:EditAnswer},
     CatalogCourse:{screen:CatalogCourse},
-    ExchangeRecord:{screen:ExchangeRecord}
+    ScholarshipRecord:{screen:ScholarshipRecord},
+    Leaderboards:{screen:Leaderboards},
+    Exchange:{screen:Exchange},
+    ExchangeRecord:{screen:ExchangeRecord},
+    ExchangeUsingRecord:{screen:ExchangeUsingRecord},
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称
     initialRouteParams:{userinfo:''}        //配置初始路由的参数

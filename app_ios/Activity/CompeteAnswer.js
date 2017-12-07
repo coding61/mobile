@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   TextInput,
   Keyboard,
-  ScrollView
+  ScrollView,
+  DeviceEventEmitter
 } from 'react-native';
 
 import BCFetchRequest from '../utils/BCFetchRequest.js';
@@ -19,6 +20,10 @@ import Http from '../utils/Http.js';
 import EmptyView from '../Component/EmptyView.js';
 import LoadingView from '../Component/LoadingView.js';
 import MedalView from '../Activity/MedalView.js';
+import Leaderboards from '../Activity/Leaderboards.js';
+
+const QuestionTab = 1;        //答题选项
+const LeaderboardTab = 0;     //排行榜选项
 
 class CompeteAnswer extends Component {
 	constructor(props) {
@@ -39,13 +44,20 @@ class CompeteAnswer extends Component {
     static navigationOptions = ({navigation}) => {
         const {state, setParams, goBack, navigate} = navigation;
         return {
-        	headerTitle:"竞赛答题",
+        	headerTitle:"答题",
         	headerTintColor: "#fff",
             headerStyle: styles.headerStyle,
         }
     };
     componentWillMount() {
         this._fetchQuestionList();
+    }
+    componentDidMount() {
+        this.listenTabPress = DeviceEventEmitter.addListener('navigateTabPress', (tab)=>{
+            this.props.navigation.setParams({
+                tab:tab
+            })
+        })
     }
     componentWillUnmount() {
         if (typeof(this.props.navigation.state.params) !== 'undefined') {
@@ -201,9 +213,17 @@ class CompeteAnswer extends Component {
     _renderMainView(){
         return (
             <View style={{flex:1}}>
+                <View style={{height:200, backgroundColor:'white'}}>
                 <ScrollView style={{flex:1}} contentContainerStyle={{padding:10}}>
                     <Text style={styles.title}>{"题目: "}{this.state.data.title}</Text>
                 </ScrollView>
+                </View>
+                <View style={{flex:1, marginTop:20, backgroundColor:'white'}}>
+                    <View style={{borderBottomColor:'black',borderBottomWidth:2, marginVertical:2, flexDirection:'row',width:50, marginLeft:10, marginVertical:2, height:35, alignItems:'center', justifyContent:'center'}}>
+                        <Text style={{fontSize:18, fontWeight:'bold'}}>{"榜单"}</Text>
+                    </View>
+                    <Leaderboards navigation={this.props.navigation} contest={this.state.item.pk}/>
+                </View>
                 {/*
                 <TouchableOpacity style={styles.submit} onPress={this._submitAnswer.bind(this)}>
                     <Text style={{color:'white', fontSize:15}}>{"提交答案"}</Text>
@@ -231,12 +251,14 @@ class CompeteAnswer extends Component {
 	    return (
             <View style={{flex:1, backgroundColor:bgColor}}>
             {
-                this.state.data?
-                    this._renderMainView()
+                this.props.navigation.state.params && this.props.navigation.state.params.tab == LeaderboardTab?
+                    <Leaderboards navigation={this.props.navigation} contest={this.state.item.pk}/> 
                 :
-                    !this.state.loading?<EmptyView failTxt={"该竞赛下暂无题目"}/>:null
+                    this.state.data?
+                        this._renderMainView()
+                    :
+                        !this.state.loading?<EmptyView failTxt={"该竞赛下暂无题目"}/>:null
             }
-	    	
             {
                 this.state.loading?<LoadingView msg={this.state.loadingText}/>:null
             }
@@ -283,6 +305,32 @@ const styles = StyleSheet.create({
     },
     headerRightImg:{
         height:20
+    },
+    // -----------导航栏中间部分
+    headerTitleTabs:{
+        flexDirection:'row', 
+        justifyContent:'space-around', 
+        alignItems:'center', 
+        backgroundColor:'transparent', 
+        width:width/2, 
+        height:40,
+    },
+    headerTitleTab:{
+        height:35, 
+        alignItems:'center',
+        justifyContent:'center', 
+        marginVertical:2, 
+    },
+    headerTitleTabSelect:{
+        borderBottomColor:'white', 
+        borderBottomWidth:2, 
+    },
+    headerTitleTabText:{
+        color:'white', 
+        fontSize:18,
+    },
+    headerTitleTabTextSelect:{
+        fontWeight: 'bold'
     },
     // ---------------------------------------------主体代码
    	title:{

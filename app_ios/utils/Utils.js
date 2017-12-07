@@ -8,18 +8,24 @@ import {
     Linking
 } from 'react-native'
 
+const deviceH = Dimensions.get('window').height
+const deviceW = Dimensions.get('window').width
+
+const basePx = 375
+
+// iPhoneX  
+const X_WIDTH = 375;  
+const X_HEIGHT = 812;  
+const isIphoneX = Platform.OS === 'ios' &&   ((deviceH === X_HEIGHT && deviceW === X_WIDTH) || (deviceH === X_WIDTH && deviceW === X_HEIGHT))
+
 const isIOS = Platform.OS == "ios"
 const TopStatusBarIOS = 20
 const TopStatusBarAndroid = 25
 const TopNavBarHeight = 48
 const BottomStatusBarAndroid = 48
-const HeaderH = isIOS ? 64 : TopNavBarHeight+TopStatusBarAndroid
-const BottomH = isIOS ? 49 : BottomStatusBarAndroid
-
-const deviceH = Dimensions.get('window').height
-const deviceW = Dimensions.get('window').width
-
-const basePx = 375
+const HeaderH = isIOS ? isIphoneX?88:64 : TopNavBarHeight+TopStatusBarAndroid
+const BottomH = isIOS ? isIphoneX?83:49 : BottomStatusBarAndroid
+const iosSafeHeight = isIOS?isIphoneX?34:0:0
 
 var chnNumChar = ["零","一","二","三","四","五","六","七","八","九"];
 var chnUnitSection = ["","万","亿","万亿","亿亿"];
@@ -82,6 +88,7 @@ let Utils = {
 	height:Dimensions.get('window').height,
     headerHeight:HeaderH,
     bottomHeight:BottomH,
+    iosSafeHeight:iosSafeHeight,
 	navBarBgColor:'rgb(250, 80, 131)',
 	tabBarBgColor:'rgb(255,255,255)',
     tabBarIconUnSColor:'rgb(124,124,124)',
@@ -92,15 +99,28 @@ let Utils = {
     btnBgColorS:'white',                    //app 第二主题色是白色
     tabBarSelectColor:'rgb(250, 80, 131)',  //底部 tab 按钮选中颜色
     tabBarUnselectColor:'rgb(109,110,111)', //底部 tab 按钮未选中颜色
-    fontBColor:'#373737',
-    fontSColor:'#848484',
-    underLineColor:'#ebebeb',
-    bgColor:'#f3f3f3',
-    bgSecondColor:'rgb(239,240,241)',
-    btnCancelColor:'rgb(154,155,156)',
-    alertViewBgColor:'rgb(240, 241, 242)',
-    alertLineColor:'rgb(231,232,233)',
+    themeColor:'rgb(250, 80, 131)',         //主题颜色,粉色
 
+    fontBColor:'#373737',                   //较大字体颜色
+    fontSColor:'#848484',                   //较小字体颜色
+    underLineColor:'#ebebeb',               //下划线颜色
+    lineColor:'rgb(189,190,192)',           //下划线颜色(深灰)
+
+    bgColor:'#f3f3f3',                      //页面背景色主要
+    bgSecondColor:'rgb(239,240,241)',       //页面背景色次之
+    bgThirdColor:'rgb(242,244,245)',        //页面背景3
+    btnCancelColor:'rgb(154,155,156)',      //取消按钮的背景色
+    alertViewBgColor:'rgb(240, 241, 242)',  //弹框视图的背景色
+    alertLineColor:'rgb(231,232,233)',      //弹框视图的分割线颜色
+
+    fontSBSize:18,                          //超大字体18
+    fontBSize:16,                           //大字体16，标题等
+    fontSSize:14,                           //小字体14,内容介绍等
+    fontMSSize:12,                          //迷你字体12, 底部时间显示等
+    orangeColor:'rgb(250, 107, 14)',        //按钮橙黄色
+    blueColor:'#5daeff',                    //主题颜色,蓝色
+
+    isIphoneX:isIphoneX,
     containKey:(dic, key)=>{
         return dic.hasOwnProperty(key)
     },
@@ -257,6 +277,34 @@ let Utils = {
             console.log('一个错误被发现' + err);
             Utils.showMessage('一个错误被发现' + err);
         })
+    },
+    dealTime:(createTime)=>{
+        var timeArray = createTime.split('.')[0].split('T');
+        var year = timeArray[0].split('-')[0];
+        var month = timeArray[0].split('-')[1];
+        var day = timeArray[0].split('-')[2];
+
+        var hour = timeArray[1].split(':')[0];
+        var minute = timeArray[1].split(':')[1];
+        var second = timeArray[1].split(':')[2];
+
+        var create = new Date(year, month-1, day, hour, minute, second);
+
+        // var create = new Date(Date.parese(created.slice(0, 19).replace('T', ' ')));
+        // alert(create);
+        var current = new Date();
+        var s1 = current.getTime() - create.getTime(); //相差的毫秒
+        if (s1 / (60 * 1000) < 1) {
+            return "刚刚";
+        }else if (s1 / (60 * 1000) < 60){
+            return parseInt(s1 / (60 * 1000)) + "分钟前";
+        }else if(s1 / (60 * 1000) < 24 * 60){
+            return parseInt(s1 / (60 * 60 * 1000)) + "小时前";
+        }else if(s1 / (60 * 1000) < 24 * 60 * 2){
+            return "昨天 " + createTime.slice(11, 16);
+        }else{
+            return createTime.slice(0, 10).replace('T', ' ');
+        }
     }
 }
 export default Utils;
