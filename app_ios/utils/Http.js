@@ -89,12 +89,14 @@ let Http = {
 		return Page_Domain + "/app/share/forum.html?pk=" + String(pk);
 	},
 	shareBonusUrl: null,
+	sharePunchUrl:(pk)=>{
+		return Page_Domain + "/app/share/forum.html?pk=" + String(pk);
+	},
 	shareLogoUrl: "https://static1.bcjiaoyu.com/girlShareLogo.png",
 	punchCard:(pk)=>{
 		return Http_Domain + '/club/club_punch/' + String(pk) + '/';
 	},
 	getPunchCardRecord:(pk)=>{
-		console.log(Http_Domain + '/club/myclub_punch/' + String(pk) + '/');
 		return Http_Domain + '/club/myclub_punch/' + String(pk) + '/';
 	}
 }

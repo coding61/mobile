@@ -23,6 +23,7 @@ import Http from '../utils/Http.js';
 import BCFetchRequest from '../utils/BCFetchRequest.js';
 
 var RNBridgeModule = NativeModules.RNBridgeModule;
+var UMeng = NativeModules.ShareRN;
 
 const {width, height} = Dimensions.get('window');
 
@@ -58,7 +59,6 @@ class PunchCard extends Component {
         AsyncStorage.getItem('token', function(errs, result) {
             if(result != null){
                 _this.setState({token: result}, ()=>{
-                    console.log(_this.state.token);
                     _this._getPunchCardRecord();
                 });
             }
@@ -70,6 +70,8 @@ class PunchCard extends Component {
     componentWillUnmount() {}
 
     _getPunchCardRecord() {
+        // 回复背景高度
+        // this.setState({bgHeight: width * 520 / 750})
         var type = "GET",
             url = Http.getPunchCardRecord(this.state.pk),
             token = this.state.token,
@@ -83,132 +85,105 @@ class PunchCard extends Component {
                 Alert.alert(response.message?response.message:response.detail);
                 return;
             }
-            // this.setState({data: response});
+            // response.punch_days = 30;
+            this.setState({data: response},()=>{
+                // 只有第一次请求才会刷新高度，避免分享后背景高度跳动
+                if (!this.state.moreHeight) {
+                    var punchViewW = width - width * 40 / 750 * 1.8;
+                    var medianW = width * 30 / 750;
+                    var spotW = (punchViewW - medianW * 8) / 9;
+
+                    var totalDays = this.state.data.punch_days;
+                    var moreHeight = 0
+                    if (totalDays > 9 && totalDays <= 18) {
+                        moreHeight = spotW + 10;
+                    } else if (totalDays > 18 && totalDays <= 27) {
+                        moreHeight = (spotW + 10) * 2;
+                    } else {
+                        moreHeight = (spotW + 10) * 3;
+                    }
+                    this.setState({moreHeight: moreHeight}, ()=>{
+                        this.setState({bgHeight: this.state.bgHeight + this.state.moreHeight})
+                    })
+                }
+            });
         }, (err) => {
             console.log(err);
             Alert.alert('网络请求失败');
         });
-
-        var dict = {
-            "pk": 8,
-            "name": "活动打卡俱乐部",
-            "introduction": "这是活动打卡俱乐部",
-            "ispunch": true,
-            "punch_days": 10,
-            "my_punch": {
-                "today_punch": 2,
-                "all_punch": 2,
-                "punch_time": [
-                    "2017-12-04T17:58:15.526769"
-                ]
-            },
-            "punch_record": [
-                {
-                    "pk": 4,
-                    "owner": {
-                        "pk": 7,
-                        "owner": "18519791946",
-                        "name": "LEON",
-                        "avatar": "http://wx.qlogo.cn/mmopen/Miayzv8oDnvAkFvJ5EyYKh6iaG4uXEIkna1YduZ48Ok66SU5ewJkK5gzqkdMJDHicGE8VJ1Qf8pcibAXPjtZUlRotxcSrEEszUbY/0",
-                        "experience": 18000,
-                        "diamond": 110,
-                        "remark": "",
-                        "olduser": false,
-                        "grade": {
-                            "next_name": "钻石4",
-                            "current_name": "钻石5",
-                            "current_all_experience": 17807,
-                            "next_all_experience": 20007
-                        },
-                        "is_staff": false,
-                        "isactive": false,
-                        "top_rank": "Top100",
-                        "medal_record": []
-                    },
-                    "quantity": 2,
-                    "create_time": "2017-12-04T17:58:15.526769"
-                }
-            ],
-            "create_time": "2017-12-04T17:48:16.060590"
-        }
-        var moreHeight = 0
-        if (dict.punch_days > 9 && dict.punch_days <= 18) {
-            moreHeight = 20;
-        } else if (dict.punch_days > 18 && dict.punch_days <= 27) {
-            moreHeight = 40
-        } else {
-            moreHeight = 60
-        }
-        this.setState({moreHeight: moreHeight}, ()=>{
-            this.setState({bgHeight: this.state.bgHeight + this.state.moreHeight})
-        })
-        this.setState({data: dict},()=>{
-            console.log(this.state.data);
-        })
     }
 
-    _showRule() {
-        this.setState({show: !this.state.show},()=>{
-            this.setState({bgHeight: this.state.show ? this.state.bgHeight : this.state.bgHeight - this.state.ruleHeight})
-        })
-    }
-
-    _handleTime(time) {
-        var curDate = new Date();
-
-        var diff = Date.parse(curDate) - Date.parse(time) + 3600 * 1000 * 8;
-        var days = Math.floor(diff / (24 * 3600 * 1000))
-        var time = null;
-        if (days == 0) {
-            var hours = Math.floor(diff / (3600 * 1000))
-            if (hours == 0) {
-                var mins =  Math.floor(diff / (60 * 1000))
-                if (mins == 0) {
-                    time = '刚刚'
-                } else {
-                    time = String(mins) + '分钟前';
+    _punchCard() {
+        var type = "GET",
+            url = Http.punchCard(this.state.pk),
+            token = this.state.token,
+            data = null;
+        BCFetchRequest.fetchData(type, url, token, data, (response) => {
+            if (!response) {
+                Alert.alert('失败，请重试');
+                return;
+            };
+            if (response.status == -4 || response.message) {
+                Alert.alert(response.message ? response.message : response.detail);
+                if (response.message == '活动打卡成功') {
+                    this._getPunchCardRecord();
                 }
-            } else {
-                time =  String(hours) + '小时前';
+                return;
             }
-        } else {
-            time = String(days) + '天前';
-        }
-        return time;
+        }, (err) => {
+            console.log(err);
+            Alert.alert('网络请求失败');
+        });
     }
 
-    _keyExtractor = (item, index) => index;
+    _shareWeChat = () => {
+        if (!this.state.data) {
+            Alert.alert('正在获取数据，请稍后...');
+            return;
+        }
+        // this._punchCard();
+        var title = this.state.data.name;
+        var content = this.state.data.introduction;
+        var shareUrl = Http.shareActivityUrl(this.props.navigation.state.params.pk);
+        var imgUrl = Http.shareLogoUrl;    // 默认图标
+        UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
+            if(error) {
+                Alert.alert('分享出错了');
+            } else {
+                if (callBackEvents == 'success') {
+                    this._punchCard();
+                };
+            }
+        })
+    }
 
-    _header() {
+    // 打卡记录
+    _recordView() {
+        var todayPunchCount = this.state.data && this.state.data.my_punch ? this.state.data.my_punch.today_punch : 0;
+        var totalPunchCount = this.state.data && this.state.data.my_punch ? this.state.data.my_punch.all_punch : 0;
         return (
-            <View style={{width: width, height: 40}}>
-                <View style={{marginLeft: width * 40 / 750, width: 112, height: 40, borderBottomWidth: 2, borderColor: '#FE6B95', alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={{color: '#FE6B95', fontSize: 17, fontWeight: 'bold'}}>她们也在打卡</Text>
-                </View>
+            <View style={{paddingLeft: width * 40 / 750, width: width * (1 - 40 / 750), height: 40, marginTop: 30, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={{color: '#fff', fontSize: 15}}>今日打卡</Text>
+                <Text style={{color: 'yellow', fontSize: 25, marginBottom: 2}}>{todayPunchCount}</Text>
+                <Text style={{color: '#fff', fontSize: 15}}>次</Text>
+                <View style={{flex: 1}}></View>
+                <Text style={{color: '#fff', fontSize: 15}}>{'累计打卡' + totalPunchCount + '次'}</Text>
             </View>
         )
     }
 
-    _renderItem = (item) => {
-        var time = this._handleTime(item.item.create_time);
-        return (
-            <View style={styles.itemView}>
-                <Image style={styles.itemHeadView} source={{uri: item.item.owner.avatar}}/>
-                <Text style={styles.itemNameTxt}>{item.item.owner.name}</Text>
-                <Text style={styles.itemTimeTxt}>{time}</Text>
-            </View>
-        );
+    // 获取经过的天数
+    _getPassDays(time) {
+        var curDate = new Date();
+        var diff = Date.parse(curDate) - Date.parse(time) + 3600 * 1000 * 8;
+        var days = Math.floor(diff / (24 * 3600 * 1000))
+        return days;
     }
 
-    _onLayout(event) {
-        //获取根View的宽高，以及左上角的坐标值
-        let {x, y, width, height} = event.nativeEvent.layout;
-        this.setState({ruleHeight: height},() =>{
-            this.setState({bgHeight: this.state.bgHeight + this.state.ruleHeight})
-        })
-    }
-
+    // 打卡圈圈圆圆圈圈
     _punchView() {
+        if (!this.state.data) { return (<View style={{width: width, height: 50}}/>) }
+
         const whiteColor = '#FDFFFF';
         const darkPinkColor = '#F02A66';
         const lightPinkColor = '#FDA4BB';
@@ -220,25 +195,34 @@ class PunchCard extends Component {
         const medianLightPinkColor = '#FDB8CC';
 
         var margin = width * 40 / 750;
-        var punchViewW = width - margin * 2;
+        var punchViewW = width - margin * 1.8;
         var medianW = width * 30 / 750;
         var medianH = 5;
         var spotW = (punchViewW - medianW * 8) / 9;
 
+        // 打卡圆圈的 map
         var spotArr = [];
-        if (!this.state.data) { return }
+        // 我的打卡记录
+        var punchRecord = !this.state.data.my_punch ? [] : this.state.data.my_punch.punch_time;
+        var totalDays = this.state.data.punch_days;
+        // 今天至活动创建经过的天数
+        var passDays = this._getPassDays(this.state.data.create_time);
+        // 打卡日期为第几天的数字
+        var arr = [];
+        for (var i = 0; i < punchRecord.length; i++) {
+            // 今天至打卡记录经过的天数
+            var perPassDays = this._getPassDays(punchRecord[i]);
+            var indexDay = passDays - perPassDays + 1;
+            arr.push(indexDay);
+        }
 
-        // test 需计算
-        var passDays = 6;
-        var arr = [1, 3, 4]
-
-        for (var i = 1; i <= this.state.data.punch_days; i++) {
-
+        for (var i = 1; i <= totalDays; i++) {
+            // 颜色根据过去天数变化
             var spotBgColor = i <= passDays ? whiteColor : darkPinkColor;
             var spotBrColor = i <= passDays ? lightPinkColor : darkPinkColor;
-            var textColor   = i <= passDays ? textLightPinkColor : textDarkPinkColor;
+            var textColor   = i <= passDays ? textDarkPinkColor : textLightPinkColor;
             var medianColor = i <= passDays ? medianLightPinkColor : medianDarkPinkColor;
-
+            // 颜色根据是否打卡变化
             var havePunched = false;
             for (var j = 0; j < arr.length; j++) {
                 if (i == arr[j]) {
@@ -248,11 +232,21 @@ class PunchCard extends Component {
                     break;
                 }
             }
-
-            if (i == 9 || i == 18 || i == 27 || i == this.state.data.punch_days) {
+            /** 视图说明
+                if (最右侧 || 最后一天) {
+                    spotArr.push(
+                        打卡 ? ( 黄色圆圈，对号图片 ) : ( 粉圈，数字 )
+                    )
+                } else {
+                    spotArr.push(
+                        打卡 ? ( 黄色圆圈，对号图片，间隔横线 ) : ( 粉圈，数字，间隔横线)
+                    )
+                }
+             */
+            if (i == 9 || i == 18 || i == 27 || i == totalDays) {
                 spotArr.push(
                     havePunched ? (
-                        <View key={i} style={{borderWidth: 2, borderColor: spotBrColor,alignItems: 'center', justifyContent: 'center',borderRadius: (spotW + 1) / 2, width: spotW + 1, height: spotW + 1, backgroundColor: spotBgColor, marginTop: 10}}>
+                        <View key={i} style={{borderWidth: 3, borderColor: spotBrColor,alignItems: 'center', justifyContent: 'center',borderRadius: (spotW + 1) / 2, width: spotW + 1, height: spotW + 1, backgroundColor: spotBgColor, marginTop: 10}}>
                             <Image resizeMode={'stretch'} style={{marginTop: 5, width: spotW * 0.7, height: spotW * 0.7}} source={require('../images/punch_icon/yes.png')}/>
                         </View>
                     ) : (
@@ -265,7 +259,7 @@ class PunchCard extends Component {
                 spotArr.push(
                     havePunched ? (
                         <View key={i} style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
-                            <View style={{borderWidth: 2, borderColor: spotBrColor, alignItems: 'center', justifyContent: 'center',borderRadius: (spotW + 1) / 2, width: spotW + 1, height: spotW + 1, backgroundColor: spotBgColor}}>
+                            <View style={{borderWidth: 3, borderColor: spotBrColor, alignItems: 'center', justifyContent: 'center',borderRadius: (spotW + 1) / 2, width: spotW + 1, height: spotW + 1, backgroundColor: spotBgColor}}>
                                 <Image resizeMode={'stretch'} style={{marginTop: 5, width: spotW * 0.7, height: spotW * 0.7}} source={require('../images/punch_icon/yes.png')}/>
                             </View>
                             <View style={{width: medianW, height: medianH, backgroundColor: medianColor}}>
@@ -292,6 +286,35 @@ class PunchCard extends Component {
         )
     }
 
+    _showRule() {
+        this.setState({show: !this.state.show},()=>{
+            this.setState({bgHeight: this.state.show ? this.state.bgHeight : this.state.bgHeight - this.state.ruleHeight})
+        })
+    }
+
+    _showBtnView() {
+        return (
+            <TouchableOpacity style={{marginLeft: width * (1 - 200 / 750), height: 30, width: width * 160 / 750, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onPress={this._showRule.bind(this)}>
+                <Text style={{width: 70,color: 'yellow'}}>打卡规则</Text>
+                {this.state.show ? (
+                    <Image source={require('../images/punch_icon/up.png')}/>
+                ) : (
+                    <Image source={require('../images/punch_icon/down.png')}/>
+                )}
+            </TouchableOpacity>
+        )
+    }
+
+    // 获取 ruleView 高度
+    _onLayout(event) {
+        //获取根View的宽高，以及左上角的坐标值
+        let {x, y, width, height} = event.nativeEvent.layout;
+        this.setState({ruleHeight: height},() =>{
+            this.setState({bgHeight: this.state.bgHeight + this.state.ruleHeight})
+        })
+    }
+
+    // 打卡规则
     _ruleView() {
         const rule1 = '每天可进行多次打卡，仅首次打卡可获得钻石奖励。';
         const rule2 = '完成连续打卡任务可额外获得100钻石的奖励，若中断打卡，则挑战失败无法获取额外奖励，但可继续重新打卡，获得当天钻石奖励。'
@@ -309,58 +332,124 @@ class PunchCard extends Component {
         )
     }
 
+    _navView() {
+        return (
+            <View style={{width: width, height: 40, marginTop: 20, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                <TouchableOpacity style={{position: 'absolute', width: 60, height: 40, left: 0, justifyContent: 'center', alignItems: 'center'}}>
+                    <Image source={require('../images/back.png')} resizeMode={'contain'}/>
+                </TouchableOpacity>
+                <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold', backgroundColor: 'rgba(255, 255, 255, 0)'}}>活动打卡</Text>
+            </View>
+        )
+    }
+
+    _infoView() {
+        var recordView = this._recordView();
+        var punchView = this._punchView();
+        var showBtnView = this._showBtnView();
+        var ruleView = this._ruleView();
+        return (
+            <View style={{width: width, height: this.state.bgHeight - 60, backgroundColor: 'rgba(255,255,255,0)'}}>
+                {recordView}
+                {punchView}
+                {showBtnView}
+                {this.state.show ? ruleView : null}
+            </View>
+        )
+    }
+
+    // 处理时间
+    _handleTime(time) {
+        var curDate = new Date();
+
+        var diff = Date.parse(curDate) - Date.parse(time) + 3600 * 1000 * 8;
+        var days = Math.floor(diff / (24 * 3600 * 1000))
+        var time = null;
+        if (days == 0) {
+            var hours = Math.floor(diff / (3600 * 1000))
+            if (hours == 0) {
+                var mins =  Math.floor(diff / (60 * 1000))
+                if (mins == 0) {
+                    time = '刚刚'
+                } else {
+                    time = String(mins) + '分钟前';
+                }
+            } else {
+                time =  String(hours) + '小时前';
+            }
+        } else {
+            time = String(days) + '天前';
+        }
+        return time;
+    }
+
+    // 她们也在打卡列表
+    _keyExtractor = (item, index) => index;
+    _header() {
+        return (
+            <View style={{width: width, height: 40}}>
+                <View style={{marginLeft: width * 40 / 750, width: 112, height: 40, borderBottomWidth: 2, borderColor: '#FE6B95', alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{color: '#FE6B95', fontSize: 17, fontWeight: 'bold'}}>她们也在打卡</Text>
+                </View>
+            </View>
+        )
+    }
+    _renderItem = (item) => {
+        var time = this._handleTime(item.item.create_time);
+        return (
+            <View style={styles.itemView}>
+                <Image style={styles.itemHeadView} source={{uri: item.item.owner.avatar}}/>
+                <Text style={styles.itemNameTxt} numberOfLines={1}>{item.item.owner.name}</Text>
+                <Text style={styles.itemTimeTxt}>{time}</Text>
+            </View>
+        );
+    }
+    _listView() {
+        var header = this._header();
+        var showText = '正在加载数据...'
+        if (this.state.data && this.state.data.punch_record.length == 0) {
+            showText = '快来分享，成为第一个打卡的人'
+        }
+        return (
+            this.state.data && this.state.data.punch_record.length != 0 ? (
+                <FlatList style={{flex: 1, backgroundColor: '#FEFFFF'}}
+                    ref={(flatList) => this._flatList = flatList}
+                    ListHeaderComponent={header}
+                    // ListFooterComponent={this._footer.bind(this)}
+                    renderItem={this._renderItem}
+                    keyExtractor={this._keyExtractor}
+                    extraData={this.state}
+                    // onRefresh={this.refreshing.bind(this)}
+                    // refreshing={this.state.refreshing}
+                    // onEndReachedThreshold={0.1}
+                    // onEndReached={(info)=>{
+                    //     this._loadMore();
+                    // }}
+                    data={this.state.data.punch_record}>
+                </FlatList>
+            ) : (
+                <View style={{flex: 1}}>
+                    {header}
+                    <Text style={{marginLeft: width * 40 / 750, color: 'gray', lineHeight: 30}}>{showText}</Text>
+                </View>
+            )
+        )
+    }
+
     render() {
-        var punchView = this._punchView()
-        var ruleView = this._ruleView()
+        var navView = this._navView();
+        var infoView = this._infoView();
+        var listView = this._listView();
         return (
             <View style={{flex: 1, alignItems: 'center', backgroundColor: '#fff'}}>
                 <View style={{position:'absolute', top:0, width:width, left:0}}>
-                    <Image style={{width: width, height: this.state.bgHeight}}
-                        source={require('../images/punch_icon/punch_bg.png')}
-                        resizeMode={'stretch'}
-                    />
-                    <Image style={{position: 'absolute', bottom: -2, width: width, height: width * 100 / 750}}
-                        source={require('../images/punch_icon/wave.png')}
-                        resizeMode={'stretch'}
-                    />
+                    <Image style={{width: width, height: this.state.bgHeight}} source={require('../images/punch_icon/punch_bg.png')} resizeMode={'stretch'}/>
+                    <Image style={{position: 'absolute', bottom: -2, width: width, height: width * 100 / 750}} source={require('../images/punch_icon/wave.png')} resizeMode={'stretch'}/>
                 </View>
-                <View style={{width: width, height: 60, backgroundColor: 'rgba(255,255,255,0)'}}>
-                    <Text>活动打卡</Text>
-                </View>
-                <View style={{width: width, height: this.state.bgHeight - 60, backgroundColor: 'rgba(255,255,255,0)'}}>
-                    <View style={{paddingLeft: width * 40 / 750, width: width * (1 - 40 / 750), height: 40, marginTop: 30, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={{color: '#fff', fontSize: 15}}>今日打卡</Text>
-                        <Text style={{color: 'yellow', fontSize: 25, marginBottom: 2}}>0</Text>
-                        <Text style={{color: '#fff', fontSize: 15}}>次</Text>
-                        <View style={{flex: 1}}></View>
-                        <Text style={{color: '#fff', fontSize: 15}}>累计打卡 次</Text>
-                    </View>
-                    {this.state.data ? punchView : null}
-                    <View style={{width: width, alignItems: 'flex-end'}}>
-                        <TouchableOpacity style={{width: 100, height: 30}} onPress={this._showRule.bind(this)}>
-                            <Text style={{color: 'yellow'}}>打卡规则</Text>
-                        </TouchableOpacity>
-                    </View>
-                    {this.state.show ? ruleView : null}
-                </View>
-                {this.state.data ? (
-                    <FlatList style={{flex: 1, backgroundColor: '#FEFFFF'}}
-                        ref={(flatList) => this._flatList = flatList}
-                        ListHeaderComponent={this._header}
-                        // ListFooterComponent={this._footer.bind(this)}
-                        renderItem={this._renderItem}
-                        keyExtractor={this._keyExtractor}
-                        extraData={this.state}
-                        // onRefresh={this.refreshing.bind(this)}
-                        // refreshing={this.state.refreshing}
-                        onEndReachedThreshold={0.1}
-                        onEndReached={(info)=>{
-                            // this._loadMore();
-                        }}
-                        data={this.state.data.punch_record}>
-                    </FlatList>
-                ) : ( null )}
-                <TouchableOpacity style={styles.shareBtn}>
+                {navView}
+                {infoView}
+                {listView}
+                <TouchableOpacity style={styles.shareBtn} onPress={this._shareWeChat.bind(this)}>
                     <Text style={styles.shareTxt}>分享打卡</Text>
                 </TouchableOpacity>
             </View>
