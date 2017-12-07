@@ -68,7 +68,7 @@ class AddActivity extends Component {
       if (this.state.isDays === true) {
         form = JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText, ispunch: _this.state.isDays, punch_days: _this.state.days})
       } else {
-        form = JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText, ispunch: _this.state.isDays})
+        form = JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText, ispunch: _this.state.isDays, punch_days: 0})
       }
       AsyncStorage.getItem("token", function(errs, results) {
          fetch(Http.domain + '/club/club_create/',{method: 'post', headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'},body: form})
