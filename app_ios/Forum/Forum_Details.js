@@ -531,6 +531,7 @@ export default class Forum_Details extends Component{
         if(!data||!this.state.UserInfo){
             return(<Text>加载中...</Text>)
         }else{
+            
             if(data.play_reward.play_reward_number>0&&data.play_reward.play_reward_number<4){
             
                 reward=data.play_reward.play_reward_pople.join('、')

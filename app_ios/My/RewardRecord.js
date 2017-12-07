@@ -174,8 +174,8 @@ renderForumRow(item){
         return (
             <View style={{flexDirection:'row',alignItems:'center',borderBottomColor:'#D3D3D3',borderBottomWidth:0.5,paddingLeft:20,paddingTop:10,paddingBottom:10,}}>
                 <View style={{width:width*0.7,}}>
-                    <Text style={{paddingBottom:10,}}>{rowData.remake}</Text>
-                    <Text  style={{color:'#999'}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
+                    <Text style={{paddingBottom:10,fontSize:14,}}>{rowData.remake}</Text>
+                    <Text  style={{color:'#999',fontSize:12,}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                 </View>
                 <View style={{alignItems:'center',justifyContent:'center',paddingLeft:10,}}> 
                     <Text style={{color:'rgb(247, 99, 146)',fontSize:16,}}>{rowData.amount+'钻石'}</Text>
