@@ -17,32 +17,34 @@ import Http from '../utils/Http.js';
 
 import LoadingView from '../Component/LoadingView.js';
 import EmptyView from '../Component/EmptyView.js';
+import ExchangeUnuseRecord from '../Exchange/ExchangeUnuseRecord.js';
 
 const LoadMore = 1;           //点击加载更多
 const LoadNoMore = 0;         //已经到尾了
 const LoadMoreIng = -1;       //加载中
 
-class ExchangeRecord extends Component {
+const ExchangeRecordTab = 1;    //道具使用中的选项
+const RewardRecordTab = 0;      //道具未使用的选项
+
+class ExchangeUsingRecord extends Component {
 	constructor(props) {
 	    super(props);
 	
 	    this.state = {
-      balance: '__',
 			dataSource:[],
 			loading:true,                //是否显示数据加载等待视图
 			footerLoadTag:LoadMore,      //默认是点击加载更多, FlatList，列表底部
             isRefresh:false,             //FlatList，头部是否处于下拉刷新
             pagenum:1,                   //活动列表第几页。默认1
+            tab:ExchangeRecordTab,       //当前看到的是参加的活动选项内容
 	    };
 	}
 	// -----导航栏自定制
     static navigationOptions = ({navigation}) => {
         const {state, setParams, goBack, navigate} = navigation;
         return {
-            headerStyle: {
-                backgroundColor: 'rgb(250, 80, 131)'
-            },
-            title:"奖学金记录",
+            headerStyle: {backgroundColor:themeColor},
+            title:"我的道具",
             headerTintColor: "#fff",
             headerTitleStyle:{alignSelf:'auto',},
         }
@@ -58,69 +60,54 @@ class ExchangeRecord extends Component {
     }
     // ------------------------------------------网络请求
     _fetchCommodityRecordList(pagenum){
+        /*
+		var dic = {
+              "pk": 4,
+              "name": "北京大学现场讲座",
+              "password": "123456",
+              "introduction": "通告，北京大学现场讲座，通告，北京大学现场讲座通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座。",
+              "member_number": 1,
+              "exchange_product": {name:"达奇机器人"},
+              "create_time": "2017-12-01T19:02:05"
+        }
+        var array = [];
         
-		// var dic = {
-  //             "pk": 4,
-  //             "name": "北京大学现场讲座",
-  //             "password": "123456",
-  //             "introduction": "通告，北京大学现场讲座，通告，北京大学现场讲座通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座，通告，北京大学现场讲座。",
-  //             "member_number": 1,
-  //             "leader": {},
-  //             "create_time": "2017-10-18T10:06:21.129728"
-  //       }
-  //       var array = [];
-        
-  //       if (pagenum > 3) {
-  //           this.setState({footerLoadTag:LoadNoMore});
-  //           var arr = [];
-  //           for (var i = 0; i < 5; i++) {
-  //               arr.push(dic);
-  //           }
-  //           array = this.state.dataSource.concat(arr);
+        if (pagenum > 3) {
+            this.setState({footerLoadTag:LoadNoMore});
+            var arr = [];
+            for (var i = 0; i < 5; i++) {
+                arr.push(dic);
+            }
+            array = this.state.dataSource.concat(arr);
 
-  //       }else if(pagenum>1){
-  //           this.setState({footerLoadTag:LoadMore});
-  //           var arr = [];
-  //           for (var i = 0; i < 10; i++) {
-  //               arr.push(dic);
-  //           }
-  //           array = this.state.dataSource.concat(arr);
-  //       }else{
-  //           this.setState({footerLoadTag:LoadMore});
-  //           for (var i = 0; i < 10; i++) {
-  //               array.push(dic);
-  //           }
-  //       }
-  //       this.setState({
-  //       	isRefresh:false,
-  //           loading:false,
-  //           dataSource:array,
-  //       });
+        }else if(pagenum>1){
+            this.setState({footerLoadTag:LoadMore});
+            var arr = [];
+            for (var i = 0; i < 10; i++) {
+                arr.push(dic);
+            }
+            array = this.state.dataSource.concat(arr);
+        }else{
+            this.setState({footerLoadTag:LoadMore});
+            for (var i = 0; i < 10; i++) {
+                array.push(dic);
+            }
+        }
+        this.setState({
+        	isRefresh:false,
+            loading:false,
+            dataSource:array,
+        });
+        */
         
-
+        
         Utils.isLogin((token)=>{
             if (token) {
-                fetch(Http.domain + '/userinfo/whoami/',{headers: {'Authorization': 'Token ' + token, 'content-type': 'application/json'}})
-                  .then(response => {
-                    if (response.ok === true) {
-                      return response.json();
-                    } else {
-                      return '失败';
-                    }
-                  })
-                  .then(responseJSON => {
-                    if (responseJSON !== '失败') {
-                      this.setState({
-                        balance: responseJSON.balance
-                      })
-                    }
-                  })
                 var type = "get",
-                    url = Http.getScholarship(pagenum),
+                    url = Http.myProducts(pagenum, 1),
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    console.log(response)
                     if (response == 401) {
                         //去登录
                         // this._goLogin();
@@ -148,6 +135,45 @@ class ExchangeRecord extends Component {
                         loading:false,
                         dataSource:array,
                     });
+
+                }, (err) => {
+                    this.setState({
+                        loading:false
+                    })
+                    console.log(2);
+                    Utils.showMessage('请求异常');
+                });
+            }
+        })
+    }
+    _fetchUnUseProduct(pk){
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "put",
+                    url = Http.unUseProduct(pk),
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response == 401) {
+                        //去登录
+                        // this._goLogin();
+                        return;
+                    }
+                    if (!response) {
+                        //请求失败
+                    };
+
+                    var array = this.state.dataSource
+                    for (var i = 0; i < array.length; i++) {
+                        if(array[i].pk === pk){
+                            // 删除数据
+                            array.splice(i, 1);
+                            break;
+                        }
+                    }
+                    this.setState({
+                        dataSource:array
+                    })
 
                 }, (err) => {
                     this.setState({
@@ -191,30 +217,35 @@ class ExchangeRecord extends Component {
             }) 
         }, 500);
     }
+    //不使用
+    _unUseProduct(item){
+        this._fetchUnUseProduct(item.pk);
+    }
+    _clickTab(){
+        this.setState({tab:ExchangeRecordTab})
+        this.setState({
+            pagenum:1
+        }, ()=>{
+            this._fetchCommodityRecordList(this.state.pagenum);
+        }) 
+    }
     // ------------------------------------------兑换记录列表
     _renderItemCommodity(item, index){
         return (
             <View style={styles.item}>
-                <View style={{marginLeft: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                  <Text style={{color:fontBColor, fontSize:font3, height:30, lineHeight:30}}>{item.record_type}</Text>
-                  <Text style={{color: 'rgb(247, 99, 146)'}}>{'+' + item.amount}</Text>
+                <View>
+                	<Text style={{color:fontSColor, fontSize:font4, height:30, lineHeight:30}}>{item.create_time.slice(0,19).replace('T', " ")}</Text>
+                    <Text style={{color:fontBColor, fontSize:font3, height:30, lineHeight:30}}>{item.exchange_product.name}</Text>
                 </View>
-                <Text style={{marginLeft: 10, color:fontSColor, fontSize:12, height:30, lineHeight:30}}>{item.create_time.slice(0,19).replace('T', " ")}</Text>
+                <TouchableOpacity onPress={this._unUseProduct.bind(this, item)} style={{borderColor:lineColor, borderWidth:1, borderRadius:15, paddingHorizontal:20, backgroundColor:'white'}}>
+                    <Text style={{fontSize:font3, color:'gray', height:25, lineHeight:23}}>{"不使用"}</Text>
+                </TouchableOpacity>
             </View>
         )
     }
     _renderItem = ({item, index}) => (
         this._renderItemCommodity(item, index)
     )
-    _renderHeader = () => {
-      return (<View style={{width: width, height: width * 2 / 3 + 50, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white'}}>
-                <Text style={{fontSize: 42, marginBottom: 40}}>{this.state.balance}<Text style={{fontSize: 16}}>元</Text></Text>
-                <Text style={{width: width * 2 / 3, textAlign: 'center', color: 'gray', lineHeight: 25}}>{'奖学金提现请关注微信公众服务号"girlcxy61"进行提取'}</Text>
-                <View style={{position: 'absolute', bottom: 0, left: 0, width: width, height: 40, backgroundColor: 'rgb(236, 237, 238)', justifyContent: 'center'}}>
-                  <Text style={{fontSize: 12, marginLeft: 20}}>奖学金明细</Text>
-                </View>
-              </View>)
-    }
     _renderFooter = ()=>{
         return  (
         	<TouchableOpacity onPress={this._clickLoadMore.bind(this)}>
@@ -228,14 +259,26 @@ class ExchangeRecord extends Component {
     _renderFlatList(){
     	return (
     		<View style={{flex:1}}>
-    			{
+                {/*******选项切换*******/}
+                <View style={styles.tabs}>
+                    <TouchableOpacity onPress={this._clickTab.bind(this)} style={[styles.tab, this.state.tab===ExchangeRecordTab?styles.tabSelectView:styles.tab]}>
+                    <View><Text style={this.state.tab===ExchangeRecordTab?styles.tabSelectText:styles.tabText}>{"使用中"}</Text></View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{this.setState({tab:RewardRecordTab})}} style={[styles.tab, this.state.tab===RewardRecordTab?styles.tabSelectView:styles.tab]}>
+                    <View><Text style={this.state.tab===RewardRecordTab?styles.tabSelectText:styles.tabText}>{"未使用"}</Text></View>
+                    </TouchableOpacity>
+                </View>
+                {
+                    this.state.tab == RewardRecordTab?
+                    <ExchangeUnuseRecord navigation={this.props.navigation}/> 
+                :
+    			
     				this.state.dataSource.length?
 			    		<FlatList 
 				            ref={(flatlist)=>this._flatList=flatlist}
 				            style={{flex:1,}}
 				            data={this.state.dataSource}
 				            renderItem={this._renderItem}
-                    ListHeaderComponent={this._renderHeader}
 				            extraData={this.state}
 				            keyExtractor={this._keyExtractor}
 				            ListFooterComponent={this._renderFooter}
@@ -270,8 +313,8 @@ const themeColor = Utils.themeColor;
 const orangeColor = Utils.orangeColor;
 const fontBColor = Utils.fontBColor;
 const fontSColor = Utils.fontSColor;
-const lineColor = Utils.underLineColor;
-const bgColor = Utils.bgColor;
+const lineColor = Utils.lineColor;
+const bgColor = Utils.bgThirdColor;
 const bgSecondColor = Utils.bgSecondColor;
 
 const font1 = Utils.fontSBSize;
@@ -294,6 +337,30 @@ const styles = StyleSheet.create({
     	alignItems:'center',
     	height:50
     },
+    // ------------------------------------------tab 选项卡
+    tabs:{
+        height:40, 
+        flexDirection:'row', 
+        alignItems:'center', 
+        justifyContent:'center', 
+        backgroundColor:'white'
+    },
+    tab:{
+        flex:1, 
+        height:40, 
+        alignItems:'center', 
+        justifyContent:'center'
+    },
+    tabSelectView:{
+        borderBottomColor:themeColor, 
+        borderBottomWidth:1.5, 
+    },
+    tabText:{
+        color:fontBColor
+    },
+    tabSelectText:{
+        color:themeColor
+    },
 
     // ---------------------------FlatList
     // --------------FlatList 的尾部
@@ -306,14 +373,17 @@ const styles = StyleSheet.create({
     },
     // -------------FlatList 的主体部分(item)
     item:{
-        backgroundColor:'white',
+        // backgroundColor:'white',
         borderColor:lineColor,
         borderBottomWidth:1,
-        padding:10
+        padding:10,
+        justifyContent:'space-between',
+        alignItems:'center',
+        flexDirection:'row'
     },
     
 
 });
 
 
-export default ExchangeRecord;
+export default ExchangeUsingRecord;

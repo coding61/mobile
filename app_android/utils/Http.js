@@ -70,6 +70,37 @@ let Http = {
 	competeAnswer:(pk)=>{
 		return Http_Domain + "/contest/"+pk+"/answer_question/"                       //回答问题
 	},
+	competeRank:(pk, pagenum)=>{
+		return Http_Domain + "/contest/"+pk+"/ranking/?exclude=answers&page=" + pagenum  //竞赛排行榜
+	},
+
+	getExchangeProductList:(pagenum)=>{
+		return Http_Domain + "/market/exchange_products/?page=" + pagenum          //获取兑换商品列表
+	},
+	getExchangeOrderList:(pagenum)=>{
+		return Http_Domain + "/market/exchange_product_order/?page=" + pagenum     //获取兑换商品订单列表
+	},
+	getExchangeProductDetail:(pk)=>{
+		return Http_Domain + "/market/exchange_products/"+pk+"/"                   //获取兑换商品详情
+	},
+	getExchangeOrderDetail:(pk)=>{
+		return Http_Domain + "/market/exchange_product_order/"+pk+"/"              //获取兑换商品订单详情
+	},
+	buyExchangeProduct:(pk)=>{
+		return Http_Domain + "/market/exchange_products/purchase/"+pk+"/"          //购买兑换商品
+	},
+	getRewardRecordList:(pagenum)=>{
+		return Http_Domain + "/lottery/prize_list/?page=" + pagenum                //获取兑换商品订单列表
+	},
+	myProducts:(pagenum, status)=>{
+		return Http_Domain + "/market/user_products/?page=" + pagenum+"&_type=1&status="+status //我的道具
+	},
+	useProduct:(pk)=>{
+		return Http_Domain + "/market/use_product/"+pk+"/"                         //使用道具
+	},
+	unUseProduct:(pk)=>{
+		return Http_Domain + "/market/unuse_product/"+pk+"/"                       //不使用道具
+	},
 
 	userinfo:(username)=>{
 		return Http_Domain + "/userinfo/username_userinfo/?username=" + username

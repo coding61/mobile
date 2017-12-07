@@ -82,6 +82,7 @@ class EditAnswer extends Component {
                     })
                     if (response.status == -1 || response.status == -2 || response.status == -4) {
                         Utils.showMessage(response.message);
+                        this.props.navigation.goBack();
                     }else{
                         
                         var msg = "",
