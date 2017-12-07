@@ -59,7 +59,8 @@ class PunchCard extends Component {
         AsyncStorage.getItem('token', function(errs, result) {
             if(result != null){
                 _this.setState({token: result}, ()=>{
-                    _this._getPunchCardRecord();
+                    _this._whoami();
+                    // _this._getPunchCardRecord();
                 });
             }
         });
@@ -73,7 +74,7 @@ class PunchCard extends Component {
         // 回复背景高度
         // this.setState({bgHeight: width * 520 / 750})
         var type = "GET",
-            url = Http.getPunchCardRecord(this.state.pk),
+            url = Http.getPunchCardRecord(this.state.pk, this.state.owner),
             token = this.state.token,
             data = null;
         BCFetchRequest.fetchData(type, url, token, data, (response) => {
@@ -120,7 +121,7 @@ class PunchCard extends Component {
             data = null;
         BCFetchRequest.fetchData(type, url, token, data, (response) => {
             if (!response) {
-                Alert.alert('失败，请重试');
+                Alert.alert('失败，请重试...');
                 return;
             };
             if (response.status == -4 || response.message) {
@@ -141,10 +142,13 @@ class PunchCard extends Component {
             Alert.alert('正在获取数据，请稍后...');
             return;
         }
-        // this._punchCard();
+        if (!this.state.owner) {
+            Alert.alert('正在获取个人信息，请稍后...');
+            return;
+        }
         var title = this.state.data.name;
         var content = this.state.data.introduction;
-        var shareUrl = Http.shareActivityUrl(this.props.navigation.state.params.pk);
+        var shareUrl = Http.sharePunchUrl(this.state.pk, this.state.owner, this.state.head, this.state.name);
         var imgUrl = Http.shareLogoUrl;    // 默认图标
         UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
             if(error) {
@@ -155,6 +159,34 @@ class PunchCard extends Component {
                 };
             }
         })
+    }
+
+    _whoami = () => {
+        var type = "GET",
+            url = Http.whoami,
+            token = this.state.token,
+            data = null;
+        BCFetchRequest.fetchData(type, url, token, data, (response) => {
+            console.log(response);
+            if (!response) {
+                Alert.alert('失败，请重试..');
+                return;
+            };
+            if (response.status == -4 || response.message) {
+                Alert.alert(response.message ? response.message : response.detail);
+                return;
+            }
+            this.setState({
+                head: response.avatar,
+                name: response.name,
+                owner: response.owner
+            },() => {
+                this._getPunchCardRecord();
+            })
+        }, (err) => {
+            console.log(err);
+            Alert.alert('网络请求失败');
+        });
     }
 
     // 打卡记录

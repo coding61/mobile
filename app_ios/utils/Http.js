@@ -89,15 +89,15 @@ let Http = {
 		return Page_Domain + "/app/share/forum.html?pk=" + String(pk);
 	},
 	shareBonusUrl: null,
-	sharePunchUrl:(pk)=>{
-		return Page_Domain + "/app/share/forum.html?pk=" + String(pk);
+	sharePunchUrl:(pk, username, name, head)=>{
+		return Page_Domain + "/app/share/punch.html?pk=" + String(pk) + "&username=" + username + "&name=" + name + "&head=" + head ;
 	},
 	shareLogoUrl: "https://static1.bcjiaoyu.com/girlShareLogo.png",
 	punchCard:(pk)=>{
 		return Http_Domain + '/club/club_punch/' + String(pk) + '/';
 	},
-	getPunchCardRecord:(pk)=>{
-		return Http_Domain + '/club/myclub_punch/' + String(pk) + '/';
+	getPunchCardRecord:(pk, username)=>{
+		return Http_Domain + '/club/myclub_punch/' + String(pk) + '/?username=' + username;
 	}
 }
 export default Http;
