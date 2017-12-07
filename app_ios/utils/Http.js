@@ -5,8 +5,8 @@
  */
 const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
 const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
-// const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
-// const Page_Domain = "https://app.bcjiaoyu.com/girl";
+//const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
+//const Page_Domain = "https://app.bcjiaoyu.com/girl";
 let Http = {
 	domainPage:Page_Domain,    //网站页面地址的域名
 	domain:Http_Domain,        //接口域名

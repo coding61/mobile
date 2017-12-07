@@ -209,6 +209,11 @@ class MyPage extends Component {
           this.props.navigation.navigate('ExchangeUsingRecord');
           break;
         }
+        case 9:
+        {
+          this.props.navigation.navigate('RewardRecord', {});
+          break;
+        }
   		default:
   			{
   				break;
@@ -378,6 +383,11 @@ class MyPage extends Component {
               <TouchableOpacity onPress={this.onPress.bind(this, 8)} style={{flexDirection: 'row', alignItems: 'center', borderColor: 'rgb(238, 238, 239)', borderBottomWidth: 1, borderTopWidth: 1, width: width, height: 50, backgroundColor: 'white'}}>
                 <Image resizeMode={'contain'} style={{marginLeft: 10, width: 20, height: 20}} source={require('../assets/My/reward.png')}/>
                 <Text style={{marginLeft: 10, fontSize: 15, color: 'rgb(59, 60, 61)'}}>{'奖学金记录'}</Text>
+                <Image resizeMode={'contain'} style={{width: 13, height: 13, position: 'absolute', right: 10, top: 18}} source={require('../assets/My/right.png')}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.onPress.bind(this, 9)} style={{flexDirection: 'row', alignItems: 'center', borderColor: 'rgb(238, 238, 239)', borderBottomWidth: 1, borderTopWidth: 1, width: width, height: 50, backgroundColor: 'white'}}>
+                <Image resizeMode={'contain'} style={{marginLeft: 10, width: 20, height: 20}} source={require('../assets/My/prize.png')}/>
+                <Text style={{marginLeft: 10, fontSize: 15, color: 'rgb(59, 60, 61)'}}>{'打赏记录'}</Text>
                 <Image resizeMode={'contain'} style={{width: 13, height: 13, position: 'absolute', right: 10, top: 18}} source={require('../assets/My/right.png')}/>
               </TouchableOpacity>
 
