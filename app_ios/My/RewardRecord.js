@@ -16,6 +16,8 @@ import {
 }from 'react-native';
 var {height, width} = Dimensions.get('window');
 import Http from '../utils/Http.js';
+import Utils from '../utils/Utils.js';
+import EmptyView from '../Component/EmptyView.js';
 var basePath=Http.domain;
 export default class RewardRecord extends Component{
     constructor(props) {
@@ -49,8 +51,7 @@ export default class RewardRecord extends Component{
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){
                 self.setState({token: result},()=>{
-                        self._loadAlldata();
-                    
+                    self._loadAlldata();
                 });
             }
         }); 
@@ -77,7 +78,8 @@ export default class RewardRecord extends Component{
                  });
             })
             .catch((error) => {
-                console.error(error);
+                //console.error(error);
+                Utils.showMessage('请求异常');
             });
         })
     }
@@ -122,7 +124,8 @@ export default class RewardRecord extends Component{
                     }
                 })
                 .catch((error) => {
-                    console.error(error);
+                    Utils.showMessage('请求异常');
+                    //console.error(error);
                     this.setState({
                         isLoading: false,
                         isRefreshing: false
@@ -141,55 +144,25 @@ export default class RewardRecord extends Component{
                 this._loadAlldata();
         })
     }
-
-    dealWithTime(Time){
-        var timeArray = Time.split('.')[0].split('T');
-        var year = timeArray[0].split('-')[0];
-        var month = timeArray[0].split('-')[1];
-        var day = timeArray[0].split('-')[2];
-        var hour = timeArray[1].split(':')[0];
-        var minute = timeArray[1].split(':')[1];
-        var second = timeArray[1].split(':')[2];
-        var create = new Date(year, month-1, day, hour, minute, second);
-        var current = new Date();
-        var s1 = current.getTime() - create.getTime(); //相差的毫秒
-        var time = null;
-        if (s1 / (60 * 1000) < 1) {
-            time = "刚刚";
-        }else if (s1 / (60 * 1000) < 60){
-            time = parseInt(s1 / (60 * 1000)) + "分钟前";
-        }else if(s1 / (60 * 1000) < 24 * 60){
-            time = parseInt(s1 / (60 * 60 * 1000)) + "小时前";
-        }else if(s1 / (60 * 1000) < 24 * 60 * 2){
-            time = "昨天 " + Time.slice(11, 16);
-        }else{
-            time = Time.slice(0, 10).replace('T', ' ');
-        }
-        return time;
-
-    }
-renderForumRow(item){
+    renderForumRow(item){
         var rowData=item.item;
-        var time_last=this.dealWithTime(rowData.create_time)
         return (
             <View style={{flexDirection:'row',alignItems:'center',borderBottomColor:'#D3D3D3',borderBottomWidth:0.5,paddingLeft:20,paddingTop:10,paddingBottom:10,}}>
                 <View style={{width:width*0.7,}}>
-                    <Text style={{paddingBottom:10,}}>{rowData.remake}</Text>
-                    <Text  style={{color:'#999'}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
+                    <Text style={{paddingBottom:10,fontSize:14,}}>{rowData.remake}</Text>
+                    <Text  style={{color:'#999',fontSize:12,}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                 </View>
                 <View style={{alignItems:'center',justifyContent:'center',paddingLeft:10,}}> 
                     <Text style={{color:'rgb(247, 99, 146)',fontSize:16,}}>{rowData.amount+'钻石'}</Text>
                 </View>
             </View>
         )
-
     }
+
     _keyExtractor = (item, index) => index;
     render(){
         if(!this.state.dataSource){
-            return( <View style={styles.container}>
-                        <Text style={{justifyContent:'center',alignItems:'center',paddingTop:20,}}>正在加载...</Text>
-                    </View>)
+            return( <EmptyView/>)
         }else{
             return (
                 <View style={styles.container}>

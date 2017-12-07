@@ -23,7 +23,6 @@ var {height, width} = Dimensions.get('window');
 import NewsCenter from './NewsCenter';
 import Http from '../utils/Http.js';
 import Utils from '../utils/Utils.js';
-
 var basePath=Http.domain;
 export default class Forum_Details extends Component{
     constructor(props) {
@@ -149,7 +148,6 @@ export default class Forum_Details extends Component{
             }
         })
         .then(responseJson=>{
-            console.log(responseJson)
             this.setState({
                 data:responseJson,
             })
@@ -297,11 +295,10 @@ export default class Forum_Details extends Component{
         var rowData=item.item;
         var reward='';
         if(rowData.play_reward.play_reward_number>0&&rowData.play_reward.play_reward_number<4){
-            
-                reward=rowData.play_reward.play_reward_pople.join('、')
-            }else if(rowData.play_reward.play_reward_number>4){
-                reward=rowData.play_reward.play_reward_pople.slice(0,4).split("、")+'等'
-            }
+            reward=rowData.play_reward.play_reward_pople.join('、')
+        }else if(rowData.play_reward.play_reward_number>4){
+            reward=rowData.play_reward.play_reward_pople.slice(0,4).split("、")+'等'
+        }
         return (
             <View style={{width: width,flex:1, backgroundColor: '#ffffff',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingRight:10,paddingBottom:10,}}>
                 <View style={{flexDirection:'row',paddingTop:10,backgroundColor:'#ffffff',width:width*0.9,paddingLeft:15,marginRight:10,}}>
@@ -517,7 +514,7 @@ export default class Forum_Details extends Component{
         Utils.isLogin((token)=>{
             if (token) {
                 this.props.navigation.navigate('PersonalReward', { owner: owner,replypk:pk,flag:'post',callback: (msg)=>{
-                        this._onRefresh();
+                        this._loadforum()
                     } });
             }else{
                 this.props.navigation.navigate("Login");
@@ -532,7 +529,6 @@ export default class Forum_Details extends Component{
             return(<Text>加载中...</Text>)
         }else{
             if(data.play_reward.play_reward_number>0&&data.play_reward.play_reward_number<4){
-            
                 reward=data.play_reward.play_reward_pople.join('、')
             }else if(data.play_reward.play_reward_number>4){
                 reward=data.play_reward.play_reward_pople.slice(0,4).split("、")+'等'
