@@ -10,7 +10,9 @@ import {
   TextInput,
   Keyboard,
   ScrollView,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  NativeModules,
+  Alert
 } from 'react-native';
 
 import BCFetchRequest from '../utils/BCFetchRequest.js';
@@ -25,10 +27,12 @@ import Leaderboards from '../Activity/Leaderboards.js';
 const QuestionTab = 1;        //答题选项
 const LeaderboardTab = 0;     //排行榜选项
 
+var UMeng = NativeModules.ShareRN;
+
 class CompeteAnswer extends Component {
 	constructor(props) {
 	  	super(props);
-	
+
 	  	this.state = {
 	  		item:this.props.navigation.state.params.item,
 	  		answer:"",
@@ -47,12 +51,19 @@ class CompeteAnswer extends Component {
         	headerTitle:"答题",
         	headerTintColor: "#fff",
             headerStyle: styles.headerStyle,
+            headerRight:
+                <TouchableOpacity style={styles.navRightBtn} onPress={navigation.state.params ? navigation.state.params.navRightBtnClick : null}>
+                    <Text style={styles.navRightTxt}>分享</Text>
+                </TouchableOpacity>
         }
     };
     componentWillMount() {
         this._fetchQuestionList();
     }
     componentDidMount() {
+        this.props.navigation.setParams({
+            navRightBtnClick: this._shareWeChat.bind(this)
+        })
         this.listenTabPress = DeviceEventEmitter.addListener('navigateTabPress', (tab)=>{
             this.props.navigation.setParams({
                 tab:tab
@@ -62,9 +73,29 @@ class CompeteAnswer extends Component {
     componentWillUnmount() {
         if (typeof(this.props.navigation.state.params) !== 'undefined') {
           if (typeof(this.props.navigation.state.params.callback) !== 'undefined') {
-            this.props.navigation.state.params.callback(this.state.isAnswer); 
+            this.props.navigation.state.params.callback(this.state.isAnswer);
           }
         }
+    }
+    _shareWeChat = () => {
+        if (!this.state.data.title) {
+            Alert.alert('正在获取竞赛详情，请稍后...');
+            return;
+        }
+        var title = this.state.data.title;
+        var content = '竞赛';
+        var shareUrl = Http.shareCompeteUrl(this.state.item.pk);
+        var imgUrl = Http.shareLogoUrl;    // 默认图标
+        console.log(shareUrl);
+        UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
+            if(error) {
+                Alert.alert('分享出错了');
+            } else {
+                if (callBackEvents == 'success') {
+                    // 钻石动画等
+                };
+            }
+        })
     }
     //获取问题列表
     _fetchQuestionList(){
@@ -86,7 +117,7 @@ class CompeteAnswer extends Component {
                     this.setState({
                         loading:false
                     })
-            
+
                 }, (err) => {
                     console.log(2);
                     // Utils.showMessage('网络请求失败');
@@ -113,7 +144,7 @@ class CompeteAnswer extends Component {
                     if (!response) {
                         //请求失败
                     };
-                    
+
                     this.setState({
                         loading:false,
                         isAnswer:true
@@ -127,7 +158,7 @@ class CompeteAnswer extends Component {
                         if (Utils.containKey(response, "diamond_count")) {
                             Utils.showMessage('恭喜，获取'+response.diamond_count+'个钻石，请到个人账户查看');
                         }
-                        
+
                     }
                     // Utils.showMessage('提交答案成功');
                     this.props.navigation.goBack();
@@ -185,7 +216,7 @@ class CompeteAnswer extends Component {
 		})
         */
     }
-    _hideMedalView(){   
+    _hideMedalView(){
         this.setState({showMedalView:false}, ()=>{
         });
     }
@@ -243,7 +274,7 @@ class CompeteAnswer extends Component {
                                 <Text style={{color:'white', fontSize:15}}>{"提交答案"}</Text>
                             </TouchableOpacity>
                 }
-                
+
             </View>
         )
     }
@@ -252,7 +283,7 @@ class CompeteAnswer extends Component {
             <View style={{flex:1, backgroundColor:bgColor}}>
             {
                 this.props.navigation.state.params && this.props.navigation.state.params.tab == LeaderboardTab?
-                    <Leaderboards navigation={this.props.navigation} contest={this.state.item.pk}/> 
+                    <Leaderboards navigation={this.props.navigation} contest={this.state.item.pk}/>
                 :
                     this.state.data?
                         this._renderMainView()
@@ -264,9 +295,9 @@ class CompeteAnswer extends Component {
             }
             {
                 this.state.showMedalView?
-                    <MedalView 
-                        type={"compete"} 
-                        msg={this.state.showMedalMsg} 
+                    <MedalView
+                        type={"compete"}
+                        msg={this.state.showMedalMsg}
                         hide={this._hideMedalView.bind(this)}
                     />:null
                 }
@@ -298,9 +329,9 @@ const styles = StyleSheet.create({
     },
     // -----------导航栏右部分
     headerRightView:{
-        flexDirection:'row', 
-        justifyContent:'center', 
-        alignItems:'center', 
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center',
         marginRight:10
     },
     headerRightImg:{
@@ -308,54 +339,65 @@ const styles = StyleSheet.create({
     },
     // -----------导航栏中间部分
     headerTitleTabs:{
-        flexDirection:'row', 
-        justifyContent:'space-around', 
-        alignItems:'center', 
-        backgroundColor:'transparent', 
-        width:width/2, 
+        flexDirection:'row',
+        justifyContent:'space-around',
+        alignItems:'center',
+        backgroundColor:'transparent',
+        width:width/2,
         height:40,
     },
     headerTitleTab:{
-        height:35, 
+        height:35,
         alignItems:'center',
-        justifyContent:'center', 
-        marginVertical:2, 
+        justifyContent:'center',
+        marginVertical:2,
     },
     headerTitleTabSelect:{
-        borderBottomColor:'white', 
-        borderBottomWidth:2, 
+        borderBottomColor:'white',
+        borderBottomWidth:2,
     },
     headerTitleTabText:{
-        color:'white', 
+        color:'white',
         fontSize:18,
     },
     headerTitleTabTextSelect:{
         fontWeight: 'bold'
     },
+    navRightBtn: {
+        width: 60,
+        height: 40,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    navRightTxt: {
+        color: 'white',
+        fontSize: 15
+    },
     // ---------------------------------------------主体代码
    	title:{
-   		fontSize:18, 
-   		color:fontBColor, 
+   		fontSize:18,
+   		color:fontBColor,
    		fontWeight:'bold',
    		backgroundColor:'transparent',
         lineHeight:20
    	},
    	answer:{
-   		backgroundColor:'white', 
-   		borderColor:"#c9c9c9", 
-   		borderWidth:1, 
-   		height:height/3, 
-   		borderRadius:2, 
-   		marginVertical:20, 
-   		padding:10, 
+   		backgroundColor:'white',
+   		borderColor:"#c9c9c9",
+   		borderWidth:1,
+   		height:height/3,
+   		borderRadius:2,
+   		marginVertical:20,
+   		padding:10,
    		lineHeight:20,
    		fontSize:15
    	},
    	submit:{
-   		// backgroundColor:pinkColor, 
-   		// height:45, 
-   		// alignItems:'center', 
-   		// justifyContent:'center', 
+   		// backgroundColor:pinkColor,
+   		// height:45,
+   		// alignItems:'center',
+   		// justifyContent:'center',
    		// borderRadius:5,
    		// // marginTop:20,
    		// position:'absolute',

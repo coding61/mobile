@@ -16,6 +16,8 @@
 #import "TalkingData.h"   //应用统计分析
 #import "RNBridgeModule.h"
 
+#import <UMSocialCore/UMSocialCore.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -93,7 +95,9 @@
                                             categories:nil];
     [application registerUserNotificationSettings:settings];
   }
-  
+	
+	[self confitUShareSettings];
+	
   return YES;
 }
 //连接融云通知实现
@@ -302,4 +306,30 @@
  */
 - (void)applicationWillResignActive:(UIApplication *)application{
 }
+
+- (BOOL)application:(UIApplication *)application
+						openURL:(NSURL *)url
+	sourceApplication:(NSString *)sourceApplication
+				 annotation:(id)annotation {
+	//6.3的新的API调用，是为了兼容国外平台(例如:新版facebookSDK,VK等)的调用[如果用6.2的api调用会没有回调],对国内平台没有影响
+	BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url sourceApplication:sourceApplication annotation:annotation];
+	if (!result) {
+		// 其他如支付等SDK的回调
+//		BOOL canHandleURL = [Pingpp handleOpenURL:url withCompletion:nil];
+//		return canHandleURL;
+	}
+	return result;
+}
+
+-(void)confitUShareSettings {
+	/* 打开调试日志 */
+	[[UMSocialManager defaultManager] openLog:YES];
+	
+	/* 设置友盟appkey */
+	[[UMSocialManager defaultManager] setUmSocialAppkey:@"59ffe160b27b0a6cab00005a"];
+	// wx1ace10b30a9d5d70
+	[[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:@"wx2ffd4bce6eb8488d" appSecret:@"f5c4439b9e49498828324fb4a9aaad91" redirectURL:nil];
+	[[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatTimeLine appKey:@"wx2ffd4bce6eb8488d" appSecret:@"f5c4439b9e49498828324fb4a9aaad91" redirectURL:nil];
+}
+
 @end

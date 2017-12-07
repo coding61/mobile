@@ -39,7 +39,7 @@
     // Fallback on earlier versions
     self.automaticallyAdjustsScrollViewInsets = NO;
   }
-	
+
   NSLog(@"未读消息数:%d", [[RCIMClient sharedRCIMClient] getTotalUnreadCount]);
   NSLog(@"会话列表:%@", [[RCIMClient sharedRCIMClient] getConversationList:@[@(ConversationType_PRIVATE),
                                                                      @(ConversationType_GROUP)]]);

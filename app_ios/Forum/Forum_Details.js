@@ -14,7 +14,8 @@ import {
   RefreshControl,
   WebView,
   AsyncStorage,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  NativeModules
 }from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -23,6 +24,8 @@ var {height, width} = Dimensions.get('window');
 import NewsCenter from './NewsCenter';
 import Http from '../utils/Http.js';
 import Utils from '../utils/Utils.js';
+var UMeng = NativeModules.ShareRN;
+
 var basePath=Http.domain;
 export default class Forum_Details extends Component{
     constructor(props) {
@@ -52,16 +55,19 @@ export default class Forum_Details extends Component{
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
             headerRight:
                 (
-                <View style={{flexDirection:'row',marginRight:20,}}>
-                    <TouchableOpacity style={{marginRight:20,}} onPress={()=>{
+                <View style={{flexDirection:'row', marginRight: 5}}>
+                    <TouchableOpacity style={{width: 25, height: 40, marginRight:20, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{
                         DeviceEventEmitter.emit('collec', state.params.data)
                     }}>
                         {state.params.iscollect==true?(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xin.png')} resizeMode={'contain'}/>):(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xinfull.png')} resizeMode={'contain'}/>)}
                     </TouchableOpacity>
-                    <TouchableOpacity style={{marginTop:3,}} onPress={()=>{
+                    <TouchableOpacity style={{width: 25, height: 40, marginTop:3, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{
                         DeviceEventEmitter.emit('message', state.params.data)
                     }}>
                         <Image style={{width:22,height:20,}} source={require('../assets/Forum/message.png')} resizeMode={'contain'}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.navRightBtn} onPress={navigation.state.params ? navigation.state.params.navRightBtnClick : null}>
+                        <Text style={styles.navRightTxt}>分享</Text>
                     </TouchableOpacity>
                 </View>
                 )
@@ -84,6 +90,10 @@ export default class Forum_Details extends Component{
         });
     }
     componentDidMount() {
+        // 分享按钮点击
+        this.props.navigation.setParams({
+            navRightBtnClick: this._shareWeChat.bind(this)
+        })
         this._loadforum()
         this._loadData()
         this._loadUserinfo()
@@ -129,6 +139,27 @@ export default class Forum_Details extends Component{
             this.props.navigation.navigate('CommentText', {data: value,name:'main',userinfo:'',callback:(msg)=>{
                 this._onRefresh()
             }})
+        })
+    }
+
+    _shareWeChat = () => {
+        if (!this.state.data.title) {
+            Alert.alert('正在获取帖子详情，请稍后...');
+            return;
+        }
+        var title = this.state.data.title;
+        var content = this.state.data.content;
+        var shareUrl = Http.shareForumUrl(this.state.pk);
+        var imgUrl = Http.shareLogoUrl;    // 默认图标
+        console.log(shareUrl);
+        UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
+            if(error) {
+                Alert.alert('分享出错了');
+            } else {
+                if (callBackEvents == 'success') {
+                    // 钻石动画等
+                };
+            }
         })
     }
 
@@ -524,7 +555,7 @@ export default class Forum_Details extends Component{
     render() {
         var data=this.state.data;
         var reward='';
-        
+
         if(!data||!this.state.UserInfo){
             return(<Text>加载中...</Text>)
         }else{
@@ -584,7 +615,7 @@ export default class Forum_Details extends Component{
                                 {data.play_reward.play_reward_number>0?(<Text style={{color:'#999',paddingLeft:20,paddingTop:10,}}>{reward+" "+data.play_reward.play_reward_number+"人打赏"}</Text>):(null)}
                             <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,marginTop:10,}}>回帖数量({data.reply_count})</Text>
                         </View>
-                   
+
                         <FlatList
                             horizontal={false}
                             data={this.state.dataSource}
@@ -609,3 +640,18 @@ export default class Forum_Details extends Component{
         }
     }
 }
+
+const styles = StyleSheet.create({
+    navRightBtn: {
+        width: 60,
+        height: 40,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    navRightTxt: {
+        color: 'white',
+        fontSize: 15,
+        marginTop: 2
+    }
+})

@@ -108,7 +108,27 @@ let Http = {
 
 	getScholarship:(pagenum)=>{
 		return Http_Domain + "/asset/record/?page=" + pagenum                         //奖学金
-	}
+	},
 
+	shareActivityUrl:(pk)=>{
+		return Page_Domain + "/app/share/activityDetails.html?pk=" + String(pk)
+	},
+	shareCompeteUrl:(pk)=>{
+		return Page_Domain + "/app/share/compete.html?pk=" + String(pk);
+	},
+	shareForumUrl:(pk)=>{
+		return Page_Domain + "/app/share/forum.html?pk=" + String(pk);
+	},
+	shareBonusUrl: null,
+	sharePunchUrl:(pk, username, name, head)=>{
+		return Page_Domain + "/app/share/punch.html?pk=" + String(pk) + "&username=" + username + "&name=" + name + "&head=" + head ;
+	},
+	shareLogoUrl: "https://static1.bcjiaoyu.com/girlShareLogo.png",
+	punchCard:(pk)=>{
+		return Http_Domain + '/club/club_punch/' + String(pk) + '/';
+	},
+	getPunchCardRecord:(pk, username)=>{
+		return Http_Domain + '/club/myclub_punch/' + String(pk) + '/?username=' + username;
+	}
 }
 export default Http;
