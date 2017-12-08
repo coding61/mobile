@@ -179,6 +179,7 @@ export default class Forum_Details extends Component{
             }
         })
         .then(responseJson=>{
+            console.log(responseJson)
             this.setState({
                 data:responseJson,
             })
@@ -328,7 +329,7 @@ export default class Forum_Details extends Component{
         if(rowData.play_reward.play_reward_number>0&&rowData.play_reward.play_reward_number<4){
             reward=rowData.play_reward.play_reward_pople.join('、')
         }else if(rowData.play_reward.play_reward_number>4){
-            reward=rowData.play_reward.play_reward_pople.slice(0,4).split("、")+'等'
+            reward=rowData.play_reward.play_reward_pople.slice(0,4).join("、")+'等'
         }
         return (
             <View style={{width: width,flex:1, backgroundColor: '#ffffff',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingRight:10,paddingBottom:10,}}>
@@ -562,7 +563,7 @@ export default class Forum_Details extends Component{
             if(data.play_reward.play_reward_number>0&&data.play_reward.play_reward_number<4){
                 reward=data.play_reward.play_reward_pople.join('、')
             }else if(data.play_reward.play_reward_number>4){
-                reward=data.play_reward.play_reward_pople.slice(0,4).split("、")+'等'
+                reward=data.play_reward.play_reward_pople.slice(0,4).join("、")+'等'
             }
             return(
                 <View style={{flex:1,backgroundColor:'#ffffff'}}>

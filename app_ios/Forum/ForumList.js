@@ -21,7 +21,7 @@ var {height, width} = Dimensions.get('window');
 import Http from '../utils/Http.js';
 var basePath=Http.domain;
 import Utils from '../utils/Utils.js';
-
+import LoadingView from '../Component/LoadingView.js';
 export default class ForumList extends Component{
     constructor(props) {
         super(props);
@@ -36,6 +36,7 @@ export default class ForumList extends Component{
             isRefreshing: false,
             moreshow:false,
             token:'',
+            fourmbackcolor:['#f1f2ff','#fff0f4','#fff9ea','#f6ffec'],
         };
     }
 
@@ -358,23 +359,31 @@ export default class ForumList extends Component{
     }
     renderForumRow(item){
         var rowData=item.item;
-        var time_last=this.dealWithTime(rowData.last_replied?rowData.last_replied:rowData.create_time)
+        var time_last=this.dealWithTime(rowData.last_replied?rowData.last_replied:rowData.create_time);
+        var headimg='';
+        var forumbackcolor='';
+        /*if(rowData.userinfo.)*/
         return (
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
-                style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
+                style={{width: width,flex:1, backgroundColor: this.state.fourmbackcolor[0],borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
                 <View style={{flexDirection:'row',}}>
                     <View style={{alignItems:'center'}}>
-                        <TouchableOpacity style={{width:50,height:50,marginTop:20}} onPress={this.goPersonalPage.bind(this, rowData.userinfo)}>
+                        <TouchableOpacity style={{width:70,height:70,marginTop:10}} onPress={this.goPersonalPage.bind(this, rowData.userinfo)}>
                             {!rowData.userinfo.avatar?(
                                 <Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>
                             ):(
-                                <Image style={{width:50,height:50,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>
+                                <View style={{alignItems:'center',justifyContent:'center'}}>
+                                    <Image style={{width:50,height:50,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>
+                                    <View style={{position:'absolute',top:-8,left:2,width:70,height:70,alignItems:'center',justifyContent:'center'}}>
+                                        <Image style={{width:70,height:70,borderRadius:25,}} resizeMode={'contain'} source={require('../assets/ImageHead/6.png')}/>
+                                    </View>
+                                </View>
                             )}
                         </TouchableOpacity>
                         <Text style={{paddingTop:10,fontSize:12,color:'#6E7B8B'}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
-                    <View style={{paddingLeft:16,paddingRight:20,paddingTop:10,width:width*0.86,}}>
+                    <View style={{paddingLeft:16,paddingRight:20,paddingTop:10,width:width*0.83,}}>
                         <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10,fontWeight: '500',}}>{rowData.status=='unsolved'?(<Text style={{color:'red'}}>[未解决]</Text>):(<Text style={{color:'#cccccc'}}>[{rowData.status_display}]</Text>)}  {rowData.title}</Text>
                         <Text style={{fontSize:14,paddingBottom:10,color:'#aaaaaa',}}>所属专区：{rowData.section.name}</Text>
                         <Text style={{paddingBottom:10,color:'#858585'}} numberOfLines={1}>{rowData.content}</Text>
@@ -392,9 +401,7 @@ export default class ForumList extends Component{
     _keyExtractor = (item, index) => index;
     render(){
         if(!this.state.dataSource){
-            return( <View style={styles.container}>
-                        <Text>正在加载......</Text>
-                    </View>)
+            return( <LoadingView />)
         }else{
             return (
                 <View style={styles.container}>
