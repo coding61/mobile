@@ -552,11 +552,11 @@ class ActivityDetail extends Component {
                                 {
                                     this.state.data.isjoin?
                                         <View>
-                                        <TouchableOpacity onPress={this._punchCard.bind(this)}>
-                                        <View style={styles.btnJoin}>
-                                            <Text style={styles.btnText}>打卡</Text>
-                                        </View>
-                                        </TouchableOpacity>
+                                        {this.state.data.ispunch ? (
+                                            <TouchableOpacity style={styles.btnPunch} onPress={this._punchCard.bind(this)}>
+                                                <Text style={styles.btnText}>打卡</Text>
+                                            </TouchableOpacity>
+                                        ) : ( null )}
                                         <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
                                         <View style={styles.btnJoin}>
                                             <Text style={styles.btnText}>进入群聊</Text>
@@ -579,11 +579,11 @@ class ActivityDetail extends Component {
                             </View>
                         :
                             <View style={styles.bottomView}>
-                            <TouchableOpacity onPress={this._punchCard.bind(this)}>
-                            <View style={styles.btnJoin}>
-                                <Text style={styles.btnText}>打卡</Text>
-                            </View>
-                            </TouchableOpacity>
+                            {this.state.data.ispunch ? (
+                                <TouchableOpacity style={styles.btnPunch} onPress={this._punchCard.bind(this)}>
+                                    <Text style={styles.btnText}>打卡</Text>
+                                </TouchableOpacity>
+                            ) : ( null )}
 
                             <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
                             <View style={styles.btnJoin}>
@@ -793,6 +793,14 @@ const styles = StyleSheet.create({
         fontSize:12,
         color:fontSColor,
         marginBottom:30,
+    },
+    btnPunch: {
+        backgroundColor:'#5CADFB',
+        height:40,
+        alignItems:'center',
+        justifyContent:'center',
+        borderRadius:5,
+        marginBottom:15
     },
     btnJoin:{
         backgroundColor:pinkColor,

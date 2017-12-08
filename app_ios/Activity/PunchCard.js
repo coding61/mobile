@@ -86,7 +86,7 @@ class PunchCard extends Component {
                 Alert.alert(response.message?response.message:response.detail);
                 return;
             }
-            console.log(response);
+            // console.log(response);
             // response.punch_days = 30;
             this.setState({data: response},()=>{
                 // 只有第一次请求才会刷新高度，避免分享后背景高度跳动
@@ -208,7 +208,7 @@ class PunchCard extends Component {
     // 获取经过的天数
     _getPassDays(time) {
         var curDate = new Date();
-        var diff = Date.parse(curDate) - Date.parse(time) + 3600 * 1000 * 8;
+        var diff = Date.parse(curDate) - Date.parse(time);
         var days = Math.floor(diff / (24 * 3600 * 1000))
         return days;
     }
@@ -350,7 +350,7 @@ class PunchCard extends Component {
     // 打卡规则
     _ruleView() {
         const rule1 = '每天可进行多次打卡，仅首次打卡可获得钻石奖励。';
-        const rule2 = '完成连续打卡任务可额外获得100钻石的奖励，若中断打卡，则挑战失败无法获取额外奖励，但可继续重新打卡，获得当天钻石奖励。'
+        const rule2 = '完成连续打卡任务可额外获得钻石的奖励，若中断打卡，则挑战失败无法获取额外奖励，但可继续重新打卡，获得当天钻石奖励。'
         return (
             <View style={styles.ruleView} onLayout={this._onLayout.bind(this)}>
                 <View style={{flexDirection: 'row'}}>
