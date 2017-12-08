@@ -328,8 +328,8 @@
 	/* 设置友盟appkey */
 	[[UMSocialManager defaultManager] setUmSocialAppkey:@"59ffe160b27b0a6cab00005a"];
 	// wx1ace10b30a9d5d70
-	[[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:@"wx2ffd4bce6eb8488d" appSecret:@"f5c4439b9e49498828324fb4a9aaad91" redirectURL:nil];
-	[[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatTimeLine appKey:@"wx2ffd4bce6eb8488d" appSecret:@"f5c4439b9e49498828324fb4a9aaad91" redirectURL:nil];
+	[[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:@"wx1ace10b30a9d5d70" appSecret:@"f5c4439b9e49498828324fb4a9aaad91" redirectURL:nil];
+	[[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatTimeLine appKey:@"wx1ace10b30a9d5d70" appSecret:@"f5c4439b9e49498828324fb4a9aaad91" redirectURL:nil];
 }
 
 @end
