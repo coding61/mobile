@@ -150,13 +150,6 @@
 			remoteGlobalIDString = 53B2B897D64E4516E75AC86348B86622;
 			remoteInfo = HappyDNS;
 		};
-		62A04E96EC2A25D9683E0063C91DE1BE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9E033EDB5EC0819481B0546434FA577B;
-			remoteInfo = AFNetworking;
-		};
 		684DAF31BE90D6956F5A897BB76FB977 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
@@ -1016,7 +1009,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				F7C89AE13951539BC6A76FB58EFF3ED5 /* PBXTargetDependency */,
 				376D6ED7328B1F5D8C5B334ECD254AED /* PBXTargetDependency */,
 			);
 			name = Qiniu;
@@ -1184,12 +1176,6 @@
 			name = AFNetworking;
 			target = 9E033EDB5EC0819481B0546434FA577B /* AFNetworking */;
 			targetProxy = BC85435EFAE186B52F974FC5F90DDB33 /* PBXContainerItemProxy */;
-		};
-		F7C89AE13951539BC6A76FB58EFF3ED5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = AFNetworking;
-			target = 9E033EDB5EC0819481B0546434FA577B /* AFNetworking */;
-			targetProxy = 62A04E96EC2A25D9683E0063C91DE1BE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
