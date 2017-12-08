@@ -21,6 +21,7 @@ import {
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 import BCFetchRequest from '../utils/BCFetchRequest.js';
+import RewardView from '../Activity/RewardView.js';
 
 var RNBridgeModule = NativeModules.RNBridgeModule;
 var UMeng = NativeModules.ShareRN;
@@ -34,7 +35,9 @@ class PunchCard extends Component {
             token: null,
             num: null,
             bgHeight: width * 520 / 750,
-            show: false,
+            show: false,            // 打卡规则
+            showReward: false,      // 打卡奖励
+            showRewardNum: 0,
             pk: this.props.navigation.state.params.pk
             // pk: 38,
         }
@@ -126,11 +129,21 @@ class PunchCard extends Component {
                 return;
             };
             if (response.status == -4 || response.message) {
-                Alert.alert(response.message ? response.message : response.detail);
-                if (response.message == '活动打卡成功') {
+                // Alert.alert(response.message ? response.message : response.detail);
+                // 打卡获得钻石时
+                if (response.message && response.message == '活动打卡成功') {
+                    if (response.diamond_amount && response.diamond_amount != 0) {
+                        this.setState({showRewardNum: response.diamond_amount},() =>{
+                            this.setState({showReward: true})
+                        })
+                    } else {
+                        Alert.alert(response.message);
+                    }
                     this._getPunchCardRecord();
+                } else {
+                    // 多个 modal 会隐藏掉后面的
+                    Alert.alert(response.message ? response.message : response.detail);
                 }
-                return;
             }
         }, (err) => {
             console.log(err);
@@ -473,6 +486,10 @@ class PunchCard extends Component {
         )
     }
 
+    _hideRewardView() {
+        this.setState({showReward: false});
+    }
+
     render() {
         var navView = this._navView();
         var infoView = this._infoView();
@@ -489,6 +506,14 @@ class PunchCard extends Component {
                 <TouchableOpacity style={styles.shareBtn} onPress={this._shareWeChat.bind(this)}>
                     <Text style={styles.shareTxt}>分享打卡</Text>
                 </TouchableOpacity>
+                {
+                    this.state.showReward ?
+                        <RewardView
+                            type={'punchcard'}
+                            msg={'恭喜你获得了' + String(this.state.showRewardNum) + '颗钻石'}
+                            hide={this._hideRewardView.bind(this)}
+                        />:null
+                }
             </View>
         );
     }
