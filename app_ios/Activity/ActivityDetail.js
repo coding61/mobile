@@ -553,7 +553,7 @@ class ActivityDetail extends Component {
                                     this.state.data.isjoin?
                                         <View>
                                         <TouchableOpacity onPress={this._punchCard.bind(this)}>
-                                        <View style={styles.btnJoin}>
+                                        <View style={styles.btnPunch}>
                                             <Text style={styles.btnText}>打卡</Text>
                                         </View>
                                         </TouchableOpacity>
@@ -580,7 +580,7 @@ class ActivityDetail extends Component {
                         :
                             <View style={styles.bottomView}>
                             <TouchableOpacity onPress={this._punchCard.bind(this)}>
-                            <View style={styles.btnJoin}>
+                            <View style={styles.btnPunch}>
                                 <Text style={styles.btnText}>打卡</Text>
                             </View>
                             </TouchableOpacity>
@@ -793,6 +793,14 @@ const styles = StyleSheet.create({
         fontSize:12,
         color:fontSColor,
         marginBottom:30,
+    },
+    btnPunch: {
+        backgroundColor:'#369ffb',
+        height:40,
+        alignItems:'center',
+        justifyContent:'center',
+        borderRadius:5,
+        marginBottom:15
     },
     btnJoin:{
         backgroundColor:pinkColor,
