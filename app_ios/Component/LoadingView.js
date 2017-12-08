@@ -40,6 +40,10 @@ class LoadingView extends Component {
         type: PropTypes.oneOf(['full', 'unfull']).isRequired, //类型
         msg: PropTypes.string,
     }
+    componentDidMount() {
+      console.log(this.props.containerStyle);
+      console.log(styles.unfullParent);
+    }
     _renderFullView(){
     	return (
     		<Modal visible={true} transparent={true} onRequestClose={()=>{}}>
@@ -72,8 +76,11 @@ class LoadingView extends Component {
     	)
     }
   	render() {
+  		var containerStyle = this.props.type === "unfull"?
+  			this.props.containerStyle?[this.props.containerStyle, styles.unfullParent]:[styles.unfullParent1]
+  			: null
 	    return (
-	    	<View style={[this.props.type == "unfull"?styles.unfullParent:null, this.props.type == "unfull" && this.props.containerStyle?this.props.containerStyle:null]}>
+	    	<View style={containerStyle}>
 	    	{
 	    		this.props.type == "unfull"?this._renderUnfullView():this._renderFullView()
 		    }
@@ -84,8 +91,13 @@ class LoadingView extends Component {
 const styles = StyleSheet.create({
 	unfullParent:{
 		position:'absolute', 
-		width:width, 
-		height:height,  
+		alignItems:'center', 
+		justifyContent:'center',
+	},
+	unfullParent1:{
+		width:width,
+		height:height,
+		position:'absolute', 
 		alignItems:'center', 
 		justifyContent:'center',
 	},
