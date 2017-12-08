@@ -565,17 +565,38 @@ export default class Forum_Details extends Component{
             }else if(data.play_reward.play_reward_number>4){
                 reward=data.play_reward.play_reward_pople.slice(0,4).join("、")+'等'
             }
+            var headimg='';
+            var forumbackcolor='#fff';
+            if(data.userinfo.props.length>0){
+                for(var i=0;i<data.userinfo.props.length-1;i++){
+                    if(data.userinfo.props[i].status==1){
+                        if(data.userinfo.props[i].exchange_product.product_type==1){
+                            if(data.userinfo.props[i].exchange_product.category_detail.name=='fourmbackcolor'){
+                                forumbackcolor=data.userinfo.props[i].exchange_product.content
+                            }else if(data.userinfo.props[i].exchange_product.category_detail.name=='headerProp'){
+                                headimg=data.userinfo.props[i].exchange_product.image
+                            }
+                        }
+                    }
+                }
+            }
             return(
                 <View style={{flex:1,backgroundColor:'#ffffff'}}>
                     <ScrollView>
                         <Text style={{fontSize:16,color:'#292929',padding:15,}} selectable={true}>{data.status_display=='未解决'?(<Text style={{color:'#ff6b94',marginRight:10,}}>[{data.status_display}]</Text>):(<Text style={{color:'#858585',paddingRight:10,}}>[{data.status_display}]</Text>)}   {data.title}</Text>
                         <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:'#F2F2F2'}}>
                             <View style={{alignItems:'center',paddingLeft:20,}}>
-                                <TouchableOpacity style={{width:50,height:50}} onPress={this.goPersonalPage.bind(this, data.userinfo)}>
+                                <TouchableOpacity style={{width:70,height:70}} onPress={this.goPersonalPage.bind(this, data.userinfo)}>
                                     {!data.userinfo.avatar ? (
                                         <Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>
                                     ) : (
-                                        <Image style={{width:50,height:50,borderRadius:25}} source={{uri:data.userinfo.avatar}}/>
+                                        <View style={{alignItems:'center',justifyContent:'center'}}>
+                                            <Image style={{width:50,height:50,borderRadius:25,}} source={{uri:data.userinfo.avatar}}/>
+                                            <View style={{position:'absolute',top:-10,left:-2,width:70,height:70,alignItems:'center',justifyContent:'center'}}>
+                                                {headimg?(<Image style={{width:60,height:60,borderRadius:25,}} resizeMode={'contain'} source={{uri:headimg}}/>):(null)}
+                                            </View>
+                                        </View>
+                                        /*<Image style={{width:50,height:50,borderRadius:25}} source={{uri:data.userinfo.avatar}}/>*/
                                     )}
                                 </TouchableOpacity>
                                 <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
