@@ -350,7 +350,7 @@ class PunchCard extends Component {
     // 打卡规则
     _ruleView() {
         const rule1 = '每天可进行多次打卡，仅首次打卡可获得钻石奖励。';
-        const rule2 = '完成连续打卡任务可额外获得100钻石的奖励，若中断打卡，则挑战失败无法获取额外奖励，但可继续重新打卡，获得当天钻石奖励。'
+        const rule2 = '完成连续打卡任务可额外获得钻石的奖励，若中断打卡，则挑战失败无法获取额外奖励，但可继续重新打卡，获得当天钻石奖励。'
         return (
             <View style={styles.ruleView} onLayout={this._onLayout.bind(this)}>
                 <View style={{flexDirection: 'row'}}>

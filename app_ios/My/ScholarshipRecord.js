@@ -25,7 +25,7 @@ const LoadMoreIng = -1;       //加载中
 class ScholarshipRecord extends Component {
 	constructor(props) {
 	    super(props);
-	
+
 	    this.state = {
       balance: '__',
 			dataSource:[],
@@ -51,14 +51,14 @@ class ScholarshipRecord extends Component {
       	this._fetchCommodityRecordList(1);
     }
     componentDidMount() {
-      
+
     }
     componentWillUnmount() {
         this.timer && clearTimeout(this.timer);
     }
     // ------------------------------------------网络请求
     _fetchCommodityRecordList(pagenum){
-        
+
 		// var dic = {
   //             "pk": 4,
   //             "name": "北京大学现场讲座",
@@ -69,7 +69,7 @@ class ScholarshipRecord extends Component {
   //             "create_time": "2017-10-18T10:06:21.129728"
   //       }
   //       var array = [];
-        
+
   //       if (pagenum > 3) {
   //           this.setState({footerLoadTag:LoadNoMore});
   //           var arr = [];
@@ -96,7 +96,7 @@ class ScholarshipRecord extends Component {
   //           loading:false,
   //           dataSource:array,
   //       });
-        
+
 
         Utils.isLogin((token)=>{
             if (token) {
@@ -110,6 +110,7 @@ class ScholarshipRecord extends Component {
                   })
                   .then(responseJSON => {
                     if (responseJSON !== '失败') {
+                        console.log(responseJSON);
                       this.setState({
                         balance: responseJSON.balance
                       })
@@ -129,7 +130,7 @@ class ScholarshipRecord extends Component {
                     if (!response) {
                         //请求失败
                     };
-                    
+
                     if (response.next == null) {
                         //如果 next 字段为 null, 则数据已加载完毕
                         this.setState({footerLoadTag:LoadNoMore});
@@ -166,7 +167,7 @@ class ScholarshipRecord extends Component {
         if (this.state.footerLoadTag != LoadMore) {
             return;
         }
-        
+
         // 请求下一页数据
         this.setState({
             footerLoadTag:LoadMoreIng    //加载更多->加载中
@@ -177,7 +178,7 @@ class ScholarshipRecord extends Component {
                 pagenum:this.state.pagenum+1
             }, ()=>{
                 this._fetchCommodityRecordList(this.state.pagenum);
-            }) 
+            })
         }, 500);
     }
     // 下拉刷新
@@ -188,7 +189,7 @@ class ScholarshipRecord extends Component {
                 pagenum:1
             }, ()=>{
                 this._fetchCommodityRecordList(this.state.pagenum);
-            }) 
+            })
         }, 500);
     }
     // ------------------------------------------兑换记录列表
@@ -230,7 +231,7 @@ class ScholarshipRecord extends Component {
     		<View style={{flex:1}}>
     			{
     				this.state.dataSource.length?
-			    		<FlatList 
+			    		<FlatList
 				            ref={(flatlist)=>this._flatList=flatlist}
 				            style={{flex:1,}}
 				            data={this.state.dataSource}
@@ -282,15 +283,15 @@ const font4 = Utils.fontMSSize;
 const styles = StyleSheet.create({
     // ---------------------------头部
     topView:{
-		height:50, 
-		backgroundColor:bgSecondColor, 
-		flexDirection:'row', 
-		alignItems:'center', 
-		paddingHorizontal:10, 
+		height:50,
+		backgroundColor:bgSecondColor,
+		flexDirection:'row',
+		alignItems:'center',
+		paddingHorizontal:10,
 		justifyContent:'space-between'
     },
     topView1:{
-    	flexDirection:'row', 
+    	flexDirection:'row',
     	alignItems:'center',
     	height:50
     },
@@ -298,9 +299,9 @@ const styles = StyleSheet.create({
     // ---------------------------FlatList
     // --------------FlatList 的尾部
     footerLoadMore:{
-        height:30, 
-        lineHeight:30, 
-        color:'gray', 
+        height:30,
+        lineHeight:30,
+        color:'gray',
         textAlign:'center',
         marginBottom:10
     },
@@ -311,7 +312,7 @@ const styles = StyleSheet.create({
         borderBottomWidth:1,
         padding:10
     },
-    
+
 
 });
 
