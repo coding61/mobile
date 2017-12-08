@@ -54,7 +54,7 @@ export default class RewardRecord extends Component{
                     self._loadAlldata();
                 });
             }
-        }); 
+        });
     }
     _loadAlldata() {
         this.setState({
@@ -152,7 +152,7 @@ export default class RewardRecord extends Component{
                     <Text style={{paddingBottom:10,fontSize:14,}}>{rowData.remake}</Text>
                     <Text  style={{color:'#999',fontSize:12,}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                 </View>
-                <View style={{alignItems:'center',justifyContent:'center',paddingLeft:10,}}> 
+                <View style={{alignItems:'center',justifyContent:'center',paddingLeft:10,}}>
                     <Text style={{color:'rgb(247, 99, 146)',fontSize:16,}}>{rowData.amount+'钻石'}</Text>
                 </View>
             </View>
