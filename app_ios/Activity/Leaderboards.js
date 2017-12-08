@@ -199,7 +199,7 @@ class Leaderboards extends Component {
       		<View style={{flex:1, backgroundColor:bgColor}}>
       			{this._renderFlatList()}
       			{
-      				this.state.loading?<LoadingView />:null
+      				this.state.loading?<LoadingView containerStyle={this.props.containerStyle}/>:null
       			}
 
        		</View>

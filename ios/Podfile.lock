@@ -14,38 +14,38 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - HappyDNS (0.3.10)
-  - Qiniu (7.1.6):
-    - AFNetworking (~> 3)
+  - HappyDNS (0.3.12)
+  - Qiniu (7.2.2):
     - HappyDNS (~> 0.3)
-  - RongCloudIM/IMKit (2.8.3):
+  - RongCloudIM/IMKit (2.8.24):
     - RongCloudIM/IMLib
-  - RongCloudIM/IMLib (2.8.3)
-  - UMengUShare/Core (6.4.6):
+  - RongCloudIM/IMLib (2.8.24)
+  - UMengUShare/Core (6.4.7):
     - UMengUShare/Network
-  - UMengUShare/Network (6.4.6)
-  - UMengUShare/Social/ReducedWeChat (6.4.6):
+  - UMengUShare/Network (6.4.7)
+  - UMengUShare/Social/ReducedWeChat (6.4.7):
     - UMengUShare/Core
-  - UMengUShare/Social/WeChat (6.4.6):
+  - UMengUShare/Social/WeChat (6.4.7):
     - UMengUShare/Core
     - UMengUShare/Social/ReducedWeChat
-  - UMengUShare/UI (6.4.6):
+  - UMengUShare/UI (6.4.7):
     - UMengUShare/Core
 
 DEPENDENCIES:
+  - AFNetworking (~> 3.0)
   - Qiniu
-  - RongCloudIM/IMKit (<= 2.8.3)
-  - RongCloudIM/IMLib (<= 2.8.3)
+  - RongCloudIM/IMKit (~> 2.8.3)
+  - RongCloudIM/IMLib (~> 2.8.3)
   - UMengUShare/Social/WeChat
   - UMengUShare/UI
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  HappyDNS: 06a9fed2796663fd87626dbf02552933265bf059
-  Qiniu: 8af94ce9b1611ed5f4350883e41d4a62cabad491
-  RongCloudIM: 33c6ba0880116d992b527c054903f683b014f0c2
-  UMengUShare: fdbbf86353976727af26a66e9a84314ecb59c816
+  HappyDNS: 691a3041128055d09866f86e6e9ca90f24da1f18
+  Qiniu: ef9fcc56ea11d5f31e2f1309ed3bbd98c2ac4def
+  RongCloudIM: f51b1ff9a289e3bc39da61921d6bdbd896d08c18
+  UMengUShare: 5055d0e01c844379e173bdca0840fc9fa9297d88
 
-PODFILE CHECKSUM: 35435a21f859eb6a8deb1c593a9c57d8b0c87c9a
+PODFILE CHECKSUM: b8fdf63e963278d89573924934d87bbca66bfc56
 
 COCOAPODS: 1.3.1

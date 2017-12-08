@@ -242,6 +242,7 @@ class CompeteAnswer extends Component {
         )
     }
     _renderMainView(){
+        const containerStyle={width:width, height:height-300}
         return (
             <View style={{flex:1}}>
                 <View style={{height:200, backgroundColor:'white'}}>
@@ -253,7 +254,7 @@ class CompeteAnswer extends Component {
                     <View style={{borderBottomColor:'black',borderBottomWidth:2, marginVertical:2, flexDirection:'row',width:50, marginLeft:10, marginVertical:2, height:35, alignItems:'center', justifyContent:'center'}}>
                         <Text style={{fontSize:18, fontWeight:'bold'}}>{"榜单"}</Text>
                     </View>
-                    <Leaderboards navigation={this.props.navigation} contest={this.state.item.pk}/>
+                    <Leaderboards navigation={this.props.navigation} contest={this.state.item.pk} containerStyle={containerStyle}/>
                 </View>
                 {/*
                 <TouchableOpacity style={styles.submit} onPress={this._submitAnswer.bind(this)}>
