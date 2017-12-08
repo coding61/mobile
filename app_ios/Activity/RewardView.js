@@ -8,7 +8,7 @@
   *  msg  ,           图片下文本消息
   *  hide,            隐藏视图
   *  submitText,      按钮的文字(可选)
-  *  submitPressEvent, 按钮触发事件(可选)     
+  *  submitPressEvent, 按钮触发事件(可选)
   */
 'use strict';
 
@@ -31,14 +31,14 @@ const width = Dimensions.get('window').width
 class RewardView extends Component {
 	constructor(props) {
 	  super(props);
-	
+
 	  this.state = {};
-	}  
+	}
 	_submitPressEvent(){
         this.props.submitPressEvent?this.props.submitPressEvent():this.props.hide();
     }
     _renderFullView(){
-    	var img = this.props.type == "hongbao"?require('../assets/Activity/hongbao.png'):require('../assets/Activity/zuan.png'),
+    	var img = this.props.type == "hongbao"?require('../assets/Activity/hongbao.png'):this.props.type == "punchcard"?require('../assets/Activity/punch.png'):require('../assets/Activity/zuan.png'),
     		msg = this.props.msg,
     		submitText=this.props.submitText?this.props.submitText:"确定";
     	return (
@@ -76,25 +76,25 @@ class RewardView extends Component {
 const w1 = width*3/4
 const styles = StyleSheet.create({
 	unfullParent:{
-		position:'absolute', 
-		width:width, 
-		height:height,  
-		alignItems:'center', 
+		position:'absolute',
+		width:width,
+		height:height,
+		alignItems:'center',
 		justifyContent:'center',
 	},
 	fullParent:{
-		flex:1, 
-		alignItems:'center', 
+		flex:1,
+		alignItems:'center',
 		justifyContent:'center',
 		backgroundColor:'rgba(0,0,0,0.6)'
 	},
 	loadView:{
-		width:w1, 
-		// height:height/2, 
-		borderRadius:5, 
-		alignItems:'center', 
-		// alignSelf:'center', 
-		justifyContent:'center', 
+		width:w1,
+		// height:height/2,
+		borderRadius:5,
+		alignItems:'center',
+		// alignSelf:'center',
+		justifyContent:'center',
 		backgroundColor:'white',
 		paddingHorizontal:20,
 	},
@@ -118,17 +118,17 @@ const styles = StyleSheet.create({
 		height:40,
 	},
 	msg:{
-		color:'#373737', 
-		// backgroundColor:'blue', 
-		lineHeight:20, 
+		color:'#373737',
+		// backgroundColor:'blue',
+		lineHeight:20,
 		fontSize:15,
 		textAlign:'center'
 	},
 	btn:{
 		width:w1-60,
-		height:45, 
-		backgroundColor:'#ff7373', 
-		marginBottom:15, 
+		height:45,
+		backgroundColor:'#ff7373',
+		marginBottom:15,
 		borderRadius:5,
 		alignItems:'center',
 		justifyContent:'center',
