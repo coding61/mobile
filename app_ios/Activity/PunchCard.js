@@ -86,6 +86,7 @@ class PunchCard extends Component {
                 Alert.alert(response.message?response.message:response.detail);
                 return;
             }
+            console.log(response);
             // response.punch_days = 30;
             this.setState({data: response},()=>{
                 // 只有第一次请求才会刷新高度，避免分享后背景高度跳动
