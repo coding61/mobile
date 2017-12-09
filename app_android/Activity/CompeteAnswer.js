@@ -249,7 +249,7 @@ class CompeteAnswer extends Component {
                 </ScrollView>
                 </View>
                 <View style={{flex:1, marginTop:20, backgroundColor:'white'}}>
-                    <View style={{borderBottomColor:'black',borderBottomWidth:2, marginVertical:2, flexDirection:'row',width:50, marginLeft:10, marginVertical:2, height:35, alignItems:'center', justifyContent:'center'}}>
+                    <View style={{borderBottomColor:'black',borderBottomWidth:2, flexDirection:'row',width:50, marginLeft:10, height:35, alignItems:'center', justifyContent:'center'}}>
                         <Text style={{fontSize:18, fontWeight:'bold'}}>{"榜单"}</Text>
                     </View>
                     <Leaderboards navigation={this.props.navigation} contest={this.state.item.pk}/>
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
         height:35,
         alignItems:'center',
         justifyContent:'center',
-        marginVertical:2,
+        // marginVertical:2,
     },
     headerTitleTabSelect:{
         borderBottomColor:'white',
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
    		borderWidth:1,
    		height:height/3,
    		borderRadius:2,
-   		marginVertical:20,
+   		// marginVertical:20,
    		padding:10,
    		lineHeight:20,
    		fontSize:15
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
         borderRadius:5,
         width:width-20,
         marginHorizontal:10,
-        marginVertical:20
+        // marginVertical:20
    	},
     cancel:{
         height:45,
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
         borderRadius:5,
         width:width-20,
         marginHorizontal:10,
-        marginVertical:20
+        // marginVertical:20
     }
 
 });
