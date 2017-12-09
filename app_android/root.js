@@ -57,6 +57,7 @@ import PunchCard from './Activity/PunchCard.js';
 
 import CatalogCourse from './My/CatalogCourse.js';
 import ScholarshipRecord from './My/ScholarshipRecord.js';
+import RewardRecord from './My/RewardRecord.js';
 
 import Exchange from './Exchange/Exchange.js';
 import ExchangeRecord from './Exchange/ExchangeRecord.js';
@@ -127,6 +128,7 @@ const app = StackNavigator({
     Register:{screen: Register},
     FindWord: {screen: FindWord},
     SelectHead: {screen: SelectHead},
+    RewardRecord:{screen:RewardRecord},
 
     CompeteView:{screen:CompeteView},
     Activity:{screen:Activity},

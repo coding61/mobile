@@ -80,13 +80,29 @@ class PersonalReward extends Component {
     }
 
     _fetchAward(num) {
-        var type = "POST",
-            url = Http.awardDiamond,
-            token = this.state.token,
-            data = {
-                amount: num,
-                to_username: this.state.owner
-            };
+        var type = "POST";
+        var   url = Http.awardDiamond;
+        var   token = this.state.token;
+            if(this.props.navigation.state.params.flag=='post'){
+                
+                var data = {
+                    amount: num,
+                    to_username: this.state.owner,
+                    posts:this.props.navigation.state.params.replypk
+                };
+            }else if(this.props.navigation.state.params.flag=='reply'){
+                
+                var data = {
+                    amount: num,
+                    to_username: this.state.owner,
+                    replies:this.props.navigation.state.params.replypk
+                };
+            }else{
+                var data = {
+                    amount: num,
+                    to_username: this.state.owner
+                };
+            }
         BCFetchRequest.fetchData(type, url, token, data, (response) => {
             if (!response) {
                 Alert.alert('失败，请重试');

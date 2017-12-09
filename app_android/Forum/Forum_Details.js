@@ -331,11 +331,17 @@ export default class Forum_Details extends Component{
     }
     renderForumRow(item){
         var rowData=item.item;
+        var reward='';
+        if(rowData.play_reward.play_reward_number>0&&rowData.play_reward.play_reward_number<4){
+            reward=rowData.play_reward.play_reward_pople.join('、')
+        }else if(rowData.play_reward.play_reward_number>4){
+            reward=rowData.play_reward.play_reward_pople.slice(0,4).join("、")+'等'
+        }
         return (
             <View style={{width: width,flex:1, backgroundColor: '#ffffff',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingRight:10,paddingBottom:10,}}>
-                <View style={{flexDirection:'row',paddingTop:10,backgroundColor:'#ffffff',width:width*0.9,paddingLeft:15,marginRight:10,}}>
-                    <View style={{alignItems:'center',paddingLeft:20,}}>
-                        <TouchableOpacity style={{width:50,height:30}} onPress={this.goPersonalPage.bind(this, rowData.userinfo)}>
+                <View style={{flexDirection:'row',paddingTop:10,backgroundColor:'#ffffff',width:width,paddingRight:10,}}>
+                    <View style={{alignItems:'center',}}>
+                        <TouchableOpacity style={{width:50,height:30,marginLeft:15,}} onPress={this.goPersonalPage.bind(this, rowData.userinfo)}>
                             {!rowData.userinfo.avatar ? (
                                 <Image style={{width:50,height:30,borderRadius:15,}} source={require('../assets/Forum/defaultHeader.png')}/>
                             ) : (
@@ -345,22 +351,26 @@ export default class Forum_Details extends Component{
                         <Text style={{paddingTop:5,fontSize:10,color:'#ff6b94',}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
-                    <View style={{paddingLeft:20,paddingRight:10,width:width*0.5,}}>
+                    <View style={{paddingLeft:20,paddingRight:10,width:width*0.6,}}>
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.userinfo.name}</Text>
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                     </View>
-                    <View style={{marginRight:20,}}>
-                        <TouchableOpacity style={{marginTop:3,marginRight:5,marginBottom:4,}} onPress={this.Show_Comment.bind(this,rowData.pk,rowData.userinfo.name)}>
+                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                        <TouchableOpacity style={{marginTop:3,marginRight:15,marginBottom:4,}} onPress={this.Show_Comment.bind(this,rowData.pk,rowData.userinfo.name)}>
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
-                            <TouchableOpacity onPress={this.detele_reply.bind(this,rowData.pk)} style={{marginRight:20,marginLeft:3,borderRadius:5,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center'}}>
-                                <Text  style={{fontSize:12,paddingTop:2,paddingRight:5,paddingLeft:5,paddingBottom:2,color:'#ffffff',}}>删除</Text>
+                            <TouchableOpacity onPress={this.detele_reply.bind(this,rowData.pk)} style={{marginLeft:3,alignItems:'center',justifyContent:'center'}}>
+                                <Text  style={{fontSize:12,paddingRight:5,paddingLeft:5,color:'red',}}>删除</Text>
                             </TouchableOpacity>
+                            ):(null)}
+                        {this.state.UserPk!=rowData.userinfo.pk?(
+                            <Text onPress={this.givereplyprize.bind(this, rowData.userinfo.owner,rowData.pk)} style={{fontSize:14,paddingBottom:10,marginLeft:10,paddingRight:10,marginTop:3,color:'#999',}}>打赏</Text>
                             ):(null)}
                     </View>
                 </View>
                 {rowData.content?(<ForumDeatilCont data={rowData.content}></ForumDeatilCont>):(null)}
+                {rowData.play_reward.play_reward_number>0?(<Text style={{color:'#999',paddingLeft:20,paddingBottom:10,}}>{reward+" "+rowData.play_reward.play_reward_number+"人打赏"}</Text>):(null)}
                 {rowData.replymore.map((result,index)=> {
                     return(
                         <View key={index} style={{backgroundColor:'#f1f1f1',width:width*0.9,marginLeft:width*0.05,marginRight:width*0.05,borderBottomColor:'#D3D3D3',borderBottomWidth:0.5,}}>
@@ -514,11 +524,39 @@ export default class Forum_Details extends Component{
             })
         }
     }
+    givereplyprize(owner,pk){
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('PersonalReward', { owner: owner,replypk:pk,flag:'reply',callback: (msg)=>{
+                        this._onRefresh();
+                    } });
+            }else{
+                this.props.navigation.navigate("Login");
+            }
+        })
+    }
+    giveprize(owner,pk){
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('PersonalReward', { owner: owner,replypk:pk,flag:'post',callback: (msg)=>{
+                        this._loadforum()
+                    } });
+            }else{
+                this.props.navigation.navigate("Login");
+            }
+        })
+    }
     render() {
         var data=this.state.data;
+        var reward='';
         if(!data||!this.state.UserInfo){
             return(<Text style={{alignItems:'center',justifyContent:'center',paddingTop:20,}}>加载中...</Text>)
         }else{
+            if(data.play_reward.play_reward_number>0&&data.play_reward.play_reward_number<4){
+                reward=data.play_reward.play_reward_pople.join('、')
+            }else if(data.play_reward.play_reward_number>4){
+                reward=data.play_reward.play_reward_pople.slice(0,4).join("、")+'等'
+            }
             return(
                 <View style={{flex:1,backgroundColor:'#ffffff'}}>
                     <ScrollView>
@@ -535,12 +573,14 @@ export default class Forum_Details extends Component{
                                 <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
                                 {this.rendertop(data.userinfo.top_rank)}
                             </View>
-                            <View style={{paddingLeft:40,paddingRight:10,width:width*0.87,}}>
+                            <View style={{paddingLeft:20,paddingRight:10,width:width*0.66,}}>
                                 <Text style={{paddingBottom:10,color:'#858585'}}>{data.userinfo.name}</Text>
                                 <Text style={{paddingBottom:5,color:'#858585'}}>{data.create_time.slice(0, 16).replace("T", " ")}</Text>
                                 <Text style={{color:'#FF6A6A'}}>[{data.types.name}]</Text>
                             </View>
-
+                            {this.state.UserPk!=data.userinfo.pk?(
+                                <Text onPress={this.giveprize.bind(this, data.userinfo.owner,data.pk)} style={{fontSize:14,paddingBottom:10,color:'#999',}}>打赏</Text>
+                                ):(null)}
                         </View>
                         <View style={{marginBottom:10,}}>
                             {this.state.data.content?(<ForumDeatilCont data={this.state.data.content} ></ForumDeatilCont>):(null)}
@@ -557,7 +597,7 @@ export default class Forum_Details extends Component{
                                             )}
                                         </View>
                                     ):(null)}
-                                {(this.state.UserInfo.is_staff||data.userinfo.pk==this.state.UserPk)?(<Text onPress={this.detele_main.bind(this)} style={{color:'#ff6b94',marginLeft:30,fontSize:16,}}>删除此贴</Text>):(null)}
+                                {(this.state.UserInfo.is_staff||(data.userinfo.pk==this.state.UserPk))?(<Text onPress={this.detele_main.bind(this)} style={{color:'#ff6b94',marginLeft:30,fontSize:16,}}>删除此贴</Text>):(null)}
                             </View>
                                 {this.state.UserInfo.is_staff?(
                                     <View style={{flexDirection:'row',paddingLeft:30,marginTop:10,}}>
@@ -565,6 +605,7 @@ export default class Forum_Details extends Component{
                                         {data.istop?(<Text style={{color:'#FF6A6A'}} onPress={this.manager.bind(this,2)}>取消置顶</Text>):(<Text style={{color:'#FF6A6A'}} onPress={this.manager.bind(this,3)}>置顶</Text>)}
                                     </View>
                                     ):(null)}
+                                {data.play_reward.play_reward_number>0?(<Text style={{color:'#999',paddingLeft:20,paddingTop:10,}}>{reward+" "+data.play_reward.play_reward_number+"人打赏"}</Text>):(null)}
                                 <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,marginTop:10,}}>回帖数量({data.reply_count})</Text>
                         </View>
                         <FlatList
