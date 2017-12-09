@@ -16,12 +16,16 @@ import {
   DeviceEventEmitter,
   Button,
   AsyncStorage,
+  NativeModules
 }from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ForumDeatilCont from './ForumDeatilCont';
 var {height, width} = Dimensions.get('window');
 import Http from '../utils/Http.js';
 import Utils from '../utils/Utils.js';
+
+
+var UMeng = require('react-native').NativeModules.RongYunRN;
 
 var basePath=Http.domain;
 export default class Forum_Details extends Component{
@@ -84,10 +88,13 @@ export default class Forum_Details extends Component{
         });
     }
     componentDidMount() {
+        // 分享按钮点击
+        this.props.navigation.setParams({
+            navRightBtnClick: this._shareWeChat.bind(this)
+        })
         this._loadforum()
         this._loadData()
         this._loadUserinfo()
-
         this.eventEmss = DeviceEventEmitter.addListener('collec', (value)=>{
             var data = {};
             data.types = "posts";
@@ -127,6 +134,28 @@ export default class Forum_Details extends Component{
               this.props.navigation.navigate('CommentText', {data: value,userinfo:'',name:'main',callback:(msg)=>{
                 this._onRefresh()
             }})
+        })
+    }
+
+
+
+    _shareWeChat = () => {
+        if (!this.state.data.title) {
+            Alert.alert('正在获取帖子详情，请稍后...');
+            return;
+        }
+        var title = this.state.data.title;
+        var content = this.state.data.content;
+        var shareUrl = Http.shareForumUrl(this.state.pk);
+        var imgUrl = Http.shareLogoUrl;    // 默认图标
+        UMeng.rnShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
+            if(error) {
+                Alert.alert('分享出错了');
+            } else {
+                if (callBackEvents == 'success') {
+                    // 钻石动画等
+                };
+            }
         })
     }
 
@@ -562,3 +591,18 @@ export default class Forum_Details extends Component{
         }
     }
 }
+
+const styles = StyleSheet.create({
+    navRightBtn: {
+        width: 60,
+        height: 40,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    navRightTxt: {
+        color: 'white',
+        fontSize: 15,
+        marginTop: 2
+    }
+})

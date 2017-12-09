@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     // ---------------------message(机器回复)
     message:{
         width:widthMsg,
-        marginVertical:10, 
+        // marginVertical:10, 
         marginHorizontal:marginHorMsg, 
         flexDirection:'row'
     },
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     // -----------------------人工回复
     answer:{
         width:widthMsg,
-        marginVertical:10,
+        // marginVertical:10,
         marginHorizontal:marginHorMsg,
         flexDirection:'row',
         justifyContent:'flex-end',
@@ -573,7 +573,7 @@ const styles = StyleSheet.create({
         flexDirection:'row', 
         justifyContent:'flex-end', 
         marginHorizontal:8, 
-        marginVertical:5
+        // marginVertical:5
     },
     btnSubmit:{
         backgroundColor:'rgb(250, 80, 131)', 

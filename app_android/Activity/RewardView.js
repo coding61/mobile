@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
 	msgView:{
 		width:w1-20,
 		paddingHorizontal:20,
-		marginVertical:15,
+		// marginVertical:15,
 		alignItems:'center',
 		justifyContent:'center',
 		height:40,

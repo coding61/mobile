@@ -53,6 +53,7 @@ import ManageMember from './Activity/ManageMember.js';
 import CompeteAnswer from './Activity/CompeteAnswer.js';
 import EditAnswer from './Activity/EditAnswer.js';
 import Leaderboards from './Activity/Leaderboards.js';
+import PunchCard from './Activity/PunchCard.js';
 
 import CatalogCourse from './My/CatalogCourse.js';
 import ScholarshipRecord from './My/ScholarshipRecord.js';
@@ -142,6 +143,7 @@ const app = StackNavigator({
     Exchange:{screen:Exchange},
     ExchangeRecord:{screen:ExchangeRecord},
     ExchangeUsingRecord:{screen:ExchangeUsingRecord},
+    PunchCard:{screen:PunchCard}
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称
     initialRouteParams:{userinfo:''}        //配置初始路由的参数

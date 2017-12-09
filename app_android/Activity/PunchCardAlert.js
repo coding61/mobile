@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
 	msgView:{
 		width:w1-20,
 		paddingHorizontal:20,
-		marginVertical:15,
+		// marginVertical:15,
 		alignItems:'center',
 		justifyContent:'center',
 		height:40,
@@ -129,9 +129,10 @@ const styles = StyleSheet.create({
 		// backgroundColor:'blue',
 		lineHeight:20,
 		fontSize:15,
-		textAlign:'center'
+		textAlign:'center',
 	},
     btnView: {
+        marginTop: 10,
         flexDirection: 'row',
         width:w1-60,
     },

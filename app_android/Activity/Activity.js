@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
         height:35, 
         alignItems:'center',
         justifyContent:'center', 
-        marginVertical:2, 
+        // marginVertical:2, 
     },
     headerTitleTabSelect:{
         borderBottomColor:'white', 

@@ -17,6 +17,7 @@ import {
   DeviceEventEmitter,
   NativeModules
 }from 'react-native';
+
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ForumDeatilCont from './ForumDeatilCont';
@@ -55,19 +56,16 @@ export default class Forum_Details extends Component{
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
             headerRight:
                 (
-                <View style={{flexDirection:'row', marginRight: 5}}>
-                    <TouchableOpacity style={{width: 25, height: 40, marginRight:20, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{
+                <View style={{flexDirection:'row',marginRight:20,}}>
+                    <TouchableOpacity style={{marginRight:30,}} onPress={()=>{
                         DeviceEventEmitter.emit('collec', state.params.data)
                     }}>
                         {state.params.iscollect==true?(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xin.png')} resizeMode={'contain'}/>):(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xinfull.png')} resizeMode={'contain'}/>)}
                     </TouchableOpacity>
-                    <TouchableOpacity style={{width: 25, height: 40, marginTop:3, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{
+                    <TouchableOpacity style={{marginTop:3,width:40,height:20,marginLeft:10,}} onPress={()=>{
                         DeviceEventEmitter.emit('message', state.params.data)
                     }}>
                         <Image style={{width:22,height:20,}} source={require('../assets/Forum/message.png')} resizeMode={'contain'}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.navRightBtn} onPress={navigation.state.params ? navigation.state.params.navRightBtnClick : null}>
-                        <Text style={styles.navRightTxt}>分享</Text>
                     </TouchableOpacity>
                 </View>
                 )
@@ -134,7 +132,6 @@ export default class Forum_Details extends Component{
             })
         })
 
-
         this.eventEm = DeviceEventEmitter.addListener('message', (value)=>{
             this.props.navigation.navigate('CommentText', {data: value,name:'main',userinfo:'',callback:(msg)=>{
                 this._onRefresh()
@@ -151,7 +148,6 @@ export default class Forum_Details extends Component{
         var content = this.state.data.content;
         var shareUrl = Http.shareForumUrl(this.state.pk);
         var imgUrl = Http.shareLogoUrl;    // 默认图标
-        console.log(shareUrl);
         UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
             if(error) {
                 Alert.alert('分享出错了');
