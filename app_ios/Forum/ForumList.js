@@ -111,7 +111,6 @@ export default class ForumList extends Component{
                     self._loadunread()
                 });
             }
-
         });
         this.eventEmtt = DeviceEventEmitter.addListener('addforum', (value)=>{
             this.props.navigation.navigate('ForumAdd',{data:value,token:this.state.token,callback:(msg)=>{
@@ -190,7 +189,6 @@ export default class ForumList extends Component{
                 }})
             }
         })
-
     }
     ranklist(){
         Utils.isLogin((token)=>{
@@ -205,7 +203,6 @@ export default class ForumList extends Component{
                 }})
             }
         })
-
     }
     _reloadPage(){
         var self = this;
@@ -244,7 +241,6 @@ export default class ForumList extends Component{
                 }})
             }
         })
-
     }
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
