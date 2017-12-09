@@ -56,18 +56,21 @@ export default class Forum_Details extends Component{
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
             headerRight:
                 (
-                <View style={{flexDirection:'row',marginRight:20,}}>
-                    <TouchableOpacity style={{marginRight:30,}} onPress={()=>{
-                        DeviceEventEmitter.emit('collec', state.params.data)
-                    }}>
-                        {state.params.iscollect==true?(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xin.png')} resizeMode={'contain'}/>):(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xinfull.png')} resizeMode={'contain'}/>)}
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{marginTop:3,width:40,height:20,marginLeft:10,}} onPress={()=>{
-                        DeviceEventEmitter.emit('message', state.params.data)
-                    }}>
-                        <Image style={{width:22,height:20,}} source={require('../assets/Forum/message.png')} resizeMode={'contain'}/>
-                    </TouchableOpacity>
-                </View>
+                    <View style={{flexDirection:'row', marginRight: 5}}>
+                        <TouchableOpacity style={{width: 25, height: 40, marginRight:20, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{
+                            DeviceEventEmitter.emit('collec', state.params.data)
+                        }}>
+                            {state.params.iscollect==true?(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xin.png')} resizeMode={'contain'}/>):(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xinfull.png')} resizeMode={'contain'}/>)}
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{width: 25, height: 40, marginTop:3, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{
+                            DeviceEventEmitter.emit('message', state.params.data)
+                        }}>
+                            <Image style={{width:22,height:20,}} source={require('../assets/Forum/message.png')} resizeMode={'contain'}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.navRightBtn} onPress={navigation.state.params ? navigation.state.params.navRightBtnClick : null}>
+                            <Text style={styles.navRightTxt}>分享</Text>
+                        </TouchableOpacity>
+                    </View>
                 )
         };
     }

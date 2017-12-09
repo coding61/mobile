@@ -383,9 +383,9 @@ class PunchCard extends Component {
             <TouchableOpacity style={{marginLeft: width * (1 - 200 / 750), height: 30, width: width * 180 / 750, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onPress={this._showRule.bind(this)}>
                 <Text style={{width: 70, color: 'yellow'}}>打卡规则</Text>
                 {this.state.show ? (
-                    <Image source={require('../images/punch_icon/up.png')}/>
+                    <Image style={{width: 18, height: 9}} source={require('../images/punch_icon/up.png')}/>
                 ) : (
-                    <Image source={require('../images/punch_icon/down.png')}/>
+                    <Image style={{width: 18, height: 9}} source={require('../images/punch_icon/down.png')}/>
                 )}
             </TouchableOpacity>
         )
@@ -534,7 +534,7 @@ class PunchCard extends Component {
             <View style={{flex: 1, alignItems: 'center', backgroundColor: '#fff'}}>
                 <View style={{position:'absolute', top:0, width:width, left:0}}>
                     <Image style={{width: width, height: this.state.bgHeight}} source={require('../images/punch_icon/punch_bg.png')} resizeMode={'stretch'}/>
-                    <Image style={{position: 'absolute', bottom: -2, width: width, height: width * 100 / 750}} source={require('../images/punch_icon/wave.png')} resizeMode={'stretch'}/>
+                    <Image style={{position: 'absolute', bottom: -2, width: width, height: width * 100 / 750}} source={require('../images/punch_icon/wave1.png')} resizeMode={'stretch'}/>
                 </View>
                 {navView}
                 {infoView}
