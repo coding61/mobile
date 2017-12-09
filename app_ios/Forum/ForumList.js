@@ -364,7 +364,7 @@ export default class ForumList extends Component{
         var forumbackcolor='#fff';
         if(rowData.userinfo.props.length>0){
             
-            for(var i=0;i<rowData.userinfo.props.length-1;i++){
+            for(var i=0;i<rowData.userinfo.props.length;i++){
                 if(rowData.userinfo.props[i].status==1){
                     if(rowData.userinfo.props[i].exchange_product.product_type==1){
                         if(rowData.userinfo.props[i].exchange_product.category_detail.name=='fourmbackcolor'){

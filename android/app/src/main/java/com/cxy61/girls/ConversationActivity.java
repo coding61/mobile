@@ -22,8 +22,8 @@ import java.util.Locale;
 public class ConversationActivity extends FragmentActivity implements View.OnClickListener{
     private String mTargetId;
     private Conversation.ConversationType mConversationType;
-    private ImageButton backimage;
-    private TextView titletext,righttext;
+    private ImageButton backimage,rightimg;
+    private TextView titletext;
     private String title;
 
     @Override
@@ -32,9 +32,9 @@ public class ConversationActivity extends FragmentActivity implements View.OnCli
         setContentView(R.layout.conversation);
         backimage= (ImageButton)findViewById(R.id.left_btn);
         titletext= (TextView)findViewById(R.id.title_text);
-        righttext= (TextView) findViewById(R.id.right_text);
+        rightimg= (ImageButton) findViewById(R.id.right_img);
         backimage.setOnClickListener(this);
-        righttext.setOnClickListener(this);
+        rightimg.setOnClickListener(this);
         Intent intent = getIntent();
         getIntentDate(intent);
     }
@@ -46,7 +46,7 @@ public class ConversationActivity extends FragmentActivity implements View.OnCli
         mConversationType = Conversation.ConversationType.valueOf(intent.getData().getLastPathSegment().toUpperCase(Locale.getDefault()));
         titletext.setText(title);
         if(mConversationType.equals(Conversation.ConversationType.GROUP)){
-            righttext.setVisibility(View.VISIBLE);
+            rightimg.setVisibility(View.VISIBLE);
         }
         enterFragment(mConversationType, mTargetId);
     }
@@ -66,7 +66,7 @@ public class ConversationActivity extends FragmentActivity implements View.OnCli
                 this.finish();
                 break;
             case R.id.right_text:
-                Intent intent = new Intent(this,PlacardActivity.class);
+                Intent intent = new Intent(this,IMSettingActivity.class);
                 intent.putExtra("mTargetId",mTargetId);
                 intent.putExtra("mConversationType",Conversation.ConversationType.GROUP.getValue());
                 this.startActivity(intent);

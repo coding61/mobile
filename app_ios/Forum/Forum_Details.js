@@ -562,9 +562,9 @@ export default class Forum_Details extends Component{
                 reward=data.play_reward.play_reward_pople.slice(0,4).join("、")+'等'
             }
             var headimg='';
-            var forumbackcolor='#fff';
+            var forumbackcolor='#F2F2F2';
             if(data.userinfo.props.length>0){
-                for(var i=0;i<data.userinfo.props.length-1;i++){
+                for(var i=0;i<data.userinfo.props.length;i++){
                     if(data.userinfo.props[i].status==1){
                         if(data.userinfo.props[i].exchange_product.product_type==1){
                             if(data.userinfo.props[i].exchange_product.category_detail.name=='fourmbackcolor'){
@@ -580,7 +580,7 @@ export default class Forum_Details extends Component{
                 <View style={{flex:1,backgroundColor:'#ffffff'}}>
                     <ScrollView>
                         <Text style={{fontSize:16,color:'#292929',padding:15,}} selectable={true}>{data.status_display=='未解决'?(<Text style={{color:'#ff6b94',marginRight:10,}}>[{data.status_display}]</Text>):(<Text style={{color:'#858585',paddingRight:10,}}>[{data.status_display}]</Text>)}   {data.title}</Text>
-                        <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:'#F2F2F2'}}>
+                        <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:forumbackcolor}}>
                             <View style={{alignItems:'center',paddingLeft:20,}}>
                                 <TouchableOpacity style={{width:70,height:70}} onPress={this.goPersonalPage.bind(this, data.userinfo)}>
                                     {!data.userinfo.avatar ? (
@@ -592,7 +592,6 @@ export default class Forum_Details extends Component{
                                                 {headimg?(<Image style={{width:60,height:60,borderRadius:25,}} resizeMode={'contain'} source={{uri:headimg}}/>):(null)}
                                             </View>
                                         </View>
-                                        /*<Image style={{width:50,height:50,borderRadius:25}} source={{uri:data.userinfo.avatar}}/>*/
                                     )}
                                 </TouchableOpacity>
                                 <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
