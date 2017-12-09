@@ -22,6 +22,7 @@ import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 import BCFetchRequest from '../utils/BCFetchRequest.js';
 import RewardView from '../Activity/RewardView.js';
+import PunchCardAlert from '../Activity/PunchCardAlert.js';
 
 var RNBridgeModule = NativeModules.RNBridgeModule;
 var UMeng = NativeModules.ShareRN;
@@ -172,6 +173,46 @@ class PunchCard extends Component {
                     this._punchCard();
                 };
             }
+        })
+    }
+
+    _punchCardAlert() {
+        // AsyncStorage.removeItem('hidePunchCount', () => {})
+        // AsyncStorage.removeItem('hidePunchForever', () => {})
+        var _this = this;
+        AsyncStorage.getItem('hidePunchForever', function(errs, result) {
+            _this.setState({showPunchAlert: result == 'yes' ? false : true},() => {
+                if (!_this.state.showPunchAlert) {
+                    _this._shareWeChat();
+                }
+            });
+        });
+    }
+
+    // 打卡提示，5 次后隐藏
+    _hideAfterFiveCount() {
+        var _this = this;
+        AsyncStorage.getItem('hidePunchCount', function(errs, result) {
+            if(result != null){
+                if (result == '4') {
+                    _this._hideForever();
+                    return
+                }
+                AsyncStorage.setItem('hidePunchCount', String(Number(result) + 1), () => {})
+            } else {
+                AsyncStorage.setItem('hidePunchCount', String(1), () => {})
+            }
+            _this.setState({showPunchAlert: false},() => {
+                _this._shareWeChat();
+            });
+        });
+    }
+    _hideForever(){
+        var _this = this;
+        AsyncStorage.setItem('hidePunchForever', 'yes', () => {
+            _this.setState({showPunchAlert: false},() => {
+                _this._shareWeChat();
+            });
         })
     }
 
@@ -486,10 +527,6 @@ class PunchCard extends Component {
         )
     }
 
-    _hideRewardView() {
-        this.setState({showReward: false});
-    }
-
     render() {
         var navView = this._navView();
         var infoView = this._infoView();
@@ -503,7 +540,7 @@ class PunchCard extends Component {
                 {navView}
                 {infoView}
                 {listView}
-                <TouchableOpacity style={styles.shareBtn} onPress={this._shareWeChat.bind(this)}>
+                <TouchableOpacity style={styles.shareBtn} onPress={this._punchCardAlert.bind(this)}>
                     <Text style={styles.shareTxt}>分享打卡</Text>
                 </TouchableOpacity>
                 {
@@ -512,6 +549,16 @@ class PunchCard extends Component {
                             type={'punchcard'}
                             msg={'恭喜你获得了' + String(this.state.showRewardNum) + '颗钻石'}
                             hide={this._hideRewardView.bind(this)}
+                        />:null
+                }
+                {
+                    this.state.showPunchAlert ?
+                        <PunchCardAlert
+                            type={'punchcard'}
+                            msg={'分享后点击返回程序媛才算打卡成功'}
+                            // hide={this._hideRewardView.bind(this)}
+                            leftEvent={this._hideAfterFiveCount.bind(this)}
+                            rightEvent={this._hideForever.bind(this)}
                         />:null
                 }
             </View>
