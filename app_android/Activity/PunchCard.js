@@ -24,7 +24,7 @@ import BCFetchRequest from '../utils/BCFetchRequest.js';
 import RewardView from '../Activity/RewardView.js';
 import PunchCardAlert from '../Activity/PunchCardAlert.js';
 
-var UMeng = NativeModules.RnTest;
+var UMeng = require('react-native').NativeModules.RongYunRN;
 
 const {width, height} = Dimensions.get('window');
 
@@ -380,8 +380,8 @@ class PunchCard extends Component {
 
     _showBtnView() {
         return (
-            <TouchableOpacity style={{marginLeft: width * (1 - 200 / 750), height: 30, width: width * 160 / 750, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onPress={this._showRule.bind(this)}>
-                <Text style={{width: 70,color: 'yellow'}}>打卡规则</Text>
+            <TouchableOpacity style={{marginLeft: width * (1 - 200 / 750), height: 30, width: width * 180 / 750, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onPress={this._showRule.bind(this)}>
+                <Text style={{width: 70, color: 'yellow'}}>打卡规则</Text>
                 {this.state.show ? (
                     <Image source={require('../images/punch_icon/up.png')}/>
                 ) : (
@@ -395,7 +395,7 @@ class PunchCard extends Component {
     _onLayout(event) {
         //获取根View的宽高，以及左上角的坐标值
         let {x, y, width, height} = event.nativeEvent.layout;
-        this.setState({ruleHeight: height},() =>{
+        this.setState({ruleHeight: height + 10},() =>{
             this.setState({bgHeight: this.state.bgHeight + this.state.ruleHeight})
         })
     }

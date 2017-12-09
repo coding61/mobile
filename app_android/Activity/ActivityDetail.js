@@ -28,7 +28,7 @@ import Http from '../utils/Http.js';
 import AlertView from '../Component/AlertView.js'
 
 var RongYunRN = NativeModules.RongYunRN;
-var UMeng = NativeModules.RnTest;
+var UMeng = require('react-native').NativeModules.RongYunRN;
 
 class ActivityDetail extends Component {
 	constructor(props) {

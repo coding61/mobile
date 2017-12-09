@@ -20,7 +20,7 @@ import Http from '../utils/Http.js';
 import LoadingView from '../Component/LoadingView.js';
 import EmptyView from '../Component/EmptyView.js';
 
-var UMeng = NativeModules.RnTest;
+var UMeng = require('react-native').NativeModules.RongYunRN;
 
 const LoadMore = 1;           //点击加载更多
 const LoadNoMore = 0;         //已经到尾了

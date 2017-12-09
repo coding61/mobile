@@ -25,7 +25,7 @@ import Http from '../utils/Http.js';
 import Utils from '../utils/Utils.js';
 
 
-var UMeng = NativeModules.RnTest;
+var UMeng = require('react-native').NativeModules.RongYunRN;
 
 var basePath=Http.domain;
 export default class Forum_Details extends Component{

@@ -129,9 +129,10 @@ const styles = StyleSheet.create({
 		// backgroundColor:'blue',
 		lineHeight:20,
 		fontSize:15,
-		textAlign:'center'
+		textAlign:'center',
 	},
     btnView: {
+        marginTop: 10,
         flexDirection: 'row',
         width:w1-60,
     },

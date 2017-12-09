@@ -27,7 +27,7 @@ import Leaderboards from '../Activity/Leaderboards.js';
 const QuestionTab = 1;        //答题选项
 const LeaderboardTab = 0;     //排行榜选项
 
-var UMeng = NativeModules.RnTest;
+var UMeng = require('react-native').NativeModules.RongYunRN;
 
 class CompeteAnswer extends Component {
 	constructor(props) {
@@ -361,6 +361,18 @@ const styles = StyleSheet.create({
     },
     headerTitleTabTextSelect:{
         fontWeight: 'bold'
+    },
+    navRightBtn: {
+        width: 60,
+        height: 40,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    navRightTxt: {
+        color: 'white',
+        fontSize: 15,
+        marginTop: 2
     },
     // ---------------------------------------------主体代码
    	title:{
