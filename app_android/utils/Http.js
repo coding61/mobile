@@ -110,5 +110,29 @@ let Http = {
 		return Http_Domain + "/asset/record/?page=" + pagenum                         //奖学金
 	}
 
+    // 分享相关
+	shareLogoUrl: "https://static1.bcjiaoyu.com/girlShareLogo.png",
+	shareActivityUrl:(pk)=>{
+		return Page_Domain + "/app/share/activityDetails.html?pk=" + String(pk)
+	},
+	shareCompeteUrl:(pk)=>{
+		return Page_Domain + "/app/share/compete.html?pk=" + String(pk);
+	},
+	shareForumUrl:(pk)=>{
+		return Page_Domain + "/app/share/forum.html?pk=" + String(pk);
+	},
+	sharePunchUrl:(pk, username, name, head)=>{
+		return Page_Domain + "/app/share/punch.html?pk=" + String(pk) + "&username=" + username + "&name=" + name + "&head=" + head;
+	},
+	punchCard:(pk)=>{
+		return Http_Domain + "/club/club_punch/" + String(pk) + "/";
+	},
+	getPunchCardRecord:(pk, username)=>{
+		return Http_Domain + "/club/myclub_punch/" + String(pk) + "/?username=" + username;
+	},
+	shareBonusUrl:(bonus, diamond, name, head)=>{
+		return Page_Domain + "/app/share/bonus.html?bonus=" + String(bonus) + "&diamond=" + String(diamond) + "&name=" + name + "&head=" + head;
+	},
+	getBonusRecord:Http_Domain + "/contest/statistics/"
 }
 export default Http;

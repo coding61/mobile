@@ -17,6 +17,7 @@ import {
   ScrollView,
   Modal,
   TextInput,
+  Alert,
   NativeModules    //RN 调 oc 模块
 } from 'react-native';
 
@@ -27,6 +28,7 @@ import Http from '../utils/Http.js';
 import AlertView from '../Component/AlertView.js'
 
 var RongYunRN = NativeModules.RongYunRN;
+var UMeng = NativeModules.RnTest;
 
 class ActivityDetail extends Component {
 	constructor(props) {
@@ -48,19 +50,49 @@ class ActivityDetail extends Component {
         	headerTitle:"活动详情",
         	headerTintColor: "#fff",
             headerStyle: styles.headerStyle,
+            headerRight:
+                <TouchableOpacity style={styles.navRightBtn} onPress={navigation.state.params ? navigation.state.params.shareWeChat : null}>
+                    <Text style={styles.navRightTxt}>分享</Text>
+                </TouchableOpacity>,
+            headerBackTitle: null
         }
     };
     componentWillMount() {
       	this._fetchActivityDetail(this.props.navigation.state.params.pk);
     }
     componentDidMount() {
-
+        this.props.navigation.setParams({
+            shareWeChat: this._shareWeChat.bind(this)
+        })
     }
     componentWillUnmount() {
         if (this.props.navigation.state.params.callback) {
            this.props.navigation.state.params.callback(this.state.isChange, this.state.isDelete);
         }
     }
+    _punchCard = () => {
+        this.props.navigation.navigate('PunchCard', {pk: this.state.data.pk})
+    }
+    _shareWeChat = () => {
+        if (!this.state.data.name) {
+            Alert.alert('正在获取活动详情，请稍后...');
+            return;
+        }
+        var title = this.state.data.name;
+        var content = this.state.data.introduction;
+        var shareUrl = Http.shareActivityUrl(this.props.navigation.state.params.pk);
+        var imgUrl = Http.shareLogoUrl;    // 默认图标
+        UMeng.rnShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
+            if(error) {
+                Alert.alert('分享出错了');
+            } else {
+                if (callBackEvents == 'success') {
+                    // 钻石动画等
+                };
+            }
+        })
+    }
+
     // ------------------------------------------网络请求
     //获取活动详情
     _fetchActivityDetail(pk){
@@ -520,6 +552,12 @@ class ActivityDetail extends Component {
                                 <Text style={styles.tips}>提示：密码（参加活动的人需要填对密码才能参加）。</Text>
                                 {
                                     this.state.data.isjoin?
+                                        {this.state.data.ispunch ? (
+                                            <TouchableOpacity style={styles.btnPunch} onPress={this._punchCard.bind(this)}>
+                                                <Text style={styles.btnText}>打卡</Text>
+                                            </TouchableOpacity>
+                                        ) : ( null )}
+                                        <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
                                         <View>
                                         <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
                                         <View style={styles.btnJoin}>
@@ -543,6 +581,12 @@ class ActivityDetail extends Component {
                             </View>
                         :
                             <View style={styles.bottomView}>
+                            {this.state.data.ispunch ? (
+                                <TouchableOpacity style={styles.btnPunch} onPress={this._punchCard.bind(this)}>
+                                    <Text style={styles.btnText}>打卡</Text>
+                                </TouchableOpacity>
+                            ) : ( null )}
+
                             <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
                             <View style={styles.btnJoin}>
                                 <Text style={styles.btnText}>进入群聊</Text>
@@ -636,7 +680,17 @@ const styles = StyleSheet.create({
     headerRightImg:{
         height:20
     },
-
+    navRightBtn: {
+        width: 60,
+        height: 40,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    navRightTxt: {
+        color: 'white',
+        fontSize: 15
+    },
     // -----------------------------------------------加载中
     loadingView:{
         flex: 1,
@@ -740,6 +794,14 @@ const styles = StyleSheet.create({
         fontSize:12,
         color:fontSColor,
         marginBottom:30,
+    },
+    btnPunch: {
+        backgroundColor:'#5CADFB',
+        height:40,
+        alignItems:'center',
+        justifyContent:'center',
+        borderRadius:5,
+        marginBottom:15
     },
     btnJoin:{
         backgroundColor:pinkColor,

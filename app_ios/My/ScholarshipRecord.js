@@ -172,7 +172,6 @@ class ScholarshipRecord extends Component {
                   })
                   .then(responseJSON => {
                     if (responseJSON !== '失败') {
-                        console.log(responseJSON);
                       this.setState({
                         balance: responseJSON.balance,
                         name: responseJSON.name,
