@@ -23,6 +23,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
 
     <application
             android:name=".MainApplication"
@@ -92,6 +94,38 @@
         </activity>
         <activity android:name=".PlacardActivity">
         </activity>
+
+        <!--  友盟  -->
+        <activity
+                android:name="com.umeng.socialize.media.WBShareCallBackActivity"
+                android:configChanges="keyboardHidden|orientation"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                android:exported="false"
+                android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity"
+                  android:configChanges="keyboardHidden|orientation"
+                  android:exported="false"
+                  android:windowSoftInputMode="adjustResize">
+
+        </activity>
+        <activity
+                android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+                android:launchMode="singleTask"
+                android:name="com.sina.weibo.sdk.share.WbShareTransActivity">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+
+        <meta-data
+                android:name="UMENG_APPKEY"
+                android:value="59ffe160b27b0a6cab00005a" >
+        </meta-data>
+
+
     </application>
 
 </manifest>
