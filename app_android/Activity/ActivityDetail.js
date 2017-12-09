@@ -552,13 +552,13 @@ class ActivityDetail extends Component {
                                 <Text style={styles.tips}>提示：密码（参加活动的人需要填对密码才能参加）。</Text>
                                 {
                                     this.state.data.isjoin?
+                                        <View>
                                         {this.state.data.ispunch ? (
                                             <TouchableOpacity style={styles.btnPunch} onPress={this._punchCard.bind(this)}>
                                                 <Text style={styles.btnText}>打卡</Text>
                                             </TouchableOpacity>
                                         ) : ( null )}
-                                        <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
-                                        <View>
+
                                         <TouchableOpacity onPress={this._enterGroupChat.bind(this)}>
                                         <View style={styles.btnJoin}>
                                             <Text style={styles.btnText}>进入群聊</Text>

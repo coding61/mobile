@@ -108,7 +108,7 @@ let Http = {
 
 	getScholarship:(pagenum)=>{
 		return Http_Domain + "/asset/record/?page=" + pagenum                         //奖学金
-	}
+	},
 
     // 分享相关
 	shareLogoUrl: "https://static1.bcjiaoyu.com/girlShareLogo.png",
