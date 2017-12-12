@@ -22,7 +22,7 @@ import java.util.Locale;
 public class ConversationActivity extends FragmentActivity implements View.OnClickListener{
     private String mTargetId;
     private Conversation.ConversationType mConversationType;
-    private ImageButton backimage,rightimg;
+    private ImageButton backimage,rightimage;
     private TextView titletext;
     private String title;
 
@@ -32,9 +32,9 @@ public class ConversationActivity extends FragmentActivity implements View.OnCli
         setContentView(R.layout.conversation);
         backimage= (ImageButton)findViewById(R.id.left_btn);
         titletext= (TextView)findViewById(R.id.title_text);
-        rightimg= (ImageButton) findViewById(R.id.right_img);
+        rightimage= (ImageButton) findViewById(R.id.right_btn);
         backimage.setOnClickListener(this);
-        rightimg.setOnClickListener(this);
+        rightimage.setOnClickListener(this);
         Intent intent = getIntent();
         getIntentDate(intent);
     }
@@ -46,7 +46,7 @@ public class ConversationActivity extends FragmentActivity implements View.OnCli
         mConversationType = Conversation.ConversationType.valueOf(intent.getData().getLastPathSegment().toUpperCase(Locale.getDefault()));
         titletext.setText(title);
         if(mConversationType.equals(Conversation.ConversationType.GROUP)){
-            rightimg.setVisibility(View.VISIBLE);
+            rightimage.setVisibility(View.VISIBLE);
         }
         enterFragment(mConversationType, mTargetId);
     }
@@ -65,7 +65,7 @@ public class ConversationActivity extends FragmentActivity implements View.OnCli
             case R.id.left_btn:
                 this.finish();
                 break;
-            case R.id.right_text:
+            case R.id.right_btn:
                 Intent intent = new Intent(this,IMSettingActivity.class);
                 intent.putExtra("mTargetId",mTargetId);
                 intent.putExtra("mConversationType",Conversation.ConversationType.GROUP.getValue());
