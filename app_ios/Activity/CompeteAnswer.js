@@ -244,7 +244,7 @@ class CompeteAnswer extends Component {
         const containerStyle={width:width, height:height-300}
         return (
             <View style={{flex:1}}>
-                <View style={{height:200, backgroundColor:'white'}}>
+                <View style={{height:height/2, backgroundColor:'white'}}>
                 <ScrollView style={{flex:1}} contentContainerStyle={{padding:10}}>
                     <Text style={styles.title}>{"题目: "}{this.state.data.title}</Text>
                 </ScrollView>

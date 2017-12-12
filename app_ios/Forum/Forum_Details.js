@@ -336,9 +336,9 @@ export default class Forum_Details extends Component{
             for(var i=0;i<rowData.userinfo.props.length;i++){
                 if(rowData.userinfo.props[i].status==1){
                     if(rowData.userinfo.props[i].exchange_product.product_type==1){
-                        if(rowData.userinfo.props[i].exchange_product.category_detail.name=='fourmbackcolor'){
-                            forumbackcolor=rowData.userinfo.props[i].exchange_product.content
-                        }else if(rowData.userinfo.props[i].exchange_product.category_detail.name=='headerProp'){
+                        if(rowData.userinfo.props[i].exchange_product.category_detail.action=='background'){
+                            forumbackcolor=rowData.userinfo.props[i].exchange_product.category_detail.desc
+                        }else if(rowData.userinfo.props[i].exchange_product.category_detail.action=='avatar'){
                             headimg=rowData.userinfo.props[i].exchange_product.image
                         }
                     }
@@ -590,9 +590,9 @@ export default class Forum_Details extends Component{
                 for(var i=0;i<data.userinfo.props.length;i++){
                     if(data.userinfo.props[i].status==1){
                         if(data.userinfo.props[i].exchange_product.product_type==1){
-                            if(data.userinfo.props[i].exchange_product.category_detail.name=='fourmbackcolor'){
-                                forumbackcolor=data.userinfo.props[i].exchange_product.content
-                            }else if(data.userinfo.props[i].exchange_product.category_detail.name=='headerProp'){
+                            if(data.userinfo.props[i].exchange_product.category_detail.action=='background'){
+                                forumbackcolor=data.userinfo.props[i].exchange_product.category_detail.desc
+                            }else if(data.userinfo.props[i].exchange_product.category_detail.action=='avatar'){
                                 headimg=data.userinfo.props[i].exchange_product.image
                             }
                         }

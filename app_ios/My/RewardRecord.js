@@ -17,6 +17,7 @@ import {
 var {height, width} = Dimensions.get('window');
 import Http from '../utils/Http.js';
 import Utils from '../utils/Utils.js';
+import LoadingView from '../Component/LoadingView.js';
 import EmptyView from '../Component/EmptyView.js';
 var basePath=Http.domain;
 export default class RewardRecord extends Component{
@@ -162,7 +163,7 @@ export default class RewardRecord extends Component{
     _keyExtractor = (item, index) => index;
     render(){
         if(!this.state.dataSource){
-            return( <EmptyView/>)
+            return( <LoadingView/>)
         }else{
             return (
                 <View style={styles.container}>
