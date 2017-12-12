@@ -87,8 +87,8 @@ class ScholarshipRecord extends Component {
 
             } else if (callBackEvents == '分享失败') {
                 Alert.alert('分享失败');
-            } else if (callBackEvents == '已经取消分享') {
-                Alert.alert('已经取消分享');
+            } else if (callBackEvents == '已取消分享') {
+                Alert.alert('已取消分享');
             }
         })
     }

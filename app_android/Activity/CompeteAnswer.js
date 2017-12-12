@@ -88,11 +88,11 @@ class CompeteAnswer extends Component {
         var imgUrl = Http.shareLogoUrl;    // 默认图标
         UMeng.rnShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
             if (callBackEvents == '分享成功') {
-                
+
             } else if (callBackEvents == '分享失败') {
                 Alert.alert('分享失败');
-            } else if (callBackEvents == '已经取消分享') {
-                Alert.alert('已经取消分享');
+            } else if (callBackEvents == '已取消分享') {
+                Alert.alert('已取消分享');
             }
         })
     }
