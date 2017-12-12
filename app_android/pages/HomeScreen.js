@@ -375,7 +375,7 @@ class HomeScreen extends Component{
                       {"开始学习"}
                     </Text>
                     <Text style={styles.tabText}>
-                      {"(超过二十门课程可以学习)"}
+                      {"超过三十门课程"}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 1)}>
@@ -388,7 +388,7 @@ class HomeScreen extends Component{
                       {"参加竞赛"}
                     </Text>
                     <Text style={styles.tabText}>
-                      {"(赢奖学金和钻石)"}
+                      {"赢奖学金和钻石"}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 2)}>
@@ -401,7 +401,7 @@ class HomeScreen extends Component{
                       {"在线编辑器"}
                     </Text>
                     <Text style={styles.tabText}>
-                      {"(包含Python,Java,C,HTML)"}
+                      {"包含多个编译器"}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 3)}>
@@ -414,7 +414,7 @@ class HomeScreen extends Component{
                       {"娃娃机"}
                     </Text>
                     <Text style={styles.tabText}>
-                      {"(赢钻石和道具)"}
+                      {"赢钻石和道具"}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 4)}>
@@ -426,9 +426,11 @@ class HomeScreen extends Component{
                     <Text style={styles.tabTitle}>
                       {"钻石商城"}
                     </Text>
+                    {/*
                     <Text style={styles.tabText}>
                       {"(可以兑换相框道具)"}
                     </Text>
+                    */}
                 </TouchableOpacity>
             </View>
         )
