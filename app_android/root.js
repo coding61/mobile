@@ -62,6 +62,8 @@ import RewardRecord from './My/RewardRecord.js';
 import Exchange from './Exchange/Exchange.js';
 import ExchangeRecord from './Exchange/ExchangeRecord.js';
 import ExchangeUsingRecord from './Exchange/ExchangeUsingRecord.js';
+import ChildMachineWebView from './Exchange/ChildMachineWebView.js';
+
 class RootApp extends Component{
     constructor(props) {
       super(props);
@@ -145,6 +147,7 @@ const app = StackNavigator({
     Exchange:{screen:Exchange},
     ExchangeRecord:{screen:ExchangeRecord},
     ExchangeUsingRecord:{screen:ExchangeUsingRecord},
+    ChildMachineWebView:{screen:ChildMachineWebView},
     PunchCard:{screen:PunchCard}
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称

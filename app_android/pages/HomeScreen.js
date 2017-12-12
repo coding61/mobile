@@ -262,6 +262,28 @@ class HomeScreen extends Component{
                 this._clickChooseEditor();
                 break;
             }
+            case 3:{
+                //娃娃机
+                Utils.isLogin((token)=>{
+                    if (token) {
+                        this.props.navigation.navigate("ChildMachineWebView", {token:token, callback:()=>{
+                            console.log("回调更新导航");
+                            this._fetchUserInfo();
+                        }});
+                    }else{
+                        this.props.navigation.navigate("Login");
+                    }
+                });
+                break;
+            }
+            case 4:{
+                //钻石商城
+                this.props.navigation.navigate('Exchange', {callback:()=>{
+                    console.log("回调更新导航");
+                    this._fetchUserInfo();
+                }});
+                break;
+            }
             default:
             {
                 break;
@@ -372,7 +394,7 @@ class HomeScreen extends Component{
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 2)}>
                     <Image
                       style={styles.tabImg}
-                      source={require('../images/i3.png')}
+                      source={require('../images/i2.png')}
                       resizeMode={'cover'}
                     />
                     <Text style={styles.tabTitle}>
@@ -380,6 +402,32 @@ class HomeScreen extends Component{
                     </Text>
                     <Text style={styles.tabText}>
                       {"(包含Python,Java,C,HTML)"}
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 3)}>
+                    <Image
+                      style={styles.tabImg}
+                      source={require('../images/i1.png')}
+                      resizeMode={'cover'}
+                    />
+                    <Text style={styles.tabTitle}>
+                      {"娃娃机"}
+                    </Text>
+                    <Text style={styles.tabText}>
+                      {"(赢钻石和道具)"}
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 4)}>
+                    <Image
+                      style={styles.tabImg}
+                      source={require('../images/i3.png')}
+                      resizeMode={'cover'}
+                    />
+                    <Text style={styles.tabTitle}>
+                      {"钻石商城"}
+                    </Text>
+                    <Text style={styles.tabText}>
+                      {"(可以兑换相框道具)"}
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -479,8 +527,11 @@ const styles = StyleSheet.create({
     },
     // ------------tabs
     tabs:{
-        marginHorizontal:15,
-        marginTop:20
+        // marginHorizontal:15,
+        marginLeft:15,
+        marginTop:20,
+        flexDirection:'row',
+        flexWrap:'wrap'
     },
     tab:{
         alignItems:'center',
@@ -490,12 +541,15 @@ const styles = StyleSheet.create({
         marginBottom:20,
         // backgroundColor:'blue',
         borderRadius:10,
+        width:(width-45)/2,
+        marginRight:15
     },
     tabImg:{
         position:'absolute', 
-        width:width-30, 
+        // width:width-30, 
         height:(height-bottomH-headerH)/3-30,
-        borderRadius:10
+        borderRadius:10,
+        width:(width-45)/2
     },
     tabTitle:{
         color:'white', 
