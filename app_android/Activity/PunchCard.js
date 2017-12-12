@@ -24,8 +24,7 @@ import BCFetchRequest from '../utils/BCFetchRequest.js';
 import RewardView from '../Activity/RewardView.js';
 import PunchCardAlert from '../Activity/PunchCardAlert.js';
 
-var RNBridgeModule = NativeModules.RNBridgeModule;
-var UMeng = NativeModules.ShareRN;
+var UMeng = require('react-native').NativeModules.RongYunRN;
 
 const {width, height} = Dimensions.get('window');
 
@@ -134,7 +133,11 @@ class PunchCard extends Component {
                 // 打卡获得钻石时
                 if (response.message && response.message == '活动打卡成功') {
                     if (response.diamond_amount && response.diamond_amount != 0) {
-                        this.setState({showRewardNum: response.diamond_amount},() =>{
+                        this.setState({showRewardNum: response.diamond_amount, showType: 'diamond'},() =>{
+                            this.setState({showReward: true})
+                        })
+                    } else if (response.bonus_amount && response.bonus_amount != 0) {
+                        this.setState({showRewardNum: response.bonus, showType: 'bonus'},() =>{
                             this.setState({showReward: true})
                         })
                     } else {
@@ -166,7 +169,7 @@ class PunchCard extends Component {
         var content = this.state.data.introduction;
         var shareUrl = Http.sharePunchUrl(this.state.pk, this.state.owner, this.state.head, this.state.name);
         var imgUrl = Http.shareLogoUrl;    // 默认图标
-        UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
+        UMeng.rnShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
             if(error) {
                 Alert.alert('分享出错了');
             } else {
@@ -262,7 +265,7 @@ class PunchCard extends Component {
     // 获取经过的天数
     _getPassDays(time) {
         var curDate = new Date();
-        var diff = Date.parse(curDate) - Date.parse(time) + 3600 * 1000 * 8;
+        var diff = Date.parse(curDate) - Date.parse(time);
         var days = Math.floor(diff / (24 * 3600 * 1000))
         return days;
     }
@@ -381,12 +384,12 @@ class PunchCard extends Component {
 
     _showBtnView() {
         return (
-            <TouchableOpacity style={{marginLeft: width * (1 - 200 / 750), height: 30, width: width * 160 / 750, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onPress={this._showRule.bind(this)}>
-                <Text style={{width: 70,color: 'yellow'}}>打卡规则</Text>
+            <TouchableOpacity style={{marginLeft: width * (1 - 200 / 750), height: 30, width: width * 180 / 750, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onPress={this._showRule.bind(this)}>
+                <Text style={{width: 70, color: 'yellow'}}>打卡规则</Text>
                 {this.state.show ? (
-                    <Image source={require('../images/punch_icon/up.png')}/>
+                    <Image style={{width: 18, height: 9}} source={require('../images/punch_icon/up.png')}/>
                 ) : (
-                    <Image source={require('../images/punch_icon/down.png')}/>
+                    <Image style={{width: 18, height: 9}} source={require('../images/punch_icon/down.png')}/>
                 )}
             </TouchableOpacity>
         )
@@ -396,7 +399,7 @@ class PunchCard extends Component {
     _onLayout(event) {
         //获取根View的宽高，以及左上角的坐标值
         let {x, y, width, height} = event.nativeEvent.layout;
-        this.setState({ruleHeight: height},() =>{
+        this.setState({ruleHeight: height + 10},() =>{
             this.setState({bgHeight: this.state.bgHeight + this.state.ruleHeight})
         })
     }
@@ -425,7 +428,7 @@ class PunchCard extends Component {
 
     _navView() {
         return (
-            <View style={{width: width, height: 44, marginTop: Utils.isIphoneX ? 44 : 20, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{width: width, height: 44, marginTop: 20, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                 <TouchableOpacity style={{position: 'absolute', width: 60, height: 44, left: 0, justifyContent: 'center', alignItems: 'center'}} onPress={this._goBack.bind(this)}>
                     <Image source={require('../images/back.png')} resizeMode={'contain'}/>
                 </TouchableOpacity>
@@ -535,7 +538,7 @@ class PunchCard extends Component {
             <View style={{flex: 1, alignItems: 'center', backgroundColor: '#fff'}}>
                 <View style={{position:'absolute', top:0, width:width, left:0}}>
                     <Image style={{width: width, height: this.state.bgHeight}} source={require('../images/punch_icon/punch_bg.png')} resizeMode={'stretch'}/>
-                    <Image style={{position: 'absolute', bottom: -2, width: width, height: width * 100 / 750}} source={require('../images/punch_icon/wave.png')} resizeMode={'stretch'}/>
+                    <Image style={{position: 'absolute', bottom: -2, width: width, height: width * 100 / 750}} source={require('../images/punch_icon/wave1.png')} resizeMode={'stretch'}/>
                 </View>
                 {navView}
                 {infoView}
