@@ -368,7 +368,7 @@ class HomeScreen extends Component{
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 0)}>
                     <Image
                       style={styles.tabImg}
-                      source={require('../images/i1.png')}
+                      source={require('../images/i11.png')}
                       resizeMode={'cover'}
                     />
                     <Text style={styles.tabTitle}>
@@ -381,7 +381,7 @@ class HomeScreen extends Component{
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 1)}>
                     <Image
                       style={styles.tabImg}
-                      source={require('../images/i2.png')}
+                      source={require('../images/i12.png')}
                       resizeMode={'cover'}
                     />
                     <Text style={styles.tabTitle}>
@@ -394,7 +394,7 @@ class HomeScreen extends Component{
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 2)}>
                     <Image
                       style={styles.tabImg}
-                      source={require('../images/i2.png')}
+                      source={require('../images/i13.png')}
                       resizeMode={'cover'}
                     />
                     <Text style={styles.tabTitle}>
@@ -407,7 +407,7 @@ class HomeScreen extends Component{
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 3)}>
                     <Image
                       style={styles.tabImg}
-                      source={require('../images/i1.png')}
+                      source={require('../images/i14.png')}
                       resizeMode={'cover'}
                     />
                     <Text style={styles.tabTitle}>
@@ -420,7 +420,7 @@ class HomeScreen extends Component{
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 4)}>
                     <Image
                       style={styles.tabImg}
-                      source={require('../images/i3.png')}
+                      source={require('../images/i15.png')}
                       resizeMode={'cover'}
                     />
                     <Text style={styles.tabTitle}>
