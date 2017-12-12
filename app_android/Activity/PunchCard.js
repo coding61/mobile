@@ -137,7 +137,7 @@ class PunchCard extends Component {
                             this.setState({showReward: true})
                         })
                     } else if (response.bonus_amount && response.bonus_amount != 0) {
-                        this.setState({showRewardNum: response.bonus, showType: 'bonus'},() =>{
+                        this.setState({showRewardNum: response.bonus_amount, showType: 'bonus'},() =>{
                             this.setState({showReward: true})
                         })
                     } else {

@@ -134,7 +134,11 @@ class PunchCard extends Component {
                 // 打卡获得钻石时
                 if (response.message && response.message == '活动打卡成功') {
                     if (response.diamond_amount && response.diamond_amount != 0) {
-                        this.setState({showRewardNum: response.diamond_amount},() =>{
+                        this.setState({showRewardNum: response.diamond_amount, showType: 'diamond'},() =>{
+                            this.setState({showReward: true})
+                        })
+                    } else if (response.bonus_amount && response.bonus_amount != 0) {
+                        this.setState({showRewardNum: response.bonus_amount, showType: 'bonus'},() =>{
                             this.setState({showReward: true})
                         })
                     } else {

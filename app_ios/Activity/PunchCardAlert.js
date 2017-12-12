@@ -41,7 +41,7 @@ class PunchCardAlert extends Component {
         this.props.rightEvent?this.props.rightEvent():this.props.hide();
     }
     _renderFullView(){
-    	var img = this.props.type == "hongbao"?require('../assets/Activity/hongbao.png'):this.props.type == "punchcard"?require('../assets/Activity/punch.png'):require('../assets/Activity/zuan.png'),
+    	var img = require('../assets/Activity/alert.png'),
     		msg = this.props.msg,
     		leftText=this.props.leftText?this.props.leftText:"确定",
             rightText=this.props.rightText?this.props.rightText:"不再提示";
@@ -50,14 +50,11 @@ class PunchCardAlert extends Component {
     			<View style={styles.fullParent}>
     				<View style={styles.loadView}>
     					<View style={styles.imgView}>
-                            {/*
-                                <Image
-                                  style={styles.img}
-                                  source={img}
-                                  resizeMode={'contain'}
-                                />
-                            */}
-                            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'orange'}}>小贴士</Text>
+                            <Image
+                              style={styles.img}
+                              source={img}
+                              resizeMode={'contain'}
+                            />
 						</View>
 						<View style={styles.msgView}>
 							<Text style={styles.msg}>{msg}</Text>
