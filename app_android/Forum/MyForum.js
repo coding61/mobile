@@ -267,13 +267,38 @@ export default class MyForum extends Component{
     }
     renderForumRow(item){
         var rowData=item.item;
-        var time_last=this.dealWithTime(rowData.last_replied)
+        var time_last=this.dealWithTime(rowData.last_replied);
+        var headimg='';
+        var forumbackcolor='#fff';
+        if(rowData.userinfo.props.length>0){
+            for(var i=0;i<rowData.userinfo.props.length;i++){
+                if(rowData.userinfo.props[i].status==1){
+                    if(rowData.userinfo.props[i].exchange_product.product_type==1){
+                        if(rowData.userinfo.props[i].exchange_product.category_detail.action=='background'){
+                            forumbackcolor=rowData.userinfo.props[i].exchange_product.category_detail.desc
+                        }else if(rowData.userinfo.props[i].exchange_product.category_detail.action=='avatar'){
+                            headimg=rowData.userinfo.props[i].exchange_product.image
+                        }
+                    }
+                }
+            }
+        }
+
         return (
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
-                style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
+                style={{width: width,flex:1, backgroundColor:forumbackcolor,borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
                 <View style={{flexDirection:'row',}}>
-                    <View style={{alignItems:'center'}}>
-                        {!rowData.userinfo.avatar?(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>)}
+                    <View style={{alignItems:'center',paddingTop:6,}}>
+                        {!rowData.userinfo.avatar?(
+                            <Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>
+                            ):(
+                                <View style={{alignItems:'center',justifyContent:'center'}}>
+                                    <Image style={{width:50,height:50,borderRadius:25,marginLeft:3,marginTop:5,}} source={{uri:rowData.userinfo.avatar}}/>
+                                    <View style={{position:'absolute',top:-3,left:-3,width:60,height:60,alignItems:'center',justifyContent:'center'}}>
+                                        {headimg?(<Image style={{width:60,height:60,borderRadius:35,}}  source={{uri:headimg}}/>):(null)}
+                                    </View>
+                                </View>
+                            )}
                         <Text style={{paddingTop:10,fontSize:12,color:'#aaaaaa'}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>

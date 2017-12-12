@@ -21,6 +21,8 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
 import com.tendcloud.tenddata.TCAgent;
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMShareAPI;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -108,6 +110,10 @@ public class MainApplication extends Application implements ReactApplication {
       RongIM.getInstance().addUnReadMessageCountChangedObserver(new MyUnReadMessageCount(), Conversation.ConversationType.GROUP);
 
     }
+
+    PlatformConfig.setWeixin("wx1ace10b30a9d5d70", "f5c4439b9e49498828324fb4a9aaad91");
+    //PlatformConfig.setSinaWeibo("3921700954", "04b48b094faeb16683c32669824ebdad", "http://sns.whalecloud.com");
+    UMShareAPI.get(this);
   }
 
   private class MySendMessageListener implements RongIM.OnSendMessageListener{

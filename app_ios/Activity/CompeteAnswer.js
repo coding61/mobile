@@ -86,7 +86,6 @@ class CompeteAnswer extends Component {
         var content = '竞赛';
         var shareUrl = Http.shareCompeteUrl(this.state.item.pk);
         var imgUrl = Http.shareLogoUrl;    // 默认图标
-        console.log(shareUrl);
         UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
             if(error) {
                 Alert.alert('分享出错了');
@@ -327,6 +326,15 @@ const styles = StyleSheet.create({
 	// -------------------------------------------------导航栏
     headerStyle:{
         backgroundColor:pinkColor
+    },
+    headerRightView:{
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center',
+        marginRight:10
+    },
+    headerRightImg:{
+        height:20
     },
     // -----------导航栏右部分
     headerRightView:{

@@ -192,17 +192,41 @@ export default class MyCollect extends Component{
     }
     renderForumRow(item){
         var rowData=item.item.posts;
-        var time_last=this.dealWithTime(rowData.last_replied)
+        var time_last=this.dealWithTime(rowData.last_replied);
+        var headimg='';
+        var forumbackcolor='#fff';
+        if(rowData.userinfo.props.length>0){
+            for(var i=0;i<rowData.userinfo.props.length;i++){
+                if(rowData.userinfo.props[i].status==1){
+                    if(rowData.userinfo.props[i].exchange_product.product_type==1){
+                        if(rowData.userinfo.props[i].exchange_product.category_detail.action=='background'){
+                            forumbackcolor=rowData.userinfo.props[i].exchange_product.category_detail.desc
+                        }else if(rowData.userinfo.props[i].exchange_product.category_detail.action=='avatar'){
+                            headimg=rowData.userinfo.props[i].exchange_product.image
+                        }
+                    }
+                }
+            }
+        }
         return (
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
-                style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
+                style={{width: width,flex:1, backgroundColor:forumbackcolor,borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
                 <View style={{flexDirection:'row',}}>
-                    <View style={{alignItems:'center'}}>
-                        {!rowData.userinfo.avatar?(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>):(<Image style={{width:50,height:50,marginTop:20,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>)}
-                        <Text style={{paddingTop:10,fontSize:12,color:'#aaaaaa'}}>{rowData.userinfo.grade.current_name}</Text>
+                    <View style={{alignItems:'center',marginTop:10,}}>
+                        {!rowData.userinfo.avatar?(
+                            <Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>
+                            ):(
+                            <View style={{alignItems:'center',justifyContent:'center'}}>
+                                    <Image style={{width:50,height:50,borderRadius:25,marginLeft:3,marginTop:5,}} source={{uri:rowData.userinfo.avatar}}/>
+                                    <View style={{position:'absolute',top:-8,left:-7,width:70,height:70,alignItems:'center',justifyContent:'center'}}>
+                                        {headimg?(<Image style={{width:70,height:70,borderRadius:35,}} resizeMode={'contain'} source={{uri:headimg}}/>):(null)}
+                                    </View>
+                                </View>
+                            )}
+                        <Text style={{marginTop:20,fontSize:12,color:'#aaaaaa'}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
-                    <View style={{paddingLeft:16,paddingRight:20,paddingTop:20,width:width*0.86,}}>
+                    <View style={{paddingLeft:16,paddingRight:20,paddingTop:10,width:width*0.86,}}>
                         <Text numberOfLines={2} style={{fontSize:16,color:'#3B3B3B',paddingBottom:10,fontWeight: '500',}}>{rowData.status=='unsolved'?(<Text style={{color:'red'}}>[未解决]</Text>):(<Text style={{color:'#cccccc'}}>[{rowData.status_display}]</Text>)}  {rowData.title}</Text>
                         <Text style={{paddingBottom:10,color:'#858585'}} numberOfLines={1}>{rowData.content}</Text>
                         <View style={{flexDirection:'row',alignItems:'center',flexWrap:'wrap'}}>

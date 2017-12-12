@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  NativeModules,
+  Alert
 } from 'react-native';
 
 import Utils from '../utils/Utils.js';
@@ -18,6 +20,8 @@ import Http from '../utils/Http.js';
 import LoadingView from '../Component/LoadingView.js';
 import EmptyView from '../Component/EmptyView.js';
 
+var UMeng = require('react-native').NativeModules.RongYunRN;
+
 const LoadMore = 1;           //点击加载更多
 const LoadNoMore = 0;         //已经到尾了
 const LoadMoreIng = -1;       //加载中
@@ -25,7 +29,7 @@ const LoadMoreIng = -1;       //加载中
 class ScholarshipRecord extends Component {
 	constructor(props) {
 	    super(props);
-	
+
 	    this.state = {
       balance: '__',
 			dataSource:[],
@@ -45,20 +49,78 @@ class ScholarshipRecord extends Component {
             title:"奖学金记录",
             headerTintColor: "#fff",
             headerTitleStyle:{alignSelf:'auto',},
+            headerRight:
+                <TouchableOpacity style={styles.navRightBtn} onPress={navigation.state.params ? navigation.state.params.shareWeChat : null}>
+                    <Text style={styles.navRightTxt}>分享</Text>
+                </TouchableOpacity>,
         }
     };
     componentWillMount() {
       	this._fetchCommodityRecordList(1);
+        this._getBonusRecord();
     }
     componentDidMount() {
-      
+        this.props.navigation.setParams({
+            shareWeChat: this._shareWeChat.bind(this)
+        })
     }
     componentWillUnmount() {
         this.timer && clearTimeout(this.timer);
     }
     // ------------------------------------------网络请求
+    _shareWeChat = () => {
+        if (!this.state.diamond_amount || !this.state.reward_amount) {
+            Alert.alert('正在获取奖学金详情，请稍后...');
+            return;
+        }
+        if (!this.state.name || !this.state.head) {
+            Alert.alert('正在获取个人信息，请稍后...');
+            return;
+        }
+        var title = '竞赛奖学金';
+        var content = '我在程序媛学习编程获得了奖学金';
+        var shareUrl = Http.shareBonusUrl(this.state.diamond_amount, this.state.reward_amount, this.state.name, this.state.head);
+        var imgUrl = Http.shareLogoUrl;    // 默认图标
+        console.log(shareUrl);
+        UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
+            if(error) {
+                Alert.alert('分享出错了');
+            } else {
+                if (callBackEvents == 'success') {
+                    // 钻石动画等
+                };
+            }
+        })
+    }
+    _getBonusRecord(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "get",
+                    url = Http.getBonusRecord,
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (!response) {
+                        Utils.showMessage('失败，请重试...');
+                        return;
+                    };
+                    if (response.status == -4 || response.message) {
+                        Utils.showMessage(response.message ? response.message : response.detail);
+                        return;
+                    }
+                    this.setState({
+                        diamond_amount: String(response.diamond_amount),
+                        reward_amount: String(response.reward_amount)
+                    })
+                }, (err) => {
+                    console.log(err);
+                    Utils.showMessage('请求异常');
+                });
+            }
+        })
+    }
     _fetchCommodityRecordList(pagenum){
-        
+
 		// var dic = {
   //             "pk": 4,
   //             "name": "北京大学现场讲座",
@@ -69,7 +131,7 @@ class ScholarshipRecord extends Component {
   //             "create_time": "2017-10-18T10:06:21.129728"
   //       }
   //       var array = [];
-        
+
   //       if (pagenum > 3) {
   //           this.setState({footerLoadTag:LoadNoMore});
   //           var arr = [];
@@ -96,7 +158,7 @@ class ScholarshipRecord extends Component {
   //           loading:false,
   //           dataSource:array,
   //       });
-        
+
 
         Utils.isLogin((token)=>{
             if (token) {
@@ -111,7 +173,9 @@ class ScholarshipRecord extends Component {
                   .then(responseJSON => {
                     if (responseJSON !== '失败') {
                       this.setState({
-                        balance: responseJSON.balance
+                        balance: responseJSON.balance,
+                        name: responseJSON.name,
+                        head: responseJSON.avatar
                       })
                     }
                   })
@@ -129,7 +193,7 @@ class ScholarshipRecord extends Component {
                     if (!response) {
                         //请求失败
                     };
-                    
+
                     if (response.next == null) {
                         //如果 next 字段为 null, 则数据已加载完毕
                         this.setState({footerLoadTag:LoadNoMore});
@@ -166,7 +230,7 @@ class ScholarshipRecord extends Component {
         if (this.state.footerLoadTag != LoadMore) {
             return;
         }
-        
+
         // 请求下一页数据
         this.setState({
             footerLoadTag:LoadMoreIng    //加载更多->加载中
@@ -177,7 +241,7 @@ class ScholarshipRecord extends Component {
                 pagenum:this.state.pagenum+1
             }, ()=>{
                 this._fetchCommodityRecordList(this.state.pagenum);
-            }) 
+            })
         }, 500);
     }
     // 下拉刷新
@@ -188,7 +252,7 @@ class ScholarshipRecord extends Component {
                 pagenum:1
             }, ()=>{
                 this._fetchCommodityRecordList(this.state.pagenum);
-            }) 
+            })
         }, 500);
     }
     // ------------------------------------------兑换记录列表
@@ -230,7 +294,7 @@ class ScholarshipRecord extends Component {
     		<View style={{flex:1}}>
     			{
     				this.state.dataSource.length?
-			    		<FlatList 
+			    		<FlatList
 				            ref={(flatlist)=>this._flatList=flatlist}
 				            style={{flex:1,}}
 				            data={this.state.dataSource}
@@ -280,17 +344,28 @@ const font3 = Utils.fontSSize;
 const font4 = Utils.fontMSSize;
 
 const styles = StyleSheet.create({
+    navRightBtn: {
+        width: 60,
+        height: 40,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    navRightTxt: {
+        color: 'white',
+        fontSize: 15
+    },
     // ---------------------------头部
     topView:{
-		height:50, 
-		backgroundColor:bgSecondColor, 
-		flexDirection:'row', 
-		alignItems:'center', 
-		paddingHorizontal:10, 
+		height:50,
+		backgroundColor:bgSecondColor,
+		flexDirection:'row',
+		alignItems:'center',
+		paddingHorizontal:10,
 		justifyContent:'space-between'
     },
     topView1:{
-    	flexDirection:'row', 
+    	flexDirection:'row',
     	alignItems:'center',
     	height:50
     },
@@ -298,9 +373,9 @@ const styles = StyleSheet.create({
     // ---------------------------FlatList
     // --------------FlatList 的尾部
     footerLoadMore:{
-        height:30, 
-        lineHeight:30, 
-        color:'gray', 
+        height:30,
+        lineHeight:30,
+        color:'gray',
         textAlign:'center',
         marginBottom:10
     },
@@ -311,7 +386,7 @@ const styles = StyleSheet.create({
         borderBottomWidth:1,
         padding:10
     },
-    
+
 
 });
 

@@ -111,7 +111,6 @@ export default class ForumList extends Component{
                     self._loadunread()
                 });
             }
-
         });
         this.eventEmtt = DeviceEventEmitter.addListener('addforum', (value)=>{
             this.props.navigation.navigate('ForumAdd',{data:value,token:this.state.token,callback:(msg)=>{
@@ -190,7 +189,6 @@ export default class ForumList extends Component{
                 }})
             }
         })
-
     }
     ranklist(){
         Utils.isLogin((token)=>{
@@ -205,7 +203,6 @@ export default class ForumList extends Component{
                 }})
             }
         })
-
     }
     _reloadPage(){
         var self = this;
@@ -244,7 +241,6 @@ export default class ForumList extends Component{
                 }})
             }
         })
-
     }
     _renderNext() {
         if (this.state.nextPage && this.state.isLoading === false) {
@@ -361,26 +357,38 @@ export default class ForumList extends Component{
         var rowData=item.item;
         var time_last=this.dealWithTime(rowData.last_replied?rowData.last_replied:rowData.create_time);
         var headimg='';
-        var forumbackcolor='';
-        /*if(rowData.userinfo.)*/
+        var forumbackcolor='#fff';
+        if(rowData.userinfo.props.length>0){
+            for(var i=0;i<rowData.userinfo.props.length;i++){
+                if(rowData.userinfo.props[i].status==1){
+                    if(rowData.userinfo.props[i].exchange_product.product_type==1){
+                        if(rowData.userinfo.props[i].exchange_product.category_detail.action=='background'){
+                            forumbackcolor=rowData.userinfo.props[i].exchange_product.category_detail.desc
+                        }else if(rowData.userinfo.props[i].exchange_product.category_detail.action=='avatar'){
+                            headimg=rowData.userinfo.props[i].exchange_product.image
+                        }
+                    }
+                }
+            }
+        }
         return (
             <TouchableOpacity onPress={this.forumdetail.bind(this,rowData)}
-                style={{width: width,flex:1, backgroundColor: this.state.fourmbackcolor[0],borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
+                style={{width: width,flex:1, backgroundColor: forumbackcolor,borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,paddingBottom:10,}}>
                 <View style={{flexDirection:'row',}}>
-                    <View style={{alignItems:'center'}}>
+                    <View style={{alignItems:'center',marginTop:10,}}>
                         <TouchableOpacity style={{width:70,height:70,marginTop:10}} onPress={this.goPersonalPage.bind(this, rowData.userinfo)}>
                             {!rowData.userinfo.avatar?(
                                 <Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>
                             ):(
                                 <View style={{alignItems:'center',justifyContent:'center'}}>
                                     <Image style={{width:50,height:50,borderRadius:25,}} source={{uri:rowData.userinfo.avatar}}/>
-                                    <View style={{position:'absolute',top:-8,left:2,width:70,height:70,alignItems:'center',justifyContent:'center'}}>
-                                        <Image style={{width:70,height:70,borderRadius:25,}} resizeMode={'contain'} source={require('../assets/ImageHead/6.png')}/>
+                                    <View style={{position:'absolute',top:-11,left:0,width:70,height:70,alignItems:'center',justifyContent:'center'}}>
+                                        {headimg?(<Image style={{width:70,height:70,borderRadius:25,}} resizeMode={'contain'} source={{uri:headimg}}/>):(null)}
                                     </View>
                                 </View>
                             )}
                         </TouchableOpacity>
-                        <Text style={{paddingTop:10,fontSize:12,color:'#6E7B8B'}}>{rowData.userinfo.grade.current_name}</Text>
+                        <Text style={{paddingTop:3,fontSize:12,color:'#6E7B8B'}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
                     <View style={{paddingLeft:16,paddingRight:20,paddingTop:10,width:width*0.83,}}>

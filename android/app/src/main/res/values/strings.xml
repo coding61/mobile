@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">程序媛</string>
     <string name="group_notice_prefix">\@所有人\n</string>
+    <string name="title_activity_imsetting">IMSettingActivity</string>
 </resources>

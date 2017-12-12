@@ -17,6 +17,7 @@ import {
   DeviceEventEmitter,
   NativeModules
 }from 'react-native';
+
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ForumDeatilCont from './ForumDeatilCont';
@@ -55,21 +56,21 @@ export default class Forum_Details extends Component{
             headerTitleStyle:{alignSelf:'auto',fontSize:14},
             headerRight:
                 (
-                <View style={{flexDirection:'row', marginRight: 5}}>
-                    <TouchableOpacity style={{width: 25, height: 40, marginRight:20, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{
-                        DeviceEventEmitter.emit('collec', state.params.data)
-                    }}>
-                        {state.params.iscollect==true?(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xin.png')} resizeMode={'contain'}/>):(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xinfull.png')} resizeMode={'contain'}/>)}
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width: 25, height: 40, marginTop:3, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{
-                        DeviceEventEmitter.emit('message', state.params.data)
-                    }}>
-                        <Image style={{width:22,height:20,}} source={require('../assets/Forum/message.png')} resizeMode={'contain'}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.navRightBtn} onPress={navigation.state.params ? navigation.state.params.navRightBtnClick : null}>
-                        <Text style={styles.navRightTxt}>分享</Text>
-                    </TouchableOpacity>
-                </View>
+                    <View style={{flexDirection:'row', marginRight: 5}}>
+                        <TouchableOpacity style={{width: 25, height: 40, marginRight:20, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{
+                            DeviceEventEmitter.emit('collec', state.params.data)
+                        }}>
+                            {state.params.iscollect==true?(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xin.png')} resizeMode={'contain'}/>):(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xinfull.png')} resizeMode={'contain'}/>)}
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{width: 25, height: 40, marginTop:3, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{
+                            DeviceEventEmitter.emit('message', state.params.data)
+                        }}>
+                            <Image style={{width:22,height:20,}} source={require('../assets/Forum/message.png')} resizeMode={'contain'}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.navRightBtn} onPress={navigation.state.params ? navigation.state.params.navRightBtnClick : null}>
+                            <Text style={styles.navRightTxt}>分享</Text>
+                        </TouchableOpacity>
+                    </View>
                 )
         };
     }
@@ -134,7 +135,6 @@ export default class Forum_Details extends Component{
             })
         })
 
-
         this.eventEm = DeviceEventEmitter.addListener('message', (value)=>{
             this.props.navigation.navigate('CommentText', {data: value,name:'main',userinfo:'',callback:(msg)=>{
                 this._onRefresh()
@@ -151,7 +151,6 @@ export default class Forum_Details extends Component{
         var content = this.state.data.content;
         var shareUrl = Http.shareForumUrl(this.state.pk);
         var imgUrl = Http.shareLogoUrl;    // 默认图标
-        console.log(shareUrl);
         UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
             if(error) {
                 Alert.alert('分享出错了');
@@ -331,37 +330,57 @@ export default class Forum_Details extends Component{
         }else if(rowData.play_reward.play_reward_number>4){
             reward=rowData.play_reward.play_reward_pople.slice(0,4).join("、")+'等'
         }
+        var headimg='';
+        var forumbackcolor='#ffffff';
+        if(rowData.userinfo.props.length>0){
+            for(var i=0;i<rowData.userinfo.props.length;i++){
+                if(rowData.userinfo.props[i].status==1){
+                    if(rowData.userinfo.props[i].exchange_product.product_type==1){
+                        if(rowData.userinfo.props[i].exchange_product.category_detail.action=='background'){
+                            forumbackcolor=rowData.userinfo.props[i].exchange_product.category_detail.desc
+                        }else if(rowData.userinfo.props[i].exchange_product.category_detail.action=='avatar'){
+                            headimg=rowData.userinfo.props[i].exchange_product.image
+                        }
+                    }
+                }
+            }
+        }
         return (
             <View style={{width: width,flex:1, backgroundColor: '#ffffff',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingRight:10,paddingBottom:10,}}>
-                <View style={{flexDirection:'row',paddingTop:10,backgroundColor:'#ffffff',width:width*0.9,paddingLeft:15,marginRight:10,}}>
-                    <View style={{alignItems:'center',paddingLeft:20,}}>
-                        <TouchableOpacity style={{width:50,height:30}} onPress={this.goPersonalPage.bind(this, rowData.userinfo)}>
+                <View style={{flexDirection:'row',paddingTop:10,backgroundColor:forumbackcolor,width:width,paddingLeft:15,paddingRight:10,}}>
+                    <View style={{alignItems:'center',paddingBottom:5,}}>
+                        <TouchableOpacity style={{width:45,height:45,}} onPress={this.goPersonalPage.bind(this, rowData.userinfo)}>
                             {!rowData.userinfo.avatar ? (
-                                <Image style={{width:50,height:30,borderRadius:15,}} source={require('../assets/Forum/defaultHeader.png')}/>
+                                <Image style={{width:45,height:45,}} source={require('../assets/Forum/defaultHeader.png')}/>
                             ) : (
-                                <Image style={{width:30,height:30,borderRadius:15,}} source={{uri:rowData.userinfo.avatar}}/>
+                                <View style={{alignItems:'center',justifyContent:'center',width:45,height:45,}}>
+                                    <Image style={{width:30,height:30,borderRadius:15,}} source={{uri:rowData.userinfo.avatar}}/>
+                                    <View style={{position:'absolute',top:0,left:0,width:45,height:45,alignItems:'center',justifyContent:'center'}}>
+                                        {headimg?(<Image style={{width:45,height:45,borderRadius:25,}} resizeMode={'contain'} source={{uri:headimg}}/>):(null)}
+                                    </View>
+                                </View>
                             )}
                         </TouchableOpacity>
-                        <Text style={{paddingTop:5,fontSize:10,color:'#ff6b94',}}>{rowData.userinfo.grade.current_name}</Text>
+                        <Text style={{fontSize:12,marginLeft:5,color:'#ff6b94',}}>{rowData.userinfo.grade.current_name}</Text>
                         {this.rendertop(rowData.userinfo.top_rank)}
                     </View>
-                    <View style={{paddingLeft:40,paddingRight:10,width:width*0.5,}}>
+                    <View style={{paddingLeft:20,paddingRight:10,width:width*0.63,paddingTop:10,}}>
                         <Text style={{paddingBottom:10,color:'#858585',marginRight:20,}}>{rowData.userinfo.name}</Text>
                         <Text style={{paddingBottom:10,color:'#858585'}}>{rowData.create_time.slice(0, 16).replace("T", " ")}</Text>
                     </View>
-                    <View style={{marginRight:5,flexDirection:'row',justifyContent:'space-around'}}>
-                        <TouchableOpacity style={{marginTop:3,marginRight:30,}} onPress={this.Show_Comment.bind(this,rowData.pk,rowData.userinfo.name)}>
+                    <View style={{flexDirection:'row',paddingTop:10,paddingRight:5,}}>
+                        <TouchableOpacity style={{marginTop:3,marginRight:10,}} onPress={this.Show_Comment.bind(this,rowData.pk,rowData.userinfo.name)}>
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
-                            <Text onPress={this.detele_reply.bind(this,rowData.pk)} style={{fontSize:14,marginTop:3,color:'red',width:50,height:30,marginRight:10,}} >删除</Text>
+                            <Text onPress={this.detele_reply.bind(this,rowData.pk)} style={{fontSize:14,marginTop:3,color:'red',marginLeft:10,}} >删除</Text>
                             ):(null)}
                         {this.state.UserPk!=rowData.userinfo.pk?(
-                            <Text onPress={this.givereplyprize.bind(this, rowData.userinfo.owner,rowData.pk)} style={{fontSize:14,paddingBottom:10,marginTop:3,color:'#999',}}>打赏</Text>
+                            <Text onPress={this.givereplyprize.bind(this, rowData.userinfo.owner,rowData.pk)} style={{fontSize:14,paddingBottom:10,marginLeft:10,marginTop:3,color:'#999',}}>打赏</Text>
                             ):(null)}
                     </View>
                 </View>
-                {rowData.content?(<ForumDeatilCont data={rowData.content}></ForumDeatilCont>):(null)}
+                {rowData.content?(<ForumDeatilCont data={rowData.content} style={{paddingLeft:10,}}></ForumDeatilCont>):(null)}
                 {rowData.play_reward.play_reward_number>0?(<Text style={{color:'#999',paddingLeft:20,paddingBottom:10,}}>{reward+" "+rowData.play_reward.play_reward_number+"人打赏"}</Text>):(null)}
                 {rowData.replymore.map((result,index)=> {
                     return(
@@ -369,7 +388,7 @@ export default class Forum_Details extends Component{
                             <View style={{flexDirection:'row',paddingTop:10,paddingLeft:20,}}>
                                 <Text style={{paddingBottom:10,color:'#4f99cf',marginRight:30,}}>{result.userinfo.name}</Text>
                                 <Text style={{paddingBottom:10,color:'#858585'}}>{result.create_time.slice(0, 16).replace("T", " ")}</Text>
-                                <TouchableOpacity style={{marginLeft:10,marginRight:15,}} onPress={this.Show_Comment.bind(this,rowData.pk,result.userinfo.name)}>
+                                <TouchableOpacity style={{marginLeft:20,marginRight:15,}} onPress={this.Show_Comment.bind(this,rowData.pk,result.userinfo.name)}>
                                     <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                                 </TouchableOpacity>
                             </View>
@@ -565,23 +584,43 @@ export default class Forum_Details extends Component{
             }else if(data.play_reward.play_reward_number>4){
                 reward=data.play_reward.play_reward_pople.slice(0,4).join("、")+'等'
             }
+            var headimg='';
+            var forumbackcolor='#F2F2F2';
+            if(data.userinfo.props.length>0){
+                for(var i=0;i<data.userinfo.props.length;i++){
+                    if(data.userinfo.props[i].status==1){
+                        if(data.userinfo.props[i].exchange_product.product_type==1){
+                            if(data.userinfo.props[i].exchange_product.category_detail.action=='background'){
+                                forumbackcolor=data.userinfo.props[i].exchange_product.category_detail.desc
+                            }else if(data.userinfo.props[i].exchange_product.category_detail.action=='avatar'){
+                                headimg=data.userinfo.props[i].exchange_product.image
+                            }
+                        }
+                    }
+                }
+            }
             return(
                 <View style={{flex:1,backgroundColor:'#ffffff'}}>
                     <ScrollView>
                         <Text style={{fontSize:16,color:'#292929',padding:15,}} selectable={true}>{data.status_display=='未解决'?(<Text style={{color:'#ff6b94',marginRight:10,}}>[{data.status_display}]</Text>):(<Text style={{color:'#858585',paddingRight:10,}}>[{data.status_display}]</Text>)}   {data.title}</Text>
-                        <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:'#F2F2F2'}}>
-                            <View style={{alignItems:'center',paddingLeft:20,}}>
-                                <TouchableOpacity style={{width:50,height:50}} onPress={this.goPersonalPage.bind(this, data.userinfo)}>
+                        <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:forumbackcolor}}>
+                            <View style={{alignItems:'center',}}>
+                                <TouchableOpacity style={{width:70,height:70}} onPress={this.goPersonalPage.bind(this, data.userinfo)}>
                                     {!data.userinfo.avatar ? (
                                         <Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>
                                     ) : (
-                                        <Image style={{width:50,height:50,borderRadius:25}} source={{uri:data.userinfo.avatar}}/>
+                                        <View style={{alignItems:'center',justifyContent:'center'}}>
+                                            <Image style={{width:50,height:50,borderRadius:25,}} source={{uri:data.userinfo.avatar}}/>
+                                            <View style={{position:'absolute',top:-10,left:-2,width:70,height:70,alignItems:'center',justifyContent:'center'}}>
+                                                {headimg?(<Image style={{width:60,height:60,borderRadius:25,}} resizeMode={'contain'} source={{uri:headimg}}/>):(null)}
+                                            </View>
+                                        </View>
                                     )}
                                 </TouchableOpacity>
-                                <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
+                                <Text style={{color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
                                 {this.rendertop(data.userinfo.top_rank)}
                             </View>
-                            <View style={{paddingLeft:40,paddingRight:10,width:width*0.66,}}>
+                            <View style={{paddingLeft:20,paddingRight:10,width:width*0.66,}}>
                                 <Text style={{paddingBottom:10,color:'#858585',marginRight:20,}}>{data.userinfo.name}</Text>
                                 <Text style={{paddingBottom:5,color:'#858585'}}>{data.create_time.slice(0, 16).replace("T", " ")}</Text>
                                 <Text style={{color:'#FF6A6A'}}>[{data.types.name}]</Text>

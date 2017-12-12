@@ -97,8 +97,10 @@ android {
         applicationId "com.cxy61.girls"
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 6
-        versionName "1.5.0"
+        // 6
+        // 1.5.0
+        versionCode 7
+        versionName "1.7.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -122,7 +124,7 @@ android {
         variant.outputs.each { output ->
             // For each separate APK per architecture, set a unique version code as described here:
             // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
-            def versionCodes = ["armeabi-v7a":1, "x86":2]
+            def versionCodes = ["armeabi-v7a": 1, "x86": 2]
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
@@ -136,6 +138,10 @@ android {
             jniLibs.srcDirs = ['libs', 'src/main/jniLibs']
         }
     }
+
+    dexOptions {
+        jumboMode true
+    }
 }
 
 dependencies {
@@ -144,16 +150,25 @@ dependencies {
     compile project(':react-native-device-info')
     compile project(':react-native-sound')
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.facebook.react:react-native:+'
     // From node_modules
-    compile 'com.facebook.fresco:animated-gif:1.0.1'
     compile files('libs/TalkingdataAnalytics.jar')
     //compile 'com.qiniu:qiniu-android-sdk:7.2.+'
     compile project(':library')
-    compile files('libs/xUtils-2.6.14.jar')
     compile project(':IMKit')
+    compile files('libs/xUtils-2.6.14.jar')
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')
+    compile files('libs/umeng_shareboard_widget.jar')
+    compile files('libs/umeng_social_api.jar')
+    compile files('libs/umeng_social_net.jar')
+    compile files('libs/umeng_social_shareboard.jar')
+    compile files('libs/umeng_social_shareview.jar')
+    compile files('libs/umeng_social_tool.jar')
+    compile files('libs/SocialSDK_Sina_Simplify.jar')
+    compile files('libs/SocialSDK_WeChat_Simplify.jar')
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.facebook.react:react-native:+'
+    compile 'com.facebook.fresco:animated-gif:1.0.1'
+    compile 'com.android.support:design:23.4.0'
 }
 
 // Run this once to be able to run the application with BUCK

@@ -4,10 +4,16 @@ import android.content.Intent;
 
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.media.UMWeb;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.UserInfo;
@@ -100,5 +106,41 @@ public class RnTest extends ReactContextBaseJavaModule {
     @ReactMethod
     public void reIMFreshUserInfo(String username,String nick,String avatar){
         RongIM.getInstance().refreshUserInfoCache(new UserInfo(username, nick, Uri.parse(avatar)));
+    }
+
+    @ReactMethod
+    public void rnShare(String title, String content, String shareUrl, String imgUrl, final Callback callback){
+        UMImage image = new UMImage(getCurrentActivity(), imgUrl);
+        image.compressStyle = UMImage.CompressStyle.SCALE;
+        UMWeb web = new UMWeb(shareUrl);
+        web.setTitle(title);
+        web.setThumb(image);
+        web.setDescription(content);
+
+        new ShareAction(getCurrentActivity())
+                .withMedia(web)
+                .setDisplayList(SHARE_MEDIA.WEIXIN)
+                .setCallback(new UMShareListener() {
+                    @Override
+                    public void onStart(SHARE_MEDIA share_media) {
+
+                    }
+
+                    @Override
+                    public void onResult(SHARE_MEDIA share_media) {
+                        callback.invoke("分享成功");
+                    }
+
+                    @Override
+                    public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+                        callback.invoke("分享失败");
+                    }
+
+                    @Override
+                    public void onCancel(SHARE_MEDIA share_media) {
+                        callback.invoke("已取消分享");
+                    }
+                })
+                .open();
     }
 }

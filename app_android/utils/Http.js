@@ -3,10 +3,10 @@
  * @description: 接口地址
  * @time: 2017-03-15
  */
-const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
-const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
-//const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
-//const Page_Domain = "https://app.bcjiaoyu.com/girl";
+//const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
+//const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
+const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
+const Page_Domain = "https://app.bcjiaoyu.com/girl";
 let Http = {
 	domainPage:Page_Domain,    //网站页面地址的域名
 	domain:Http_Domain,        //接口域名
@@ -108,7 +108,31 @@ let Http = {
 
 	getScholarship:(pagenum)=>{
 		return Http_Domain + "/asset/record/?page=" + pagenum                         //奖学金
-	}
+	},
 
+    // 分享相关
+	shareLogoUrl: "https://static1.bcjiaoyu.com/girlShareLogo.png",
+	shareActivityUrl:(pk)=>{
+		return Page_Domain + "/app/share/activityDetails.html?pk=" + String(pk)
+	},
+	shareCompeteUrl:(pk)=>{
+		return Page_Domain + "/app/share/compete.html?pk=" + String(pk);
+	},
+	shareForumUrl:(pk)=>{
+		return Page_Domain + "/app/share/forum.html?pk=" + String(pk);
+	},
+	sharePunchUrl:(pk, username, name, head)=>{
+		return Page_Domain + "/app/share/punch.html?pk=" + String(pk) + "&username=" + username + "&name=" + name + "&head=" + head;
+	},
+	punchCard:(pk)=>{
+		return Http_Domain + "/club/club_punch/" + String(pk) + "/";
+	},
+	getPunchCardRecord:(pk, username)=>{
+		return Http_Domain + "/club/myclub_punch/" + String(pk) + "/?username=" + username;
+	},
+	shareBonusUrl:(bonus, diamond, name, head)=>{
+		return Page_Domain + "/app/share/bonus.html?bonus=" + String(bonus) + "&diamond=" + String(diamond) + "&name=" + name + "&head=" + head;
+	},
+	getBonusRecord:Http_Domain + "/contest/statistics/"
 }
 export default Http;
