@@ -64,6 +64,12 @@ class Exchange extends Component {
         })
     }
     componentWillUnmount() {
+        if (typeof(this.props.navigation.state.params) !== 'undefined') {
+          if (typeof(this.props.navigation.state.params.callback) !== 'undefined') {
+                this.props.navigation.state.params.callback(); 
+          }
+        }
+        
         this.timer && clearTimeout(this.timer);
         
         //移除监听

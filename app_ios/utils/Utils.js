@@ -26,6 +26,7 @@ const BottomStatusBarAndroid = 48
 const HeaderH = isIOS ? isIphoneX?88:64 : TopNavBarHeight+TopStatusBarAndroid
 const BottomH = isIOS ? isIphoneX?83:49 : BottomStatusBarAndroid
 const iosSafeHeight = isIOS?isIphoneX?34:0:0
+const statusBarHeight = isIOS?isIphoneX?44:20:25
 
 var chnNumChar = ["零","一","二","三","四","五","六","七","八","九"];
 var chnUnitSection = ["","万","亿","万亿","亿亿"];
@@ -89,6 +90,7 @@ let Utils = {
     headerHeight:HeaderH,
     bottomHeight:BottomH,
     iosSafeHeight:iosSafeHeight,
+    statusBarHeight:statusBarHeight,
 	navBarBgColor:'rgb(250, 80, 131)',
 	tabBarBgColor:'rgb(255,255,255)',
     tabBarIconUnSColor:'rgb(124,124,124)',
