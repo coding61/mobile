@@ -133,7 +133,11 @@ class PunchCard extends Component {
                 // 打卡获得钻石时
                 if (response.message && response.message == '活动打卡成功') {
                     if (response.diamond_amount && response.diamond_amount != 0) {
-                        this.setState({showRewardNum: response.diamond_amount},() =>{
+                        this.setState({showRewardNum: response.diamond_amount, showType: 'diamond'},() =>{
+                            this.setState({showReward: true})
+                        })
+                    } else if (response.bonus_amount && response.bonus_amount != 0) {
+                        this.setState({showRewardNum: response.bonus_amount, showType: 'bonus'},() =>{
                             this.setState({showReward: true})
                         })
                     } else {
@@ -160,7 +164,8 @@ class PunchCard extends Component {
             Alert.alert('正在获取个人信息，请稍后...');
             return;
         }
-        var title = this.state.data.name;
+        var count = this.state.data.my_punch ? this.state.data.my_punch.punch_time.length + 1 : 1;
+        var title = '我在“程序媛app”学习编程，现在是打卡第' + String(count) +  '天。';
         var content = this.state.data.introduction;
         var shareUrl = Http.sharePunchUrl(this.state.pk, this.state.owner, this.state.head, this.state.name);
         var imgUrl = Http.shareLogoUrl;    // 默认图标
@@ -221,7 +226,6 @@ class PunchCard extends Component {
             token = this.state.token,
             data = null;
         BCFetchRequest.fetchData(type, url, token, data, (response) => {
-            console.log(response);
             if (!response) {
                 Alert.alert('失败，请重试..');
                 return;
@@ -424,8 +428,8 @@ class PunchCard extends Component {
 
     _navView() {
         return (
-            <View style={{width: width, height: 40, marginTop: 20, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                <TouchableOpacity style={{position: 'absolute', width: 60, height: 40, left: 0, justifyContent: 'center', alignItems: 'center'}} onPress={this._goBack.bind(this)}>
+            <View style={{width: width, height: 44, marginTop: 20, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                <TouchableOpacity style={{position: 'absolute', width: 60, height: 44, left: 0, justifyContent: 'center', alignItems: 'center'}} onPress={this._goBack.bind(this)}>
                     <Image source={require('../images/back.png')} resizeMode={'contain'}/>
                 </TouchableOpacity>
                 <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold', backgroundColor: 'rgba(255, 255, 255, 0)'}}>活动打卡</Text>
