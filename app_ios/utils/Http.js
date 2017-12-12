@@ -5,11 +5,16 @@
  */
 const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
 const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
+const Share_Domain = "https://www.cxy61.com";
+
 // const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
 // const Page_Domain = "https://app.bcjiaoyu.com/girl";
+// const Share_Domain = "https://app.bcjiaoyu.com";
+
 let Http = {
 	domainPage:Page_Domain,    //网站页面地址的域名
 	domain:Http_Domain,        //接口域名
+	domain3:Share_Domain,      //网页域名
 	login:Http_Domain + "/userinfo/invitation_code_login/",       //邀请码登录
 	whoami:Http_Domain + "/userinfo/whoami/",                     //个人信息
 	addReward:Http_Domain + "/userinfo/add_reward/",              //添加奖励
