@@ -45,21 +45,52 @@
         </RelativeLayout>
         <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical|center_horizontal"
                 android:layout_weight="1"
         >
-            <ImageButton
-                    android:id="@+id/right_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingRight="12dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_gravity="center_vertical"
-                    android:visibility="gone"
-                    android:background="@drawable/group_icon"
+            <ImageButton android:id="@+id/right_btn"
+                         android:layout_width="20dp"
+                         android:layout_height="20dp"
+                         android:layout_centerVertical="true"
+                         android:layout_alignParentRight="true"
+                         android:layout_marginRight="12dp"
+                         android:background="@drawable/group_icon"
+                         android:visibility="gone"
             />
         </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+    >
+        <TextView
+                android:id="@+id/tv_placard"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="群公告"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="10dp"
+        />
+
+        <Switch
+                android:id="@+id/sw_message"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="消息免打扰"
+                android:textSize="18sp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="10dp"
+        />
+
     </LinearLayout>
 
 </LinearLayout>

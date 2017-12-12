@@ -119,7 +119,7 @@ public class RnTest extends ReactContextBaseJavaModule {
 
         new ShareAction(getCurrentActivity())
                 .withMedia(web)
-                .setDisplayList(SHARE_MEDIA.WEIXIN)
+                .setDisplayList(SHARE_MEDIA.WEIXIN,SHARE_MEDIA.WEIXIN_CIRCLE,SHARE_MEDIA.WEIXIN_FAVORITE)
                 .setCallback(new UMShareListener() {
                     @Override
                     public void onStart(SHARE_MEDIA share_media) {
