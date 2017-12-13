@@ -164,7 +164,12 @@ class PunchCard extends Component {
             Alert.alert('正在获取个人信息，请稍后...');
             return;
         }
-        var count = this.state.data.my_punch ? this.state.data.my_punch.punch_time.length + 1 : 1;
+        var count = 1;
+        if (this.state.data.my_punch && this.state.data.my_punch.today_punch == 0) {
+            count = this.state.data.my_punch.punch_time.length + 1;
+        } else if (this.state.data.my_punch && this.state.data.my_punch.today_punch != 0) {
+            count = this.state.data.my_punch.punch_time.length
+        }
         var title = '我在“程序媛app”学习编程，现在是打卡第' + String(count) +  '天。';
         var content = this.state.data.introduction;
         var shareUrl = Http.sharePunchUrl(this.state.pk, this.state.owner, this.state.head, this.state.name);
@@ -528,6 +533,10 @@ class PunchCard extends Component {
                 </View>
             )
         )
+    }
+
+    _hideRewardView() {
+        this.setState({showReward: false});
     }
 
     render() {
