@@ -411,7 +411,7 @@ class HomeScreen extends Component{
                       resizeMode={'cover'}
                     />
                     <Text style={styles.tabTitle}>
-                      {"娃娃机"}
+                      {"轻松一下"}
                     </Text>
                     <Text style={styles.tabText}>
                       {"赢钻石和道具"}
