@@ -297,7 +297,7 @@ class Exchange extends Component {
         		  resizeMode={'contain'}
         		/>
               	<View style={styles.itemRightView}>
-					<Text style={[{color:fontBColor, fontSize:font1}, styles.itemTitleText]}>{item.name}</Text>
+					<Text style={[{color:fontBColor, fontSize:font2}, styles.itemTitleText]}>{item.name}</Text>
 					<View style={{flexDirection:'row'}}>
 						<Text style={[{color:fontBColor, fontSize:font3}, styles.itemTitleText]}>{"所需钻石:"}</Text>
 						<Text style={[{color:blueColor, fontSize:font3}, styles.itemTitleText]}>{item.diamond}</Text>
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
 	    alignItems:'center',
     },
     avatar:{
-    	width:width/3,
+    	width:width/4,
     	height:150,
     	marginRight:5
     },
