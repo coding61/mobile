@@ -13,18 +13,17 @@ import {
   Alert,
   AsyncStorage
 } from 'react-native';
-
 import Utils from '../utils/Utils.js';
 const {width, height} = Dimensions.get('window');
 import Http from '../utils/Http.js';
 class RightBtn extends Component {
-	render() {
-		return (
-			<TouchableOpacity onPress={this.props.press()} style={{alignItems: 'center', justifyContent: 'center'}}>
-				<Text style={{fontSize: 16, color: 'white', width: 50, height: 20}}>{'发布'}</Text>
-			</TouchableOpacity>
-			)
-	}
+  render() {
+    return (
+      <TouchableOpacity onPress={this.props.press()} style={{alignItems: 'center', justifyContent: 'center'}}>
+        <Text style={{fontSize: 16, color: 'white', width: 50, height: 20}}>{'发布'}</Text>
+      </TouchableOpacity>
+      )
+  }
 }
 class AddActivity extends Component {
   static navigationOptions  = ({ navigation, screenProps }) => ({
@@ -40,13 +39,15 @@ class AddActivity extends Component {
     headerRight: <RightBtn press={() => navigation.state.params.navigatePress}/>
   })
   constructor() {
-  	super();
-  	this.state = {
-  		titleText: '',
-  		contentText: '',
+    super();
+    this.state = {
+      titleText: '',
+      contentText: '',
       password: '',
-      isUp: false
-  	}
+      isUp: false,
+      days: '',
+      isDays: false
+    }
   }
   componentWillUnmount() {
     this.props.navigation.state.params.callback(this.state.isUp);
@@ -59,12 +60,18 @@ class AddActivity extends Component {
       Utils.showMessage('活动简介不能为空！')
     } else if (this.state.password === '') {
       Utils.showMessage('活动密码不能为空！')
-    }
-    
-    
-    if (this.state.titleText !== '' && this.state.contentText !== '' && this.state.password !== '') {
+    } else if (this.state.isDays === true && this.state.days === '') {
+      Utils.showMessage('打卡天数不能为空')
+    } else {
+
+      var form;
+      if (this.state.isDays === true) {
+        form = JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText, ispunch: _this.state.isDays, punch_days: _this.state.days})
+      } else {
+        form = JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText, ispunch: _this.state.isDays, punch_days: 0})
+      }
       AsyncStorage.getItem("token", function(errs, results) {
-         fetch(Http.domain + '/club/club_create/',{method: 'post', headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'},body: JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText})})
+         fetch(Http.domain + '/club/club_create/',{method: 'post', headers: {'Authorization': 'Token ' + results, 'content-type': 'application/json'},body: form})
           .then(response => {
             if (response.ok === true) {
               return '成功';
@@ -94,17 +101,22 @@ class AddActivity extends Component {
         navigatePress:this.onPress
     })
   }
+  days() {
+    this.setState({
+      isDays: !this.state.isDays
+    })
+  }
   render() {
     return (
       <View style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}>
-      	<ScrollView>
-	      	<TextInput
-		        style={{fontSize: 16, paddingLeft: 10, marginTop: 20, height: 40, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)'}}
-		        onChangeText={(titleText) => this.setState({titleText})}
-		        placeholder={'标题'}
-		        value={this.state.titleText}
+        <ScrollView>
+          <TextInput
+            style={{fontSize: 16, paddingLeft: 10, marginTop: 20, height: 40, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)'}}
+            onChangeText={(titleText) => this.setState({titleText})}
+            placeholder={'标题'}
+            value={this.state.titleText}
             underlineColorAndroid={'transparent'}
-	      	/>
+          />
           <TextInput
             style={{fontSize: 16, paddingLeft: 10, height: 40, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)'}}
             onChangeText={(password) => this.setState({password})}
@@ -112,15 +124,28 @@ class AddActivity extends Component {
             value={this.state.password}
             underlineColorAndroid={'transparent'}
           />
-	      	<TextInput
-		        style={{fontSize: 14, paddingLeft: 10, height: height / 3, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)', textAlignVertical: 'top'}}
-		        onChangeText={(contentText) => this.setState({contentText})}
-		        placeholder={'通告内容'}
-		        value={this.state.contentText}
-		        multiline={true}
+          <TextInput
+            style={{fontSize: 14, paddingLeft: 10, height: height / 3, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)'}}
+            onChangeText={(contentText) => this.setState({contentText})}
+            placeholder={'通告内容'}
+            value={this.state.contentText}
             underlineColorAndroid={'transparent'}
-	      	/>
-	      </ScrollView>
+            multiline={true}
+          />
+          <View style={{flexDirection: 'row', width: width, height: 100, alignItems: 'center', justifyContent: 'space-between'}}>
+            <TouchableOpacity onPress={this.days.bind(this)} style={{marginLeft: 10, backgroundColor: 'rgb(250, 80, 131)', width: 60, height: 60, borderRadius: 35, justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={{fontSize: 16, color: 'white', textAlign: 'center'}}>{this.state.isDays === true ? ('打卡'):('不打卡')}</Text>
+            </TouchableOpacity>
+            {this.state.isDays === true ? <TextInput
+            style={{width: 100, fontSize: 11, height: 50, borderBottomColor: 'rgb(243, 244, 245)', borderBottomWidth: 1, backgroundColor: 'white', color: 'rgb(72, 73, 74)', borderRadius: 5}}
+            onChangeText={(days) => this.setState({days})}
+            placeholder={'打卡天数为1-30天'}
+            value={this.state.days}
+            keyboardType={'numeric'}
+            underlineColorAndroid={'transparent'}
+          /> : null}
+          </View>
+        </ScrollView>
       </View>
     );
   }

@@ -63,7 +63,7 @@ class AddActivity extends Component {
     } else if (this.state.isDays === true && this.state.days === '') {
       Utils.showMessage('打卡天数不能为空')
     } else {
-
+      
       var form;
       if (this.state.isDays === true) {
         form = JSON.stringify({name:_this.state.titleText,password:_this.state.password,introduction:_this.state.contentText, ispunch: _this.state.isDays, punch_days: _this.state.days})
