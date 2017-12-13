@@ -176,16 +176,16 @@ class PunchCard extends Component {
         var content = this.state.data.introduction;
         var shareUrl = Http.sharePunchUrl(this.state.pk, this.state.owner, this.state.head, this.state.name);
         var imgUrl = Http.shareLogoUrl;    // 默认图标
-        // UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
-        //     if(error) {
-        //         Alert.alert('分享出错了');
-        //     } else {
-        //         if (callBackEvents == 'success') {
-        //             this._punchCard();
-        //         };
-        //     }
-        // })
-        this._punchCard();
+        UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
+            if(error) {
+                Alert.alert('分享出错了');
+            } else {
+                if (callBackEvents == 'success') {
+                    this._punchCard();
+                };
+            }
+        })
+        // this._punchCard();
 
     }
 
