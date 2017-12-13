@@ -176,15 +176,17 @@ class PunchCard extends Component {
         var content = this.state.data.introduction;
         var shareUrl = Http.sharePunchUrl(this.state.pk, this.state.owner, this.state.head, this.state.name);
         var imgUrl = Http.shareLogoUrl;    // 默认图标
-        UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
-            if(error) {
-                Alert.alert('分享出错了');
-            } else {
-                if (callBackEvents == 'success') {
-                    this._punchCard();
-                };
-            }
-        })
+        // UMeng.goShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
+        //     if(error) {
+        //         Alert.alert('分享出错了');
+        //     } else {
+        //         if (callBackEvents == 'success') {
+        //             this._punchCard();
+        //         };
+        //     }
+        // })
+        this._punchCard();
+
     }
 
     _punchCardAlert() {
@@ -272,7 +274,7 @@ class PunchCard extends Component {
     // 获取经过的天数
     _getPassDays(time) {
         var curDate = new Date();
-        var diff = Date.parse(curDate) - Date.parse(time);
+        var diff = Date.parse(curDate) - Date.parse(time) + 3600 * 1000 * 8;
         var days = Math.floor(diff / (24 * 3600 * 1000))
         return days;
     }

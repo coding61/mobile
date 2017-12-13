@@ -270,7 +270,7 @@ class PunchCard extends Component {
     // 获取经过的天数
     _getPassDays(time) {
         var curDate = new Date();
-        var diff = Date.parse(curDate) - Date.parse(time);
+        var diff = Date.parse(curDate) - Date.parse(time) + 3600 * 1000 * 8;
         var days = Math.floor(diff / (24 * 3600 * 1000))
         return days;
     }
