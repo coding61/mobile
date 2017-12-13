@@ -152,12 +152,12 @@ export default class Forum_Details extends Component{
         var shareUrl = Http.shareForumUrl(this.state.pk);
         var imgUrl = Http.shareLogoUrl;    // 默认图标
         UMeng.rnShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
-            if(error) {
-                Alert.alert('分享出错了');
-            } else {
-                if (callBackEvents == 'success') {
-                    // 钻石动画等
-                };
+            if (callBackEvents == '分享成功') {
+
+            } else if (callBackEvents == '分享失败') {
+                Alert.alert('分享失败');
+            } else if (callBackEvents == '已取消分享') {
+                Alert.alert('已取消分享');
             }
         })
     }
