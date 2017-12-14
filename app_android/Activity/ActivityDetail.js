@@ -82,7 +82,7 @@ class ActivityDetail extends Component {
         var content = this.state.data.introduction;
         var shareUrl = Http.shareActivityUrl(this.props.navigation.state.params.pk);
         var imgUrl = Http.shareLogoUrl;    // 默认图标
-        UMeng.rnShare(title, content, shareUrl, imgUrl, (error, callBackEvents)=>{
+        UMeng.rnShare(title, content, shareUrl, imgUrl, (callBackEvents)=>{
             if (callBackEvents == '分享成功') {
 
             } else if (callBackEvents == '分享失败') {
