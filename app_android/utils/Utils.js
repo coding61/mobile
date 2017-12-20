@@ -28,6 +28,43 @@ const BottomH = isIOS ? isIphoneX?83:49 : BottomStatusBarAndroid
 const iosSafeHeight = isIOS?isIphoneX?34:0:0
 const statusBarHeight = isIOS?isIphoneX?44:20:25
 
+import Sound from 'react-native-sound';
+var playSouns = {
+    status:true,
+    queue:[],
+}
+function playMsgSound(url){
+    url = decodeURIComponent(url);
+    playSouns.queue.push(url);
+
+    function play(url){
+        console.log(playSouns.queue.length, url);
+        if (playSouns.status) {
+            playSouns.status=false;
+            const callback = (error, sound) => {
+                if (error) {
+                  console.log(error)
+                  return;
+                }
+                // Run optional pre-play callback
+                sound.play(() => {
+                    console.log('play successful!');
+                    sound.release();
+                    playSouns.status = true;
+                    playSouns.queue.shift();
+                    if (playSouns.queue.length >= 1) {
+                        play(playSouns.queue[0]);
+                    }
+                });
+            };
+            const sound = new Sound(url, null, error => callback(error, sound));
+        }
+    }
+    if (playSouns.queue.length >= 1) {
+        play(playSouns.queue[0]);
+    }
+}
+
 var chnNumChar = ["零","一","二","三","四","五","六","七","八","九"];
 var chnUnitSection = ["","万","亿","万亿","亿亿"];
 var chnUnitChar = ["","十","百","千"];
@@ -123,6 +160,9 @@ let Utils = {
     blueColor:'#5daeff',                    //主题颜色,蓝色
 
     isIphoneX:isIphoneX,
+    playMsgSound:(url)=>{
+        return playMsgSound(url)
+    },
     containKey:(dic, key)=>{
         return dic.hasOwnProperty(key)
     },

@@ -478,6 +478,9 @@ class MessagePage extends Component{
                     currentItem:item
                 },()=>{
                     // this._leftAnimate();
+                    if(item.audio){
+                        this._loadMsgAudio(item.audio);
+                    }
 
                     // 1.存储消息
                     this._storeChatData(item, "message");
@@ -862,6 +865,29 @@ class MessagePage extends Component{
         Utils.setValue("optionIndex", JSON.stringify(this.state.optionIndex));
     }
     // -------------------------------------------动画事件
+    _loadMsgAudio(url){
+        Utils.playMsgSound(url);
+        /*
+        console.log("消息音频地址-解码前:", url);
+        url = decodeURIComponent(url);
+        console.log("消息音频地址-解码后:", url);
+        // url = "https://static1.bcjiaoyu.com/cxy/child/22.mp3";
+        // https://static1.bcjiaoyu.com/cxy/child/4%EF%BC%8D2.mp3
+        // https://static1.bcjiaoyu.com/cxy/child/4－2.mp3
+        const callback = (error, sound) => {
+            if (error) {
+              console.log(error)
+              return;
+            }
+            // Run optional pre-play callback
+            sound.play(() => {
+                console.log('play successful!');
+                sound.release();
+            });
+        };
+        const sound = new Sound(url, null, error => callback(error, sound));
+        */
+    }
     _loadAudio(flag){
         var url = flag=="zuan"?require('../images/diamond.mp3'):require('../images/grade.wav');
         const callback = (error, sound) => {
@@ -1223,7 +1249,7 @@ class MessagePage extends Component{
                             this_._loadZuanAni(0);
                         } 
                     }
-                    if(json.grade.current_name != response.grade.current_name){
+                    if(response.experience > json.experience && json.grade.current_name != response.grade.current_name){
                         // 打开升级动画
                         gradeAni = true
                         if (growAni) {
@@ -2585,23 +2611,36 @@ class MessagePage extends Component{
                   source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                 />
                 
-                <View style={[styles.msgView, {width:widthMsg2}]}>
-                    <View style={styles.messageView}>
-                        <TouchableOpacity onLongPress={(e)=>{
-                            this.setState({showCopyBtn:true, currentClickIndex:index, currentCopyText:item.message})
-                        }}>
-                            <Text style={styles.messageText}>
-                                {item.message}
-                            </Text>
-                        </TouchableOpacity>
+                <View>
+                    <View style={[styles.msgView, {width:widthMsg2}]}>
+                        <View style={styles.messageView}>
+                            <TouchableOpacity onLongPress={(e)=>{
+                                this.setState({showCopyBtn:true, currentClickIndex:index, currentCopyText:item.message})
+                            }}>
+                                <Text style={styles.messageText}>
+                                    {item.message}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                        {
+                            this.state.showCopyBtn 
+                                ? 
+                                    this.state.currentClickIndex === index?
+                                        this._renderMsgCopyText():null
+                                :
+                                    null
+                        }
                     </View>
+
                     {
-                        this.state.showCopyBtn 
-                            ? 
-                                this.state.currentClickIndex === index?
-                                    this._renderMsgCopyText():null
-                            :
-                                null
+                        item.audio
+                        ? <TouchableOpacity onPress={this._loadMsgAudio.bind(this, item.audio)}>
+                            <Image
+                              style={{width:35, height:35}}
+                              source={require("../images/audio.png")}
+                              resizeMode={'contain'}
+                            />
+                        </TouchableOpacity>:null
                     }
                 </View>
                 
@@ -2665,19 +2704,31 @@ class MessagePage extends Component{
                       style={styles.avatar}
                       source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
                     />
-                    <View style={[styles.msgView, {width:widthMsg2}]}>  
-                        <View style={[styles.messageView, {flex:1}]}>
-                            <Text style={styles.messageText}>
-                              {item.message}
-                            </Text>
-                            <Text style={{color:'rgb(84, 180, 225)'}}>
-                              {text}
-                            </Text>
-                        </View> 
-                        <Image
-                          style={{width:15, height:15, marginHorizontal:10}}
-                          source={require('../images/arrow.png')}
-                        />
+                    <View>
+                        <View style={[styles.msgView, {width:widthMsg2}]}>  
+                            <View style={[styles.messageView, {flex:1}]}>
+                                <Text style={styles.messageText}>
+                                  {item.message}
+                                </Text>
+                                <Text style={{color:'rgb(84, 180, 225)'}}>
+                                  {text}
+                                </Text>
+                            </View> 
+                            <Image
+                              style={{width:15, height:15, marginHorizontal:10}}
+                              source={require('../images/arrow.png')}
+                            />
+                        </View>
+                        {
+                            item.audio
+                            ? <TouchableOpacity onPress={this._loadMsgAudio.bind(this, item.audio)}>
+                                <Image
+                                  style={{width:35, height:35}}
+                                  source={require("../images/audio.png")}
+                                  resizeMode={'contain'}
+                                />
+                            </TouchableOpacity>:null
+                        }
                     </View>
                 </View>
             </TouchableOpacity>

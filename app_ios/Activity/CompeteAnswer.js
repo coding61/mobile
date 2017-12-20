@@ -250,7 +250,7 @@ class CompeteAnswer extends Component {
                 </ScrollView>
                 </View>
                 <View style={{flex:1, marginTop:20, backgroundColor:'white'}}>
-                    <View style={{borderBottomColor:'black',borderBottomWidth:2, marginVertical:2, flexDirection:'row',width:50, marginLeft:10, marginVertical:2, height:35, alignItems:'center', justifyContent:'center'}}>
+                    <View style={{borderBottomColor:'black',borderBottomWidth:2, marginVertical:2, flexDirection:'row',width:50, marginLeft:10, height:35, alignItems:'center', justifyContent:'center'}}>
                         <Text style={{fontSize:18, fontWeight:'bold'}}>{"榜单"}</Text>
                     </View>
                     <Leaderboards navigation={this.props.navigation} contest={this.state.item.pk} containerStyle={containerStyle}/>
@@ -326,15 +326,6 @@ const styles = StyleSheet.create({
 	// -------------------------------------------------导航栏
     headerStyle:{
         backgroundColor:pinkColor
-    },
-    headerRightView:{
-        flexDirection:'row',
-        justifyContent:'center',
-        alignItems:'center',
-        marginRight:10
-    },
-    headerRightImg:{
-        height:20
     },
     // -----------导航栏右部分
     headerRightView:{
