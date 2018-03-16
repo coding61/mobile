@@ -160,6 +160,7 @@ let Utils = {
     blueColor:'#5daeff',                    //主题颜色,蓝色
 
     isIphoneX:isIphoneX,
+    defaultAvatar:"https://static1.bcjiaoyu.com/userAvatar.png",
     playMsgSound:(url)=>{
         return playMsgSound(url)
     },
@@ -347,6 +348,19 @@ let Utils = {
         }else{
             return createTime.slice(0, 10).replace('T', ' ');
         }
+    },
+    isAdaptQuestion:(callback)=>{
+        Utils.getValue('currentCourseIsAdapt', (err, result)=>{
+            if (err) {
+                callback(false); 
+            }else{
+                if (JSON.parse(result) == true) {
+                    callback(true)
+                }else{
+                    callback(false)
+                }
+            }
+        })
     }
 }
 export default Utils;

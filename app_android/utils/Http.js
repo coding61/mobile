@@ -138,6 +138,10 @@ let Http = {
 	shareBonusUrl:(bonus, diamond, name, head)=>{
 		return Page_Domain + "/app/share/bonus.html?bonus=" + String(bonus) + "&diamond=" + String(diamond) + "&name=" + name + "&head=" + head;
 	},
-	getBonusRecord:Http_Domain + "/contest/statistics/"
+	getBonusRecord:Http_Domain + "/contest/statistics/",
+	
+	// 自适应课程相关
+	resetAdaptCourse:Http_Domain + "/course/reset_mycourse/",                //重置自适应课程
+	beginAdaptCourse:Http_Domain + "/course/begin_mycourse/",                //添加自适应课程
 }
 export default Http;

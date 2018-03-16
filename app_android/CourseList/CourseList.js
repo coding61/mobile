@@ -15,6 +15,8 @@ import {
   ScrollView,
   TextInput
 } from 'react-native';
+import BCFetchRequest from '../utils/BCFetchRequest.js';
+import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 const {width, height} = Dimensions.get('window');
 import {StackNavigator} from 'react-navigation';
@@ -426,90 +428,127 @@ class CourseList extends Component {
       tab: 'right'
     })
   }
+  fetchStartAdaptCourse(pk, tag){
+      // 如果自适应课程，中 mycourse_json 是空的，则调该方法给他添加一套自己的课程
+      // flag 用于区分是来自getCourseInfoWithPk 还是 getCourse
+      console.log("添加自适应课程");
+      var this_ = this;
+      Utils.isLogin((token)=>{
+          if (token) {
+              var type = "post",
+                  url = Http.beginAdaptCourse,
+                  token = token,
+                  data = {course:pk};
+              BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                if (tag=="reset") {
+                  // 重置进度再返回
+                  this_.toReset();
+                } else{
+                  this_.props.navigation.state.params.callback(this.state.item.pk, this.state.item.learn_extent.last_lesson, false, this.state.item.total_lesson);
+                  this_.props.navigation.goBack();
+                }
+
+              }, (err) => {
+                  // console.log(err);
+                  // Utils.showMessage('网络请求失败');
+              });
+          }
+      })
+  }
+  fetchResetAdaptCourse(pk){
+    console.log("重置自适应课程");
+    var this_ = this;
+    Utils.isLogin((token)=>{
+        if (token) {
+            var type = "post",
+                url = Http.resetAdaptCourse,
+                token = token,
+                data = {course:pk};
+            BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                if(response.detail == "此课程未添加，无法重置"){
+                  this_.fetchStartAdaptCourse(pk, "reset");
+                }else{
+                  this_.toReset();
+                }
+            }, (err) => {
+                // console.log(err);
+                // Utils.showMessage('网络请求失败');
+            });
+        }
+    })
+  }
+  toResetCourse(){
+    if(this.state.item.iszishiying){
+        this.fetchResetAdaptCourse(this.state.item.pk);
+      }else{
+       this.toReset();
+      }
+  }
+  toContinueCourse(){
+    if(this.state.item.iszishiying){
+        this.fetchStartAdaptCourse(this.state.item.pk);
+      }else{
+        this.props.navigation.state.params.callback(this.state.item.pk, this.state.item.learn_extent.last_lesson, false, this.state.item.total_lesson);
+        this.props.navigation.goBack();
+      }
+  }
+  toReset() {
+    var _this = this;
+      AsyncStorage.getItem("token", function(errs, results) {
+        if (results) {
+          fetch(Http.domain + '/userinfo/update_learnextent/',{
+                    method: "POST",
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Token ' + results
+                    },
+                    body: JSON.stringify({
+                      course: _this.state.item.pk,
+                      lesson: "0",
+                      types:"reset"
+                    }),
+                  })
+                  .then(response=> {
+                    if (response.status === 200) {
+                      return response.json()
+                    } else {
+                      return 'fail'
+                    }
+                  })
+                  .then(responseJson=> {
+                    if (responseJson !== 'fail') {
+                      _this.props.navigation.state.params.callback(_this.state.item.pk, 0, true, _this.state.item.total_lesson);
+                      _this.props.navigation.goBack();
+                    } else {
+                      alert('失败，请重试');
+                    }
+                  })
+        }
+      })
+  }
   touchBack(to) {
     var _this = this;
     switch (to)
       {
         case 0:
         {
-          this.props.navigation.state.params.callback(this.state.item.pk, this.state.item.learn_extent.last_lesson, false, this.state.item.total_lesson);
-          this.props.navigation.goBack();
+          _this.toContinueCourse();
           break;
         }
         case 1:
         {
-          AsyncStorage.getItem("token", function(errs, results) {
-          if (results) {
-            fetch(Http.domain + '/userinfo/update_learnextent/',{
-              method: "POST",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Token ' + results
-              },
-              body: JSON.stringify({
-                course: _this.state.item.pk,
-                lesson: "0",
-              }),
-            })
-            .then(response=> {
-              if (response.status === 200) {
-                return response.json()
-              } else {
-                return 'fail'
-              }
-            })
-            .then(responseJson=> {
-              if (responseJson !== 'fail') {
-                _this.props.navigation.state.params.callback(_this.state.item.pk, 0, true, _this.state.item.total_lesson);
-                _this.props.navigation.goBack();
-              } else {
-                alert('失败，请重试');
-              }
-            })
-          }
-        })
+          _this.toResetCourse();
           break;
         }
         case 2:
         {
-          this.props.navigation.state.params.callback(this.state.item.pk, this.state.item.learn_extent.last_lesson, false, this.state.item.total_lesson);
-          this.props.navigation.goBack();
+          _this.toContinueCourse();
           break;
         }
         case 3:
         {
-          AsyncStorage.getItem("token", function(errs, results) {
-          if (results) {
-            fetch(Http.domain + '/userinfo/update_learnextent/',{
-              method: "POST",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Token ' + results
-              },
-              body: JSON.stringify({
-                course: _this.state.item.pk,
-                lesson: "0",
-              }),
-            })
-            .then(response=> {
-              if (response.status === 200) {
-                return response.json()
-              } else {
-                return 'fail'
-              }
-            })
-            .then(responseJson=> {
-              if (responseJson !== 'fail') {
-                _this.props.navigation.state.params.callback(_this.state.item.pk, 0, true, _this.state.item.total_lesson);
-                _this.props.navigation.goBack();
-              } else {
-                alert('失败，请重试');
-              }
-            })
-          }
-        })
+          _this.toResetCourse();
           break;
         }
         default :

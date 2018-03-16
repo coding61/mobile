@@ -51,7 +51,7 @@ class HomeScreen extends Component{
                 pw = width-200
             }
         }
-
+        var avatar = json.avatar?json.avatar.replace("http://", "https://"):Utils.defaultAvatar
         return {
             headerStyle: styles.headerStyle,
             title:json?null:"程序媛",
@@ -61,7 +61,7 @@ class HomeScreen extends Component{
                 <View style={styles.headerLeftView}>
                     <Image
                       style={styles.headerLeftAvatar}
-                      source={{uri: json.avatar.replace("http://", "https://")}}
+                      source={{uri: avatar}}
                     />
 
                     <View style={styles.headerLeftInfoView}>

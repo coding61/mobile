@@ -65,6 +65,7 @@ class MessagePage extends Component{
             
             optionData:[],               //选项数据
             optionIndex:0,               //选项下标
+            optionDataAnswer:"",         //当前问题答对还是答错
             options:[],                  //用户做出的选择
             actionTag:actionCommonTag,   //默认是普通按钮
             showAction:false,
@@ -1001,7 +1002,20 @@ class MessagePage extends Component{
                     };
                     // console.log(response);
                     try{
-                        var array = JSON.parse(response.json);
+                        if(response.iszishiying){
+                            //自适应
+                            if(!response.mycourse_json || response.mycourse_json == ""){
+                                // 添加自适应课程
+                                console.log("添加自适应课程:getCourseInfoWithPk");
+                                this_._fetchStartAdaptCourse(course, "getCourseInfoWithPk", catalogChange);
+                                return;
+                            }
+                            var array = JSON.parse(response.mycourse_json);
+                            Utils.setValue("currentCourseIsAdapt", JSON.stringify(response.iszishiying));
+                        }else{
+                            //普通
+                            var array = JSON.parse(response.json);
+                        }   
                     }
                     catch(err){
                         Utils.showMessage("数据格式有问题");
@@ -1072,7 +1086,20 @@ class MessagePage extends Component{
                     })
                     // 方法1，捕获异常
                     try {
-                       var array = JSON.parse(response.json);
+                        if(response.iszishiying){
+                            //自适应
+                            if(!response.mycourse_json || response.mycourse_json == ""){
+                                // 添加自适应课程
+                                console.log("添加自适应课程:getCourse");
+                                this_._fetchStartAdaptCourse(course, "getCourse");
+                                return;
+                            }
+                            var array = JSON.parse(response.mycourse_json);
+                            Utils.setValue("currentCourseIsAdapt", JSON.stringify(response.iszishiying));
+                        }else{
+                            //普通
+                            var array = JSON.parse(response.json);
+                        }
                     }
                     catch(err){
                         Utils.showMessage("数据格式有问题!");
@@ -1143,6 +1170,46 @@ class MessagePage extends Component{
             }
         })
     }
+    _fetchStartAdaptCourse(pk, flag, catalogChange){
+        // 如果自适应课程，中 mycourse_json 是空的，则调该方法给他添加一套自己的课程
+        // flag 用于区分是来自getCourseInfoWithPk 还是 getCourse
+        var this_ = this;
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "post",
+                    url = Http.beginAdaptCourse,
+                    token = token,
+                    data = {course:pk};
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response == 401) {
+                        //去登录
+                        console.log(401);
+                        this._goLogin();
+                        return;
+                    }
+                    if (!response) {
+                        //请求失败
+                    };
+                    // console.log(response);
+                    if (response.message == "添加成功") {
+                        // 重新调 getCourse 接口
+                        console.log("自适应课程添加成功,重新获取课程信息");
+                        if (flag == "getCourseInfoWithPk") {
+                            this_._fetchCourseInfoWithPk(pk, catalogChange);
+                        }else{
+                            this_._fetchCourseInfoForInit(pk, "way2");
+                        }
+                    }else{
+                        console.log("自适应课程添加失败");
+                    }
+
+                }, (err) => {
+                    // console.log(err);
+                    // Utils.showMessage('网络请求失败');
+                });
+            }
+        })
+    }
     _fetchUserInfo(){
         var this_ = this
         Utils.isLogin((token)=>{
@@ -1177,7 +1244,7 @@ class MessagePage extends Component{
         })
         
     }
-    _fetchAddReward(course, courseIndex, chapter, growNum, zuanNum){
+    _fetchAddReward(course, courseIndex, chapter, growNum, zuanNum, tag, status){
         var this_ = this;
         Utils.isLogin((token)=>{
             if (token) {
@@ -1199,7 +1266,9 @@ class MessagePage extends Component{
                         lesson:courseIndex,
                         chapter:chapter,
                         experience_amount:growNum,
-                        diamond_amount:zuanNum
+                        diamond_amount:zuanNum,
+                        tag:tag,
+                        status:status
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
                     // this_._loadGrowAni(20);
@@ -1293,7 +1362,8 @@ class MessagePage extends Component{
                     token = token,
                     data = {
                         course:course,
-                        lesson:courseIndex
+                        lesson:courseIndex,
+                        types:'reset'
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
                     
@@ -1313,7 +1383,8 @@ class MessagePage extends Component{
                     token = token,
                     data = {
                         course:course,
-                        lesson:courseIndex
+                        lesson:courseIndex,
+                        types:'reset'
                     };
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
                     if (response == 401) {
@@ -1624,7 +1695,16 @@ class MessagePage extends Component{
                 var courseIndex = this.state.courseIndex;
                 courseIndex = parseInt(courseIndex) + 1;
                 
-                this._fetchAddReward(course, courseIndex, item.chapter, item.grow_number, item.zuan_number);  //奖励钻石
+                var parentItem = null
+                if (this.state.optionData) {
+                    parentItem = this.state.data[this.state.index];
+                }
+                var tag = item.tag?item.tag:"",
+                    status = this.state.optionDataAnswer;
+                if(parentItem && parentItem.tag){
+                    tag = parentItem.tag;
+                }
+                this._fetchAddReward(course, courseIndex, item.chapter, item.grow_number, item.zuan_number, tag, status);  //奖励钻石
             }else{
                 // 下一条数据
                 this._loadClickBtnAction();
@@ -1798,7 +1878,8 @@ class MessagePage extends Component{
                 
                 this.setState({
                     optionData:[],
-                    optionIndex:0
+                    optionIndex:0,
+                    optionDataAnswer:''
                 })
 
                 if (opMsg.again == true) {
@@ -1853,7 +1934,8 @@ class MessagePage extends Component{
             //正确答案
             this.setState({
                 optionData:item.correct,
-                optionIndex:0
+                optionIndex:0,
+                optionDataAnswer:"right"
             }, ()=>{
                 this._loadMessage(this.state.optionData, this.state.optionIndex, true)
             })
@@ -1861,7 +1943,8 @@ class MessagePage extends Component{
             // 错误答案
             this.setState({
                 optionData:item.wrong,
-                optionIndex:0
+                optionIndex:0,
+                optionDataAnswer:"wrong"
             }, ()=>{
                 this._loadMessage(this.state.optionData, this.state.optionIndex, true)
             })
@@ -2600,6 +2683,149 @@ class MessagePage extends Component{
     }
     
     // ----------------------------------------无动画消息
+    // 问题的题目
+    _renderProblemContentImgs(item, index){    
+        var that = this;    
+        var imgsUI = function (it){
+            // it.imgs = ["https://static1.bcjiaoyu.com/5e4d15eefd864606c0e9f8e0a6922fe9_w.png-592x484"]
+            var ui = it.imgs.map((a,i)=>{
+                var widthMsg2 = that.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
+                var imgH = Utils.getImgWidthHeight(a, widthMsg2*0.5)?Utils.getImgWidthHeight(a, widthMsg2*0.5):100
+                var imgDePlaSty;
+                if (widthMsg2*0.5>imgH) {
+                    imgDePlaSty = {height:imgH-5}
+                }else{
+                    imgDePlaSty = {width:widthMsg2*0.5-10}
+                }
+                return (
+                    <TouchableOpacity onPress={that._clickMessageImg.bind(that, a)} key={i}>
+                        {/*
+                        <Image
+                          key={i}
+                          style={{width:100, height:80, marginBottom:10, marginRight:10}}
+                          source={{uri: a}}
+                          resizeMode={'contain'}
+                        />
+                        */}
+                        <ImageLoad
+                            style={{width:(widthMsg2)*0.5, height:imgH, marginBottom:10, marginRight:10}}
+                            source={{uri: a}}
+                            resizeMode={'contain'}
+                            customImagePlaceholderDefaultStyle={imgDePlaSty}
+                        />
+                    </TouchableOpacity>
+                )
+            })
+            return ui
+        }
+        return (
+            <View>
+                {
+                    item.message?<Text style={styles.messageText}>{item.message}</Text>:null
+                }
+                {
+                    item.imgs && item.imgs.length?
+                    <View style={{display:'flex', flexDirection:'row', flexWrap:'wrap'}}>{imgsUI(item)}</View>:null
+                }
+            </View>
+        )
+    }
+    // 问题的选项
+    _renderProblemOptionsImgs(item, index){
+        var that = this;   
+        var imgsUI = function (it){
+            // it.imgs = ["https://static1.bcjiaoyu.com/5e4d15eefd864606c0e9f8e0a6922fe9_w.png-592x484"]
+            var ui=it.imgs.map((a,i)=>{
+                var widthMsg2 = that.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
+                var imgH = Utils.getImgWidthHeight(a, widthMsg2*0.5)?Utils.getImgWidthHeight(a, widthMsg2*0.5):100
+                var imgDePlaSty;
+                if (widthMsg2*0.5>imgH) {
+                    imgDePlaSty = {height:imgH-5}
+                }else{
+                    imgDePlaSty = {width:widthMsg2*0.5-10}
+                }
+                return (
+                    <TouchableOpacity onPress={that._clickMessageImg.bind(that, a)} key={i}>
+                        {/*
+                        <Image
+                          key={i}
+                          style={{flex:1, height:80}}
+                          source={{uri: a}}
+                          resizeMode={'contain'}
+                        />
+                        */}
+                        <ImageLoad
+                            style={{width:(widthMsg2)*0.5, height:imgH, marginBottom:10, marginRight:10}}
+                            source={{uri: a}}
+                            resizeMode={'contain'}
+                            customImagePlaceholderDefaultStyle={imgDePlaSty}
+                        />
+                    </TouchableOpacity>
+                )
+            })
+            return ui
+        }
+        return (
+            <View style={{borderWidth:1, borderColor: 'rgb(205, 206, 207)', padding: 5,borderRadius: 5}}>
+                {
+                    item.options.map((a, i)=>{
+                        return (
+                            <View key={i} style={{display: 'flex', flexDirection:'row',justifyContent: 'space-between'}}>
+                                <Text style={{width:15, marginRight:5}}>
+                                    {a.content}
+                                </Text>
+                                <View style={{flex:1}}>
+                                    {
+                                        a.message?<Text style={styles.messageText}>{a.message}</Text>:null
+                                    }
+                                    { 
+                                        a.imgs && a.imgs.length?
+                                        <View style={{display:'flex', flexDirection:'row', flexWrap:'wrap'}}>{imgsUI(a)}</View>:null
+                                    }
+                                </View>
+                            </View>
+                        )
+                    })
+                }
+            </View>
+        )
+    }
+    // 问题消息 tag
+    _renderItemTagMessage(item, index){
+        var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
+        var widthMsg2 = this.state.courseProgressArray.length?widthMsg-45-45:widthMsg-45-45+CourseProgressWidth
+        return (
+            <View style={[styles.message, {width:widthMsg1}]}>
+                <Image
+                  style={styles.avatar}
+                  source={{uri: 'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                />
+                <View>
+                    <View style={[styles.msgView, {width:widthMsg2}]}>
+                        <View style={styles.messageView}>
+                            <TouchableOpacity onLongPress={(e)=>{
+                                this.setState({showCopyBtn:true, currentClickIndex:index, currentCopyText:item.message})
+                            }}>
+                                <View style={{}}>
+                                    {this._renderProblemContentImgs(item, index)}
+                                    {this._renderProblemOptionsImgs(item, index)}
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                        {
+                            this.state.showCopyBtn
+                                ?
+                                    this.state.currentClickIndex === index?
+                                        this._renderMsgCopyText():null
+                                :
+                                    null
+                        }
+                    </View>
+                    
+                </View>
+            </View>
+        )
+    }
     // 文本信息
     _renderItemTextMessage(item, index){
         var widthMsg1 = this.state.courseProgressArray.length?widthMsg:widthMsg+CourseProgressWidth
@@ -2845,7 +3071,7 @@ class MessagePage extends Component{
                 </View>
                 <Image
                   style={styles.answerAvatar}
-                  source={{uri: state.params.userinfo?state.params.userinfo.avatar.replace("http://", "https://"):'https://static1.bcjiaoyu.com/binshu.jpg'}}
+                  source={{uri: state.params.userinfo && state.params.userinfo.avatar?state.params.userinfo.avatar.replace("http://", "https://"):Utils.defaultAvatar}}
                 />
             </View>
         )
@@ -2879,15 +3105,20 @@ class MessagePage extends Component{
                     ?
                         this._renderItemNewsSplitMessage(item, index)
                     :
-                        item.link
-                        ?
-                            this._renderItemLinkMessage(item, index)
+                        item.tag
+                        ?   
+                            this._renderItemTagMessage(item, index)
                         :
-                            item.img
+                            item.link
                             ?
-                                this._renderItemImgMessage(item, index)
+                                this._renderItemLinkMessage(item, index)
                             :
-                                this._renderItemTextMessage(item, index)
+                                item.img
+                                ?
+                                    this._renderItemImgMessage(item, index)
+                                :
+                                    this._renderItemTextMessage(item, index)
+
 
         )
     }
