@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import {
   StyleSheet,
@@ -27,13 +28,20 @@ class BCFlatListView extends Component {
 	  super(props);
 	
 	  this.state = {
-	  	dataSource:[1,2,3,4,5,6,7,8],               //数据源
+	  	dataSource:[],               //数据源
 		loading:true,                //是否显示数据加载等待视图
 		footerLoadTag:LoadMore,      //默认是点击加载更多, FlatList，列表底部
         isRefresh:false,             //FlatList，头部是否处于下拉刷新
         pagenum:1,                   //活动列表第几页。默认1
+        type:this.props.type,        //滚动视图底部加载的类型，是自动加载，还是点击加载
 	  };
 	}
+    static defaultProps = {
+        type: 'scroll'
+    };
+    static propTypes = {
+        type: PropTypes.oneOf(['scroll', 'click']).isRequired,    //类型
+    }
 	componentWillMount() {
 	    this.props.fetchData(1, this.state.dataSource, this.loadData);
 	}
@@ -92,11 +100,18 @@ class BCFlatListView extends Component {
     )
     _renderFooter = ()=>{
         return  (
-        	<TouchableOpacity onPress={this._clickLoadMore.bind(this)}>
-                <Text style={styles.footerLoadMore}>{
-                    this.state.footerLoadTag==LoadMore?"点击加载更多":this.state.footerLoadTag==LoadNoMore?"已经到尾了":"加载中..."}
-                </Text>
-            </TouchableOpacity>
+            this.state.type==="scroll"?
+            	<View>
+                    <Text style={styles.footerLoadMore}>{
+                        this.state.footerLoadTag==LoadNoMore?"数据全部加载完毕":"正在加载中..."}
+                    </Text>
+                </View>
+            :
+                <TouchableOpacity onPress={this._clickLoadMore.bind(this)}>
+                    <Text style={styles.footerLoadMore}>{
+                        this.state.footerLoadTag==LoadMore?"点击加载更多":this.state.footerLoadTag==LoadNoMore?"已经到尾了":"加载中..."}
+                    </Text>
+                </TouchableOpacity>
         )
     }
     _keyExtractor = (item, index) => index;
@@ -105,17 +120,33 @@ class BCFlatListView extends Component {
     		<View style={{flex:1}}>
 	    		{
     				this.state.dataSource.length?
-			    		<FlatList 
-				            ref={(flatlist)=>this._flatList=flatlist}
-				            style={{flex:1,}}
-				            data={this.state.dataSource}
-				            renderItem={this._renderItem}
-				            extraData={this.state}
-				            keyExtractor={this._keyExtractor}
-				            ListFooterComponent={this._renderFooter}
-				            onRefresh={this._pullToRefresh.bind(this)}
-				            refreshing={this.state.isRefresh}				            
-			            />
+                        this.state.type === "scroll"
+                        ?
+                            <FlatList 
+                                ref={(flatlist)=>this._flatList=flatlist}
+                                style={{flex:1,}}
+                                data={this.state.dataSource}
+                                renderItem={this._renderItem}
+                                extraData={this.state}
+                                keyExtractor={this._keyExtractor}
+                                ListFooterComponent={this._renderFooter}
+                                onRefresh={this._pullToRefresh.bind(this)}
+                                refreshing={this.state.isRefresh}
+                                onEndReached={this._clickLoadMore.bind(this)}
+                                onEndReachedThreshold={0.5}                         
+                            />
+                        :
+    			    		<FlatList 
+    				            ref={(flatlist)=>this._flatList=flatlist}
+    				            style={{flex:1,}}
+    				            data={this.state.dataSource}
+    				            renderItem={this._renderItem}
+    				            extraData={this.state}
+    				            keyExtractor={this._keyExtractor}
+    				            ListFooterComponent={this._renderFooter}
+    				            onRefresh={this._pullToRefresh.bind(this)}
+    				            refreshing={this.state.isRefresh}
+    			            />
 			        :
 			        	!this.state.loading?<EmptyView />:null
 		        }
