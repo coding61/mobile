@@ -249,10 +249,12 @@ class HomeScreen extends Component{
             case 1:
             {
                 //参加竞赛
-                this.props.navigation.navigate("CompeteView", {callback:()=>{
-                    console.log("回调更新导航");
-                    this._fetchUserInfo();
-                }});
+                // this.props.navigation.navigate("CompeteView", {callback:()=>{
+                //     console.log("回调更新导航");
+                //     this._fetchUserInfo();
+                // }});
+                //参加竞赛
+                this.props.navigation.navigate("JobList");
                 break;
             }
             case 2:
@@ -385,12 +387,27 @@ class HomeScreen extends Component{
                       resizeMode={'cover'}
                     />
                     <Text style={styles.tabTitle}>
+                      {"工作"}
+                    </Text>
+                    <Text style={styles.tabText}>
+                      {"找一份好工作"}
+                    </Text>
+                </TouchableOpacity>
+                {/*
+                <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 1)}>
+                    <Image
+                      style={styles.tabImg}
+                      source={require('../images/i12.png')}
+                      resizeMode={'cover'}
+                    />
+                    <Text style={styles.tabTitle}>
                       {"参加竞赛"}
                     </Text>
                     <Text style={styles.tabText}>
                       {"赢奖学金和钻石"}
                     </Text>
                 </TouchableOpacity>
+                */}
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 2)}>
                     <Image
                       style={styles.tabImg}

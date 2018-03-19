@@ -46,17 +46,18 @@ class Activity extends Component {
     static navigationOptions = ({navigation}) => {
         const {state, setParams, goBack, navigate} = navigation;
         return {
-        	headerTitle:state.params && state.params.tab == CompeteTab?
-                    <View style={styles.headerTitleTabs}>
-                        <TouchableOpacity style={[styles.headerTitleTab, {flex:1}]} onPress={()=>{DeviceEventEmitter.emit('navigateTabPress', ActivityTab)}}><Text style={[styles.headerTitleTabText,]}>{"活动"}</Text></TouchableOpacity>
-                        <View style={[styles.headerTitleTab, {flex:1}]}><View style={[styles.headerTitleTab, styles.headerTitleTabSelect]}><Text style={[styles.headerTitleTabText, styles.headerTitleTabTextSelect]}>{"竞赛"}</Text></View></View>
-                    </View>
-                :
-                    <View style={styles.headerTitleTabs}>
-                        <View style={[styles.headerTitleTab, {flex:1}]}><View style={[styles.headerTitleTab, styles.headerTitleTabSelect]}><Text style={[styles.headerTitleTabText, styles.headerTitleTabTextSelect]}>{"活动"}</Text></View></View>
-                        <TouchableOpacity style={[styles.headerTitleTab, {flex:1}]} onPress={()=>{DeviceEventEmitter.emit('navigateTabPress', CompeteTab)}}><Text style={styles.headerTitleTabText}>{"竞赛"}</Text></TouchableOpacity>
-                    </View>
-            ,
+            headerTitle:"活动",
+        	// headerTitle:state.params && state.params.tab == CompeteTab?
+         //            <View style={styles.headerTitleTabs}>
+         //                <TouchableOpacity style={[styles.headerTitleTab, {flex:1}]} onPress={()=>{DeviceEventEmitter.emit('navigateTabPress', ActivityTab)}}><Text style={[styles.headerTitleTabText,]}>{"活动"}</Text></TouchableOpacity>
+         //                <View style={[styles.headerTitleTab, {flex:1}]}><View style={[styles.headerTitleTab, styles.headerTitleTabSelect]}><Text style={[styles.headerTitleTabText, styles.headerTitleTabTextSelect]}>{"竞赛"}</Text></View></View>
+         //            </View>
+         //        :
+         //            <View style={styles.headerTitleTabs}>
+         //                <View style={[styles.headerTitleTab, {flex:1}]}><View style={[styles.headerTitleTab, styles.headerTitleTabSelect]}><Text style={[styles.headerTitleTabText, styles.headerTitleTabTextSelect]}>{"活动"}</Text></View></View>
+         //                <TouchableOpacity style={[styles.headerTitleTab, {flex:1}]} onPress={()=>{DeviceEventEmitter.emit('navigateTabPress', CompeteTab)}}><Text style={styles.headerTitleTabText}>{"竞赛"}</Text></TouchableOpacity>
+         //            </View>
+         //    ,
         	headerTintColor: "#fff",
             headerStyle: styles.headerStyle,
             headerRight:state.params && state.params.tab == CompeteTab?

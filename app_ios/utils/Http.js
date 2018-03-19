@@ -3,13 +3,13 @@
  * @description: 接口地址
  * @time: 2017-03-15
  */
-// const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
-// const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
-// const Share_Domain = "https://www.cxy61.com";
+const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
+const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
+const Share_Domain = "https://www.cxy61.com";
 
-const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
-const Page_Domain = "https://app.bcjiaoyu.com/girl";
-const Share_Domain = "https://app.bcjiaoyu.com";
+// const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
+// const Page_Domain = "https://app.bcjiaoyu.com/girl";
+// const Share_Domain = "https://app.bcjiaoyu.com";
 
 let Http = {
 	domainPage:Page_Domain,    //网站页面地址的域名
@@ -143,5 +143,10 @@ let Http = {
 	// 自适应课程相关
 	resetAdaptCourse:Http_Domain + "/course/reset_mycourse/",                //重置自适应课程
 	beginAdaptCourse:Http_Domain + "/course/begin_mycourse/",                //添加自适应课程
+
+	// 招聘相关
+	jobList:(pagenum)=>{
+		return Http_Domain + "/third_party_api/intern/search/?page=" + pagenum
+	}
 }
 export default Http;

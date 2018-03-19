@@ -66,6 +66,9 @@ import ExchangeRecord from './Exchange/ExchangeRecord.js';
 import ExchangeUsingRecord from './Exchange/ExchangeUsingRecord.js';
 import ChildMachineWebView from './Exchange/ChildMachineWebView.js';
 
+import JobList from './Recruitment/JobList.js';
+import JobDetail from './Recruitment/JobDetail.js';
+
 class RootApp extends Component{
     constructor(props) {
       super(props);
@@ -145,7 +148,10 @@ const app = StackNavigator({
     ExchangeRecord:{screen:ExchangeRecord},
     ExchangeUsingRecord:{screen:ExchangeUsingRecord},
     ChildMachineWebView:{screen:ChildMachineWebView},
-    PunchCard:{screen:PunchCard}
+    PunchCard:{screen:PunchCard},
+
+    JobList:{screen:JobList},
+    JobDetail:{screen:JobDetail}
 }, {
     initialRouteName: 'TabBar',             //配置初始路由的名称
     initialRouteParams:{userinfo:''}        //配置初始路由的参数
