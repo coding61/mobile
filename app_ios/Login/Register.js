@@ -83,9 +83,11 @@ export default class Register extends Component {
                   }, 1000);
 
             }else if (response.detail) {
-                alert(response.detail);
+                // alert(response.detail);
+                Utils.showMessage(response.detail);
             }else if (response.message) {
-                alert(response.message);
+                // alert(response.message);
+                Utils.showMessage(response.message);
             }
 
         }, (err) => {
@@ -103,7 +105,8 @@ export default class Register extends Component {
     if (this.state.phoneNum !== '' && this.state.textCode !== '' && this.state.password != '' ) {
       this.props.navigation.navigate('SelectHead', {cityCode: this.state.cityCode, phoneNum: this.state.phoneNum, textCode: this.state.textCode, passWord: this.state.password, gogoback: this.gogoback.bind(this)})  
     } else {
-      alert("不要忘记填写信息呀！")
+      // alert("不要忘记填写信息呀！")
+      Utils.showMessage("不要忘记填写信息呀！");
     }
     
   }

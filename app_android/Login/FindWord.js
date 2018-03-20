@@ -72,11 +72,13 @@ export default class FindWord extends Component {
           number = encodeURI(this.state.cityCode + this.state.phoneNum).replace(/\+/g,'%2B');
         }
         if (!this.state.testCode) {
-            alert('验证码必填');
+            // alert('验证码必填');
+            Utils.showMessage("验证码必填");
             return;
         }
         if (!this.state.password) {
-            alert('密码必填');
+            // alert('密码必填');
+            Utils.showMessage("密码必填");
             return;
         }
         var type = "put",
@@ -94,7 +96,8 @@ export default class FindWord extends Component {
                 Utils.showMessage('请妥善保管好您的密码');
                 this.props.navigation.goBack();
             }else{
-                alert("密码修改失败");
+                // alert("密码修改失败");
+                Utils.showMessage("密码修改失败");
             }
         }, (err) => {
             console.log(err);
@@ -136,9 +139,11 @@ export default class FindWord extends Component {
                   }, 1000);
 
             }else if (response.detail) {
-                alert(response.detail);
+                // alert(response.detail);
+                Utils.showMessage(response.detail);
             }else if (response.message) {
-                alert(response.message);
+                // alert(response.message);
+                Utils.showMessage(response.message);
             }
 
         }, (err) => {
@@ -146,7 +151,8 @@ export default class FindWord extends Component {
             // Utils.showMessage('网络请求失败');
         });      
     }else if (!reg.test(this.state.phoneNum)) {
-        alert("手机号不合法")
+        // alert("手机号不合法")
+        Utils.showMessage("手机号不合法");
     }
   }
   see = () => {

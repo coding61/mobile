@@ -16,6 +16,7 @@ import {
   FlatList,
   DeviceEventEmitter
 } from 'react-native';
+import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 import City from '../country.json';
 const {width, height} = Dimensions.get('window');
@@ -80,7 +81,8 @@ export default class Login extends Component {
                     _this.props.navigation.goBack();
                   })
                 } else {
-                  alert('登录失败，请重新登录');
+                  // alert('登录失败，请重新登录');
+                  Utils.showMessage("登录失败，请重新登录");
                 }
               })
     } else {
@@ -111,7 +113,8 @@ export default class Login extends Component {
                     _this.props.navigation.goBack();
                   })
                 } else {
-                  alert('登录失败，请重新登录');
+                  // alert('登录失败，请重新登录');
+                  Utils.showMessage("登录失败，请重新登录");
                 }
               })
     }
@@ -144,7 +147,8 @@ export default class Login extends Component {
                   _this.props.navigation.goBack();
                 })
               } else {
-                alert('登录失败，请重新登录');
+                // alert('登录失败，请重新登录');
+                Utils.showMessage("登录失败，请重新登录");
               }
             })
 
