@@ -174,7 +174,7 @@ class JobList extends Component {
                             <Text style={styles.iconText}>{item.dayperweek}天/周</Text>
                         </View>
                     </View>
-                    <Text style={styles.date}>03-16</Text>
+                    <Text style={styles.date}>{item.refresh_time.substring(5,10)}</Text>
             	</View>
             </TouchableOpacity>
         )
