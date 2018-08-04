@@ -18,7 +18,6 @@ import {
 import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
-const {width, height} = Dimensions.get('window');
 import {StackNavigator} from 'react-navigation';
 var itemHead = {nostart: require('../assets/Course/nostart.png'), processing:require('../assets/Course/onstudy.png'), finish: require('../assets/Course/onfinish.png')};
 
@@ -555,30 +554,55 @@ class CourseList extends Component {
         break;
       }
   }
-  renderBottomBtn() {
-    if (this.state.startText === '') {
-      return <View style={{width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}><Text style={{color: 'white'}}>此课程尚未开放</Text></View>
-    } else if (this.state.startText === 'nostart') {
-      return (<TouchableOpacity onPress={this.touchBack.bind(this, 0)} style={{marginBottom: 20,width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={{color: 'white'}}>{'开始学习'}</Text>
-              </TouchableOpacity>)
-    } else if (this.state.startText === 'finish') {
-      return (<TouchableOpacity onPress={this.touchBack.bind(this, 1)} style={{marginBottom: 20,width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={{color: 'white'}}>{'重新学习'}</Text>
-              </TouchableOpacity>)
-    } else if (this.state.startText === 'processing') {
-      return (<View style={{marginBottom: 20, width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', flexDirection: 'row'}}>
-                <TouchableOpacity onPress={this.touchBack.bind(this, 2)} style={{width: width / 2, height: 50, alignItems: 'center', justifyContent: 'center'}}>
-                  <Text style={{color: 'white'}}>{'继续学习'}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this.touchBack.bind(this, 3)} style={{width: width / 2, height: 50, alignItems: 'center', justifyContent: 'center'}}>
-                  <Text style={{color: 'white'}}>{'重新开始'}</Text>
-                </TouchableOpacity>
-              </View>)
-    } else {
-      return ;
+    beginBtnEvent(){
+        var that = this;
+        if (that.state.startText === "") {
+            // 此课程尚未开放
+            Utils.showMessage("此课程尚未开放");
+        }else if (that.state.startText === "nostart") {
+            // 开始学习，从未学过
+            that.touchBack(0);
+        }else if (that.state.startText === "finish") {
+            // 已完成，
+            Utils.showAlert("", "你是否确定要再学一遍？", ()=>{
+                that.touchBack(1);
+            }, ()=>{
+
+            }, "是", "否");
+            
+        }else if (that.state.startText === "processing") {
+            // 进行中
+            Utils.showAlert("", "此课程已经开始学习，请选择重新开始学习还是继续上次学习？", ()=>{
+                that.touchBack(2);
+            }, ()=>{
+                that.touchBack(3);
+            }, "继续上次", "重新开始");
+        }
     }
-  }
+    renderBottomBtn() {
+        if (this.state.startText === '') {
+          return <View style={{position: 'absolute',bottom: 0,left: 0,width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}><Text style={{color: 'white'}}>此课程尚未开放</Text></View>
+        } else if (this.state.startText === 'nostart') {
+          return (<TouchableOpacity onPress={this.touchBack.bind(this, 0)} style={{position: 'absolute',bottom: 0,left: 0,width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{color: 'white'}}>{'开始学习'}</Text>
+                  </TouchableOpacity>)
+        } else if (this.state.startText === 'finish') {
+          return (<TouchableOpacity onPress={this.touchBack.bind(this, 1)} style={{position: 'absolute',bottom: 0,left: 0,width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{color: 'white'}}>{'重新学习'}</Text>
+                  </TouchableOpacity>)
+        } else if (this.state.startText === 'processing') {
+          return (<View style={{position: 'absolute',bottom: 0,left: 0,width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', flexDirection: 'row',alignItems: 'center', justifyContent: 'center'}}>
+                    <TouchableOpacity onPress={this.touchBack.bind(this, 2)} style={{width: width / 2, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+                      <Text style={{color: 'white'}}>{'继续学习'}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.touchBack.bind(this, 3)} style={{width: width / 2, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+                      <Text style={{color: 'white'}}>{'重新开始'}</Text>
+                    </TouchableOpacity>
+                  </View>)
+        } else {
+          return ;
+        }
+    }
   searchCourse() {
     var _this = this;
     AsyncStorage.getItem("token", function(errs, results) {
@@ -603,93 +627,100 @@ class CourseList extends Component {
   }
   render() {
     return (
-      <View style={CourseStyle.container}>
-          <View style={{width: width, height: 40, alignItems: 'center', justifyContent: 'center'}}>
-            <TouchableOpacity onPress={() => this.setState({modalVisible2: true})} style={{width: width - 30, height: 30, backgroundColor: 'white',flexDirection: 'row', alignItems: 'center'}}>
-              <Image style={{marginLeft: 10, width: 18, height: 18}} source={require('../assets/Forum/sousuo.png')}/>
-              <Text style={{marginLeft: 10, fontSize: 13, color: 'gray'}}>搜索课程</Text>
-            </TouchableOpacity>
-          </View>
-         <FlatList 
-          data={this.state.data}
-          extraData={this.state}
-          renderItem={this._renderItem}
-          keyExtractor={this._keyExtractor}
-        /> 
-        <Modal
-          animationType={"slide"}
-          transparent={false}
-          visible={this.state.modalVisible2}
-          onRequestClose={() => {}}>
-          <View style={{width: width, height: height, backgroundColor: 'rgb(242, 243, 244)'}}>
-            <View style={{width: width, height: 64, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
-              <TouchableOpacity onPress={() => this.setState({modalVisible2: false})} style={{position: 'absolute', left: 0, bottom: 0, width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
-                <Image source={require('../assets/Login/close.png')}/>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.searchCourse.bind(this)} style={{position: 'absolute', right: 0, bottom: 0, width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={{color: 'white', fontSize: 14}}>搜索</Text>
-              </TouchableOpacity>
-              <Text style={{color: 'white', fontSize: 17, marginTop: 10}}>搜索课程</Text>
+        <View style={CourseStyle.container}>
+            <View style={{width: width, height: 40, alignItems: 'center', justifyContent: 'center'}}>
+                <TouchableOpacity onPress={() => this.setState({modalVisible2: true})} style={{width: width - 30, height: 30, backgroundColor: 'white',flexDirection: 'row', alignItems: 'center'}}>
+                    <Image style={{marginLeft: 10, width: 18, height: 18}} source={require('../assets/Forum/sousuo.png')}/>
+                    <Text style={{marginLeft: 10, fontSize: 13, color: 'gray'}}>搜索课程</Text>
+                </TouchableOpacity>
             </View>
-            <TextInput
-              style={{width: width - 30, marginTop: 15, marginBottom: 15, marginLeft: 15, height: 50, fontSize: 13, backgroundColor: 'white', paddingLeft: 10, lineHeight: 30}}
-              onChangeText={(searchText) => this.setState({searchText})}
-              value={this.state.searchText}
-              placeholder={'请输入搜索的课程'}
-              underlineColorAndroid={'transparent'}
-            />
-            <ScrollView>
-              <View style={{width: width, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around'}}>
-                {this.state.searchArr.map((item, index) => {
-                  return <CourseItem key={index} refreshItem={this.refreshItem.bind(this)} total_lesson={item.total_lesson} navigation={this.props.navigation} last_lesson={item.learn_extent.last_lesson} pk={item.pk} isopen={item.isopen} status={item.learn_extent.status} title={item.name} headImg={item.images} text={item.content} />
-                })}
-              </View>
-            </ScrollView>
-          </View>
-        </Modal>
-        <Modal 
-          animationType={"slide"}
-          transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {}}>
-          <View style={{width: width, height: height, backgroundColor: 'white'}}>
-            <View style={{width: width, height: 64, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
-              <TouchableOpacity onPress={() => this.setState({modalVisible: false})} style={{position: 'absolute', left: 0, bottom: 0, width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
-                <Image source={require('../assets/Login/close.png')}/>
-              </TouchableOpacity>
-              <Text style={{color: 'white', fontSize: 17, marginTop: 10}}>{this.state.item?(this.state.item.name):(null)}</Text>
-            </View>
-            <View style={{width: width, height: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomColor: 'rgb(239, 238, 239)', borderBottomWidth: 1}}>
-              <TouchableOpacity onPress={this.tabLeft.bind(this)} style={[{width: width / 2, height: 43, alignItems: 'center', justifyContent: 'center'}, this.state.tab === 'left'?({borderBottomWidth: 1, borderBottomColor: 'rgb(253, 109, 156)'}):(null)]}>
-                <Text style={this.state.tab === 'left'?({color: 'rgb(253, 109, 156)'}):(null)}>简介</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.tabRight.bind(this)} style={[{width: width / 2, height: 43, alignItems: 'center', justifyContent: 'center'}, this.state.tab === 'right'?({borderBottomWidth: 1, borderBottomColor: 'rgb(253, 109, 156)'}):(null)]}>
-                <Text style={this.state.tab === 'right'?({color: 'rgb(253, 109, 156)'}):(null)}>目录</Text>
-              </TouchableOpacity>
-            </View>
-            <ScrollView>
-              {this.state.tab === 'left'?(
-                <View style={{marginLeft: 25, width: width - 50, alignItems: 'center'}}>
-                  <Image resizeMode={'contain'} style={{width: 50, height: 50, marginTop: 30}} source={{uri: this.state.item?(this.state.item.images):(null)}}/>
-                  <Text style={{width: width - 50, marginTop: 30, fontSize: 14, color: 'gray', lineHeight: 20}}>{this.state.item?(this.state.item.content):(null)}</Text>
+            <FlatList 
+                data={this.state.data}
+                extraData={this.state}
+                renderItem={this._renderItem}
+                keyExtractor={this._keyExtractor}
+            /> 
+            <Modal
+                animationType={"slide"}
+                transparent={false}
+                visible={this.state.modalVisible2}
+                onRequestClose={() => {}}>
+                <View style={{width: width, height: height, backgroundColor: 'rgb(242, 243, 244)'}}>
+                    <View style={{width: width, height: 64, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
+                        <TouchableOpacity onPress={() => this.setState({modalVisible2: false})} style={{position: 'absolute', left: 0, bottom: 0, width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+                            <Image source={require('../assets/Login/close.png')}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={this.searchCourse.bind(this)} style={{position: 'absolute', right: 0, bottom: 0, width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+                            <Text style={{color: 'white', fontSize: 14}}>搜索</Text>
+                        </TouchableOpacity>
+                        <Text style={{color: 'white', fontSize: 17, marginTop: 10}}>搜索课程</Text>
+                    </View>
+                    <TextInput
+                        style={{width: width - 30, marginTop: 15, marginBottom: 15, marginLeft: 15, height: 50, fontSize: 13, backgroundColor: 'white', paddingLeft: 10, lineHeight: 30}}
+                        onChangeText={(searchText) => this.setState({searchText})}
+                        value={this.state.searchText}
+                        placeholder={'请输入搜索的课程'}
+                        underlineColorAndroid={'transparent'}
+                    />
+                    <ScrollView>
+                        <View style={{width: width, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around'}}>
+                            {this.state.searchArr.map((item, index) => {
+                                return <CourseItem key={index} refreshItem={this.refreshItem.bind(this)} total_lesson={item.total_lesson} navigation={this.props.navigation} last_lesson={item.learn_extent.last_lesson} pk={item.pk} isopen={item.isopen} status={item.learn_extent.status} title={item.name} headImg={item.images} text={item.content} />
+                            })}
+                        </View>
+                    </ScrollView>
                 </View>
-                ):
-                <View style={{width: width - 50, marginLeft: 25}}>
-                  {
-                    this.state.catalogs.map((item, index) => {
-                      return <Text key={index} numberOfLines={1} style={{marginTop: 30, width: width - 50, fontSize: 15}}>{(1+index).toString() + '.' + item.title}</Text>
-                    })
-                  }
+            </Modal>
+            <Modal 
+                animationType={"slide"}
+                transparent={false}
+                visible={this.state.modalVisible}
+                onRequestClose={() => {}}>
+                <View style={{width: width, flex:1, position:'relative',}}>
+
+                    <View style={{width: width, height: 50, backgroundColor: 'rgb(251, 109, 150)', flexDirection:'row', alignItems: 'center', justifyContent: 'space-around'}}>
+                        <TouchableOpacity onPress={() => this.setState({modalVisible: false})} style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+                            <Image source={require('../assets/Login/close.png')}/>
+                        </TouchableOpacity>
+                        <Text style={{color: 'white', fontSize: 17}}>{this.state.item?(this.state.item.name):(null)}</Text>
+                        <TouchableOpacity onPress={this.beginBtnEvent.bind(this)}><Text style={{color:'white', fontSize:15}}>开始学习</Text></TouchableOpacity>
+                    </View>
+                    <View style={{width: width, height: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomColor: 'rgb(239, 238, 239)', borderBottomWidth: 1}}>
+                        <TouchableOpacity onPress={this.tabLeft.bind(this)} style={[{width: width / 2, height: 43, alignItems: 'center', justifyContent: 'center'}, this.state.tab === 'left'?({borderBottomWidth: 1, borderBottomColor: 'rgb(253, 109, 156)'}):(null)]}>
+                            <Text style={this.state.tab === 'left'?({color: 'rgb(253, 109, 156)'}):(null)}>简介</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={this.tabRight.bind(this)} style={[{width: width / 2, height: 43, alignItems: 'center', justifyContent: 'center'}, this.state.tab === 'right'?({borderBottomWidth: 1, borderBottomColor: 'rgb(253, 109, 156)'}):(null)]}>
+                            <Text style={this.state.tab === 'right'?({color: 'rgb(253, 109, 156)'}):(null)}>目录</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <ScrollView style={{flex:1,}}>
+                        {this.state.tab === 'left'?(
+                            <View style={{marginLeft: 25, width: width - 50, alignItems: 'center'}}>
+                                <Image resizeMode={'contain'} style={{width: 50, height: 50, marginTop: 30}} source={{uri: this.state.item?(this.state.item.images):(null)}}/>
+                                <Text style={{width: width - 50, marginTop: 30, fontSize: 14, color: 'gray', lineHeight: 20}}>{this.state.item?(this.state.item.content):(null)}</Text>
+                            </View>
+                        ):
+                             <View style={{width: width - 50, marginLeft: 25}}>
+                            {
+                                this.state.catalogs.map((item, index) => {
+                                    return <Text key={index} numberOfLines={1} style={{marginTop: 30, width: width - 50, fontSize: 15}}>{(1+index).toString() + '.' + item.title}</Text>
+                                })
+                            }
+                            </View>
+                        }
+                    </ScrollView>
+                    {/*this.renderBottomBtn()*/}
                 </View>
-                }
-            </ScrollView>
-            {this.renderBottomBtn()}
-          </View>
-        </Modal>
-      </View>
+            </Modal>
+        </View>
     )
   }
 }
+const headerH = Utils.headerHeight;                 //导航栏的高度
+const bottomH = Utils.bottomHeight;                 //tabbar 高度
+
+const width = Utils.width;                          //屏幕的总宽
+const height = Utils.height;                        //屏幕的总高
 
 const CourseStyle = StyleSheet.create({
   container: {

@@ -22,6 +22,7 @@ import MessagePage from './pages/MessagePage.js';
 import MyPage from './My/MyPage.js';
 import Forum from './Forum/Forum.js';
 import ForumList from './Forum/ForumList.js';
+// import ForumList1 from './Forum/ForumList1.js';
 import Activity from './Activity/Activity.js';
 import ConversationList from './Message/ConversationList.js';
 

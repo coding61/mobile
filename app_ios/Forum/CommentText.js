@@ -29,7 +29,6 @@ export default class CommentText extends Component{
         this.state = {
             //content:'',
             pk:this.props.navigation.state.params.data,
-            token:'',
             isDisable:false,
             text:'',
             show:false,
@@ -44,7 +43,7 @@ export default class CommentText extends Component{
         return {
             title: '添加评论',
             headerTintColor: "#fff",   
-            headerStyle: { backgroundColor: '#ff6b94',},
+            headerStyle: { backgroundColor: '#5daeff',},
             headerTitleStyle:{alignSelf:'auto',fontSize:15,},
         };
     }
@@ -58,6 +57,7 @@ export default class CommentText extends Component{
                 text:''
             })
         }
+
     }
     componentDidMount() {
         var self = this;
@@ -150,7 +150,7 @@ export default class CommentText extends Component{
             })
         }
     }
-            // 上传图片方法
+    // 上传图片方法
     _upload(filename, token, key) {
         qiniu.uploadImage(filename, token, key,(error, callBackEvents)=>{
           if(error) {
@@ -169,7 +169,6 @@ export default class CommentText extends Component{
             }
         })
     }
-
     // 获取图片对应 token， key
     _getQNToken(filename) {
         var url = basePath + "/upload/token/";
@@ -197,7 +196,6 @@ export default class CommentText extends Component{
         })
         .catch((error) => {console.log(error)});
     }
-
     // 调相册相机
     _changeIcon() {
         var options = {
@@ -249,11 +247,11 @@ export default class CommentText extends Component{
                 />
                  <View style={{width:width,marginTop:10,marginBottom:20,}}>
                     <TouchableOpacity onPress={this._changeIcon.bind(this)}
-                        style={{width:width*0.2,height:30,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
+                        style={{width:width*0.2,height:30,marginLeft:width*0.05,backgroundColor:'#5daeff',alignItems:'center',justifyContent:'center',}}>
                         <Text style={{color:'#ffffff',fontSize:14,}}>添加图片</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={this.postcomment.bind(this)} disabled={this.state.isDisable} style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#ff6b94',}}>
+                <TouchableOpacity onPress={this.postcomment.bind(this)} disabled={this.state.isDisable} style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#5daeff',}}>
                     <Text style={{color:'#ffffff',fontSize:16,}}>提交评论</Text>
                 </TouchableOpacity>
 
