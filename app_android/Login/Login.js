@@ -32,7 +32,8 @@ export default class Login extends Component {
     	headerStyle: {
 			backgroundColor: 'rgb(251, 110, 169)',
 			borderBottomColor:'rgb(251, 110, 169)',
-			borderBottomWidth:1
+			borderBottomWidth:1,
+			elevation:0
     	},
     	headerTintColor: "#fff"
   	}
@@ -317,7 +318,7 @@ export default class Login extends Component {
 				<View style={{marginTop:20, alignItems:'center', justifyContent:'center'}}>
 					<Image style={{width: width / 2 + 2, height: 119 * width / 767}} source={require('../assets/Login/chengxuyuanjihua.png')} />
 				</View>
-
+				
 				<View style={{flex:1, flexDirection:"column", alignItems:'center', justifyContent:'space-around'}}>
 					{/* 输入框 */}
 					{
@@ -325,12 +326,12 @@ export default class Login extends Component {
 							<View>
 								<View style={LoginStyle.leftinputViewStyle}>
 									<Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'手机号'}</Text>
-									<View style={{flexDirection:'row', width: width * 2 / 3, paddingBottom:7, paddingTop:10, marginLeft: 5, borderBottomWidth: 1,borderBottomColor: 'white'}}>
+									<View style={{flexDirection:'row', width: width * 2 / 3, paddingBottom:7, paddingTop:10, height:40, alignItems:'center', justifyContent:'center', marginLeft: 5, borderBottomWidth: 1,borderBottomColor: 'white'}}>
 										<TouchableOpacity onPress={()=> this.setState({modalVisible: true})} style={{paddingHorizontal:8, height: 25, backgroundColor: 'white', borderRadius: 2, alignItems: 'center', justifyContent: 'center'}}>
 											<Text style={{color: 'rgb(251, 110, 169)', textAlign: 'center'}}>{this.state.cityCode}</Text>
 										</TouchableOpacity>
 										<TextInput
-											style={{flex:1, marginLeft:5, color:'white'}}
+											style={{flex:1, marginLeft:5, color:'white', padding:0, height:40}}
 											onChangeText={(verifyUsername) => this.setState({verifyUsername:verifyUsername})}
 											value={this.state.verifyUsername}
 											keyboardType={'numeric'}
@@ -340,15 +341,15 @@ export default class Login extends Component {
 								</View>
 								<View style={LoginStyle.leftinputViewStyle}>
 									<Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'验证码'}</Text>
-									<View style={{flexDirection:'row', width: width * 2 / 3, paddingBottom:7, paddingTop:7, marginLeft: 5, borderBottomWidth: 1,borderBottomColor: 'white'}}>
+									<View style={{flexDirection:'row', width: width * 2 / 3, paddingBottom:7, paddingTop:7, height:40, alignItems:'center', justifyContent:'center', marginLeft: 5, borderBottomWidth: 1,borderBottomColor: 'white'}}>
 										<TextInput
-											style={{flex:1, marginRight:5, color:'white'}}
+											style={{flex:1, marginRight:5, color:'white', padding:0, height:40}}
 											onChangeText={(verifyPassword) => this.setState({verifyPassword:verifyPassword})}
 											value={this.state.verifyPassword}
 											keyboardType={'numeric'}
 											underlineColorAndroid={'transparent'}
 										/>
-										<TouchableOpacity onPress={this.getVerifyCode.bind(this)} activeOpacity={this.state.textCodeNum === TextVerifyCode?0:1} style={{paddingHorizontal:8, paddingVertical:5, borderRadius:13, borderColor:'white', borderWidth:1}}>
+										<TouchableOpacity onPress={this.getVerifyCode.bind(this)} activeOpacity={this.state.textCodeNum === TextVerifyCode?0:1} style={{paddingHorizontal:8, height:25, alignItems:'center', justifyContent:'center', borderRadius:13, borderColor:'white', borderWidth:1}}>
 											<Text style={{fontSize:13, color:'white'}}>{this.state.textCodeNum}</Text>
 										</TouchableOpacity>
 									</View>
@@ -358,12 +359,12 @@ export default class Login extends Component {
 							<View>
 								<View style={LoginStyle.leftinputViewStyle}>
 									<Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'手机号'}</Text>
-									<View style={{flexDirection:'row', width: width * 2 / 3, paddingBottom:7, paddingTop:10, marginLeft: 5, borderBottomWidth: 1,borderBottomColor: 'white'}}>
+									<View style={{flexDirection:'row', width: width * 2 / 3, paddingBottom:7, paddingTop:10, marginLeft: 5, height:40, alignItems:'center', justifyContent:'center', borderBottomWidth: 1,borderBottomColor: 'white'}}>
 										<TouchableOpacity onPress={()=> this.setState({modalVisible: true})} style={{paddingHorizontal:8, height: 25, backgroundColor: 'white', borderRadius: 2, alignItems: 'center', justifyContent: 'center'}}>
 											<Text style={{color: 'rgb(251, 110, 169)', textAlign: 'center'}}>{this.state.cityCode}</Text>
 										</TouchableOpacity>
 										<TextInput
-											style={{flex:1, marginLeft:5, color:'white'}}
+											style={{flex:1, marginLeft:5, color:'white', padding:0, height:40}}
 											onChangeText={(phoneUsername) => this.setState({phoneUsername:phoneUsername})}
 											value={this.state.phoneUsername}
 											keyboardType={'numeric'}
@@ -373,9 +374,9 @@ export default class Login extends Component {
 								</View>
 								<View style={LoginStyle.leftinputViewStyle}>
 									<Text style={{lineHeight: 40, color: 'white', fontWeight: 'bold', fontSize: 15}}>{'密    码'}</Text>
-									<View style={{flexDirection:'row', width: width * 2 / 3, paddingBottom:7, paddingTop:7, marginLeft: 5, borderBottomWidth: 1,borderBottomColor: 'white'}}>
+									<View style={{flexDirection:'row', width: width * 2 / 3, paddingBottom:7, paddingTop:7, marginLeft: 5, height:40, alignItems:'center', justifyContent:'center', borderBottomWidth: 1,borderBottomColor: 'white'}}>
 										<TextInput
-											style={{flex:1, color:'white'}}
+											style={{flex:1, color:'white', padding:0, height:40}}
 											onChangeText={(phonePassword) => this.setState({phonePassword:phonePassword})}
 											value={this.state.phonePassword}
 											secureTextEntry={true}
