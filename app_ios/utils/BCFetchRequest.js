@@ -43,6 +43,10 @@ let BCFetchRequest = {
             	return response.json();
             }else if(response.status === 401){
             	return 401
+            }else if(response.status === 204){
+            	return 204
+            }else if(response.status === 500){
+            	return 500
             }else{
             	return response.text()
             }
@@ -53,7 +57,7 @@ let BCFetchRequest = {
 				//请求失败
 				successCallback(null)
 			}else if(typeof responseResult === "number"){
-				successCallback(401);
+				successCallback(responseResult);
 			}else{
 				successCallback(responseResult);
 			}

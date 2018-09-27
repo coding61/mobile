@@ -74,7 +74,7 @@ class CodeCompileWebView extends Component {
 			<View style={{flex:1, backgroundColor:'rgb(245,245,245)'}}>
 				<WebView 
 					ref={(webview) => {this._webview = webview}}
-					source={{uri:Http.domainPage+'/app/home/codeCompileRN.html'}}
+					source={{uri:Http.domainPage+'/app/home/codeCompileRN.html?lang=' + this.state.language}}
 					automaticallyAdjustContentInsets={true}
 					startInLoadingState={true}
 					scalesPageToFit={true}

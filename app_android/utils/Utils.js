@@ -174,8 +174,12 @@ let Utils = {
 	numberToChinese:(number)=>{
 		return NumberToChinese(number)
 	},
-    setValue:(key, value)=>{
-        AsyncStorage.setItem(key,value);
+    setValue:(key, value, callback)=>{
+        if(callback){
+            AsyncStorage.setItem(key,value, callback);
+        }else{
+            AsyncStorage.setItem(key,value);
+        }
     },
     getValue:(key, callback)=>{
         AsyncStorage.getItem(key, (err, result)=>{

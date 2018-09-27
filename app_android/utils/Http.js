@@ -22,9 +22,25 @@ let Http = {
 	myTeam:Http_Domain + "/userinfo/mygroup/",                    //我的团队
 	teamBrand:Http_Domain + "/userinfo/groups/diamond/ranking/",  //团队排行
 	lunTanUnread:Http_Domain + "/message/messages/?types=forum&status=unread",   //论坛未读消息
-	findPassword:Http_Domain + "/userinfo/reset_password/",       //找回密码
 	awardDiamond:Http_Domain + "/userinfo/play_reward/",		  //打赏钻石
-	courseInfo:(pk)=>{                                            //课程信息
+
+	// 登录相关接口
+	loginInvite:Http_Domain + "/userinfo/invitation_code_login/",                     //登录(邀请码方式登录)
+	loginPassword:Http_Domain + "/userinfo/telephone_login/",                         //登录(密码方式登录)
+	loginVerify:Http_Domain + "/userinfo/vcode_login/",                               //登录(验证码方式登录)
+	findPassword:Http_Domain + "/userinfo/reset_password/",                           //找回密码
+	register:Http_Domain + "/userinfo/telephone_signup/",                             //注册
+	getVerifyForLogin:(phone)=>{
+		return Http_Domain + "/userinfo/vcode_login_request/?telephone=" + phone      //获取验证码(验证码方式登录)
+	},
+	getVerifyForForgetPsd:(phone)=>{
+		return Http_Domain + "/userinfo/reset_password_request/?telephone=" + phone   //获取验证码(找回密码)
+	},
+	getVerifyForRegister:(phone)=>{
+		return Http_Domain + "/userinfo/telephone_signup_request/?telephone=" + phone //获取验证码(手机注册)
+	},
+	
+	courseInfo:(pk)=>{                                                                //课程信息
 		return Http_Domain + "/course/courses/" + pk + "/"
 	},
 	getPassCode:(phone)=>{
@@ -64,16 +80,16 @@ let Http = {
 	},
 
 	competeList:(pagenum)=>{
-		return Http_Domain + "/contest/?page=" + pagenum                              //竞赛列表
+		return Http_Domain + "/contest/?page=" + pagenum                                 //竞赛列表
 	},
 	competeDetail:(pk)=>{
-		return Http_Domain + "/contest/"+pk+"/"                                       //竞赛详情
+		return Http_Domain + "/contest/"+pk+"/"                                          //竞赛详情
 	},
 	questionList:(pk)=>{
-		return Http_Domain + "/contest/"+pk+"/question/"                              //竞赛下问题列表
+		return Http_Domain + "/contest/"+pk+"/question/"                                 //竞赛下问题列表
 	},
 	competeAnswer:(pk)=>{
-		return Http_Domain + "/contest/"+pk+"/answer_question/"                       //回答问题
+		return Http_Domain + "/contest/"+pk+"/answer_question/"                          //回答问题
 	},
 	competeRank:(pk, pagenum)=>{
 		return Http_Domain + "/contest/"+pk+"/ranking/?exclude=answers&page=" + pagenum  //竞赛排行榜
