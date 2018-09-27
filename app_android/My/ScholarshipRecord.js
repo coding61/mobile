@@ -273,7 +273,8 @@ class ScholarshipRecord extends Component {
     _renderHeader = () => {
       return (<View style={{width: width, height: width * 2 / 3 + 50, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white'}}>
                 <Text style={{fontSize: 42, marginBottom: 40}}>{this.state.balance}<Text style={{fontSize: 16}}>元</Text></Text>
-                <Text style={{width: width * 2 / 3, textAlign: 'center', color: 'gray', lineHeight: 25}}>{'奖学金提现请关注微信公众服务号"girlcxy61"进行提取'}</Text>
+                <Text style={{width: width * 2 / 3, textAlign: 'center', color: 'gray', lineHeight: 25}}>{'奖学金提现请关注微信公众服务号“girlcxy61”进行领取'}</Text>
+                <Text style={{width: width * 2 / 3, textAlign: 'center', color: 'gray', lineHeight: 25}}>{'领取功能于2018年11月17日开放'}</Text>
                 <View style={{position: 'absolute', bottom: 0, left: 0, width: width, height: 40, backgroundColor: 'rgb(236, 237, 238)', justifyContent: 'center'}}>
                   <Text style={{fontSize: 12, marginLeft: 20}}>奖学金明细</Text>
                 </View>
@@ -299,7 +300,7 @@ class ScholarshipRecord extends Component {
 				            style={{flex:1,}}
 				            data={this.state.dataSource}
 				            renderItem={this._renderItem}
-                    ListHeaderComponent={this._renderHeader}
+                            ListHeaderComponent={this._renderHeader}
 				            extraData={this.state}
 				            keyExtractor={this._keyExtractor}
 				            ListFooterComponent={this._renderFooter}
