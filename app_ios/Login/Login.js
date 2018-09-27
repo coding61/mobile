@@ -14,7 +14,8 @@ import {
   Alert,
   Modal,
   FlatList,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  KeyboardAvoidingView
 } from 'react-native';
 
 const TextVerifyCode = "获取验证码"
@@ -297,6 +298,7 @@ export default class Login extends Component {
     }
 	render() {
 		return (
+			<KeyboardAvoidingView behavior={"padding"} style={{flex:1}}>
 			<TouchableOpacity onPress={this._cancelkeyboard.bind(this)} activeOpacity={1} style={{flex: 1, backgroundColor:'rgb(251, 110, 169)'}}>
 				{/* tab 选项 */}
 				<View style={{height:40, flexDirection:"row"}}>
@@ -318,7 +320,7 @@ export default class Login extends Component {
 				<View style={{marginTop:20, alignItems:'center', justifyContent:'center'}}>
 					<Image style={{width: width / 2 + 2, height: 119 * width / 767}} source={require('../assets/Login/chengxuyuanjihua.png')} />
 				</View>
-				
+
 				<View style={{flex:1, flexDirection:"column", alignItems:'center', justifyContent:'space-around'}}>
 					{/* 输入框 */}
 					{
@@ -443,6 +445,7 @@ export default class Login extends Component {
       				this.state.loading?<LoadingView />:null
       			}
 			</TouchableOpacity>
+			</KeyboardAvoidingView>
 		)
 	}
 }
