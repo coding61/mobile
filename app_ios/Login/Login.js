@@ -237,7 +237,7 @@ export default class Login extends Component {
 			// 验证码登录  密码登录
 			if(this.state.cityCode !== "+86"){
 				// 转义
-				username = encodeURI(that.state.cityCode + username).replace(/\+/g,'%2B');
+				username = encodeURI(this.state.cityCode + username).replace(/\+/g,'%2B');
 			}
 		}
 		// 调接口进行登录
