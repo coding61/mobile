@@ -78,7 +78,8 @@ export default class Forum_Details extends Component{
         if(this.props.navigation.state.params.name == 'news'){
             this.props.navigation.state.params.callback();
         }
-        this.eventEmss.remove();
+        this.eventEmss && this.eventEmss.remove();
+        this.eventEm && this.eventEm.remove();
     }
     componentWillMount(){
         var self = this;
