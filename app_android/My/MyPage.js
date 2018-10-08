@@ -116,12 +116,12 @@ class MyPage extends Component {
 		})
 	}
 	// 修改个人信息
-    _fetchUpdateInfo(type, nickname, avatar){
+    _fetchUpdateInfo(tag, nickname, avatar){
 		var that = this;
         var dic = {};
-        if (type == "nickname") {
+        if (tag == "nickname") {
             dic["name"] = nickname
-        }else if (type == "avatar") {
+        }else if (tag == "avatar") {
             dic["avatar"] = avatar
         }
         Utils.isLogin((token)=>{
@@ -133,7 +133,7 @@ class MyPage extends Component {
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
 					console.log(response);
 					if(response){
-						if(type == "nickname"){
+						if(tag == "nickname"){
 							that.setState({
 								isLogin:true,
 								name: response.name,
