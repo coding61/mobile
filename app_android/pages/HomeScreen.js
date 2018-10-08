@@ -21,7 +21,8 @@ import {
     ScrollView,
     Modal,
     Clipboard,
-    StatusBar
+    StatusBar,
+    NativeModules
 }from 'react-native'
 
 import DeviceInfo from 'react-native-device-info';
@@ -29,6 +30,8 @@ import DeviceInfo from 'react-native-device-info';
 import Utils from '../utils/Utils.js';
 import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Http from '../utils/Http.js';
+
+var RnTest = NativeModules.RongYunRN;                    //原生方法
 
 class HomeScreen extends Component{
     constructor(props) {
@@ -113,13 +116,13 @@ class HomeScreen extends Component{
         this.props.navigation.setParams({
             userinfo: '',
         });
-        this._fetchUserInfo();
+        this.fetchWhoamI("rong");  //用来处理401
     }
     componentDidMount() {
-        //登录
-        this.listenLogin = DeviceEventEmitter.addListener('listenLogin',() => {
-            console.log("登录监听2");
-            this._fetchUserInfo();
+        // 监听登录成功
+        this.listenLogin = DeviceEventEmitter.addListener('listenLogin', () => {
+            //刷新本页
+            this.fetchWhoamI("rong");
         })
         //退出登录
         this.listenlogout = DeviceEventEmitter.addListener('logout', () => {
@@ -139,50 +142,73 @@ class HomeScreen extends Component{
         this.listenlogout.remove();
     }
     // ------------------------------------------网络请求
-    _fetchUserInfo(){
-        var this_ = this;
+    // 获取个人信息
+    fetchWhoamI(tag){
+    	var that = this;
         Utils.isLogin((token)=>{
             if (token) {
-                // const {setParams, state} = this_.props.navigation;
                 var type = "get",
                     url = Http.whoami,
                     token = token,
                     data = null;
                 BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    if (response == 401) {
-                        //去登录
-                        console.log(401);
-                        this._goLogin();
-                        return;
-                    }
-                    if (!response) {
-                        //请求失败
-                    };
-                    console.log(response);
-                    // Util.updateInfo(json);
-                    this.props.navigation.setParams({
-                        userinfo: response,
-                    });
-                    // setParams({userinfo:response})
-                    // console.log(state.params.userinfo);
-                    console.log("登录监听3");
-
+                	if (response == 401) {
+                        Utils.clearAllValue();
+                        const {setParams} = that.props.navigation;
+                        setParams({userinfo:""})
+                        that.props.navigation.navigate('Login')
+                		return;
+                	}else if (response === 500) {
+			        	
+			        }else if(response.status === -4){
+			        	
+			        }else{
+			        	that.props.navigation.setParams({
+                            userinfo: response,
+                        });
+                        if(tag == "rong"){
+                            // 此处做处理，不放到会话列表那一页去处理，因为会话列表页是二级页面
+                            that.fetchRongToken(response);
+                        }	
+			        }
                 }, (err) => {
-                    // console.log(err);
-                    // Utils.showMessage('网络请求失败');
+                    
                 });
+            }else{
             }
         })
     }
-    _goLogin(){
-        // 未登录
-        Utils.clearAllValue();
-        const {setParams} = this.props.navigation;
-        setParams({userinfo:""})
-
-        this.props.navigation.navigate('Login', {callback:()=>{
-            this._fetchUserInfo();
-        }})
+    // 获取融云 token
+    fetchRongToken(userInfo){
+    	var that = this;
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "get",
+                    url = Http.getRongYunToken,
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response.token) {
+                    	// 链接融云
+                        console.log("debug:链接融云");
+                    	RnTest.rnIMConnect(response.token, token, function(result) {
+							if (result === "成功") {
+								if (userInfo.owner) {
+									var userId = userInfo.owner,
+										name = userInfo.name?userInfo.name:"匿名用户",
+										avatar = userInfo.avatar?userInfo.avatar:"https://static1.bcjiaoyu.com/avatar1.png";
+									RnTest.reIMFreshUserInfo(userId, name, avatar);
+								}
+							}
+                    	});
+                    }
+                }, (err) => {
+                	console.log(err);
+                });
+            }else{
+            	
+            }
+        })
     }
     // ------------------------------------------点击事件
     _loadQuitLogin(){
@@ -249,11 +275,6 @@ class HomeScreen extends Component{
             case 1:
             {
                 //参加竞赛
-                // this.props.navigation.navigate("CompeteView", {callback:()=>{
-                //     console.log("回调更新导航");
-                //     this._fetchUserInfo();
-                // }});
-                //参加竞赛
                 this.props.navigation.navigate("JobList");
                 break;
             }
@@ -270,7 +291,7 @@ class HomeScreen extends Component{
                     if (token) {
                         this.props.navigation.navigate("ChildMachineWebView", {token:token, callback:()=>{
                             console.log("回调更新导航");
-                            this._fetchUserInfo();
+                            this.fetchWhoamI();
                         }});
                     }else{
                         this.props.navigation.navigate("Login");
@@ -282,7 +303,7 @@ class HomeScreen extends Component{
                 //钻石商城
                 this.props.navigation.navigate('Exchange', {callback:()=>{
                     console.log("回调更新导航");
-                    this._fetchUserInfo();
+                    this.fetchWhoamI();
                 }});
                 break;
             }
@@ -426,7 +447,7 @@ class HomeScreen extends Component{
                       style={styles.tabImg}
                       source={require('../images/i14.png')}
                       resizeMode={'cover'}
-                    /> 
+                    />
                     <Text style={styles.tabTitle}>
                       {"轻松一下"}
                     </Text>

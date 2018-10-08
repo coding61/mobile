@@ -66,7 +66,8 @@ class ConversationList extends Component {
 	componentWillMount() {
 		this.props.navigation.setParams({
             hasUnreadMsg: false
-        });
+		});
+		//监听融云未读消息事件
 		this.listenerRCUnreadMsg = DeviceEventEmitter.addListener('unreadmessagecount_listener', (result) => {
   			// console.log("消息监听", result);
 			if (result["unread_message_count"] <= 0) {
@@ -80,12 +81,62 @@ class ConversationList extends Component {
 		            hasUnreadMsg: true,
 		        });
 			}
-	  	})
+		})
+		//退出登录
+        this.listenlogout = DeviceEventEmitter.addListener('logout', () => {
+			/*
+            this.setState({
+            	showView:false,
+            })
+            this.props.navigation.setParams({
+	            hasUnreadMsg: false
+			});
+			*/
+		})
+		  
+		// 监听登录成功
+        this.listenLogin = DeviceEventEmitter.addListener('listenLogin', () => {
+            // 链接融云(页面非首次进入，链接融云)
+			// this.fetchRongToken("listenLogin");
+        })
+
+		// 链接融云(页面第一次载入,该方法生命周期执行一次)
+		// this.fetchRongToken("first");
 	}
 	componentWillUnmount() {
 		this.listener&&this.listener.remove();
 		this.listenerRCUnreadMsg && this.listenerRCUnreadMsg.remove();
+		this.listenlogout && this.listenlogout.remove();
+		this.listenLogin && this.listenLogin.remove();
 	}
+	// 获取融云 token
+    fetchRongToken(tag){
+    	var that = this;
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "get",
+                    url = Http.getRongYunToken,
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response.token) {
+                    	// 链接融云
+                        console.log("debug:链接融云", tag);
+						// alert(tag);
+                    	RnTest.rnIMConnect(response.token, token, function(result) {
+							if (result === "成功") {
+								
+							}
+                    	});
+                    }
+                }, (err) => {
+                	console.log(err);
+                });
+            }else{
+            	
+            }
+        })
+    }
   	render() {
 	    return (
 	        <View style={{flex: 1, backgroundColor:bgColor}}>

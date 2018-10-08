@@ -24,6 +24,11 @@ let Http = {
 	lunTanUnread:Http_Domain + "/message/messages/?types=forum&status=unread",   //论坛未读消息
 	awardDiamond:Http_Domain + "/userinfo/play_reward/",		  //打赏钻石
 
+	updateUserInfo:Http_Domain + "/userinfo/userinfo_update/",       //修改个人信息
+	getQiniuToken:Http_Domain + "/upload/token/",                    //获取七牛 token
+	// getRongYunToken:Http_Domain + "/im/user_get_token/",          //获取融云 token
+	getRongYunToken:Http_Domain + "/im/user_refresh_token/",         //刷新 token
+
 	// 登录相关接口
 	loginInvite:Http_Domain + "/userinfo/invitation_code_login/",                     //登录(邀请码方式登录)
 	loginPassword:Http_Domain + "/userinfo/telephone_login/",                         //登录(密码方式登录)

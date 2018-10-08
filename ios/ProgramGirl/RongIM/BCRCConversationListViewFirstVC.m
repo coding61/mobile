@@ -26,7 +26,7 @@
                                       @(ConversationType_APPSERVICE),
                                       @(ConversationType_SYSTEM)]];
   self.emptyConversationView = [[UIView alloc] init];
-
+  NSLog(@"%s", __FUNCTION__);
 }
 - (void)viewWillDisappear:(BOOL)animated{
   [super viewWillDisappear:animated];
@@ -53,6 +53,7 @@
     //无角标
     [rn hasUnreadMsg:@"false"];
   }
+  NSLog(@"%s", __FUNCTION__);
 }
 //重写RCConversationListViewController的onSelectedTableRow事件
 - (void)onSelectedTableRow:(RCConversationModelType)conversationModelType
