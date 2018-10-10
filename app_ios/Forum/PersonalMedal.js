@@ -85,6 +85,7 @@ class PersonalMedal extends Component {
             }
         })
         .then((response)=>{
+            console.log(response);
             if (response.ok) {
                 return response.json();
             } else {
@@ -92,6 +93,7 @@ class PersonalMedal extends Component {
             }
         })
         .then((responseJson)=>{
+            console.log(responseJson);
             this.setState({show: false, isRefreshing: false});
             if (responseJson) {
                 this.setState({dataList: responseJson.medal_record});
@@ -241,10 +243,10 @@ const styles = StyleSheet.create({
         // width: (width - 20 * 4) / 3,
         // height: (width - 20 * 4) / 3,
         width: width / 4,
-        height: width / 4,
+        height: width / 4 + 20,
         // marginTop: 20,
         // marginLeft: 20,
-        padding: 20
+        padding: 15
     },
     itemTitleView: {
         width: 60,

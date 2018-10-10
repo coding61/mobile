@@ -9,80 +9,80 @@
   *  containerStyle,  unfull 模式下，容纳等待视图的样式, (选填)
   *  msg,             等待视图中显示的文字(选填)       
   */
- 'use strict';
+'use strict';
 
- import React, { Component } from 'react';
- import PropTypes from 'prop-types';
- 
- import {
-   StyleSheet,
-   View,
-   Modal,
-   Text,
-   ActivityIndicator,
-   Image,
-   Dimensions
- } from 'react-native';
- 
- const height = Dimensions.get('window').height
- const width = Dimensions.get('window').width
- 
- class LoadingView extends Component {
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import {
+  StyleSheet,
+  View,
+  Modal,
+  Text,
+  ActivityIndicator,
+  Image,
+  Dimensions
+} from 'react-native';
+
+const height = Dimensions.get('window').height
+const width = Dimensions.get('window').width
+
+class LoadingView extends Component {
 	constructor(props) {
-	   super(props);
-	 
-	   this.state = {};
+	  super(props);
+	
+	  this.state = {};
 	}
 	static defaultProps = {
-		type: "unfull",
-		msg:"加载中..."
-	};
-	static propTypes = {
-		type: PropTypes.oneOf(['full', 'unfull']).isRequired, //类型
-		msg: PropTypes.string,
-	}
-	_renderFullView(){
-		return (
-			<Modal visible={true} transparent={true} onRequestClose={()=>{}}>
-				<View style={styles.fullParent}>
-					<View style={styles.loadView}>
+        type: "unfull",
+        msg:"加载中..."
+    };
+    static propTypes = {
+        type: PropTypes.oneOf(['full', 'unfull']).isRequired, //类型
+        msg: PropTypes.string,
+    }
+    _renderFullView(){
+    	return (
+    		<Modal visible={true} transparent={true} onRequestClose={()=>{}}>
+    			<View style={styles.fullParent}>
+    				<View style={styles.loadView}>
 						<ActivityIndicator 
-						   style={{marginTop: 10}}
-						   color={'white'}
-						   size={'large'}
-						   animating={true}
-						/>
- 
-						<Text style={{color:'white'}}>{this.props.msg}</Text>
-					</View>
-				</View>
-			</Modal>
-		)
-	}
-	_renderUnfullView(){
-		return (
+		                  style={{marginTop: 10}}
+		                  color={'white'}
+		                  size={'large'}
+		                  animating={true}
+		                />
+
+		                <Text style={{color:'white'}}>{this.props.msg}</Text>
+	                </View>
+    			</View>
+	        </Modal>
+    	)
+    }
+    _renderUnfullView(){
+    	return (
 			<View style={styles.loadView}>
 				<ActivityIndicator 
-				   style={{marginTop: 10}}
-				   color={'white'}
-				   size={'large'}
-				   animating={true}
-				/>
-				<Text style={{color:'white'}}>{this.props.msg}</Text>
-			</View>
-		)
-	}
-	render() {
-		return (
-			<View style={[this.props.type == "unfull"?styles.unfullParent:null, this.props.type == "unfull" && this.props.containerStyle?this.props.containerStyle:null]}>
-			 	{
-				 	this.props.type == "unfull"?this._renderUnfullView():this._renderFullView()
-			 	}
-			</View>
-		);
-	}
- }
- const styles = StyleSheet.create({
+                  style={{marginTop: 10}}
+                  color={'white'}
+                  size={'large'}
+                  animating={true}
+                />
+                <Text style={{color:'white'}}>{this.props.msg}</Text>
+            </View>
+    	)
+    }
+  	render() {
+	    return (
+	    	<View style={[this.props.type == "unfull"?styles.unfullParent:null, this.props.type == "unfull" && this.props.containerStyle?this.props.containerStyle:null]}>
+	    	{
+	    		this.props.type == "unfull"?this._renderUnfullView():this._renderFullView()
+		    }
+	    	</View>
+	    );
+  	}
+}
+const styles = StyleSheet.create({
 	unfullParent:{
 		position:'absolute', 
 		width:width, 
@@ -104,8 +104,8 @@
 		justifyContent:'space-around', 
 		backgroundColor:'rgba(0,0,0,0.6)'
 	},
- 
- });
- 
- 
- export default LoadingView;
+
+});
+
+
+export default LoadingView;

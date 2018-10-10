@@ -13,28 +13,39 @@ import {
   DeviceEventEmitter,
   Modal,
   Alert,
-  Button,
-  ActivityIndicator,
+  FlatList,
+  SectionList,
   AsyncStorage,
+  ActivityIndicator,
+  Platform
 }from 'react-native';
+
+import Utils from '../utils/Utils.js';
+import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Http from '../utils/Http.js';
-var basePath=Http.domain;
-var {height, width} = Dimensions.get('window');
+import MedalView from '../Activity/MedalView.js';
+import LoadingView from '../Component/LoadingView.js';
+
+const isAndroid = Platform.OS === 'android';
 var allAndroid = require('react-native').NativeModules.RongYunRN;
+var {height, width} = Dimensions.get('window');
 var content='';
+
 export default class ForumAdd extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            token:this.props.navigation.state.params.token,
-            text:'',
-            title:'',
-            show:false,
-            IdCard1:'',//图片
             sectionpk:'',
             sectionname:'',
+            text:'',
+            title:'',
+            loading:false,                                     //加载动画
+            loadingText:"加载中",                               //加载动画上的文字
+            IdCard1:'',                  //图片
+            showRewardType:"hongbao",    //何种类型的奖励
+            showMedalView:false,         //是否展示勋章视图
+            showMedalMsg:"发布帖子",      //勋章的名字
         }
-        console.log(this.props.navigation.state.params.token)
     }
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
@@ -42,7 +53,7 @@ export default class ForumAdd extends Component{
             title: '发布帖子',
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
-            headerTitleStyle:{alignSelf:'auto',fontSize:14,paddingLeft:width*0.23},
+            headerTitleStyle:{flex:1, textAlign:'center', fontSize:14},
             headerRight:
                 (
                 <View style={{flexDirection:'row',marginRight:20,}}>
@@ -63,96 +74,56 @@ export default class ForumAdd extends Component{
         this.listenerProgressb.remove();
         this.listenerProgressc.remove();
     }
-    _reloadPage(){
-        var self = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result!=null){
-                self.setState({token: result},()=>{
-                    
-                });
-            }
-        });
-    }
     componentWillMount(){
-        var self = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result!=null){
-                self.setState({token: result},()=>{
-                    
-                });
-            }
-            
-        });
+
     }
     componentDidMount() {
         var self = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result!=null){
-                self.setState({token: result},()=>{
-                    
-                });
-            }
-            
-        });
+
         this.progress();
         this.eventEm = DeviceEventEmitter.addListener('publish', (value)=>{
-            var data = {};
-            data.section = this.state.sectionpk;
-            data.title=this.state.title;
-            data.types =2;
-            data.content=this.state.text;
-            if (data.content=='') {
-                Alert.alert('请输入帖子内容！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
-            }else if(data.section==''){
-                Alert.alert('请选择发布帖子专区！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
-            }else if(this.state.token==''||this.state.token==null){
-                Alert.alert('请登录后再发帖！','',[{text:'确定',onPress: () => {
-                    this.props.navigation.navigate("Login", {callback:()=>{
-                        this._reloadPage();
-                    }})
-                }, style: 'destructive'}])
-            }
-            else{
-                fetch(basePath+"/forum/posts_create/",
-                {
-                    method:'post',
-                    headers: {
-                        'Authorization': 'Token ' + this.state.token,
-                        'Content-Type': 'application/json'},
-                    body: JSON.stringify(data),  
-                })
-                .then((response)=>{
-                    return response.json();
-                })
-                .then((result)=>{
-                    if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
-                        Alert.alert(
-                            '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',
-                            '',
-                            [
-                                {text: '确定', onPress: ()=> {}, style: 'destructive'},
-                                {text: '取消', onPress: () => {}, style: 'destructive'},
-                             ]
-                        )
-                    }else{
-                        this.props.navigation.state.params.callback();
-                        this.props.navigation.goBack();
-                    }
-                    
-                })
-                .catch((error) => {
-                    console.error(error);
-                })
-            }
+            this.submitPost();
         })
     }
-
+    showLoading(msg){
+        this.setState({
+            loading:true,
+            loadingText:msg
+        })
+    }
+    hideLoading(){
+        this.setState({
+            loading:false
+        })
+    }
+    // -----------------------------------网络请求
+    _fetchSubmitPostForum(dic){
+        Utils.isLogin((token)=>{
+            var type = "post",
+                url = Http.addForum,
+                token = token,
+                data = dic;
+            BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                this.hideLoading();
+                console.log(response);
+                if(response.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
+                    Utils.showMessage("您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子");
+                }else{
+                    this.props.navigation.state.params.callback();
+                    this.props.navigation.goBack();
+                }
+            }, (err) => {
+                console.log(err);
+                this.hideLoading();
+            });
+        })
+    }
+    // ---------------------------------点击事件
+    // 上传图片的监听方法
     progress(){
         var  this_=this;
         //进度
-
         this.listenerProgressa = DeviceEventEmitter.addListener("uploadProgress_listener", function(params) {
-            
         })
         //完成
         this.listenerProgressb = DeviceEventEmitter.addListener("uploadSuccess_listener", function(params) {
@@ -161,23 +132,22 @@ export default class ForumAdd extends Component{
             content=this_.state.text+imgArr;
             this_.setState({
                 //IdCard1:imgArr,
-                show:false,
-                text:content,
-                
+                text:content,  
             })
+            this.hideLoading();
         });
         //开始
         this.listenerProgressc = DeviceEventEmitter.addListener("uploadStrat_listener", function(params) {
-                this_.setState({
-                    show:true,
-            })
+            this.showLoading("上传中...");
         })
     }
     qiniu(){
-        allAndroid.rnQiniu(this.state.token,false,"gallery");
+        Utils.isLogin((token)=>{
+            allAndroid.rnQiniu(token,false,"gallery");
+        })
         DeviceEventEmitter.emit('forumadd', "photo");
-        //allAndroid.rnCancelUp();
     }
+    // 选择专区
     chooseclass(){
         this.props.navigation.navigate('ForumClass',{callback:(data)=>{
             this.setState({
@@ -185,6 +155,28 @@ export default class ForumAdd extends Component{
                 sectionname:data.name
             })
         }});
+    }
+    // 发布帖子
+    submitPost(){
+        var data = {};
+        data["section"] = this.state.sectionpk;
+        data["title"] = this.state.title;
+        data["types"] =  2;
+        data["content"] = this.state.text;
+        if (data.title === '') {
+            Utils.showMessage("请输入帖子标题！");
+            return
+        }
+        if (data.content === '') {
+            Utils.showMessage("请输入帖子内容！");
+            return
+        }
+        if(data.section === ''){
+            Utils.showMessage("请选择发布帖子专区！");
+            return;
+        }
+        this.showLoading("发布中...");
+        this._fetchSubmitPostForum(data);
     }
     render() {
         return(
@@ -197,18 +189,21 @@ export default class ForumAdd extends Component{
                     textAlignVertical='top'
                     underlineColorAndroid="transparent"
                     placeholder='标题'
+                    autoFocus={true}
+                    autoCapitalize='none'
+                    enablesReturnKeyAutomatically={true}
                     placeholderTextColor='#aaaaaa'
                 />
                 <View style={{width:width,marginTop:10,marginBottom:10,flexDirection:'row',alignItems:'center'}}>
                     <TouchableOpacity onPress={this.chooseclass.bind(this)}
-                        style={{width:width*0.2,height:40,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
+                        style={{width:width*0.2,height:30,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
                         <Text style={{color:'#ffffff',fontSize:14,}}>选择专区</Text>
                     </TouchableOpacity>
                     <Text style={{fontSize:14,marginLeft:30,}}>{this.state.sectionname}</Text>
                 </View>
                 <View style={{width:width,marginTop:10,marginBottom:10,}}>
                     <TouchableOpacity onPress={this.qiniu.bind(this)}
-                        style={{width:width*0.2,height:40,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
+                        style={{width:width*0.2,height:30,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
                         <Text style={{color:'#ffffff',fontSize:14,}}>添加图片</Text>
                     </TouchableOpacity>
                 </View>
@@ -217,22 +212,16 @@ export default class ForumAdd extends Component{
                     onChangeText={(text) => this.setState({text})}
                     value={this.state.text}
                     multiline={true}
+                    autoCapitalize='none'
                     textAlignVertical='top'
                     underlineColorAndroid="transparent"
                     placeholder='尽情提问吧'
+                    enablesReturnKeyAutomatically={true}
                     placeholderTextColor='#aaaaaa'
                 />
-                {this.state.show?(
-                    <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
-                        <ActivityIndicator 
-                            style={{marginTop: 10}}
-                            color={'white'}
-                            size={'large'}
-                            animating={true}
-                                />
-                        <Text style={{color: 'white'}}>上传中...</Text>
-                    </View>
-                    ):(null)}
+                {
+                    this.state.loading?<LoadingView msg={this.state.loadingText}/>:null
+                }
             </View>
         )
     }

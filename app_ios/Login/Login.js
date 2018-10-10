@@ -135,7 +135,6 @@ export default class Login extends Component {
 						// 登录成功
 						that.hideLoading();
 						DeviceEventEmitter.emit('listenLogin', response.token);
-						DeviceEventEmitter.emit('login', 'success');
 						that.props.navigation.goBack();
 					});
 				}else{
@@ -320,7 +319,7 @@ export default class Login extends Component {
 				<View style={{marginTop:20, alignItems:'center', justifyContent:'center'}}>
 					<Image style={{width: width / 2 + 2, height: 119 * width / 767}} source={require('../assets/Login/chengxuyuanjihua.png')} />
 				</View>
-
+				
 				<View style={{flex:1, flexDirection:"column", alignItems:'center', justifyContent:'space-around'}}>
 					{/* 输入框 */}
 					{

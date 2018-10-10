@@ -12,6 +12,7 @@ import {
   ListView,
   Modal,
   ActivityIndicator,
+  CameraRoll,
 }from 'react-native';
 import face from './Content_Rex';
 var {height, width} = Dimensions.get('window');
@@ -80,7 +81,7 @@ export default class ForumDeatilCont extends Component{
         
         return(
             <View style={{paddingLeft:15,paddingTop:10,paddingRight:15,paddingBottom:10,}}>
-                <Text selectable={true} style={{lineHeight:20,color:'#3f3f3f'}}>{text}</Text>
+                <Text selectable={true} style={{lineHeight:24,color:'#3f3f3f'}}>{text}</Text>
                 <View style={{flexDirection:'row',flexWrap:'wrap'}}>
                     {output.map((result,index)=> {
                         return(
@@ -93,10 +94,21 @@ export default class ForumDeatilCont extends Component{
                 <Modal visible={this.state.modalVisible} transparent={true} onRequestClose={()=>{this.setState({modalVisible:false})}}>
                     <ImageViewer 
                         imageUrls={output} 
-                        onClick={this._setModalVisible.bind(this)} 
+                        onClick={this._setModalVisible.bind(this)}
                         index={this.state.imgindex} 
                         onChange={(index)=>{this.setState({imgindex:index})}}
                         failImageSource={{uri:'../assets/Forum/defaultHeader.png'}}
+                        //onSaveToCamera={(index)=>{
+                            //var img=output[index].url;
+                            //alert(img)
+                            /*var promise = CameraRoll.saveToCameraRoll(img);
+                            promise.then(function(result) {
+                                alert('保存成功！地址如下：\n' + result);
+                            })
+                            .catch(function(error) {
+                                alert('保存失败！\n' + error);
+                            });*/
+                        //}}
                         saveToLocalByLongPress={false}
                         loadingRender={()=>{return(<ActivityIndicator size='small' color="white" style={{alignItems:'center',justifyContent:'center',}}/>)}}
                         />
@@ -104,7 +116,6 @@ export default class ForumDeatilCont extends Component{
             </View>
             )
     }
-
     render() {
         return(
             <View>

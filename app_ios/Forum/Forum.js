@@ -17,6 +17,7 @@ import {
 }from 'react-native';
 import ForumList from './ForumList';
 var {height, width} = Dimensions.get('window');
+
 import NewsCenter from './NewsCenter';
 import Http from '../utils/Http.js';
 import Utils from '../utils/Utils.js';
@@ -37,7 +38,7 @@ export default class Forum extends Component{
             moreshow:false,
         }
     }
-    
+
     static navigationOptions = ({ navigation })=>{
         const {state, setParams} = navigation;
         return {
@@ -49,21 +50,20 @@ export default class Forum extends Component{
                     (
                     <View style={{marginRight:20,alignItems:'center'}}>
                         <TouchableOpacity style={{width:30,height:25,}} onPress={()=>{
-                            DeviceEventEmitter.emit('newsmore',1 )
+                            DeviceEventEmitter.emit('newsmore', "1")
                         }}>
-                            {!state.params || state.params.newscount==0?(<Image style={{width:18,height:3,marginTop:10,}} source={require('../assets/Forum/news.png')}/>):(<Image style={{width:26,height:13,}} source={require('../assets/Forum/hasnews.png')}/>)}
+                            {!state.params || state.params.newscount==0?(<Image style={{width:21,height:4,marginTop:10,}} source={require('../assets/Forum/news.png')}/>):(<Image style={{width:29,height:14,}} source={require('../assets/Forum/hasnews.png')}/>)}
                         </TouchableOpacity>
                     </View>
                     )
         }
     };
-    
     componentWillMount(){
         //给当前页面设置默认参数
         this.props.navigation.setParams({
             newscount: '',
         });
-        
+
         var self = this;
         AsyncStorage.getItem('token', function(errs, result) {
             if(result!=null){
@@ -176,7 +176,7 @@ export default class Forum extends Component{
         })  
     }
     _clickForumList(data){
-        this.props.navigation.navigate('ForumList', { data: data,token:this.state.token ,callback:()=>{
+        this.props.navigation.navigate('ForumList', { data: data,token:this.state.token,callback:()=>{
             this._loadunread()
         }})
     }
@@ -209,7 +209,7 @@ export default class Forum extends Component{
         if(!rowData.newposts){
             return (
                 <TouchableOpacity onPress={this._clickForumList.bind(this,rowData)}
-                        style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
+                                  style={{width: width,flex:1, backgroundColor: 'white',borderBottomColor:'#cccccc',borderBottomWidth:1,paddingLeft:10,paddingRight:10,}}>
                     <View style={{flexDirection:'row',}}>
                         <Image style={{width:50,height:50,marginTop:20,}} source={{uri:rowData.icon}}/>
                         <View style={{paddingLeft:10,paddingRight:10,paddingTop:10,width:width*0.6,}}>
@@ -321,7 +321,6 @@ export default class Forum extends Component{
                 }})
             }
         })
-        
     }
     ranklist(){
         Utils.isLogin((token)=>{
@@ -336,7 +335,6 @@ export default class Forum extends Component{
                 }})
             }
         })
-        
     }
     MyCollect(){
         Utils.isLogin((token)=>{
@@ -351,7 +349,6 @@ export default class Forum extends Component{
                 }})
             }
         })
-        
     }
     MyForum(){
         Utils.isLogin((token)=>{
@@ -366,7 +363,6 @@ export default class Forum extends Component{
                 }})
             }
         })
-        
     }
     _keyExtractor = (item, index) => index;
     render() {
@@ -392,14 +388,14 @@ export default class Forum extends Component{
                         }
                     />
                     {this.state.moreshow?(
-                        <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa',paddingRight:5,paddingLeft:8,}}>
-                            <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}>
+                        <View style={{position:'absolute',backgroundColor:'#ffffff',top: 0,borderRadius:5,alignItems:'center',right: 10,borderWidth:0.5,borderColor:'#aaaaaa',paddingLeft:5,paddingRight:5,}}>
+                            <View style={{borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>
                                 <Text onPress={this._newscenter.bind(this)} style={{padding:15,}}>消息中心</Text>
-                                {this.props.navigation.state.params && this.props.navigation.state.params.newscount!=0?(<View style={{position:'absolute',top:12,right:10,width:8,height:8,borderRadius:4,backgroundColor:'red'}}></View>):(null)}
+                                {this.props.navigation.state.params && this.props.navigation.state.params.newscount!=0?(<View style={{position:'absolute',top:13,right:12,width:8,height:8,borderRadius:4,backgroundColor:'red'}}></View>):(null)}
                             </View>
-                            <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this.MyCollect.bind(this)} style={{padding:15,}}>我的收藏</Text></View>
-                            <View style={{borderBottomWidth:1,borderBottomColor:'#aaaaaa'}}><Text onPress={this.MyForum.bind(this)} style={{padding:15,}}>我的帖子</Text></View>
-                            <View><Text onPress={this.ranklist.bind(this)} style={{padding:15,}}>排行榜</Text></View>
+                            <Text onPress={this.MyCollect.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>我的收藏</Text>
+                            <Text onPress={this.MyForum.bind(this)} style={{padding:15,borderBottomWidth:0.5,borderBottomColor:'#aaaaaa'}}>我的帖子</Text>
+                            <Text onPress={this.ranklist.bind(this)} style={{padding:15,}}>排行榜</Text>
                         </View>
                         ):(null)}
                 </View>

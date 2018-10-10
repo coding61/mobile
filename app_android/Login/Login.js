@@ -134,7 +134,6 @@ export default class Login extends Component {
 						// 登录成功
 						that.hideLoading();
 						DeviceEventEmitter.emit('listenLogin', response.token);
-						DeviceEventEmitter.emit('login', 'success');
 						that.props.navigation.goBack();
 					});
 				}else{

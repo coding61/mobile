@@ -5,7 +5,8 @@ import {
     AsyncStorage,
     Alert,
     Platform,
-    Linking
+    Linking,
+    StatusBar
 } from 'react-native'
 
 const deviceH = Dimensions.get('window').height
@@ -20,13 +21,13 @@ const isIphoneX = Platform.OS === 'ios' &&   ((deviceH === X_HEIGHT && deviceW =
 
 const isIOS = Platform.OS == "ios"
 const TopStatusBarIOS = 20
-const TopStatusBarAndroid = 25
+const TopStatusBarAndroid = StatusBar.currentHeight>25?StatusBar.currentHeight:25
 const TopNavBarHeight = 48
 const BottomStatusBarAndroid = 48
 const HeaderH = isIOS ? isIphoneX?88:64 : TopNavBarHeight+TopStatusBarAndroid
 const BottomH = isIOS ? isIphoneX?83:49 : BottomStatusBarAndroid
 const iosSafeHeight = isIOS?isIphoneX?34:0:0
-const statusBarHeight = isIOS?isIphoneX?44:20:25
+const statusBarHeight = isIOS?isIphoneX?44:20:StatusBar.currentHeight
 
 import Sound from 'react-native-sound';
 var playSouns = {

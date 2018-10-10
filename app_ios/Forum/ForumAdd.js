@@ -17,29 +17,34 @@ import {
   SectionList,
   AsyncStorage,
   ActivityIndicator,
+  Platform
 }from 'react-native';
-import face from './Content_Rex';
+
+import Utils from '../utils/Utils.js';
+import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Http from '../utils/Http.js';
 import MedalView from '../Activity/MedalView.js';
-var basePath=Http.domain;
-var {height, width} = Dimensions.get('window');
+import LoadingView from '../Component/LoadingView.js';
+
 var ImagePicker = require('react-native-image-picker');
 var qiniu = require('react-native').NativeModules.UpLoad;
+var {height, width} = Dimensions.get('window');
 var content='';
+
 export default class ForumAdd extends Component{
     constructor(props) {
         super(props);
         this.state = {
             sectionpk:'',
-            token:this.props.navigation.state.params.token,
+            sectionname:'',
             text:'',
             title:'',
-            show:false,
-            IdCard1:'',//图片
-            sectionname:'',
-            showRewardType:"hongbao",  //何种类型的奖励
-            showMedalView:false,        //是否展示勋章视图
-            showMedalMsg:"发布帖子",   //勋章的名字
+            loading:false,                                     //加载动画
+            loadingText:"加载中",                               //加载动画上的文字
+            IdCard1:'',                  //图片
+            showRewardType:"hongbao",    //何种类型的奖励
+            showMedalView:false,         //是否展示勋章视图
+            showMedalMsg:"发布帖子",      //勋章的名字
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -48,14 +53,14 @@ export default class ForumAdd extends Component{
             title: '发布帖子',
             headerTintColor: "#fff",   
             headerStyle: { backgroundColor: '#ff6b94',},
-            headerTitleStyle:{alignSelf:'auto',fontSize:14,},
+            headerTitleStyle:{flex:1, textAlign:'center', fontSize:14},
             headerRight:
                 (
-                <View style={{flexDirection:'row',marginRight:18,}}>
+                <View style={{flexDirection:'row',marginRight:20,}}>
                     <TouchableOpacity style={{marginRight:10,}} onPress={()=>{
                         DeviceEventEmitter.emit('publish', "1")
                     }}>
-                        <Text style={{color:'#ffffff',fontSize:18,}}>发布</Text>
+                        <Text style={{color:'#ffffff',fontSize:17,}}>发布</Text>
                     </TouchableOpacity>
                 </View>
                 )
@@ -66,134 +71,97 @@ export default class ForumAdd extends Component{
         this.eventEm.remove();
     }
     componentWillMount(){
-        var self = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result!=null){
-                self.setState({token: result},()=>{
-                    
-                });
-            }
-            
-        });
+
     }
     componentDidMount() {
         var self = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result!=null){
-                self.setState({token: result},()=>{
-                    
-                });
-            }
-            
-        });
         this.eventEm = DeviceEventEmitter.addListener('publish', (value)=>{
-            var data = {};
-            data.section = this.state.sectionpk;
-            data.title=this.state.title;
-            data.types =2;
-            data.content=this.state.text;
-
-            if (data.content=='') {
-                Alert.alert('请输入帖子内容！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
-            }else if(data.section==''){
-                Alert.alert('请选择发布帖子专区！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
-            }else if(this.state.token==''||this.state.token==null){
-                Alert.alert('请登录后再发帖！','',[{text:'确定',onPress: () => {
-                    this.props.navigation.navigate("Login", {callback:()=>{
-                        this._reloadPage();
-                    }})
-                }, style: 'destructive'}])
-            }
-            else{
-                fetch(basePath+"/forum/posts_create/",
-                {
-                    method:'post',
-                    headers: {
-                        'Authorization': 'Token ' + this.state.token,
-                        'Content-Type': 'application/json'},
-                    body: JSON.stringify(data),  
-                })
-                .then((response)=>{
-                    return response.json();
-                })
-                .then((result)=>{
-                    console.log(result)
-                    if(result.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
-                        Alert.alert(
-                            '您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子',
-                            '',
-                            [
-                                {text: '确定', onPress: ()=> {}, style: 'destructive'},
-                                {text: '取消', onPress: () => {}, style: 'destructive'},
-                             ]
-                        )
+            this.submitPost();
+        })
+    }
+    showLoading(msg){
+        this.setState({
+            loading:true,
+            loadingText:msg
+        })
+    }
+    hideLoading(){
+        this.setState({
+            loading:false
+        })
+    }
+    // -----------------------------------网络请求
+    _fetchSubmitPostForum(dic){
+        Utils.isLogin((token)=>{
+            var type = "post",
+                url = Http.addForum,
+                token = token,
+                data = dic;
+            BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                this.hideLoading();
+                console.log(response);
+                if(response.detail=="当前未解决的帖子数量过多，请先标记它们为已解决或已完成"){
+                    Utils.showMessage("您存在未解决的帖子过多，请先标记为已解决或已完成后再发布帖子");
+                }else{
+                    this.props.navigation.state.params.callback();
+                    this.props.navigation.goBack();
+                }
+            }, (err) => {
+                console.log(err);
+                this.hideLoading();
+            });
+        })
+    }
+    // 获取七牛上传 token
+    _fetchQiniuToken(filename){
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "post",
+                    url = Http.getQiniuToken,
+                    token = token,
+                    data = {
+                        filename:filename,
+                        private:false
+                    };
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response.token) {
+                        // 开始上传图片到七牛
+                        this._uploadToQiniu(filename, response.token, response.key);
                     }else{
-                        this.props.navigation.state.params.callback();
-                        this.props.navigation.goBack();
+                        // 有动画，在此失败时关闭
+                        this.hideLoading();
+                        Utils.showMessage("获取令牌失败，请重新选择上传");
                     }
-                })
-                .catch((error) => {
-                    console.error(error);
-                })
+                }, (err) => {
+                    this.hideLoading();
+                    Utils.showMessage("网络异常");
+                    console.log(2);
+                });
             }
         })
     }
-    _reloadPage(){
-        var self = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result!=null){
-                self.setState({token: result},()=>{
-                    
-                });
-            }
-        });
-    }
+    // ---------------------------------点击事件
     // 上传图片方法
-    _upload(filename, token, key) {
+    _uploadToQiniu(filename, token, key) {
         qiniu.uploadImage(filename, token, key,(error, callBackEvents)=>{
           if(error) {
 
           } else {
                 if (callBackEvents.url) {
+                    // 开始上传修改服务器存储的头像
                     var imgArr='';
                     imgArr+='img['+ callBackEvents.url+ '] ';
                     content=this.state.text+imgArr;
-                    this.setState({text:content,show: false})
-                    
+                    this.setState({text:content});
+                    this.hideLoading();
                 } else {
-                    AlertIOS.alert('上传失败');
+                    // 关闭动画
+                    this.hideLoading();
+                    Utils.showMessage("上传失败，请重试");
                 }
             }
         })
     }
-
-    // 获取图片对应 token， key
-    _getQNToken(filename) {
-        var url = basePath + "/upload/token/";
-        fetch(url, {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Token ' + this.state.token,
-            },
-            body: JSON.stringify({
-                filename: filename,
-                private: false,
-            }),
-        })
-        .then((response)=> response.json())
-        .then((responseJson) => {
-            if (responseJson.token) {
-                this._upload(filename, responseJson.token, responseJson.key);
-            } else {
-                this.setState({show: false});
-                AlertIOS.alert("获取令牌失败，请重新选择上传");
-            }
-        })
-        .catch((error) => {console.log(error)});
-    }
-
     // 调相册相机
     _changeIcon() {
         var options = {
@@ -211,22 +179,22 @@ export default class ForumAdd extends Component{
         };
         ImagePicker.showImagePicker(options, (response) => {
             if (response.didCancel) {
-                console.log('User cancelled image picker');
-            }
-            else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            }
-            else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            }
-            else {
-                this.setState({show: true});
-                let source = { uri: response.uri };
-                var filename = response.uri.replace('file://', '');
-                this._getQNToken(filename);
+                console.log('用户取消了图片选择');
+            }else if (response.error) {
+                console.log("选择图片出错", response.error);
+            }else if (response.customButton) {
+                console.log("用户点了自定义按钮", response.customButton);
+            }else {
+                var source = {uri:response.uri};
+                var filename = response.uri.replace("file://", "");
+                // 请求上传七牛token,
+                // 如果有加载动画，可以在此处打开
+                this.showLoading("上传中...");
+                this._fetchQiniuToken(filename);
             }
         });
     }
+    // 选择专区
     goclass(){
         this.props.navigation.navigate('ForumClass',{callback:(data)=>{
             this.setState({
@@ -235,15 +203,38 @@ export default class ForumAdd extends Component{
             })
         }});
     }
-    _keyExtractor = (item, index) => index;
+    // 发布帖子
+    submitPost(){
+        var data = {};
+        data["section"] = this.state.sectionpk;
+        data["title"] = this.state.title;
+        data["types"] =  2;
+        data["content"] = this.state.text;
+        if (data.title === '') {
+            Utils.showMessage("请输入帖子标题！");
+            return
+        }
+        if (data.content === '') {
+            Utils.showMessage("请输入帖子内容！");
+            return
+        }
+        if(data.section === ''){
+            Utils.showMessage("请选择发布帖子专区！");
+            return;
+        }
+        this.showLoading("发布中...");
+        this._fetchSubmitPostForum(data);
+    }
     render() {
         return(
             <View style={{flex:1,backgroundColor:'#ffffff'}}>
                 <TextInput
-                    style={{height: 80, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,paddingTop:5,fontSize:14,}}
+                    style={{height: 80, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,paddingTop:10}}
                     onChangeText={(title) => this.setState({title})}
                     value={this.state.title}
                     multiline={true}
+                    textAlignVertical='top'
+                    underlineColorAndroid="transparent"
                     placeholder='标题'
                     autoFocus={true}
                     autoCapitalize='none'
@@ -264,30 +255,21 @@ export default class ForumAdd extends Component{
                     </TouchableOpacity>
                 </View>
                 <TextInput
-                    style={{height: 200, borderColor: '#f1f1f1', borderWidth: 1,paddingLeft:20,paddingTop:10,fontSize:14,paddingRight:10,}}
+                    style={{height: 230, borderColor: '#f1f1f1', borderWidth: 1,padding:0,paddingLeft:20,paddingTop:10,paddingRight:10,}}
                     onChangeText={(text) => this.setState({text})}
                     value={this.state.text}
                     multiline={true}
                     autoCapitalize='none'
                     textAlignVertical='top'
+                    underlineColorAndroid="transparent"
                     placeholder='尽情提问吧'
                     enablesReturnKeyAutomatically={true}
                     placeholderTextColor='#aaaaaa'
                 />
-                {this.state.show?(
-                    <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
-                        <ActivityIndicator 
-                            style={{marginTop: 10}}
-                            color={'white'}
-                            size={'large'}
-                            animating={true}
-                                />
-                        <Text style={{color: 'white'}}>上传中...</Text>
-                    </View>
-                    ):(null)}
+                {
+                    this.state.loading?<LoadingView msg={this.state.loadingText}/>:null
+                }
             </View>
         )
     }
 }
-
-

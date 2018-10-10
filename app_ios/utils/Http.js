@@ -3,13 +3,13 @@
  * @description: 接口地址
  * @time: 2017-03-15
  */
-const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
-const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
-const Share_Domain = "https://www.cxy61.com";
+// const Http_Domain = "https://www.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
+// const Page_Domain = "https://www.cxy61.com/girl";        //https://app.bcjiaoyu.com/girl
+// const Share_Domain = "https://www.cxy61.com";
 
-// const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
-// const Page_Domain = "https://app.bcjiaoyu.com/girl";
-// const Share_Domain = "https://app.bcjiaoyu.com";
+const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
+const Page_Domain = "https://app.bcjiaoyu.com/girl";
+const Share_Domain = "https://app.bcjiaoyu.com";
 
 let Http = {
 	domainPage:Page_Domain,    //网站页面地址的域名
@@ -22,7 +22,6 @@ let Http = {
 	myTeam:Http_Domain + "/userinfo/mygroup/",                    //我的团队
 	teamBrand:Http_Domain + "/userinfo/groups/diamond/ranking/",  //团队排行
 	lunTanUnread:Http_Domain + "/message/messages/?types=forum&status=unread",   //论坛未读消息
-	awardDiamond:Http_Domain + "/userinfo/play_reward/",		  //打赏钻石
 
 	updateUserInfo:Http_Domain + "/userinfo/userinfo_update/",       //修改个人信息
 	getQiniuToken:Http_Domain + "/upload/token/",                    //获取七牛 token
@@ -58,6 +57,7 @@ let Http = {
 		return Http_Domain + "/news/news/?current_id=" + lastId                          //获取新闻推送列表
 	},
 
+	// 活动相关接口
 	addActivity:Http_Domain + "/club/club_create/",                                      //添加活动
 	activityList:(pagenum)=>{
 		return Http_Domain + "/club/clubs/?page=" + pagenum                              //活动列表
@@ -84,6 +84,7 @@ let Http = {
 		return Http_Domain + "/club/quit_club/"+pk+"/"                                   //退出活动
 	},
 
+	// 竞赛相关接口
 	competeList:(pagenum)=>{
 		return Http_Domain + "/contest/?page=" + pagenum                                 //竞赛列表
 	},
@@ -100,6 +101,7 @@ let Http = {
 		return Http_Domain + "/contest/"+pk+"/ranking/?exclude=answers&page=" + pagenum  //竞赛排行榜
 	},
 
+	// 兑换相关接口
 	getExchangeProductList:(pagenum)=>{
 		return Http_Domain + "/market/exchange_products/?page=" + pagenum          //获取兑换商品列表
 	},
@@ -128,10 +130,7 @@ let Http = {
 		return Http_Domain + "/market/unuse_product/"+pk+"/"                       //不使用道具
 	},
 
-	userinfo:(username)=>{
-		return Http_Domain + "/userinfo/username_userinfo/?username=" + username
-	},
-
+	// 奖学金相关
 	getScholarship:(pagenum)=>{
 		return Http_Domain + "/asset/record/?page=" + pagenum                         //奖学金
 	},
@@ -168,6 +167,72 @@ let Http = {
 	// 招聘相关
 	jobList:(pagenum)=>{
 		return Http_Domain + "/third_party_api/intern/search/?page=" + pagenum
-	}
+	},
+
+	// 论坛相关
+	forumSections:(pagenum)=>{
+		return Http_Domain + "/forum/sections/?page=" + pagenum
+	},
+	forumList:(pagenum)=>{
+		return Http_Domain + "/forum/posts/?myposts=false&page=" + pagenum
+	},
+	myCollectForumList:(pagenum)=>{
+		return Http_Domain + "/collect/collections/?page=" + pagenum
+	},
+	myForumList:(pagenum)=>{
+		return Http_Domain + "/forum/posts/?section=&isessence=&myposts=true&page=" + pagenum
+	},
+	otherForumList:(pagenum, owner)=>{
+		return Http_Domain + "/forum/posts/?username="+owner+"&page=" + pagenum
+	},
+	searchForumList:(pagenum, keyword)=>{
+		return Http_Domain + "/forum/posts/?keyword=" + keyword + "&page=" + pagenum
+	},
+	addForum:Http_Domain + "/forum/posts_create/",  
+	forumUnreadMsg:Http_Domain + "/message/messages/?types=forum&status=unread",
+	forumMessagesList:(pagenum)=>{
+		return Http_Domain + "/message/messages/?page=" + pagenum
+	},
+	forumMessageDetail:(pk)=>{
+		return Http_Domain + "/message/messages/" + pk + "/"
+	},
+	forumSetMsgRead:Http_Domain + "/message/messages/allread/",
+	forumRankList:(pagenum)=>{
+		return Http_Domain + "/userinfo/userinfo/diamond/ranking/?page=" + pagenum
+	},
+	forumDetail:(pk)=>{
+		return Http_Domain + "/forum/posts/"+pk+"/"
+	},
+	forumReplyList:(pk, pagenum)=>{
+		return Http_Domain + "/forum/replies/?posts=" + pk + "&page=" + pagenum
+	},
+	collectForum: Http_Domain + "/collect/collection/",
+	deleteForum: (pk) => {
+	    return Http_Domain + "/forum/posts/" + pk + "/"
+	},
+	deleteForumReply: (pk)=>{
+	    return Http_Domain + "/forum/replies/"+pk+"/"
+	},
+	deleteForumReplyAgain:(pk)=>{
+	    return Http_Domain + "/forum/replymores/" + pk + "/"
+	},
+	forumReply:Http_Domain + "/forum/replies_create/",
+	forumReplyAgain: Http_Domain + "/forum/replymore_create/",
+	forumEssence:(pk)=>{
+		return Http_Domain + "/forum/posts_essence/"+pk+"/"
+	},
+	cancelForumEssence:(pk)=>{
+		return Http_Domain + "/forum/posts_essence/cancel/"+pk+"/"
+	},
+	forumTop:(pk)=>{
+		return Http_Domain + "/forum/posts_top/"+ pk +"/"
+	},
+	cancelForumTop:(pk)=>{
+		return Http_Domain + "/forum/posts_top/cancel/"+pk+"/"
+	},
+	awardDiamond:Http_Domain + "/userinfo/play_reward/",		  //打赏钻石
+	userinfo:(username)=>{
+		return Http_Domain + "/userinfo/username_userinfo/?username=" + username
+	},
 }
 export default Http;

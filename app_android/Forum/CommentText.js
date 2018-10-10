@@ -14,30 +14,33 @@ import {
     FlatList,
     Platform,
     RefreshControl,
+    ActivityIndicator,
     DeviceEventEmitter,
-    ActivityIndicator
 }from 'react-native';
-var {height, width} = Dimensions.get('window');
-const isAndroid = Platform.OS === 'android';
-var allAndroid = require('react-native').NativeModules.RongYunRN;
+
+import Utils from '../utils/Utils.js';
+import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Http from '../utils/Http.js';
 import MedalView from '../Activity/MedalView.js';
-var basePath=Http.domain;
+import LoadingView from '../Component/LoadingView.js';
+
+const isAndroid = Platform.OS === 'android';
+var allAndroid = require('react-native').NativeModules.RongYunRN;
 var content='';
+
 export default class CommentText extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            content:'',
+            //content:'',
             pk:this.props.navigation.state.params.data,
-            token:'',
             text:'',
-            isDisable:false,
-            show:false,
             IdCard1:'',//图片
             showRewardType:"hongbao",  //何种类型的奖励
             showMedalView:false,        //是否展示勋章视图
             showMedalMsg:"回复帖子",   //勋章的名字
+            loading:false,                                     //加载动画
+            loadingText:"加载中",                               //加载动画上的文字
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -56,15 +59,6 @@ export default class CommentText extends Component{
         this.listenerProgressb.remove();
         this.listenerProgressc.remove();
     }
-    componentDidMount() {
-        var self = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result!=null){
-                self.setState({token: result});
-            }
-        });
-        this.progress();
-    }
     componentWillMount(){
         if(this.props.navigation.state.params.name=='reply'){
             this.setState({
@@ -76,93 +70,83 @@ export default class CommentText extends Component{
             })
         }
     }
-    Comment_Main(){
-        var data = {};
-        data.posts = this.state.pk;
-        data.content=this.state.text;
-        if (data.content=='') {
-            Alert.alert('请填写评论！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+    componentDidMount() {
+        this.progress();
+    }
+    // ----------------------------网络请求
+    // 发布评论
+    _fetchSubmitComment(pk, tag, content){
+        console.log("评论", pk, tag);
+        var curl = '',
+            dic = {};
+        if (tag === "reply") {
+            //回帖
+            dic = {"posts":pk, "content":content}
+            curl = Http.forumReply
         }else{
-            fetch(basePath+"/forum/replies_create/",
-            {
-                method:'post',
-                headers: {
-                    'Authorization': 'Token ' + this.state.token,
-                    'Content-Type': 'application/json'},
-                body: JSON.stringify(data),  
-            })
-            .then((response)=>{
-                return response.json();
-            })
-            .then((result)=>{
-                this.setState({
-                    content:'',
-                },()=>{
-                    if(result.taken_medal==true){
-                        this.setState({
-                            showMedalView:true,
-                            showMedalMsg:result.medal.name
-                        })
+            //回帖的回复
+            dic = {"replies":pk, "content":content}
+            curl = Http.forumReplyAgain
+        }
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "post",
+                    url = curl,
+                    token = token,
+                    data = dic;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    this.setState({
+                        text:''
+                    })
+                    if (tag === "reply") {
+                        if(response.taken_medal==true){
+                            this.setState({
+                                showMedalView:true,
+                                showMedalMsg:response.medal.name
+                            })
+                        }else{
+                            this.props.navigation.state.params.callback(); 
+                            this.props.navigation.goBack();
+                        }
                     }else{
-                        this.props.navigation.state.params.callback();
+                        this.props.navigation.state.params.callback(); 
                         this.props.navigation.goBack();
                     }
-                })
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-        }
+                }, (err) => {
+                    console.log(2);
+                });
+            }
+        })
     }
-    Comment(){
-        var data = {};
-        data.replies = this.state.pk;
-        data.content=this.state.text;
-        if (data.content=='') {
-            Alert.alert('请填写评论！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
-        }else{
-            fetch(basePath+"/forum/replymore_create/",
-            {
-                method:'post',
-                headers: {
-                    'Authorization': 'Token ' + this.state.token,
-                    'Content-Type': 'application/json'},
-                body: JSON.stringify(data),  
-            })
-            .then((response)=>{
-                return response.json();
-            })
-            .then((result)=>{
-                this.setState({
-                    content:'',
-                },()=>{
-                    this.props.navigation.state.params.callback();
-                    this.props.navigation.goBack();
-                })
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-        }
-    }
+    
+    // 提交评论
     postcomment(){
+        var pk = this.state.pk,
+            content = this.state.text;
+        if (content == "") {
+            Utils.showMessage("请填写评论！");
+            return
+        }
+        console.log("评论", this.props.navigation.state.params.name);
         if(this.props.navigation.state.params.name=='reply'){
-            this.Comment()
+            // 回帖的回复
             this.setState({
-                isDisable:true,
+                loading:true
             })
+            this._fetchSubmitComment(pk, "replyAgain", content);
         }else{
-            this.Comment_Main()
+            // 主贴
             this.setState({
-                isDisable:true,
+                loading:true
             })
+            this._fetchSubmitComment(pk, "reply", content);
         }
     }
+    // 上传图片的监听方法
     progress(){
         var  this_=this;
         //进度
         this.listenerProgressa = DeviceEventEmitter.addListener("uploadProgress_listener", function(params) {
-            
         })
         //完成
         this.listenerProgressb = DeviceEventEmitter.addListener("uploadSuccess_listener", function(params) {
@@ -171,20 +155,22 @@ export default class CommentText extends Component{
             content=this_.state.text+imgArr;
             this_.setState({
                 //IdCard1:imgArr,
-                show:false,
+                loading:false,
                 text:content,
-                
             })
         });
         //开始
         this.listenerProgressc = DeviceEventEmitter.addListener("uploadStrat_listener", function(params) {
-                this_.setState({
-                    show:true,
+            this.setState({
+                loading:true,
+                loadingText:"上传中..."
             })
         })
     }
     qiniu(){
-        allAndroid.rnQiniu(this.state.token,false,"gallery");
+        Utils.isLogin((token)=>{
+            allAndroid.rnQiniu(token,false,"gallery");
+        })
         DeviceEventEmitter.emit('forumadd', "photo");
     }
     render() {
@@ -201,27 +187,15 @@ export default class CommentText extends Component{
                     placeholderTextColor='#aaaaaa'
                     underlineColorAndroid="transparent"
                 />
-                <View style={{width:width,marginTop:10,marginBottom:20,}}>
+                 <View style={{width:width,marginTop:10,marginBottom:20,}}>
                     <TouchableOpacity onPress={this.qiniu.bind(this)}
                         style={{width:width*0.2,height:30,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
                         <Text style={{color:'#ffffff',fontSize:14,}}>添加图片</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={this.postcomment.bind(this)} disabled={this.state.isDisable} style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#ff6b94',}}>
+                <TouchableOpacity onPress={this.postcomment.bind(this)} style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#ff6b94',}}>
                     <Text style={{color:'#ffffff',fontSize:16,}}>提交评论</Text>
                 </TouchableOpacity>
-
-                {this.state.show?(
-                    <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
-                        <ActivityIndicator 
-                            style={{marginTop: 10}}
-                            color={'white'}
-                            size={'large'}
-                            animating={true}
-                                />
-                        <Text style={{color: 'white'}}>上传中...</Text>
-                    </View>
-                    ):(null)}
                 {
                     this.state.showMedalView?
                         <MedalView 
@@ -230,10 +204,14 @@ export default class CommentText extends Component{
                             hide={()=>{this.setState({showMedalView:false},()=>{this.props.navigation.state.params.callback();this.props.navigation.goBack()});}}
                         />:null
                 }
+                {
+                    this.state.loading?<LoadingView msg={this.state.loadingText}/>:null
+                }
             </View>
         )
     }
 }
+var {height, width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {

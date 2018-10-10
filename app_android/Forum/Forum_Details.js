@@ -18,32 +18,26 @@ import {
   AsyncStorage,
   NativeModules
 }from 'react-native';
-import ImageViewer from 'react-native-image-zoom-viewer';
-import ForumDeatilCont from './ForumDeatilCont';
-var {height, width} = Dimensions.get('window');
+
 import Http from '../utils/Http.js';
 import Utils from '../utils/Utils.js';
-
+import BCFetchRequest from '../utils/BCFetchRequest.js';
+import LoadingView from '../Component/LoadingView.js';
+import BCFlatListView from '../Component/BCFlatListView.js';
+import ForumDeatilCont from './ForumDeatilCont';
 
 var UMeng = require('react-native').NativeModules.RongYunRN;
 
-var basePath=Http.domain;
 export default class Forum_Details extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            dataArr: new Array(),
-            dataSource: '',
-            tag: 0,
-            nextPage: null,
-            isLoading: false,
-            url: basePath+'/forum/replies/?posts='+this.props.navigation.state.params.data+'&page=1',
-            loadText: '正在加载...',
-            isRefreshing: false,
-            token:this.props.navigation.state.params.token,
-            pk:this.props.navigation.state.params.data,
-            data:'',
-            content:'',
+            pk:this.props.navigation.state.params.data,      //帖子的pk
+            data:'',                                         //帖子详情数据
+            UserInfo:null,                                   //用户信息数据
+            UserPk:null,                                     //用户的pk
+            // CBRefresh:'norefresh',                           //回调刷新(帖子的回复)
+            loading:true                                     //等待视图
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -73,75 +67,300 @@ export default class Forum_Details extends Component{
         };
     }
     componentWillUnmount(){
-        if(this.props.navigation.state.params.name == 'news'){
+        if (typeof(this.props.navigation.state.params) !== 'undefined') {
+            if (typeof(this.props.navigation.state.params.callback) !== 'undefined') {
             this.props.navigation.state.params.callback();
+        }
         }
         this.eventEmss.remove();
         this.eventEm.remove();
     }
     componentWillMount(){
-        var self = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result!=null){
-                self.setState({token: result},(result)=>{
-                    self._loadUserinfo()
-                });
-            }
-
-        });
+        this._fetchForumDetail();
+        this._fetchWhoamI();
     }
     componentDidMount() {
         // 分享按钮点击
         this.props.navigation.setParams({
             navRightBtnClick: this._shareWeChat.bind(this)
         })
-        this._loadforum()
-        this._loadData()
-        this._loadUserinfo()
+        
+        // 收藏按钮点击
         this.eventEmss = DeviceEventEmitter.addListener('collec', (value)=>{
-            var data = {};
-            data.types = "posts";
-            data.pk=value;
-            fetch(basePath+"/collect/collection/",
-            {
-                method:'put',
-                headers: {
-                    'Authorization': 'Token ' + this.state.token,
-                    'Content-Type': 'application/json'},
-                body: JSON.stringify(data),
-            })
-            .then((response)=>{
-                if (response.status === 200) {
-                    return response.json();
-                } else {
-                    return '加载失败';
+            this._fetchCollectForum(value);
+        })
+        
+        // 评论帖子按钮点击
+        this.eventEm = DeviceEventEmitter.addListener('message', (value)=>{
+            Utils.isLogin((token)=>{
+                if (token) {
+                    this.props.navigation.navigate('CommentText', {data: value, name:'main', userinfo:'',callback:(msg)=>{
+                        // 刷新本页(回帖)
+                        this.reloadPage("reply");
+                    }})
+                }else{
+                    this.goLogin();
                 }
-            })
-            .then((result)=>{
-                if (result.message == '取消收藏') {
-                    Alert.alert('取消收藏','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
-                } else if (result.message == '收藏成功') {
-                    Alert.alert('收藏成功','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
-                }
-                const {setParams,state} = this.props.navigation;
-                setParams({iscollect:!state.params.iscollect})
-                state.params.callback();
-
-            })
-            .catch((error) => {
-                console.error(error);
             })
         })
+    }
+    
+    // ------------------------------网络请求
+    showLoading(){
+        var that = this;
+        that.setState({
+            loading:true
+        })
+    }
+    hideLoading(isError){
+		var that = this;
+		if (isError === true) {
+			// 出现异常隐藏
+			that.setState({
+                loading:false,
+                // CBRefresh:'norefresh',
+	    	})
+		}else if (that.state.data) {
+	  		that.setState({
+                loading:false,
+                // CBRefresh:'norefresh',
+	    	})
+	  	}
+	}
+    // 帖子详情
+    _fetchForumDetail(){
+        var that = this;
+        Utils.isLogin((token)=>{
+            let HttpUrl,Token;
+            HttpUrl = Http.forumDetail(this.state.pk);
+            Token = token;
 
-        this.eventEm = DeviceEventEmitter.addListener('message', (value)=>{
-              this.props.navigation.navigate('CommentText', {data: value,userinfo:'',name:'main',callback:(msg)=>{
-                this._onRefresh()
-            }})
+            var type = "get",
+                data = null;
+            BCFetchRequest.fetchData(type, HttpUrl, Token, data, (response) => {
+                // console.log("帖子详情",response);
+                that.setState({
+                    data:response,
+                })
+                const {setParams,state} = that.props.navigation;
+                setParams({
+                    iscollect:response.collect
+                })
+                // that.hideLoading();
+            }, (err) => {
+                console.log(2);
+                that.hideLoading(true);
+            });
+        })
+    }
+    // 获取个人信息
+    _fetchWhoamI(){
+        var that = this;
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "get",
+                    url = Http.whoami,
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    // console.log("个人信息", response);
+                    that.setState({
+                        UserInfo:response,
+                        UserPk:response.pk,
+                    })
+                }, (err) => {
+                    console.log(2);
+                    that.hideLoading(true);
+                });
+            }
+        })
+    }
+    // 获取帖子的回复列表
+    _fetchReplysList(pagenum, dataSource, callback){
+        var that = this;
+        Utils.isLogin((token)=>{
+            let HttpUrl,Token;
+            HttpUrl = Http.forumReplyList(this.state.pk,pagenum);
+            Token = token;
+
+            var type = "get",
+                data = null;
+            BCFetchRequest.fetchData(type, HttpUrl, Token, data, (response) => {
+                that.hideLoading();
+                // console.log("回帖列表",response);
+                var tag = null
+                if (response.next == null) {
+                    //如果 next 字段为 null, 则数据已加载完毕
+                    tag = 0
+                }else{
+                    // 还有数据，可以加载
+                    tag = 1
+                }
+                var array = [];
+                if (pagenum > 1) {
+                    array = dataSource.concat(response.results);
+                }else{
+                    array = response.results;
+                }
+                callback(array, tag, false);
+                
+            }, (err) => {
+                that.hideLoading(true);
+                callback(null, null, true);
+                console.log(2);
+            });
+        })
+    }
+    // 收藏帖子
+    _fetchCollectForum(value){
+        var dic = {"types":"posts", "pk":value};
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "put",
+                    url = Http.collectForum,
+                    token = token,
+                    data = dic;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    const {setParams,state} = this.props.navigation;
+                    if (response.message == '取消收藏') {
+                        Utils.showMessage("取消收藏");
+                        setParams({
+                            iscollect:false
+                        })
+                    } else if (response.message == '收藏成功') {
+                        Utils.showMessage("收藏成功");
+                        setParams({
+                            iscollect:true
+                        })
+                    }
+                }, (err) => {
+                    console.log(2);
+                });
+            }else{
+                this.goLogin();
+            }
+        })
+    }
+    // 删除帖子, 回帖，回复
+    _fetchDeleteForumOrReply(pk, tag){
+        console.log(pk, tag);
+        if (tag === "reply") {
+            // 删除回帖
+            var curl = Http.deleteForumReply(pk);
+        }else if (tag === "replyAgain") {
+            // 删除回帖的回复
+            var curl = Http.deleteForumReplyAgain(pk);
+        }else{
+            // 删除帖子
+            var curl = Http.deleteForum(pk);
+        }
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "delete",
+                    url = curl,
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    console.log("删除帖子",response);
+                    if (response === 204) {
+                        if (tag === "post") {
+                            // 返回上一页
+                            this.props.navigation.goBack();
+                        }else{
+                            // 刷新本页(回帖)
+                            this.reloadPage("reply");
+                        }
+                    }
+                }, (err) => {
+                    console.log(2);
+                });
+            }
+        })
+    }
+    // 标记已解决(0)，未解决(2)，关闭问题(1)
+    _fetchForumTag(tag){
+        if (tag == 0) {
+            var statetag = "solved";
+        }else if (tag == 1) {
+            var statetag = "finish"
+        }else{
+            var statetag = "unsolved"
+        }
+        var dic = {}
+        dic = {"status":statetag}
+
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "patch",
+                    url = Http.forumDetail(this.state.pk),
+                    token = token,
+                    data = dic;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    // 刷新本页(帖子)
+                    this.reloadPage("post");
+                }, (err) => {
+                    console.log(2);
+                });
+            }
+        })
+    }
+    // 帖子，加精(1)，取消加精(0)，置顶(3)，取消置顶(2)
+    _fetchForumManager(index){
+        if (index === 0) {
+            var curl = Http.cancelForumEssence(this.state.pk)
+        }else if (index === 1) {
+            var curl = Http.forumEssence(this.state.pk)
+        }else if (index === 2) {
+            var curl = Http.cancelForumTop(this.state.pk)
+        }else if (index === 3) {
+            var curl = Http.forumTop(this.state.pk)
+        }
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "put",
+                    url = curl,
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    // 刷新本页(帖子)
+                    this.reloadPage("post");
+                }, (err) => {
+                    console.log(2);
+                });
+            }
         })
     }
 
-
-
+    // --------------------------------点击事件
+    // 去登录
+    goLogin(){
+        var that = this;
+        that.props.navigation.navigate("Login", {callback:()=>{
+            // 登录成功刷新页面，主要是跟自己相关的组件变化
+            // 刷新本页(回帖/帖子)
+            that.reloadPage();
+        }});
+    }
+    // 刷新本页
+    reloadPage(tag){
+        var that = this;
+        if(tag == "post"){
+            // 刷新帖子
+            that._fetchForumDetail();
+        }else if(tag == "reply"){
+            // 刷新帖子的回复
+            that.refs.bcFlatlist._pullToRefresh();
+            // that.setState({
+            //     CBRefresh:'refresh'
+            // })
+            // this._fetchReplysList();
+        }else{
+            // 刷新帖子、回帖
+            that._fetchForumDetail();
+            that.refs.bcFlatlist._pullToRefresh();
+        }
+    }
+    // 分享事件
     _shareWeChat = () => {
         if (!this.state.data.title) {
             Alert.alert('正在获取帖子详情，请稍后...');
@@ -161,163 +380,57 @@ export default class Forum_Details extends Component{
             }
         })
     }
-
+    // 回复评论点击
     Show_Comment(pk,userinfo){
-        this.props.navigation.navigate('CommentText', {data: pk,userinfo:userinfo,name:'reply',callback:(msg)=>{
-            this._onRefresh()
-        }})
-    }
-
-    _loadforum(){
-        forum_url=basePath+'/forum/posts/'+this.state.pk+'/';
-        fetch(forum_url)
-        .then(response=>{
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                return '加载失败';
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('CommentText', {data: pk,userinfo:userinfo,name:'reply',callback:(msg)=>{
+                    // 刷新本页(回帖)
+                    this.reloadPage("reply");
+                }})
+            }else{
+                this.goLogin();
             }
         })
-        .then(responseJson=>{
-            this.setState({
-                data:responseJson,
-            })
-        })
-        .catch((error) => {
-            console.error(error);
-        })
     }
-    _loadUserinfo(){
-        info_url=basePath+'/userinfo/whoami/';
-        fetch(info_url,{
-            headers: {Authorization: 'Token ' + this.state.token}
-        })
-        .then(response=>{
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                return '加载失败';
-            }
-        })
-        .then(responseJson=>{
-            this.setState({
-                UserInfo:responseJson,
-                UserPk:responseJson.pk,
-            })
-        })
-        .catch((error) => {
-            console.error(error);
-        })
-    }
-    _loadData() {
-        this.setState({
-            isLoading: true
-        },()=> {
-            fetch(this.state.url)
-            .then(response => {
-                if (response.status === 200) {
-                    return response.json();
-                } else {
-                    return '加载失败';
-                }
-            })
-            .then(responseJson=> {
-                if (responseJson === '加载失败') {
-                    Alert.alert(
-                        '加载失败,请重试',
-                        '',
-                        [
-                            {text: '确定', onPress: ()=> {this.setState({isLoading: false, isRefreshing: false})}, style: 'destructive'},
-                        ]
-                    )
-                } else {
-                    var resultArr = new Array();
-                    responseJson.results.map(result=> {
-                        resultArr.push(result);
-                    })
-                    this.setState({
-                        nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
-                        dataArr: resultArr,
-                        dataSource: resultArr,
-                        isLoading: false,
-                        loadText: responseJson.next?('正在加载...'):('没有更多了...'),
-                        isRefreshing: false
-                    })
-                }
-            })
-            .catch((error) => {
-                Alert.alert(
-                      '加载失败,请重试',
-                      '',
-                      [
-                        {text: '确定', onPress: ()=> {}, style: 'destructive'},
-                      ]
-                    )
-                this.setState({
-                    isLoading: false,
-                    isRefreshing: false
-                })
-            })
-        })
-    }
-    _renderNext() {
-        if (this.state.nextPage && this.state.isLoading === false) {
-            this.setState({
-                isLoading: true
-            },()=> {
-                fetch(this.state.nextPage)
-                .then(response => {
-                    if (response.status === 200) {
-                        return response.json();
-                    } else {
-                        return '加载失败';
-                    }
-                })
-                .then(responseJson=> {
-                    if (responseJson === '加载失败') {
-                        Alert.alert(
-                          '加载失败,请重试',
-                          '',
-                          [
-                            {text: '确定', onPress: ()=> {this.setState({isLoading: false})}, style: 'destructive'},
-                          ]
-                        )
-                    } else {
-                        var resultArr;
-                        resultArr = this.state.dataArr.concat();
-                        responseJson.results.map(result=> {
-                            resultArr.push(result);
-                        })
-                        this.setState({
-                            nextPage: responseJson.next?responseJson.next.replace("http://", "https://"):null,
-                            dataArr: resultArr,
-                            dataSource: resultArr,
-                            isLoading: false,
-                            loadText: responseJson.next?('正在加载...'):('没有更多了')
-                        })
-                    }
-                })
-                .catch((error) => {
-                    this.setState({
-                        isLoading: false,
-                        isRefreshing: false
-                    })
-                })
-            })
-        }
-    }
+    // 他人信息页
     goPersonalPage(userinfo) {
         Utils.isLogin((token)=>{
             if (token) {
                 this.props.navigation.navigate('PersonalPage', { data: userinfo });
             }else{
-                this.props.navigation.navigate("Login");
+                this.goLogin();
             }
         })
     }
-    _renderFooter(){
-        return <View style={{alignItems:'center', justifyContent: 'center', width: width, height: 30}}><Text style={{fontSize: 12, color: '#cccccc'}}>{this.state.loadText}</Text></View>
+    // 回帖的打赏
+    givereplyprize(owner,pk){
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('PersonalReward', { owner: owner,replypk:pk,flag:'reply',callback: (msg)=>{
+                    // 刷新本页(回帖)
+                    this.reloadPage("reply");
+                }});
+            }else{
+                this.goLogin();
+            }
+        })
     }
+    // 帖子打赏
+    giveprize(owner,pk){
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('PersonalReward', { owner: owner,replypk:pk,flag:'post',callback: (msg)=>{
+                    // 刷新本页(帖子)
+                    this.reloadPage("post");
+                } });
+            }else{
+                this.goLogin();
+            }
+        })
+    }
+
+    // --------------------------------UI
     rendertop(top){
         if(top==null){
             return;
@@ -333,7 +446,7 @@ export default class Forum_Details extends Component{
         }
     }
     renderForumRow(item){
-        var rowData=item.item;
+        var rowData=item;
         var reward='';
         if(rowData.play_reward.play_reward_number>0&&rowData.play_reward.play_reward_number<4){
             reward=rowData.play_reward.play_reward_pople.join('、')
@@ -383,7 +496,7 @@ export default class Forum_Details extends Component{
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
-                            <TouchableOpacity onPress={this.detele_reply.bind(this,rowData.pk)} style={{marginLeft:3,alignItems:'center',justifyContent:'center'}}>
+                            <TouchableOpacity onPress={this._fetchDeleteForumOrReply.bind(this,rowData.pk)} style={{marginLeft:3,alignItems:'center',justifyContent:'center'}}>
                                 <Text  style={{fontSize:12,paddingRight:5,paddingLeft:5,color:'red',}}>删除</Text>
                             </TouchableOpacity>
                             ):(null)}
@@ -392,17 +505,21 @@ export default class Forum_Details extends Component{
                             ):(null)}
                     </View>
                 </View>
-                {rowData.content?(<ForumDeatilCont data={rowData.content}></ForumDeatilCont>):(null)}
+                {rowData.content?(<ForumDeatilCont data={rowData.content} style={{paddingLeft:10,}}></ForumDeatilCont>):(null)}
                 {rowData.play_reward.play_reward_number>0?(<Text style={{color:'#999',paddingLeft:20,paddingBottom:10,}}>{reward+" "+rowData.play_reward.play_reward_number+"人打赏"}</Text>):(null)}
                 {rowData.replymore.map((result,index)=> {
                     return(
                         <View key={index} style={{backgroundColor:'#f1f1f1',width:width*0.9,marginLeft:width*0.05,marginRight:width*0.05,borderBottomColor:'#D3D3D3',borderBottomWidth:0.5,}}>
                             <View style={{flexDirection:'row',paddingTop:10,paddingLeft:20,}}>
-                                <Text style={{paddingBottom:10,color:'#4f99cf',marginRight:30,}}>{result.userinfo.name}</Text>
+                                <Text style={{paddingBottom:10,color:'#4f99cf',marginRight:30, maxWidth:100, }}>{result.userinfo.name}</Text>
                                 <Text style={{paddingBottom:10,color:'#858585'}}>{result.create_time.slice(0, 16).replace("T", " ")}</Text>
                                 <TouchableOpacity style={{marginLeft:20,}} onPress={this.Show_Comment.bind(this,rowData.pk,result.userinfo.name)}>
                                     <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                                 </TouchableOpacity>
+
+                                {this.state.UserPk==result.userinfo.pk?(
+                                    <Text onPress={this._fetchDeleteForumOrReply.bind(this,result.pk, "replyAgain")} style={{fontSize:14,marginTop:3,color:'red',marginLeft:10,}} >删除</Text>
+                                ):(null)}
                             </View>
                             {result.content?(<ForumDeatilCont data={result.content}></ForumDeatilCont>):(null)}
                         </View>
@@ -411,270 +528,115 @@ export default class Forum_Details extends Component{
             </View>
         )
     }
-    detele_reply(pk){
-        Alert.alert(
-            '确认删除回复？',
-            '',
-            [
-                {text: '确定', onPress: ()=> {
-                    var detemore_url=basePath+'/forum/replies/'+pk+'/';
-                    fetch(detemore_url,
-                    {
-                        method: 'DELETE',
-                        headers: {Authorization: 'Token ' + this.state.token}
-                    })
-                    .then(response=>{
-                        if (response.status === 200) {
-                            return response.json();
-                        } else {
-                            return '加载失败';
-                        }
-                    })
-                    .then(responseJson=>{
-                        this._onRefresh()
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    })
-                }, style: 'destructive'},
-                {text: '取消', onPress: () => {}, style: 'destructive'},
-             ]
-        )
-    }
-    _onRefresh() {
-        this.setState({
-            isRefreshing: true
-        },()=> {
-            this._loadData();
-        })
-    }
-    _keyExtractor = (item, index) => index;
-
-    detele_main(){
-        Alert.alert(
-            '确认删除此贴？',
-            '',
-            [
-                {text: '确定', onPress: ()=> {
-                    var dete_url=basePath+'/forum/posts/'+this.state.pk+'/';
-                    fetch(dete_url,
-                    {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': 'Token '+ this.state.token,
-                            'Content-Type': 'application/json' }
-                    })
-                    .then(response=>{
-                        this.props.navigation.state.params.callback();
-                        this.props.navigation.goBack();
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    })
-                }, style: 'destructive'},
-                {text: '取消', onPress: () => {}, style: 'destructive'},
-             ]
-        )
-    }
-    forum_tag(tag){
-        if(tag==0){
-            statetag='solved'
-        }else if(tag==1){
-            statetag='finish'
-        }else{
-            statetag='unsolved'
-        }
-        var data = {};
-        data.status = statetag;
-        fetch(basePath+"/forum/posts/"+this.state.pk+"/",
-        {
-            method: 'patch',
-            headers: {
-                'Authorization': 'Token ' + this.state.token,
-                'Content-Type': 'application/json'},
-            body: JSON.stringify(data),
-        })
-        .then(response=>{
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                return '加载失败';
-            }
-        })
-        .then(responseJson=>{
-            this._loadforum()
-        })
-        .catch((error) => {
-            console.error(error);
-        })
-    }
-    manager(index){
-        if(index==0){
-            fetch(basePath+"/forum/posts_essence/cancel/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
-            .then(response=>{return response.json()})
-            .then(responseJson=>{
-                this._loadforum()
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-        }else if(index==1){
-            fetch(basePath+"/forum/posts_essence/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
-            .then(response=>{return response.json()})
-            .then(responseJson=>{
-                this._loadforum()
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-        }else if(index==2){
-            fetch(basePath+"/forum/posts_top/cancel/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
-            .then(response=>{return response.json()})
-            .then(responseJson=>{
-                this._loadforum()
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-        }else{
-            fetch(basePath+"/forum/posts_top/"+this.state.pk+"/",{method: 'put',headers: {'Authorization': 'Token ' + this.state.token},})
-            .then(response=>{return response.json()})
-            .then(responseJson=>{
-                this._loadforum()
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-        }
-    }
-    givereplyprize(owner,pk){
-        Utils.isLogin((token)=>{
-            if (token) {
-                this.props.navigation.navigate('PersonalReward', { owner: owner,replypk:pk,flag:'reply',callback: (msg)=>{
-                        this._onRefresh();
-                    } });
-            }else{
-                this.props.navigation.navigate("Login");
-            }
-        })
-    }
-    giveprize(owner,pk){
-        Utils.isLogin((token)=>{
-            if (token) {
-                this.props.navigation.navigate('PersonalReward', { owner: owner,replypk:pk,flag:'post',callback: (msg)=>{
-                        this._loadforum()
-                    } });
-            }else{
-                this.props.navigation.navigate("Login");
-            }
-        })
-    }
-    render() {
+    renderHeadView(){
         var data=this.state.data;
         var reward='';
-        if(!data||!this.state.UserInfo){
-            return(<Text style={{alignItems:'center',justifyContent:'center',paddingTop:20,}}>加载中...</Text>)
-        }else{
-            if(data.play_reward.play_reward_number>0&&data.play_reward.play_reward_number<4){
-                reward=data.play_reward.play_reward_pople.join('、')
-            }else if(data.play_reward.play_reward_number>4){
-                reward=data.play_reward.play_reward_pople.slice(0,4).join("、")+'等'
-            }
-            var headimg='';
-            var forumbackcolor='#F2F2F2';
-            if(data.userinfo.props.length>0){
-                for(var i=0;i<data.userinfo.props.length;i++){
-                    if(data.userinfo.props[i].status==1){
-                        if(data.userinfo.props[i].exchange_product.product_type==1){
-                            if(data.userinfo.props[i].exchange_product.category_detail.action=='background'){
-                                forumbackcolor=data.userinfo.props[i].exchange_product.category_detail.desc
-                            }else if(data.userinfo.props[i].exchange_product.category_detail.action=='avatar'){
-                                headimg=data.userinfo.props[i].exchange_product.image
-                            }
+        // 打赏
+        if(data.play_reward.play_reward_number>0&&data.play_reward.play_reward_number<4){
+            reward=data.play_reward.play_reward_pople.join('、')
+        }else if(data.play_reward.play_reward_number>4){
+            reward=data.play_reward.play_reward_pople.slice(0,4).join("、")+'等'
+        }
+        var headimg='';
+        var forumbackcolor='#F2F2F2';
+        if(data.userinfo.props.length>0){
+            for(var i=0;i<data.userinfo.props.length;i++){
+                if(data.userinfo.props[i].status==1){
+                    if(data.userinfo.props[i].exchange_product.product_type==1){
+                        if(data.userinfo.props[i].exchange_product.category_detail.action=='background'){
+                            forumbackcolor=data.userinfo.props[i].exchange_product.category_detail.desc
+                        }else if(data.userinfo.props[i].exchange_product.category_detail.action=='avatar'){
+                            headimg=data.userinfo.props[i].exchange_product.image
                         }
                     }
                 }
             }
-            return(
-                <View style={{flex:1,backgroundColor:'#ffffff'}}>
-                    <ScrollView>
-                        <Text style={{fontSize:16,color:'#292929',padding:15,}} selectable={true}>{data.status_display=='未解决'?(<Text style={{color:'#ff6b94',marginRight:10,}}>[{data.status_display}]</Text>):(<Text style={{color:'#858585',paddingRight:10,}}>[{data.status_display}]</Text>)}   {data.title}</Text>
-                        <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:forumbackcolor}}>
-                            <View style={{alignItems:'center',paddingLeft:20,}}>
-                                <TouchableOpacity style={{width:70,height:70}} onPress={this.goPersonalPage.bind(this, data.userinfo)}>
-                                    {!data.userinfo.avatar ? (
-                                        <Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>
-                                    ) : (
-                                        <View style={{alignItems:'center',justifyContent:'center',paddingTop:5,}}>
-                                            <Image style={{width:50,height:50,borderRadius:25,}} source={{uri:data.userinfo.avatar}}/>
-                                            <View style={{position:'absolute',top:-5,left:0,width:70,height:70,alignItems:'center',justifyContent:'center'}}>
-                                                {headimg?(<Image style={{width:60,height:60,borderRadius:25,}}  source={{uri:headimg}}/>):(null)}
-                                            </View>
-                                        </View>
-                                    )}
-                                </TouchableOpacity>
-                                <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
-                                {this.rendertop(data.userinfo.top_rank)}
-                            </View>
-                            <View style={{paddingLeft:20,paddingRight:10,width:width*0.64,}}>
-                                <Text style={{paddingBottom:10,color:'#858585'}}>{data.userinfo.name}</Text>
-                                <Text style={{paddingBottom:5,color:'#858585'}}>{data.create_time.slice(0, 16).replace("T", " ")}</Text>
-                                <Text style={{color:'#FF6A6A'}}>[{data.types.name}]</Text>
-                            </View>
-                            {this.state.UserPk!=data.userinfo.pk?(
-                                <Text onPress={this.giveprize.bind(this, data.userinfo.owner,data.pk)} style={{fontSize:14,paddingBottom:10,color:'#999',}}>打赏</Text>
-                                ):(null)}
-                        </View>
-                        <View style={{marginBottom:10,}}>
-                            {this.state.data.content?(<ForumDeatilCont data={this.state.data.content} ></ForumDeatilCont>):(null)}
-                            <View style={{flexDirection:'row'}}>
-                                {data.userinfo.pk==this.state.UserPk?(
-                                        <View style={{flexDirection:'row',marginLeft:30,}}>
-                                            {data.status=='unsolved'?(
-                                                <View style={{flexDirection:'row'}}>
-                                                    <Text onPress={this.forum_tag.bind(this,0)} style={{color:'#ff6b94',marginRight:30,}}>标记为已解决</Text>
-                                                    <Text onPress={this.forum_tag.bind(this,1)} style={{color:'#ff6b94',marginRight:30,}}>关闭问题</Text>
-                                                </View>
-                                            ):(
-                                                <Text onPress={this.forum_tag.bind(this,2)} style={{color:'#ff6b94',marginRight:30,}}>标记为未解决</Text>
-                                            )}
-                                        </View>
-                                    ):(null)}
-                                {(this.state.UserInfo.is_staff||(data.userinfo.pk==this.state.UserPk))?(<Text onPress={this.detele_main.bind(this)} style={{color:'#ff6b94',marginLeft:30,fontSize:16,}}>删除此贴</Text>):(null)}
-                            </View>
-                                {this.state.UserInfo.is_staff?(
-                                    <View style={{flexDirection:'row',paddingLeft:30,marginTop:10,}}>
-                                        {data.isessence?(<Text style={{color:'#FF6A6A',marginRight:20,}} onPress={this.manager.bind(this,0)}>取消加精</Text>):(<Text style={{color:'#FF6A6A',marginRight:20,}} onPress={this.manager.bind(this,1)}>加精</Text>)}
-                                        {data.istop?(<Text style={{color:'#FF6A6A'}} onPress={this.manager.bind(this,2)}>取消置顶</Text>):(<Text style={{color:'#FF6A6A'}} onPress={this.manager.bind(this,3)}>置顶</Text>)}
-                                    </View>
-                                    ):(null)}
-                                {data.play_reward.play_reward_number>0?(<Text style={{color:'#999',paddingLeft:20,paddingTop:10,}}>{reward+" "+data.play_reward.play_reward_number+"人打赏"}</Text>):(null)}
-                                <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,marginTop:10,}}>回帖数量({data.reply_count})</Text>
-                        </View>
-                        <FlatList
-                            horizontal={false}
-                            data={this.state.dataSource}
-                            renderItem={this.renderForumRow.bind(this)}
-                            keyExtractor={this._keyExtractor}
-                            onEndReached={this._renderNext.bind(this)}
-                            onEndReachedThreshold={3}
-                            ListFooterComponent={this._renderFooter.bind(this)}
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={this.state.isRefreshing}
-                                    onRefresh={this._onRefresh.bind(this)}
-                                    tintColor='#cccccc'
-                                    title={this.state.isRefreshing?"正在加载":"轻轻刷新一下"}
-                                    titleColor='#cccccc' />
-                            }
-                        >
-                        </FlatList>
-                    </ScrollView>
-                </View>
-            )
         }
+        return(
+            <View>
+                <Text style={{fontSize:16,color:'#292929',padding:15,}} selectable={true}>{data.status_display=='未解决'?(<Text style={{color:'#ff6b94',marginRight:10,}}>[{data.status_display}]</Text>):(<Text style={{color:'#858585',paddingRight:10,}}>[{data.status_display}]</Text>)}   {data.title}</Text>
+                <View style={{flexDirection:'row',padding:10,width:width,alignItems:'center',backgroundColor:forumbackcolor}}>
+                    <View style={{alignItems:'center',paddingLeft:20,}}>
+                        <TouchableOpacity style={{width:70,height:70}} onPress={this.goPersonalPage.bind(this, data.userinfo)}>
+                            {!data.userinfo.avatar ? (
+                                <Image style={{width:50,height:50,borderRadius:25,}} source={require('../assets/Forum/defaultHeader.png')}/>
+                            ) : (
+                                <View style={{alignItems:'center',justifyContent:'center',paddingTop:5,}}>
+                                    <Image style={{width:50,height:50,borderRadius:25,}} source={{uri:data.userinfo.avatar}}/>
+                                    <View style={{position:'absolute',top:-5,left:0,width:70,height:70,alignItems:'center',justifyContent:'center'}}>
+                                        {headimg?(<Image style={{width:60,height:60,borderRadius:25,}}  source={{uri:headimg}}/>):(null)}
+                                    </View>
+                                </View>
+                            )}
+                        </TouchableOpacity>
+                        <Text style={{paddingTop:10,color:'#FF69B4',}}>{data.userinfo.grade.current_name}</Text>
+                        {this.rendertop(data.userinfo.top_rank)}
+                    </View>
+                    <View style={{paddingLeft:20,paddingRight:10,width:width*0.64,}}>
+                        <Text style={{paddingBottom:10,color:'#858585'}}>{data.userinfo.name}</Text>
+                        <Text style={{paddingBottom:5,color:'#858585'}}>{data.create_time.slice(0, 16).replace("T", " ")}</Text>
+                        <Text style={{color:'#FF6A6A'}}>[{data.types.name}]</Text>
+                    </View>
+                    {this.state.UserPk!=data.userinfo.pk?(
+                        <Text onPress={this.giveprize.bind(this, data.userinfo.owner,data.pk)} style={{fontSize:14,paddingBottom:10,color:'#999',}}>打赏</Text>
+                        ):(null)}
+                </View>
+                <View style={{marginBottom:10,}}>
+                        {this.state.data.content?(<ForumDeatilCont data={this.state.data.content} ></ForumDeatilCont>):(null)}
+                        <View style={{flexDirection:'row'}}>
+                            {data.userinfo.pk==this.state.UserPk?(
+                                    <View style={{flexDirection:'row',marginLeft:30,}}>
+                                        {data.status=='unsolved'?(
+                                            <View style={{flexDirection:'row'}}>
+                                                <Text onPress={this._fetchForumTag.bind(this,0)} style={{color:'#ff6b94',marginRight:30,}}>标记为已解决</Text>
+                                                <Text onPress={this._fetchForumTag.bind(this,1)} style={{color:'#ff6b94',marginRight:30,}}>关闭问题</Text>
+                                            </View>
+                                        ):(
+                                            <Text onPress={this._fetchForumTag.bind(this,2)} style={{color:'#ff6b94',marginRight:30,}}>标记为未解决</Text>
+                                        )}
+                                    </View>
+                                ):(null)}
+                            {(this.state.UserInfo && this.state.UserInfo.is_staff||data.userinfo.pk==this.state.UserPk)?(<Text onPress={this._fetchDeleteForumOrReply.bind(this, this.state.pk, "post")} style={{color:'#ff6b94',marginLeft:30,fontSize:16,}}>删除此贴</Text>):(null)}
+                        </View>
+                            {this.state.UserInfo && this.state.UserInfo.is_staff?(
+                                <View style={{flexDirection:'row',paddingLeft:30,marginTop:10,}}>
+                                    {data.isessence?(<Text style={{color:'#FF6A6A',marginRight:20,}} onPress={this._fetchForumManager.bind(this,0)}>取消加精</Text>):(<Text style={{color:'#FF6A6A',marginRight:20,}} onPress={this._fetchForumManager.bind(this,1)}>加精</Text>)}
+                                    {data.istop?(<Text style={{color:'#FF6A6A'}} onPress={this._fetchForumManager.bind(this,2)}>取消置顶</Text>):(<Text style={{color:'#FF6A6A'}} onPress={this._fetchForumManager.bind(this,3)}>置顶</Text>)}
+                                </View>
+                                ):(null)}
+                            {data.play_reward.play_reward_number>0?(<Text style={{color:'#999',paddingLeft:20,paddingTop:10, width:width-40}}>{reward+" "+data.play_reward.play_reward_number+"人打赏"}</Text>):(null)}
+                            <Text style={{backgroundColor:'#f2f2f2',color:'#292929',paddingTop:8,paddingLeft:20,paddingBottom:8,marginTop:10,}}>回帖数量({data.reply_count})</Text>
+                    </View>
+            </View>
+        )
+    }
+    renderMainView() {
+        return(
+            <View style={{flex:1,backgroundColor:'#ffffff', flexDirection:'row'}}>
+                <BCFlatListView 
+                    ref="bcFlatlist"
+                    type={'distance'} 
+                    fetchData={this._fetchReplysList.bind(this)} 
+                    renderItem={this.renderForumRow.bind(this)} 
+                    headerComponent={this.renderHeadView.bind(this)}
+                    // CBRefresh={this.state.CBRefresh} 
+                    showLoading={false}/>
+            </View>
+        )
+    }
+    render(){
+        return (
+            <View style={{flex:1}}>
+            {this.state.data? this.renderMainView() : null}
+            {
+                this.state.loading?<LoadingView />:null
+            }
+            </View>
+        )
     }
 }
+
+var {height, width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     navRightBtn: {

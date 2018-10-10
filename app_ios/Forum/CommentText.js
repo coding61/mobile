@@ -12,30 +12,35 @@ import {
     ListView,
     Alert,
     FlatList,
+    Platform,
     RefreshControl,
     ActivityIndicator,
     DeviceEventEmitter,
 }from 'react-native';
-var {height, width} = Dimensions.get('window');
+
+import Utils from '../utils/Utils.js';
+import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Http from '../utils/Http.js';
 import MedalView from '../Activity/MedalView.js';
-var basePath=Http.domain;
+import LoadingView from '../Component/LoadingView.js';
+
 var ImagePicker = require('react-native-image-picker');
 var qiniu = require('react-native').NativeModules.UpLoad;
 var content='';
+
 export default class CommentText extends Component{
     constructor(props) {
         super(props);
         this.state = {
             //content:'',
             pk:this.props.navigation.state.params.data,
-            isDisable:false,
             text:'',
-            show:false,
             IdCard1:'',//图片
             showRewardType:"hongbao",  //何种类型的奖励
             showMedalView:false,        //是否展示勋章视图
             showMedalMsg:"回复帖子",   //勋章的名字
+            loading:false,                                     //加载动画
+            loadingText:"加载中",                               //加载动画上的文字
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -43,7 +48,7 @@ export default class CommentText extends Component{
         return {
             title: '添加评论',
             headerTintColor: "#fff",   
-            headerStyle: { backgroundColor: '#5daeff',},
+            headerStyle: { backgroundColor: '#ff6b94',},
             headerTitleStyle:{alignSelf:'auto',fontSize:15,},
         };
     }
@@ -57,144 +62,107 @@ export default class CommentText extends Component{
                 text:''
             })
         }
-
     }
     componentDidMount() {
-        var self = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result!=null){
-                self.setState({token: result});
-            }
-        });
+
     }
-    Comment_Main(){
-        var data = {};
-        data.posts = this.state.pk;
-        data.content=this.state.text;
-        if (data.content=='') {
-            Alert.alert('请填写评论！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
+    // ----------------------------网络请求
+    // 发布评论
+    _fetchSubmitComment(pk, tag, content){
+        console.log("评论", pk, tag);
+        var curl = '',
+            dic = {};
+        if (tag === "reply") {
+            //回帖
+            dic = {"posts":pk, "content":content}
+            curl = Http.forumReply
         }else{
-            fetch(basePath+"/forum/replies_create/",
-            {
-                method:'post',
-                headers: {
-                    'Authorization': 'Token ' + this.state.token,
-                    'Content-Type': 'application/json'},
-                body: JSON.stringify(data),  
-            })
-            .then((response)=>{
-                return response.json();
-            })
-            .then((result)=>{
-                this.setState({
-                    content:'',
-                },()=>{
-                    if(result.taken_medal==true){
-                        this.setState({
-                            showMedalView:true,
-                            showMedalMsg:result.medal.name
-                        })
+            //回帖的回复
+            dic = {"replies":pk, "content":content}
+            curl = Http.forumReplyAgain
+        }
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "post",
+                    url = curl,
+                    token = token,
+                    data = dic;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    this.setState({
+                        text:''
+                    })
+                    if (tag === "reply") {
+                        if(response.taken_medal==true){
+                            this.setState({
+                                showMedalView:true,
+                                showMedalMsg:response.medal.name
+                            })
+                        }else{
+                            this.props.navigation.state.params.callback(); 
+                            this.props.navigation.goBack();
+                        }
                     }else{
-                        this.props.navigation.state.params.callback();
+                        this.props.navigation.state.params.callback(); 
                         this.props.navigation.goBack();
                     }
-                    
-                })
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-        }
+                }, (err) => {
+                    console.log(2);
+                });
+            }
+        })
     }
-    Comment(){
-        var data = {};
-        data.replies = this.state.pk;
-        data.content=this.state.text;
-        if (data.content=='') {
-            Alert.alert('请填写评论！','',[{text:'确定',onPress: () => {}, style: 'destructive'}])
-        }else{
-            fetch(basePath+"/forum/replymore_create/",
-            {
-                method:'post',
-                headers: {
-                    'Authorization': 'Token ' + this.state.token,
-                    'Content-Type': 'application/json'},
-                body: JSON.stringify(data),  
-            })
-            .then((response)=>{
-                return response.json();
-            })
-            .then((result)=>{
-                this.setState({
-                    content:'', 
-                },()=>{
-                    this.props.navigation.state.params.callback();
-                    this.props.navigation.goBack();
-                })
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-        }
+    // 获取七牛上传 token
+    _fetchQiniuToken(filename){
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "post",
+                    url = Http.getQiniuToken,
+                    token = token,
+                    data = {
+                        filename:filename,
+                        private:false
+                    };
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response.token) {
+                        // 开始上传图片到七牛
+                        this._uploadToQiniu(filename, response.token, response.key);
+                    }else{
+                        // 有动画，在此失败时关闭
+                        this.setState({
+                            loading:false
+                        })
+                        Utils.showMessage("获取令牌失败，请重新选择上传");
+                    }
+                }, (err) => {
+                    this.setState({
+                        loading:false
+                    })
+                    Utils.showMessage("网络异常");
+                    console.log(2);
+                });
+            }
+        })
     }
-    postcomment(){
-        if(this.props.navigation.state.params.name=='reply'){
-            this.Comment()
-            this.setState({
-                isDisable:true,
-            })
-        }else{
-            this.Comment_Main()
-            this.setState({
-                isDisable:true,
-            })
-        }
-    }
+
     // 上传图片方法
-    _upload(filename, token, key) {
+    _uploadToQiniu(filename, token, key) {
         qiniu.uploadImage(filename, token, key,(error, callBackEvents)=>{
           if(error) {
 
           } else {
                 if (callBackEvents.url) {
+                    // 开始上传修改服务器存储的头像
                     var imgArr='';
                     imgArr+='img['+ callBackEvents.url+ '] ';
                     content=this.state.text+imgArr;
-                    this.setState({text:content,show: false})
-                    //this._renewIcon(callBackEvents.url);
+                    this.setState({text:content, loading: false})
+                    
                 } else {
-                    //this.setState({show: false});
-                    AlertIOS.alert('上传失败');
+                    // 关闭动画
+                    Utils.showMessage("上传失败，请重试");
                 }
             }
         })
-    }
-    // 获取图片对应 token， key
-    _getQNToken(filename) {
-        var url = basePath + "/upload/token/";
-        fetch(url, {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Token ' + this.state.token,
-          },
-          body: JSON.stringify({
-            filename: filename,
-            private: false,
-          }),
-        })
-        .then((response)=> response.json())
-        .then((responseJson) => {
-            if (responseJson.token) {
-
-                this._upload(filename, responseJson.token, responseJson.key);
-            } else {
-                this.setState({show: false});
-                AlertIOS.alert("获取令牌失败，请重新选择上传");
-            }
-        })
-        .catch((error) => {console.log(error)});
     }
     // 调相册相机
     _changeIcon() {
@@ -212,24 +180,49 @@ export default class CommentText extends Component{
             }
         };
         ImagePicker.showImagePicker(options, (response) => {
-          if (response.didCancel) {
-            console.log('User cancelled image picker');
-          }
-          else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-          }
-          else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
-          }
-          else {
-                console.log(response)
-              this.setState({show: true});
-              let source = { uri: response.uri };
-              var filename = response.uri.replace('file://', '');
-              this._getQNToken(filename);
-          }
+            if (response.didCancel) {
+                console.log('用户取消了图片选择');
+            }else if (response.error) {
+                console.log("选择图片出错", response.error);
+            }else if (response.customButton) {
+                console.log("用户点了自定义按钮", response.customButton);
+            }else {
+                var source = {uri:response.uri};
+                var filename = response.uri.replace("file://", "");
+                // 请求上传七牛token,
+                // 如果有加载动画，可以在此处打开
+                this.setState({
+                    loading:true,
+                    loadingText:"上传中..."
+                })
+                this._fetchQiniuToken(filename);
+            }
         });
     }
+    // 提交评论
+    postcomment(){
+        var pk = this.state.pk,
+            content = this.state.text;
+        if (content == "") {
+            Utils.showMessage("请填写评论！");
+            return
+        }
+        console.log("评论", this.props.navigation.state.params.name);
+        if(this.props.navigation.state.params.name=='reply'){
+            // 回帖的回复
+            this.setState({
+                loading:true
+            })
+            this._fetchSubmitComment(pk, "replyAgain", content);
+        }else{
+            // 主贴
+            this.setState({
+                loading:true
+            })
+            this._fetchSubmitComment(pk, "reply", content);
+        }
+    }
+
     render() {
         return (
             <View style={{flex: 1,backgroundColor: '#ffffff',}}>
@@ -244,28 +237,17 @@ export default class CommentText extends Component{
                     textAlignVertical='top'
                     keyboardType='default'
                     placeholderTextColor='#aaaaaa'
+                    underlineColorAndroid="transparent"
                 />
                  <View style={{width:width,marginTop:10,marginBottom:20,}}>
                     <TouchableOpacity onPress={this._changeIcon.bind(this)}
-                        style={{width:width*0.2,height:30,marginLeft:width*0.05,backgroundColor:'#5daeff',alignItems:'center',justifyContent:'center',}}>
+                        style={{width:width*0.2,height:30,marginLeft:width*0.05,backgroundColor:'#ff6b94',alignItems:'center',justifyContent:'center',}}>
                         <Text style={{color:'#ffffff',fontSize:14,}}>添加图片</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={this.postcomment.bind(this)} disabled={this.state.isDisable} style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#5daeff',}}>
+                <TouchableOpacity onPress={this.postcomment.bind(this)} style={{width:width*0.8,marginLeft:width*0.1,height:40,borderRadius:10,alignItems:'center', justifyContent: 'center',backgroundColor: '#ff6b94',}}>
                     <Text style={{color:'#ffffff',fontSize:16,}}>提交评论</Text>
                 </TouchableOpacity>
-
-                {this.state.show?(
-                    <View style={{position:'absolute',top:height / 2 - 100, width: 100, height: 100, borderRadius: 5, alignItems: 'center', alignSelf: 'center',justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.5)'}}>
-                        <ActivityIndicator 
-                            style={{marginTop: 10}}
-                            color={'white'}
-                            size={'large'}
-                            animating={true}
-                                />
-                        <Text style={{color: 'white'}}>上传中...</Text>
-                    </View>
-                    ):(null)}
                 {
                     this.state.showMedalView?
                         <MedalView 
@@ -274,10 +256,15 @@ export default class CommentText extends Component{
                             hide={()=>{this.setState({showMedalView:false},()=>{this.props.navigation.state.params.callback();this.props.navigation.goBack()});}}
                         />:null
                 }
+                {
+                    this.state.loading?<LoadingView msg={this.state.loadingText}/>:null
+                }
             </View>
         )
     }
 }
+var {height, width} = Dimensions.get('window');
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

@@ -30,7 +30,6 @@ class PersonalPage extends Component {
         this.state = {
            userinfo: this.props.navigation.state.params.data,
            diamond: this.props.navigation.state.params.data.diamond,
-           token: null,
            myself: true
         }
     }
@@ -40,14 +39,7 @@ class PersonalPage extends Component {
     })
 
     componentWillMount() {
-        var _this = this;
-        AsyncStorage.getItem('token', function(errs, result) {
-            if(result != null){
-                _this.setState({token: result},() => {
-                    _this._whoami();
-                });
-            }
-        });
+        this._fetchWhoamI();
     }
     componentDidMount() {}
     componentWillUnmount() {}
@@ -55,63 +47,61 @@ class PersonalPage extends Component {
     _goBack() {
         this.props.navigation.goBack();
     }
-
-    _whoami() {
-        fetch(Http.whoami, {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Token ' + this.state.token
-            },
-        })
-        .then((response)=>{
-            if (response.ok) {
-                return response.json();
-            } else {
-                return null;
+    
+    // ---------------------------网络请求
+    _fetchWhoamI(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "get",
+                    url = Http.whoami,
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (response) {
+                        if (response.owner != this.state.userinfo.owner) {
+                            this.setState({myself: false})
+                        }
+                    } else {
+                        Utils.showMessage('获取个人信息失败');
+                    }
+                }, (err) => {
+                    console.log(2);
+                    Utils.showMessage("网络异常");
+                });
             }
         })
-        .then((responseJson)=>{
-            if (responseJson) {
-                if (responseJson.owner != this.state.userinfo.owner) {
-                    this.setState({myself: false})
-                }
-            } else {
-                Alert.alert('获取个人信息失败');
-            }
-        })
-        .catch((err) => {
-            Alert.alert('失败，请重试...');
-		});
     }
-
-    _refreshDiamond() {
-        var type = "GET",
-            url = Http.userinfo(this.state.userinfo.owner),
-            token = this.state.token,
-            data = null
-        BCFetchRequest.fetchData(type, url, token, data,(response) => {
-            if (!response) {
-                Alert.alert('失败，请重试');
-            };
-            if (response.status == -4 || response.message) {
-                Alert.alert(response.message?response.message:response.detail);
-                return;
-            } else {
-                this.setState({diamond: response.diamond});
-                return;
+    _fetchRefreshDiamond(){
+        Utils.isLogin((token)=>{
+            if (token) {
+                var type = "get",
+                    url = Http.userinfo(this.state.userinfo.owner),
+                    token = token,
+                    data = null;
+                BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                    if (!response) {
+                        Utils.showMessage('失败，请重试');
+                    };
+                    if (response.status == -4 || response.message) {
+                        Utils.showMessage(response.message?response.message:response.detail);
+                        return;
+                    } else {
+                        this.setState({diamond: response.diamond});
+                        return;
+                    }
+                }, (err) => {
+                    console.log(2);
+                    Utils.showMessage("网络异常");
+                });
             }
-        }, (err) => {
-            console.log(err);
-            Alert.alert('网络请求失败');
-        });
+        })
     }
 
     onPress(num) {
   	     switch (num) {
             case 0: {
-                this.props.navigation.navigate('MyForum', {owner: this.state.userinfo.owner,flag:'她的帖子'});
+                var flag = this.state.myself?"我的帖子":"她的帖子"
+                this.props.navigation.navigate('MyForum', {owner: this.state.userinfo.owner,flag:flag});
                 break;
             }
             case 1: {
@@ -125,8 +115,9 @@ class PersonalPage extends Component {
             case 2: {
                 this.props.navigation.navigate('PersonalReward', {
                     owner: this.state.userinfo.owner,
+                    flag:'personal',
                     callback: (msg)=>{
-                        this._refreshDiamond();
+                        this._fetchRefreshDiamond();
                     }
                 });
                 break;
@@ -139,10 +130,10 @@ class PersonalPage extends Component {
                 break
         }
     }
-
     render() {
         return (
             <View style={{flex: 1, backgroundColor: 'rgb(243, 243, 243)'}}>
+                {
                 <View style={{position:'absolute', top:0, width:width, height:width * 485 / 750, left:0}}>
                     <Image
                         style={{width:width, height:width * 485 / 750}}
@@ -150,6 +141,7 @@ class PersonalPage extends Component {
                         resizeMode={"cover"}
                     />
                 </View>
+                }
           		<View style={{backgroundColor: 'rgba(255, 255, 255, 0)', width: width, height: width * 485 / 750, alignItems: 'center', justifyContent: 'center'}}>
                     <TouchableOpacity style={{position: 'absolute', top: 20, width: 60, height: 40, alignSelf: 'flex-start', alignItems: 'center', justifyContent: 'center'}} onPress={this._goBack.bind(this)}>
                         <Image resizeMode={'cover'} style={{width: 12, height: 20, alignSelf: 'flex-start', marginLeft: 10}} source={require('../images/forum_icon/back.png')}/>
@@ -198,7 +190,6 @@ class PersonalPage extends Component {
     }
 }
 
-
-
+const statusBarHeight = Utils.statusBarHeight;
 
 export default PersonalPage;

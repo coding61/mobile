@@ -103,14 +103,11 @@ class PersonalReward extends Component {
                     to_username: this.state.owner
                 };
             }
-            
         BCFetchRequest.fetchData(type, url, token, data, (response) => {
-
             if (!response) {
                 Alert.alert('失败，请重试');
             };
             if (response.status == -4 || response.message) {
-                //console.log(response)
                 Alert.alert(response.message?response.message:response.detail);
                 this.setState({num: null});
                 return;
@@ -127,6 +124,7 @@ class PersonalReward extends Component {
                 <Image style={styles.imgView} source={require('../images/forum_icon/diamond.png')}/>
                 <TextInput style={styles.textInput}
                     placeholder='请输入你要打赏的钻石数'
+                    underlineColorAndroid='transparent'
                     onChangeText={(num) => this.setState({num})}
                     value={this.state.num}
                     keyboardType={'numeric'}
