@@ -54,9 +54,7 @@ export default class Forum_Details extends Component{
                         }}>
                             {state.params.iscollect==true?(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xin.png')} resizeMode={'contain'}/>):(<Image style={{width:22,height:20,}} source={require('../assets/Forum/xinfull.png')} resizeMode={'contain'}/>)}
                         </TouchableOpacity>
-                        <TouchableOpacity style={{width: 25, height: 40, marginTop:3, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{
-                            DeviceEventEmitter.emit('message', state.params.data)
-                        }}>
+                        <TouchableOpacity style={{width: 25, height: 40, marginTop:3, justifyContent: 'center', alignItems: 'center'}} onPress={navigation.getParam("commentBtnForNavigationBar", null)}>
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/message.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.navRightBtn} onPress={navigation.state.params ? navigation.state.params.navRightBtnClick : null}>
@@ -82,7 +80,8 @@ export default class Forum_Details extends Component{
     componentDidMount() {
         // 分享按钮点击
         this.props.navigation.setParams({
-            navRightBtnClick: this._shareWeChat.bind(this)
+            navRightBtnClick: this._shareWeChat.bind(this),
+            commentBtnForNavigationBar:this.commentBtnForNavigationBar.bind(this, this.state.pk),
         })
         
         // 收藏按钮点击
@@ -92,16 +91,7 @@ export default class Forum_Details extends Component{
         
         // 评论帖子按钮点击
         this.eventEm = DeviceEventEmitter.addListener('message', (value)=>{
-            Utils.isLogin((token)=>{
-                if (token) {
-                    this.props.navigation.navigate('CommentText', {data: value, name:'main', userinfo:'',callback:(msg)=>{
-                        // 刷新本页(回帖)
-                        this.reloadPage("reply");
-                    }})
-                }else{
-                    this.goLogin();
-                }
-            })
+            this.commentBtnForNavigationBar(value);
         })
     }
     
@@ -359,6 +349,19 @@ export default class Forum_Details extends Component{
             that._fetchForumDetail();
             that.refs.bcFlatlist._pullToRefresh();
         }
+    }
+    // 导航评论点击事件
+    commentBtnForNavigationBar = (value)=> {
+        Utils.isLogin((token)=>{
+            if (token) {
+                this.props.navigation.navigate('CommentText', {data: value, name:'main', userinfo:'',callback:(msg)=>{
+                    // 刷新本页(回帖)
+                    this.reloadPage("reply");
+                }})
+            }else{
+                this.goLogin();
+            }
+        })
     }
     // 分享事件
     _shareWeChat = () => {
