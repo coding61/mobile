@@ -163,7 +163,7 @@ public class MainApplication extends Application implements ReactApplication {
   public UserInfo getUserMessage(HttpUtils utils,String username) {
     final CountDownLatch latch = new CountDownLatch(1);
     //String getUserinfoUrl = "https://app.bcjiaoyu.com/program_girl/userinfo/username_userinfo/?username="+username;
-    String getUserinfoUrl = "https://www.cxy61.com/program_girl/userinfo/username_userinfo/?username="+username;
+    String getUserinfoUrl = "https://app.cxy61.com/program_girl/userinfo/username_userinfo/?username="+username;
     utils.send(HttpMethod.GET, getUserinfoUrl, new RequestCallBack<String>() {
       @Override
       public void onSuccess(ResponseInfo<String> responseInfo) {
@@ -213,7 +213,7 @@ public class MainApplication extends Application implements ReactApplication {
   public Group getGroupMessage(HttpUtils utils,String groupid) {
     final CountDownLatch latch = new CountDownLatch(1);
     //String getUserinfoUrl = "https://app.bcjiaoyu.com/program_girl/club/club_detail/"+groupid+"/";
-    String getUserinfoUrl = "https://www.cxy61.com/program_girl/club/club_detail/"+groupid+"/";
+    String getUserinfoUrl = "https://app.cxy61.com/program_girl/club/club_detail/"+groupid+"/";
     utils.send(HttpMethod.GET, getUserinfoUrl, new RequestCallBack<String>() {
       @Override
       public void onSuccess(ResponseInfo<String> responseInfo) {
@@ -251,7 +251,7 @@ public class MainApplication extends Application implements ReactApplication {
     RequestParams requestParams = new RequestParams();
     requestParams.addHeader("Authorization","Token "+token);
     //String updateLastTimeUrl = "https://app.bcjiaoyu.com/program_girl/club/club_last_reply_time_update/"+groupid+"/";
-    String updateLastTimeUrl = "https://www.cxy61.com/program_girl/club/club_last_reply_time_update/"+groupid+"/";
+    String updateLastTimeUrl = "https://app.cxy61.com/program_girl/club/club_last_reply_time_update/"+groupid+"/";
     utils.send(HttpMethod.PUT, updateLastTimeUrl, requestParams, new RequestCallBack<String>() {
       @Override
       public void onSuccess(ResponseInfo<String> responseInfo) {

@@ -188,7 +188,7 @@ public class MainActivity extends ReactActivity {
     public class getTokenThread extends Thread {
         @Override
         public void run() {
-            String url = "https://www.cxy61.com/program_girl/upload/token/";
+            String url = "https://app.cxy61.com/program_girl/upload/token/";
             HttpUtils utils = new HttpUtils(60 * 1000);
             utils.configCurrentHttpCacheExpiry(0);
             RequestParams requestParams = new RequestParams();
@@ -296,7 +296,7 @@ public class MainActivity extends ReactActivity {
         String os="Android";
         String app_version=Utils.getVersionName(MainActivity.this);
         //String versionUrl="https://app.bcjiaoyu.com/program_girl/appversion/check_for_updates/?os="+os+"&app_version="+app_version;
-        String versionUrl="https://www.cxy61.com/program_girl/appversion/check_for_updates/?os="+os+"&app_version="+app_version;
+        String versionUrl="https://app.cxy61.com/program_girl/appversion/check_for_updates/?os="+os+"&app_version="+app_version;
 
         HttpUtils utils=new HttpUtils(60*1000);
         utils.send(HttpMethod.GET, versionUrl, new RequestCallBack<String>() {

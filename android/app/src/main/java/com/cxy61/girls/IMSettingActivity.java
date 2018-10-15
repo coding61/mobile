@@ -114,7 +114,7 @@ public class IMSettingActivity extends Activity implements View.OnClickListener,
             HttpUtils utils = new HttpUtils(60 * 1000);
             utils.configCurrentHttpCacheExpiry(0);
             //String url = "https://app.bcjiaoyu.com/program_girl/club/club_detail/"+mTargetId+"/";
-            String url = "https://www.cxy61.com/program_girl/club/club_detail/"+mTargetId+"/";
+            String url = "https://app.cxy61.com/program_girl/club/club_detail/"+mTargetId+"/";
             RequestParams requestParams = new RequestParams();
             requestParams.addHeader("Authorization", "Token " + login_token);
             utils.send(HttpMethod.GET, url, requestParams, new RequestCallBack<String>() {
