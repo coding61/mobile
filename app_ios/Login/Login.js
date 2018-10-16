@@ -178,7 +178,7 @@ export default class Login extends Component {
 	                        that.setState({
 	                            textCodeNum:TextVerifyCode
 	                        }, ()=>{
-	                            clearInterval(that.setTime);
+	                            clearInterval(that.timer);
 	                        })
 	                    }
 	                  }, 1000);

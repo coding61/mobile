@@ -619,6 +619,9 @@ class CourseList extends Component {
             _this.setState({
               searchArr: responseJson
             })
+            if(!responseJson.length){
+              Utils.showMessage("课程未找到");
+            }
           } else {
             
           }
