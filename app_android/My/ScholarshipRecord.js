@@ -82,7 +82,7 @@ class ScholarshipRecord extends Component {
         var shareUrl = Http.shareBonusUrl(this.state.diamond_amount, this.state.reward_amount, this.state.name, this.state.head);
         var imgUrl = Http.shareLogoUrl;    // 默认图标
         console.log(shareUrl);
-        UMeng.goShare(title, content, shareUrl, imgUrl, (callBackEvents)=>{
+        UMeng.rnShare(title, content, shareUrl, imgUrl, (callBackEvents)=>{
             if (callBackEvents == '分享成功') {
 
             } else if (callBackEvents == '分享失败') {

@@ -499,7 +499,7 @@ export default class Forum_Details extends Component{
                             <Image style={{width:22,height:20,}} source={require('../assets/Forum/mess.png')} resizeMode={'contain'}/>
                         </TouchableOpacity>
                         {this.state.UserPk==rowData.userinfo.pk?(
-                            <TouchableOpacity onPress={this._fetchDeleteForumOrReply.bind(this,rowData.pk)} style={{marginLeft:3,alignItems:'center',justifyContent:'center'}}>
+                            <TouchableOpacity onPress={this._fetchDeleteForumOrReply.bind(this,rowData.pk, "reply")} style={{marginLeft:3,alignItems:'center',justifyContent:'center'}}>
                                 <Text  style={{fontSize:12,paddingRight:5,paddingLeft:5,color:'red',}}>删除</Text>
                             </TouchableOpacity>
                             ):(null)}
