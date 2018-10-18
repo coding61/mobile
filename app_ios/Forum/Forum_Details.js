@@ -237,35 +237,41 @@ export default class Forum_Details extends Component{
         if (tag === "reply") {
             // 删除回帖
             var curl = Http.deleteForumReply(pk);
+            var msg = "确定删除回帖吗？";
         }else if (tag === "replyAgain") {
             // 删除回帖的回复
             var curl = Http.deleteForumReplyAgain(pk);
+            var msg = "确定删除回复吗？";
         }else{
             // 删除帖子
             var curl = Http.deleteForum(pk);
+            var msg = "确定删除帖子吗？";
         }
-        Utils.isLogin((token)=>{
-            if (token) {
-                var type = "delete",
-                    url = curl,
-                    token = token,
-                    data = null;
-                BCFetchRequest.fetchData(type, url, token, data, (response) => {
-                    console.log("删除帖子",response);
-                    if (response === 204) {
-                        if (tag === "post") {
-                            // 返回上一页
-                            this.props.navigation.goBack();
-                        }else{
-                            // 刷新本页(回帖)
-                            this.reloadPage("reply");
+        var that = this;
+        Utils.showAlert("提示", msg, ()=>{
+            Utils.isLogin((token)=>{
+                if (token) {
+                    var type = "delete",
+                        url = curl,
+                        token = token,
+                        data = null;
+                    BCFetchRequest.fetchData(type, url, token, data, (response) => {
+                        console.log("删除帖子",response);
+                        if (response === 204) {
+                            if (tag === "post") {
+                                // 返回上一页
+                                that.props.navigation.goBack();
+                            }else{
+                                // 刷新本页(回帖)
+                                that.reloadPage("reply");
+                            }
                         }
-                    }
-                }, (err) => {
-                    console.log(2);
-                });
-            }
-        })
+                    }, (err) => {
+                        console.log(2);
+                    });
+                }
+            })
+        },()=>{}, "确定", "取消");
     }
     // 标记已解决(0)，未解决(2)，关闭问题(1)
     _fetchForumTag(tag){
