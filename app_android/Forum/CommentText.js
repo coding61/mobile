@@ -144,7 +144,7 @@ export default class CommentText extends Component{
     }
     // 上传图片的监听方法
     progress(){
-        var  this_=this;
+        var this_=this;
         //进度
         this.listenerProgressa = DeviceEventEmitter.addListener("uploadProgress_listener", function(params) {
         })
@@ -161,7 +161,7 @@ export default class CommentText extends Component{
         });
         //开始
         this.listenerProgressc = DeviceEventEmitter.addListener("uploadStrat_listener", function(params) {
-            this.setState({
+            this_.setState({
                 loading:true,
                 loadingText:"上传中..."
             })

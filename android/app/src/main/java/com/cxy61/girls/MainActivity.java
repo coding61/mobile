@@ -189,6 +189,7 @@ public class MainActivity extends ReactActivity {
         @Override
         public void run() {
             String url = "https://app.cxy61.com/program_girl/upload/token/";
+//            String url = "https://app.bcjiaoyu.com/program_girl/upload/token/";
             HttpUtils utils = new HttpUtils(60 * 1000);
             utils.configCurrentHttpCacheExpiry(0);
             RequestParams requestParams = new RequestParams();

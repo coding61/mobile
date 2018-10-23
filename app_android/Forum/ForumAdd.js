@@ -134,11 +134,11 @@ export default class ForumAdd extends Component{
                 //IdCard1:imgArr,
                 text:content,  
             })
-            this.hideLoading();
+            this_.hideLoading();
         });
         //开始
         this.listenerProgressc = DeviceEventEmitter.addListener("uploadStrat_listener", function(params) {
-            this.showLoading("上传中...");
+            this_.showLoading("上传中...");
         })
     }
     qiniu(){
@@ -161,7 +161,7 @@ export default class ForumAdd extends Component{
         var data = {};
         data["section"] = this.state.sectionpk;
         data["title"] = this.state.title;
-        data["types"] =  2;
+        data["types"] =  2;   //4, 2
         data["content"] = this.state.text;
         if (data.title === '') {
             Utils.showMessage("请输入帖子标题！");
