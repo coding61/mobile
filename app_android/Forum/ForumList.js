@@ -76,10 +76,10 @@ export default class ForumList extends Component{
         this._fetchUnreadMessages();     //加载未读消息
     }
     componentDidMount(){
-
+        var that = this;
         // 监听点击更多
         this.eventEm = DeviceEventEmitter.addListener('newsmore', (value)=>{
-            this.setState({
+            that.setState({
                 moreshow:!this.state.moreshow,
             })
         })
@@ -87,31 +87,31 @@ export default class ForumList extends Component{
         this.eventEmtt = DeviceEventEmitter.addListener('addforum', (value)=>{
             Utils.isLogin((token)=>{
                 if(token){
-                    this.props.navigation.navigate('ForumAdd',{data:value, token:token, callback:(msg)=>{
+                    that.props.navigation.navigate('ForumAdd',{data:value, token:token, callback:(msg)=>{
                         // 刷新本页(帖子列表)
-                        this.reloadPage("forumList");
+                        that.reloadPage("forumList");
                     }})
                 }else{
-                    this.goLogin();
+                    that.goLogin();
                 }
             })
         })
         // 监听搜索按钮
         this.eventEmttsea = DeviceEventEmitter.addListener('search', (value)=>{
-            this.props.navigation.navigate('Search',{keyword:'', callback:(msg)=>{
+            that.props.navigation.navigate('Search',{keyword:'', callback:(msg)=>{
                 // 刷新本页(帖子列表)
-                this.reloadPage("forumList");
+                that.reloadPage("forumList");
             }})
         })
         // 监听登录成功
         this.listenLogin = DeviceEventEmitter.addListener('listenLogin', () => {
             // 刷新本页(红点)
-            this.reloadPage("unread");
+            that.reloadPage("unread");
         })
         //退出登录
         this.listenlogout = DeviceEventEmitter.addListener('logout', () => {
             // 刷新本页(红点)
-            this.props.navigation.setParams({newscount:0});
+            that.props.navigation.setParams({newscount:0});
         })
     }
     componentWillUnmount(){
@@ -196,10 +196,10 @@ export default class ForumList extends Component{
     // 刷新页面
     reloadPage(tag){
         var that = this;
-        if(tag = "unread"){
+        if(tag === "unread"){
             // 刷新本页(红点)
             that._fetchUnreadMessages();
-        }else if(tag == "forumList"){
+        }else if(tag === "forumList"){
             // 刷新本页(帖子列表)
             that.refs.bcFlatlist._pullToRefresh();
             // that.setState({
