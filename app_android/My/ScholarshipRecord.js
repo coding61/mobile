@@ -257,11 +257,16 @@ class ScholarshipRecord extends Component {
     }
     // ------------------------------------------兑换记录列表
     _renderItemCommodity(item, index){
+        if(item.amount.indexOf("-") > -1){
+            var amount = item.amount;
+        }else{
+            var amount = "+" + item.amount;
+        }
         return (
             <View style={styles.item}>
                 <View style={{marginLeft: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                   <Text style={{color:fontBColor, fontSize:font3, height:30, lineHeight:30}}>{item.record_type}</Text>
-                  <Text style={{color: 'rgb(247, 99, 146)'}}>{'+' + item.amount}</Text>
+                  <Text style={{color: 'rgb(247, 99, 146)'}}>{amount}</Text>
                 </View>
                 <Text style={{marginLeft: 10, color:fontSColor, fontSize:12, height:30, lineHeight:30}}>{item.create_time.slice(0,19).replace('T', " ")}</Text>
             </View>
