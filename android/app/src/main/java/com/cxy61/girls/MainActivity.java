@@ -298,12 +298,13 @@ public class MainActivity extends ReactActivity {
         String app_version=Utils.getVersionName(MainActivity.this);
         //String versionUrl="https://app.bcjiaoyu.com/program_girl/appversion/check_for_updates/?os="+os+"&app_version="+app_version;
         String versionUrl="https://app.cxy61.com/program_girl/appversion/check_for_updates/?os="+os+"&app_version="+app_version;
-
+        Log.d("VersionLog:", versionUrl);
         HttpUtils utils=new HttpUtils(60*1000);
         utils.send(HttpMethod.GET, versionUrl, new RequestCallBack<String>() {
             @Override
             public void onSuccess(com.lidroid.xutils.http.ResponseInfo<String> responseInfo) {
                 String json = responseInfo.result;
+                Log.d("VersionLog:", json);
                 try {
                     JSONObject object = new JSONObject(json);
                     //是否需要更新: false; true;
@@ -337,10 +338,19 @@ public class MainActivity extends ReactActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Uri uri = Uri.parse("http://android.myapp.com/myapp/detail.htm?apkName=com.cxy61.girls");
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(uri);
-                startActivity(intent);
+                try {
+                    Log.d("VersionLog:", "应用商店");
+                    String str = "market://details?id=com.cxy61.girls";
+                    Intent localIntent = new Intent(Intent.ACTION_VIEW);
+                    localIntent.setData(Uri.parse(str));
+                    startActivity(localIntent);
+                } catch (Exception e) {
+                    Log.d("VersionLog:", "商店不存在，打开应用宝");
+                    Uri uri = Uri.parse("http://android.myapp.com/myapp/detail.htm?apkName=com.cxy61.girls");
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(uri);
+                    startActivity(intent);
+                }
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
