@@ -157,7 +157,7 @@ const app = StackNavigator({
     JobList:{screen:JobList},
     JobDetail:{screen:JobDetail}
 }, {
-    initialRouteName: 'MessagePage',             //配置初始路由的名称
+    initialRouteName: 'TabBar',             //配置初始路由的名称
     initialRouteParams:{userinfo:''}        //配置初始路由的参数
 });
 
