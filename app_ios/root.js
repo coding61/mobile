@@ -23,6 +23,8 @@ import CodeEditWebView from './pages/CodeEditWebView.js';
 import CodeEditWebView1 from './pages/CodeEditWebView1.js';
 import ThirdSiteWebView from './pages/ThirdSiteWebView.js';
 import CodeCompileWebView from './pages/CodeCompileWebView.js';
+import GameWebView from './pages/GameWebView.js';
+import VideoPlayScreen from './Component/VideoPlayScreen.js';
 import HomeScreen from './pages/HomeScreen.js';
 
 import Forum from './Forum/Forum.js';
@@ -124,6 +126,8 @@ const app = StackNavigator({
     CodeEditWebView1:{screen:CodeEditWebView1},
     ThirdSiteWebView:{screen:ThirdSiteWebView},
     CodeCompileWebView:{screen:CodeCompileWebView},
+    GameWebView:{screen:GameWebView},
+    VideoPlayScreen:{screen:VideoPlayScreen},
 
     Login:{screen: Login},
     CourseList:{screen: CourseList},
@@ -153,7 +157,7 @@ const app = StackNavigator({
     JobList:{screen:JobList},
     JobDetail:{screen:JobDetail}
 }, {
-    initialRouteName: 'TabBar',             //配置初始路由的名称
+    initialRouteName: 'MessagePage',             //配置初始路由的名称
     initialRouteParams:{userinfo:''}        //配置初始路由的参数
 });
 

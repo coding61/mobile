@@ -8,6 +8,7 @@ import {
     Linking,
     StatusBar
 } from 'react-native'
+import EmoticonImgs from './EmoticonImgs.json';
 
 const deviceH = Dimensions.get('window').height
 const deviceW = Dimensions.get('window').width
@@ -366,6 +367,45 @@ let Utils = {
                 }
             }
         })
-    }
+    },
+
+    //判断链接是否是视频格式的链接
+    hasVideoStr:(link)=>{
+        var array = ['.mp4', '.mov'];
+        var hasVideoStr = false
+        for (var i = 0; i < array.length; i++) {
+            var item = array[i]
+            if (link.indexOf(item) > -1) {
+                // link 字符串含有.mp4等字符串字样
+                hasVideoStr = true
+                break;
+            }
+        }
+        return hasVideoStr
+    },
+    // 向消息流中添加表情包
+    addEmoticonMessage:(tag, callback)=>{
+        var key = "";
+        var item = null;
+        if (tag === "error") {
+            key = "error";
+        }else if (tag === "encourage") {
+            key = "encourage";
+        }
+        if (key) {
+            // Math.floor(Math.random() * 10);    0~9之间的整数
+            var imgs = EmoticonImgs[key];
+            var i = Math.floor(Math.random() * imgs.length);
+            item = {"img":imgs[i], "type":"emoticon", "detailType":key};
+            console.log(imgs[i]);
+            // var itemDic = {animate:false, imgI:imgI, item:item, msgIndex:index}
+            // var questionHtml = ArtTemplate("message-img-template", itemDic);
+            // $(questionHtml).appendTo(".messages");
+        }
+        if (callback) {
+            //表情包需要存储，因此加个回调，原函数自己去存储
+            callback(item);
+        }
+    },
 }
 export default Utils;

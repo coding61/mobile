@@ -3,13 +3,13 @@
  * @description: 接口地址
  * @time: 2017-03-15
  */
-const Http_Domain = "https://app.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
-const Page_Domain = "https://www.coding61.com/girl";        //https://app.bcjiaoyu.com/girl
-const Share_Domain = "https://www.coding61.com";
+// const Http_Domain = "https://app.cxy61.com/program_girl";   //https://app.bcjiaoyu.com/program_girl
+// const Page_Domain = "https://www.coding61.com/girl";        //https://app.bcjiaoyu.com/girl
+// const Share_Domain = "https://www.coding61.com";
 
-// const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
-// const Page_Domain = "https://app.bcjiaoyu.com/girl";
-// const Share_Domain = "https://app.bcjiaoyu.com";
+const Http_Domain = "https://app.bcjiaoyu.com/program_girl";
+const Page_Domain = "https://app.bcjiaoyu.com/girl";
+const Share_Domain = "https://app.bcjiaoyu.com";
 
 let Http = {
 	domainPage:Page_Domain,    //网站页面地址的域名
