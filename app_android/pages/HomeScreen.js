@@ -25,8 +25,6 @@ import {
     NativeModules
 }from 'react-native'
 
-import DeviceInfo from 'react-native-device-info';
-
 import Utils from '../utils/Utils.js';
 import BCFetchRequest from '../utils/BCFetchRequest.js';
 import Http from '../utils/Http.js';
@@ -321,7 +319,7 @@ class HomeScreen extends Component{
             <TouchableOpacity onPress={this._clickFindHelpShadow} style={styles.findHelpShadowView}>
                 <View style={{}}>
                     <Text style={styles.findHelpText}>如需帮助，请使用学习论坛进行发帖，会有专人帮您解答。</Text>
-                    <Text style={styles.findHelpVersion}>当前版本号:{DeviceInfo.getVersion()}</Text>
+                    <Text style={styles.findHelpVersion}>当前版本号:{Utils.currentVersion}</Text>
                 </View>
             </TouchableOpacity>
         )

@@ -14,7 +14,6 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.imagepicker.ImagePickerPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -38,6 +37,7 @@ import io.rong.imlib.model.Message;
 import io.rong.imlib.model.UserInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.github.yamill.orientation.OrientationPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,8 +62,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new ReactVideoPackage(),
             new ImagePickerPackage(),
-            new RNDeviceInfo(),
             new RNSoundPackage(),
+          new OrientationPackage(),
               //new MainReactPackage(),
               new MyReactPackage()
       );

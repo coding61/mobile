@@ -124,6 +124,7 @@ function NumberToChinese(num){
     return chnStr;
 }
 let Utils = {
+    currentVersion:"1.15.0",
 	width:Dimensions.get('window').width,
 	height:Dimensions.get('window').height,
     headerHeight:HeaderH,
