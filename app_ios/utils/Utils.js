@@ -18,6 +18,7 @@ const basePx = 375
 // iPhoneX  
 const X_WIDTH = 375;  
 const X_HEIGHT = 812;  
+console.log(deviceH, deviceW);
 const isIphoneX = Platform.OS === 'ios' &&   ((deviceH === X_HEIGHT && deviceW === X_WIDTH) || (deviceH === X_WIDTH && deviceW === X_HEIGHT))
 
 const isIOS = Platform.OS == "ios"
@@ -124,7 +125,7 @@ function NumberToChinese(num){
     return chnStr;
 }
 let Utils = {
-    currentVersion:"1.10.1",
+    currentVersion:"1.12.1",
 	width:Dimensions.get('window').width,
 	height:Dimensions.get('window').height,
     headerHeight:HeaderH,

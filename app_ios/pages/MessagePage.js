@@ -30,6 +30,7 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import Sound from 'react-native-sound';
 import ImageLoad from 'react-native-image-placeholder';
 import Orientation from 'react-native-orientation';
+import { SafeAreaView } from 'react-navigation';
 
 import QuestionView from '../Component/QuestionView.js';
 
@@ -3326,12 +3327,22 @@ class MessagePage extends Component{
     // 消息加载中
     _renderLoadingChat(){
         return (
-            <View style={[styles.loadingChat,]}>
-                <Image
-                  style={{height:15}}
-                  source={require('../images/chat.gif')}
-                  resizeMode='contain'
-                />
+            <View style={styles.loadingChatView} onLayout={ (e) => {
+                this.setState({
+                    loadingChatLayOutHeight:e.nativeEvent.layout.height
+                })
+             }}>
+                {
+                    this.state.loadingChat?
+                        <View style={[styles.loadingChat,]}>
+                            <Image
+                            style={{height:15}}
+                            source={require('../images/chat.gif')}
+                            resizeMode='contain'
+                            />
+                        </View>
+                    : null
+                }
             </View>
         ) 
     }
@@ -3378,7 +3389,8 @@ class MessagePage extends Component{
     renderExerciseShadowView(item, typeView){
         console.log(item, typeView);
         return(
-            <View style={{position:'absolute', left:0, right:0, top:0, width:width, height:height-headerH, backgroundColor:'rgba(255,255,255,0.99)', flexDirection:'column'}}>
+            <View style={{position:'absolute', left:0, right:0, top:0, bottom:0, width:width, flex:1, backgroundColor:'rgba(255,255,255,0.99)', flexDirection:'column'}}>
+                <SafeAreaView style={{flex:1}}>
                 <TouchableOpacity onPress={this.closeExerciseShadowView.bind(this)} activeOpacity={1} style={{width:68, height:40, marginVertical:10, marginLeft:width-68-20, backgroundColor:'#ffc200', paddingVertical:0, paddingHorizontal:10, borderRadius:20, justifyContent:'center', alignItems:'center'}}>
                     <Text style={{color:'white', textAlign:'center'}}>关闭</Text>
                 </TouchableOpacity>
@@ -3395,7 +3407,7 @@ class MessagePage extends Component{
                     :
                         null
                 }
-                
+                </SafeAreaView>
             </View>
         )
     }
@@ -3425,17 +3437,23 @@ class MessagePage extends Component{
     _keyExtractor = (item, index) => index;
     _renderTableView(){
         var MessageWidth1 = this.state.courseProgressArray.length?MessageWidth:MessageWidth+CourseProgressWidth
+        var FLATLIST_MAX_HEIGHT = this.state.chatLayOutHeight - this.state.loadingChatLayOutHeight
         return (
             <View style={{flex:1}}>
-                <View style={{flexDirection:'row'}}>
+                <SafeAreaView style={{flex:1}}>
+                <View style={{flexDirection:'column', flex:1}} onLayout={ (e) => {
+                        this.setState({
+                            chatLayOutHeight:e.nativeEvent.layout.height
+                        })
+                    }}>
                     {/*******课程进度********/}
                     {/*this.state.courseProgressArray.length? this._renderCourseProgress():null*/}
                     
                     {/******会话消息******/}
-                    <View style={{width:MessageWidth1, maxHeight:FlatListHeight}}>
+                    <View style={{width:MessageWidth1}}>
                         <FlatList 
                             ref={(flatlist)=>this._flatList=flatlist}
-                            style={{maxHeight:FlatListHeight}}
+                            style={{maxHeight:FLATLIST_MAX_HEIGHT}}
                             data={this.state.dataSource}
                             renderItem={this._renderItem}
                             ListHeaderComponent={this.state.showHeaderComponent?this._renderHeader:null}
@@ -3443,8 +3461,8 @@ class MessagePage extends Component{
                             extraData={this.state}
                             keyExtractor={this._keyExtractor}
                             onLayout={ (e) => {
-                               const height = e.nativeEvent.layout.height
-                               // console.log(e.nativeEvent.layout);
+                            //    const height = e.nativeEvent.layout.height
+                            //    console.log(e.nativeEvent.layout);
                             }}
                             // getItemLayout={(data, index) => (
                             //     { length: this.state.itemHeight, offset: (this.state.itemHeight + 2) * index, index }
@@ -3465,25 +3483,27 @@ class MessagePage extends Component{
                                     // this._flatList.scrollToIndex({viewPosition: 0, index: 0}); 
                                     // console.log("-----scrollTop");
                                 }else{
-                                    if (contentHeight > FlatListHeight) {
-                                        // this._flatList.scrollToIndex({viewPosition: 1, index: this.state.number-1});
-                                        this._flatList.scrollToOffset({animated: true, offset: contentHeight-(FlatListHeight)});
-                                        // console.log("-----scrollEnd");
-                                        // this._flatList.scrollToEnd();  //与getItemLayout配合使用
-                                    } 
+                                    // console.log("contentHeight",contentHeight);
+                                    if(contentHeight > FLATLIST_MAX_HEIGHT){
+                                        this._flatList.scrollToOffset({animated: true, offset: contentHeight-FLATLIST_MAX_HEIGHT});
+                                    }
+                                    // if (contentHeight > FlatListHeight) {
+                                    //     // this._flatList.scrollToIndex({viewPosition: 1, index: this.state.number-1});
+                                    //     this._flatList.scrollToOffset({animated: true, offset: contentHeight-(FlatListHeight)});
+                                    //     // console.log("-----scrollEnd");
+                                    //     // this._flatList.scrollToEnd();  //与getItemLayout配合使用
+                                    // } 
                                 } 
                             }}
                             onScrollBeginDrag={this.onScrollBeginDrag}
                             onScrollEndDrag={this.onScrollEndDrag}
                         />
-                        {
-                            this.state.loadingChat?this._renderLoadingChat():null
-                        }
+                        {this._renderLoadingChat()}
                     </View>
                 </View>
                 {/******底部按钮*****/}
                 {this._renderBottomBtns()}
-                
+                </SafeAreaView>
                 {
                     this.state.showZuanAni? this._renderZuanView() : null
                 }
@@ -3752,11 +3772,15 @@ const styles = StyleSheet.create({
     // ------------------------------------------底部按钮
     btns:{//底部按钮高度80, 50(去除帮助按钮)
         // height:60, 
+        // width:width,
+        // position:'absolute',
+        // // bottom:0,
+        // // bottom:10,
+        // bottom:actionMarginBottom,
+        
+        height:50,
         width:width,
-        position:'absolute',
-        // bottom:0,
-        // bottom:10,
-        bottom:actionMarginBottom,
+        // backgroundColor:'red'
     },
     help:{//帮助按钮总高40
         width:30, 
@@ -3930,6 +3954,11 @@ const styles = StyleSheet.create({
     },
 
     // ----------------------------------------消息等待
+    loadingChatView:{
+        width:width,
+        height:40,
+        // backgroundColor:'orange',
+    },
     loadingChat:{
         alignItems:'center', 
         justifyContent:'center',
@@ -3940,8 +3969,8 @@ const styles = StyleSheet.create({
         marginHorizontal:10,
         marginTop:10,
 
-        position:'absolute',
-        bottom:-40
+        // position:'absolute',
+        // bottom:-40
     },
 
     // ----------------------------------------钻石动画

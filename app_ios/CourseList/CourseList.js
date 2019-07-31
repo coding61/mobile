@@ -19,6 +19,8 @@ import Utils from '../utils/Utils.js';
 import Http from '../utils/Http.js';
 const {width, height} = Dimensions.get('window');
 import {StackNavigator} from 'react-navigation';
+import { SafeAreaView } from 'react-navigation';
+
 var itemHead = {nostart: require('../assets/Course/nostart.png'), processing:require('../assets/Course/onstudy.png'), finish: require('../assets/Course/onfinish.png')};
 
 
@@ -606,6 +608,7 @@ class CourseList extends Component {
   render() {
     return (
       <View style={CourseStyle.container}>
+        <SafeAreaView style={{flex:1}}>
           <View style={{width: width, height: 40, alignItems: 'center', justifyContent: 'center'}}>
             <TouchableOpacity onPress={() => this.setState({modalVisible2: true})} style={{width: width - 30, height: 30, backgroundColor: 'white',flexDirection: 'row', alignItems: 'center'}}>
               <Image style={{marginLeft: 10, width: 18, height: 18}} source={require('../assets/Forum/sousuo.png')}/>
@@ -618,12 +621,14 @@ class CourseList extends Component {
           renderItem={this._renderItem}
           keyExtractor={this._keyExtractor}
         />
+        </SafeAreaView>
         <Modal
           animationType={"slide"}
           transparent={false}
           visible={this.state.modalVisible2}
           onRequestClose={() => {}}>
           <View style={{width: width, height: height, backgroundColor: 'rgb(242, 243, 244)'}}>
+            <SafeAreaView style={{flex:1}}>
             <View style={{width: width, height: 64, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
               <TouchableOpacity onPress={() => this.setState({modalVisible2: false})} style={{position: 'absolute', left: 0, bottom: 0, width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
                 <Image source={require('../assets/Login/close.png')}/>
@@ -646,6 +651,7 @@ class CourseList extends Component {
                 })}
               </View>
             </ScrollView>
+            </SafeAreaView>
           </View>
         </Modal>
         <Modal 
@@ -654,6 +660,7 @@ class CourseList extends Component {
           visible={this.state.modalVisible}
           onRequestClose={() => {}}>
           <View style={{width: width, height: height, backgroundColor: 'white'}}>
+            <SafeAreaView style={{flex:1}}>
             <View style={{width: width, height: 64, backgroundColor: 'rgb(251, 109, 150)', alignItems: 'center', justifyContent: 'center'}}>
               <TouchableOpacity onPress={() => this.setState({modalVisible: false})} style={{position: 'absolute', left: 0, bottom: 0, width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
                 <Image source={require('../assets/Login/close.png')}/>
@@ -685,6 +692,7 @@ class CourseList extends Component {
                 }
             </ScrollView>
             {this.renderBottomBtn()}
+            </SafeAreaView>
           </View>
         </Modal> 
       </View>

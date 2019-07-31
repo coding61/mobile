@@ -24,6 +24,7 @@ import {
     StatusBar,
     NativeModules
 }from 'react-native'
+import { SafeAreaView } from 'react-navigation';
 
 import Utils from '../utils/Utils.js';
 import BCFetchRequest from '../utils/BCFetchRequest.js';
@@ -377,6 +378,7 @@ class HomeScreen extends Component{
     _renderTabs(){
         return (
             <View style={styles.tabs}>
+                <ScrollView style={{flex:1}} contentContainerStyle={{flexDirection:'row', flexWrap:'wrap'}}>
                 <TouchableOpacity style={styles.tab} onPress={this._clickTab.bind(this, 0)}>
                     <Image
                       style={styles.tabImg}
@@ -459,6 +461,7 @@ class HomeScreen extends Component{
                     </Text>
                     */}
                 </TouchableOpacity>
+                </ScrollView>
             </View>
         )
     }
